@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>修改排序</title>
+</head>
+<body>
+<div th:fragment="update_sort">
+	<div id="sortDiv" style="display: none;" align="center">
+		<div style="margin-top:50px;">
+			<form id="sortForm" class="layui-form layui-form-pane" method="post" action="">
+				<div class="layui-form-item">
+					<div class="layui-input-block" style="margin-left: 90px;">
+						<label class="layui-form-label">*排序</label>
+						<div class="layui-input-inline" style="width: 100px;">
+							<input name="sort" placeholder="排序" class="layui-input" value=""
+								maxlength="4">
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+	<script type="text/javascript">
+		function submitDate(index){
+			layer.confirm('确定要修改排序吗?',function(index) {
+				var obj = $("#sortForm").serialize();
+				var sort = $("#sortForm input[name='sort']").val();
+				if(isNaN(sort) || sort > 9999 || sort < 1){
+					layer.msg("必须为1-9999的数字");
+					return;
+				}
+			 
+				$.ajax({
+					type : "POST",
+					data : obj,
+					url : $("#sortForm").attr("action"),
+					dataType : "json",
+					success : function(msg) {
+						console.log(msg);
+						if (msg.meta.code == 0) {
+							layer.msg("操作成功!");
+							layer.close(index);
+							window.location.reload();
+						} else {
+							layer.msg(msg.meta.message);
+						}
+					}
+				});
+			});
+		}
+		function showView(submitUrl,sortVal){
+			$("#sortForm").attr("action",submitUrl);
+			$("#sortForm input[name='sort']").val(sortVal);
+			layer.open({
+				type: 1,
+				title: "修改排序",
+				area: ['380px'],
+				content: $("#sortDiv"), //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
+				btn:['保存','取消'],
+				yes:function(index){
+					submitDate(index);
+				},
+				cancel:function(){}
+			});
+		}
+	</script>
+</div>
+</body>
+</html>

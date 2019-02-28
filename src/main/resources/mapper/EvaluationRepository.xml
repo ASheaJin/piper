@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.syswin.com.syswin.pipeline.db.repository.EvaluationRepository">
+    <resultMap id="BaseResultMap" type="com.syswin.com.syswin.pipeline.db.model.Evaluation">
+        <id column="evaluation_id" jdbcType="VARCHAR" property="evaluationId"/>
+        <result column="user_id" jdbcType="VARCHAR" property="userId"/>
+        <result column="level" jdbcType="TINYINT" property="level"/>
+        <result column="content_id" jdbcType="VARCHAR" property="contentId"/>
+        <result column="create_time" jdbcType="INTEGER" property="createTime"/>
+    </resultMap>
+
+    <sql id="Base_Column_List" >
+      evaluation_id,  user_id, level, content_id,  create_time
+    </sql>
+
+    <insert id="insert">
+        insert into evaluation
+        (
+        evaluation_id,
+        user_id,
+        content_id,
+        level,
+        create_time
+        ) values (
+        #{evaluationId},
+        #{userId},
+        #{contentId},
+        #{level},
+        #{createTime}
+        )
+    </insert>
+
+
+    <select id="select" resultType="com.syswin.com.syswin.pipeline.db.model.Evaluation">
+        select
+        <include refid="Base_Column_List" />
+        from evaluation
+    </select>
+
+    <select id="selectByUserIdContentId" resultType="com.syswin.com.syswin.pipeline.db.model.Evaluation">
+        select
+        <include refid="Base_Column_List" />
+        from evaluation  where user_id = #{userId} and content_id = #{contentId}
+    </select>
+</mapper>

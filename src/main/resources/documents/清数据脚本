@@ -1,0 +1,3 @@
+delete from browse_record where browse_id >0 ;
+delete from content where content_id>0 ;
+delete from logs where id>0

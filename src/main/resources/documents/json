@@ -1,0 +1,18 @@
+{
+	"command": 1,
+	"commandSpace": 2561,
+	"data": "eyJib2R5X3R5cGUiOjEsImNoYXRfdHlwZSI6MCwiY29udGVudCI6IjEyMTEyIiwiZnJvbSI6ImEucGlwZXJAdC5lbWFpbCIsIm1zZ19pZCI6IjZjM2NhZjIzLTJkODQtNDU1Ni04NDIyLTI5OGJlMmYwNjg5MiIsInNlc3Npb25faWQiOiJhLnBpcGVyQHQuZW1haWw6bHVvaG9uZ3pob3VAdC5lbWFpbCIsInN0YXR1cyI6MywidGltZV9zdGFtcCI6MTU0NjUwMDUxNzUyMywidG8iOiJsdW9ob25nemhvdUB0LmVtYWlsIn0=",
+	"header": {
+		"dataEncryptionMethod": 0,
+		"deviceId": "aaaaaaaaa",
+		"packetId": "7f8d78e4-2b96-4e14-8a92-f0ccfaf7b780",
+		"sender": "a.piper@t.email",
+		"senderPK": "MIGbMBAGByqGSM49AgEGBSuBBAAjA4GGAAQBtBIPnoFOpyVCj8LiW2xgdOKqbizLUhZo5AWppUW3SuIHjf32aHgEI_V47ytdWwY7DykZjnrCoL_OuqaQkHawFVkAaBVdu5w8K00rh7rFK80BBL8o0DROHE78NNhX1d3jSITHRjY0loNPG54P3z40VfU-j9nmLlU2zgfVXkCHk7KCRAc",
+		"signature": "MIGIAkIBHRcUDx0S5DQeETwesSEPLIq9s6oaBwWTn7xgYftYqWBqWlNRobWorKikpWjsMotR7Tagz9IJHdHA0RKoN9xt7mYCQgDmFzrC5WtRJ5F6RwwwyHd7ATCFFxEJd-vOcI6XyoNXpSrTstZbpxF7qfyDPWBAn8SckOFtlp_hvyEa6zQoLiQTZg",
+		"signatureAlgorithm": 2,
+		"timestamp": 1546500527818
+	},
+	"heartbeat": false,
+	"internalError": false,
+	"version": 1
+}

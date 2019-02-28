@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="info" strict="true" name="XMLConfigTest"
+			   packages="org.apache.logging.log4j.test">
+
+	<Properties>
+		<Property name="baseDir">/app_data</Property>
+	</Properties>
+
+	<Filter type="ThresholdFilter" level="trace" />
+
+	<Appenders>
+		<!-- 全集日志输出 -->
+		<RollingFile name="all" filePattern="${baseDir}/logs/$${date:yyyy-MM}/all-%d{MM-dd-yyyy}-%i.log.gz">
+			<PatternLayout>
+				<Pattern>[pipeline-api] [%d{yyyy-MM-dd HH:mm:ss.SSS}] [%t] %-5p => %c.%M[%F:%L] - %m%n</Pattern>
+			</PatternLayout>
+			<Policies>
+				<TimeBasedTriggeringPolicy />
+				<SizeBasedTriggeringPolicy size="250 MB" />
+			</Policies>
+			<DirectWriteRolloverStrategy />
+		</RollingFile>
+		<!-- 错误日志输出 -->
+		<RollingFile name="error" filePattern="${baseDir}/logs/$${date:yyyy-MM}/error-%d{MM-dd-yyyy}-%i.log.gz">
+			<PatternLayout>
+				<Pattern>[pipeline-api] [%d{yyyy-MM-dd HH:mm:ss.SSS}] [%t] %-5p => %c.%M[%F:%L] - %m%n</Pattern>
+			</PatternLayout>
+			<Policies>
+				<TimeBasedTriggeringPolicy />
+				<SizeBasedTriggeringPolicy size="250 MB" />
+			</Policies>
+			<DirectWriteRolloverStrategy />
+		</RollingFile>
+
+	</Appenders>
+	<Loggers>
+		<Root level="info">
+			<AppenderRef ref="all"/>
+		</Root>
+		<Logger name="error-log" level="error" additivity="false">
+			<AppenderRef ref="error"/>
+		</Logger>
+		<!-- Druid 日志配置 -->
+		<Logger name="com.alibaba.druid" level="warn" additivity="false">
+			<AppenderRef ref="all"/>
+		</Logger>
+	</Loggers>
+
+</Configuration>

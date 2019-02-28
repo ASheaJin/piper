@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.syswin.com.syswin.pipeline.db.repository.DataAnalysisRepository">
+
+
+    <select id="selectAccount" resultType="java.lang.Integer">
+        select count(1) from account
+        where 1=1
+        <if test="startTime != 0">
+            and create_time > #{startTime}
+        </if>
+        <if test="endTime != 0">
+            and #{endTime} > create_time
+        </if>
+    </select>
+
+    <select id="selectServerLog" resultType="java.lang.Integer">
+        select count(1) from server_logs
+        where 1=1
+        <if test="startTime != 0">
+            and create_time > #{startTime}
+        </if>
+        <if test="endTime != 0">
+            and #{endTime} > create_time
+        </if>
+    </select>
+
+    <select id="selectPublisher" resultType="java.lang.Integer">
+        select count(1) from subengine.publisher
+        where 1=1
+        <if test="startTime != 0">
+            and create_time > #{startTime}
+        </if>
+        <if test="endTime != 0">
+            and #{endTime} > create_time
+        </if>
+    </select>
+
+    <select id="selectTransaction" resultType="java.lang.Integer">
+        select count(1) from transaction_record
+        where 1=1
+        <if test="startTime != 0">
+            and create_time > #{startTime}
+        </if>
+        <if test="endTime != 0">
+            and #{endTime} > create_time
+        </if>
+    </select>
+</mapper>

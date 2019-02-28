@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.syswin.com.syswin.pipeline.db.repository.ServerLogRepository">
+    <resultMap id="BaseResultMap" type="com.syswin.com.syswin.pipeline.db.model.ServerLog">
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="user_id" jdbcType="VARCHAR" property="userId"/>
+        <result column="command" jdbcType="INTEGER" property="command"/>
+        <result column="request_data" jdbcType="VARCHAR" property="requestData"/>
+        <result column="response_data" jdbcType="VARCHAR" property="responseData"/>
+        <result column="create_time" jdbcType="VARCHAR" property="createTime"/>
+        <result column="end_time" jdbcType="VARCHAR" property="endTime"/>
+    </resultMap>
+
+    <sql id="Base_Column_List" >
+      id,  user_id, command, request_data, response_data, create_time, end_time
+    </sql>
+
+    <insert id="insert"  >
+       insert into server_logs
+        (
+        id,
+        user_id,
+        command,
+        <if test="requestData != null" >
+            request_data,
+        </if>
+        create_time
+        ) values (
+        #{id},
+        #{userId},
+        #{command},
+        <if test="requestData != null" >
+            #{requestData},
+        </if>
+        #{createTime}
+        )
+    </insert>
+
+    <update id="update">
+        update server_logs
+        <set >
+            <if test="responseData != null" >
+                response_data = #{responseData},
+            </if>
+            <if test="endTime != null" >
+                end_time = #{endTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <select id="select" resultType="com.syswin.com.syswin.pipeline.db.model.ServerLog">
+        select
+        <include refid="Base_Column_List" />
+        from server_logs
+    </select>
+
+    <select id="selectById" resultType="com.syswin.com.syswin.pipeline.db.model.ServerLog">
+        select
+        <include refid="Base_Column_List" />
+        from server_logs  where user_id = #{userId}
+    </select>
+
+</mapper>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport"
+		  content="width=device-width, initial-scale=1, maximum-scale=1">
+	<title>订阅列表</title>
+	<link rel="stylesheet" th:href="@{/layui/css/layui.css}">
+	<script type="text/javascript" charset="utf-8"
+			th:src="@{/toongine20190104.js}"></script>
+	<script th:src="@{/layui/jquery.min.js}"></script>
+	<script th:src="@{/layui/layui.js}"></script>
+	<script type="text/javascript" th:src="@{/common.js}"></script>
+</head>
+<body >
+<div style="width: 100% ;color:white">
+    <br/>
+
+    <div data-th-replace="~{layout :: header}"></div>
+	<div style="top:10px;width: 100%">
+		<!-- 内容主体区域 -->
+
+		<table style="width: 100%;border-collapse:separate; border-spacing:0px 5px;">
+			<thead>
+			<tr>
+				<th><b>名称</b></th>
+				<th><b>邮箱</b></th>
+				<th><b>操作</b></th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr data-th-each="item : ${data}">
+				<td data-th-text="${item.name}"></td>
+				<td data-th-text="${item.ptemail}"></td>
+				<td>
+					<a class="layui-btn layui-btn-xs" style="background-color: #aa7700" th:onclick="'javascript:del(' + ${item.publisherId} + ');'">取消订阅</a>
+				</td>
+			</tr>
+			</tbody>
+		</table>
+
+		<!--<div id="pageContent"></div>-->
+	</div>
+
+	<!--<div class="layui-footer">-->
+		<!--&lt;!&ndash; 底部固定区域 &ndash;&gt;-->
+
+	<!--</div>-->
+</div>
+<!-- <script src="/layui/jquery.min.js"></script>
+<script src="/layui/layui.js"></script> -->
+<script type="text/javascript" th:inline="javascript">
+    //JavaScript代码区域
+    var curWwwPath = window.document.location.href;
+    //获取主机地址之后的目录，如： uimcardprj/share/meun.jsp
+    var pathName = window.document.location.pathname;
+    var pos = curWwwPath.indexOf(pathName);
+    //获取主机地址，如： http://localhost:8083
+    var contextRoot = curWwwPath.substring(0, pos);
+
+    function del(publisherId){
+        layer.confirm("确定取消订阅该出版社吗？",function(index) {
+            $.ajax({
+                type : "POST",
+                data :
+					{
+					    'userId':[[${userId}]],
+                        'publisherId':publisherId
+				},
+                url : contextRoot+"/publish/unsubscribe",
+                dataType : "json",
+                success : function(res) {
+                    console.log(res);
+                    if (res.code == 200) {
+                        layer.msg(res.msg);
+                        window.location.reload();
+                    } else {
+                        layer.msg(res.message);
+                    }
+                }
+            });
+        });
+    }
+</script>
+</body>
+<script type="text/javascript" th:src="@{/common.js}"></script>
+</html>

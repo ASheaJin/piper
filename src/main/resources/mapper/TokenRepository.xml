@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.syswin.com.syswin.pipeline.db.repository.TokenRepository">
+    <resultMap id="BaseResultMap" type="com.syswin.com.syswin.pipeline.db.model.Token">
+        <id column="token_id" jdbcType="INTEGER" property="tokenId" />
+        <result column="user_id" jdbcType="VARCHAR" property="userId" />
+        <result column="token" jdbcType="VARCHAR" property="token" />
+        <result column="create_time" jdbcType="INTEGER" property="createTime" />
+        <result column="update_time" jdbcType="INTEGER" property="updateTime" />
+    </resultMap>
+
+    <sql id="Base_Column_List" >
+        token_id,  user_id, token, create_time,  update_time
+    </sql>
+    <insert id="addToken">
+        insert into token (
+        user_id,
+        token,
+        create_time,
+        update_time
+        )
+        values (
+        #{userId},
+        #{token},
+        #{createTime},
+        #{updateTime}
+        )
+    </insert>
+    <select id="selectByToken" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from token
+        where token = #{token}
+    </select>
+    <select id="getTokenByUserId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from token
+        where user_id = #{userId}
+    </select>
+</mapper>

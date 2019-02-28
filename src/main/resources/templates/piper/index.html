@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>活动管理后台</title>
+    <link rel="stylesheet" href="/layui/css/layui.css">
+</head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+
+    <div data-th-replace="~{layout :: header}"></div>
+    <div class="layui-body" style="left: 220px;top:100px">
+        <!-- 内容主体区域 -->
+        <h2 style="color: #000099;"><strong>Piper后端运营查询</strong></h2>
+        <br/>
+        <div>
+            <a href="/manage/account/list" class="layui-btn  ">账号管理</a>
+        </div>
+        <br/>
+        <div>
+            <a href="/manage/publisher/list" class="layui-btn  ">出版社管理</a>
+        </div>
+        <br/>
+        <div>
+            <a href="/manage/transaction/list" class="layui-btn  ">付费管理</a>
+        </div>
+        <br/>
+        <div>
+            <a href="/manage/userlog/list" class="layui-btn  ">用户行为管理</a>
+        </div>
+    </div>
+</div>
+</body>
+
+<script type="text/javascript" th:src="@{/common.js}"></script>
+</html>

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Insert title here</title>
+<!-- 富文本编辑器 js引入-->
+<script type="text/javascript" charset="utf-8"
+	th:src="@{/ueditor/ueditor.config.js}"></script>
+<script type="text/javascript" charset="utf-8"
+	th:src="@{/ueditor/ueditor.all.min.js}">
+	
+</script>
+<!--建议手动加在语言，避免在ie下有时因为加载语言失败导致编辑器加载失败-->
+<!--这里加载的语言文件会覆盖你在配置项目里添加的语言类型，比如你在配置项目里配置的是英文，这里加载的中文，那最后就是中文-->
+<script type="text/javascript" charset="utf-8"
+	th:src="@{/ueditor/lang/zh-cn/zh-cn.js}"></script>
+<script th:src="@{/layui/jquery.min.js}"></script>
+<script th:src="@{/layui/layui.js}"></script>
+<script type="text/javascript" th:src="@{/common.js}"></script>
+<link rel="stylesheet" th:href="@{/layui/css/layui.css}">
+<script type="text/javascript">
+$(document).ready(function(){
+	var height = $(window).height();
+	$("#addDiv").css({"height":height});
+});
+window.onresize = function(){
+	var height = $(window).height();
+	$("#addDiv").css({"height":height});
+}
+</script>
+<style type="text/css">
+.layui-form-label{
+	width:200px !important;
+}
+</style>
+</head>
+<body class="layui-layout-body">
+	<input style="display: none;" id="baseStaticMapUrl" value="http://restapi.amap.com/v3/staticmap?markers=mid,0xFF0000,:#{location}&zoom=14&key=f2d930378099783b5847730e7c6aae8d">
+	<div id="addDiv" align="center" style="overflow:auto;">
+		<div style="margin-top: 50px;">
+			<form id="addForm" class="layui-form layui-form-pane"
+				th:action="@{/chat/add_and_edit}" method="post">
+				<input id="dataId" name="id" style="display: none;" th:value="${data != null ? data.id : ''}">
+				<div class="layui-form-item">
+					<div class="layui-input-block">
+						<label class="layui-form-label"><span style="color: #f00;">*</span>城市:</label>
+						<div class="layui-input-inline">
+							<input name="city" placeholder="绑定后显示所选城市" class="layui-input" style="background-color: #ffffff;border: none;" maxlength="100" readonly="readonly" th:value="${data != null ? data.city : ''}">
+							<input name="cityId" placeholder="城市ID" class="layui-input" style="display: none;" maxlength="100" th:value="${data != null ? data.cityId : ''}">
+						</div>
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<div class="layui-input-block">
+						<label class="layui-form-label"><span style="color: #f00;">*</span>行政区:</label>
+						<div class="layui-input-inline">
+							<input name="area" placeholder="绑定后显示所选行政区" class="layui-input" style="background-color: #ffffff;border: none;" maxlength="100" readonly="readonly" th:value="${data != null ? data.area : ''}">
+							<input name="areaId" placeholder="行政区ID" class="layui-input" maxlength="100" style="display: none;" th:value="${data != null ? data.areaId : ''}">
+						</div>
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<div class="layui-input-block">
+						<label class="layui-form-label"><span style="color: #f00;">*</span>社区名称:</label>
+						<div class="layui-input-inline">
+							<input name="name" placeholder="社区名称" class="layui-input" value=""
+								maxlength="200" th:value="${data != null ? data.name : ''}">
+						</div>
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<div class="layui-input-block">
+						<label class="layui-form-label"><span style="color: #f00;">*</span>社区对应的小组ID:</label>
+						<div class="layui-input-inline">
+							<input name="groupId" placeholder="社区对应的小组ID" class="layui-input" value=""
+								maxlength="200" th:value="${data != null ? data.groupId : ''}">
+						</div>
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<div class="layui-input-block">
+						<label class="layui-form-label"><span style="color: #f00;">*</span>社区运营者名片号:</label>
+						<div class="layui-input-inline">
+							<input name="runFeedid" placeholder="社区运营者名片号" class="layui-input" value=""
+								maxlength="200" th:value="${data != null ? data.runFeedid : ''}">
+						</div>
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<div class="layui-input-block">
+						<label class="layui-form-label"><span style="color: #f00;">*</span>设置社区认证范围电子围栏:</label>
+						<div class="layui-input-inline" style="width: 600px;">
+							<input id="lng" name="lng" type="text" th:value="${data != null ? data.lng : ''}" style="display: none;"/>
+							<input id="lat" name="lat" type="text" th:value="${data != null ? data.lat : ''}" style="display: none;"/>
+							<a href="javascript:void(0)" onclick="selectPoint()" style="color: blue;">查看地图位置</a>
+							在地图上设置基准圆点，以周围
+							<input type="text" name="radius" placeholder="半径" class="layui-input" 
+							style="display: inline-block;width: 50px;" th:value="${data != null ? data.radius : ''}" maxlength="3">
+							公里为半径，设置社区认证范围。
+							<div style="width: 100%;height: 200px;margin-top: 10px;">
+								<a href="javascript:void(0)" onclick="selectPoint()"><img id="baiduMapImg" style="max-width: 200px;max-height: 200px;"/></a>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<div class="layui-input-block">
+						<label class="layui-form-label"><span style="color: #f00;">*</span>绑定社区下的所属小区:</label>
+						<div class="layui-input-inline" style="width: 600px;height: 100px;" align="left">
+							<a href="javascript:void(0)" onclick="selectBind()" style="color: blue;line-height: 38px;margin-left: 20px;">去绑定</a>
+							<div style="line-height: 38px;">
+								已绑定小区：<span id="selectVillage" th:text="${villageNames != null ? villageNames : ''}"></span>
+								<div id="bindVillageInput" style="display: none;">
+									<input type='text' name='bindVillage' th:if="${villages != null}" th:each="item:${villages}" 
+									th:value="${item.villageId} + ',' + ${item.villageName}" />
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<div class="layui-input-block">
+						<div class="layui-input-inline" style="width: 500px;" align="left">
+							<input type="radio" name="publish" value="0" title="下架" th:checked="${data != null ? data.publish == 0 : 'true'}"/> 
+							<input type="radio" name="publish" value="1" title="上架" th:checked="${data != null ? data.publish == 1 : 'false'}"/>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</body>
+<script type="text/javascript" th:inline="javascript">
+    var contextRoot = /*[[@{/}]]*/ '';
+$(document).ready(function(){
+	var lng = $("#lng").val();
+	var lat = $("#lat").val();
+	if(lng.length > 0 && lat.length > 0){
+		var baseStaticMapUrl = $("#baseStaticMapUrl").val();
+		var location = lng + "," + lat;
+		var imgUrl = baseStaticMapUrl.replace("#{location}",location);
+		console.log(imgUrl);
+		$("#baiduMapImg").attr("src",imgUrl);
+	}
+});
+/**
+ * 添加推荐问题
+ */
+function selectPoint(){
+	var lng = $("#lng").val();
+	var lat = $("#lat").val();
+	layer.open({
+		type: 2,
+		resize:false,
+		title: "地图选点",
+		area: ['90%',"90%"],
+		content: contextRoot+"/community/gaode_view?lng=" + lng + "&lat=" + lat, //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
+		btn:['确定','取消'],
+		yes:function(index){
+			getPoint(index);
+		},
+		cancel:function(){}
+	});
+}
+function getPoint(index){
+	var lng = $("iframe").contents().find("#spanLng").val();
+	var lat = $("iframe").contents().find("#spanLat").val();
+	$("#lng").val(lng);
+	$("#lat").val(lat);
+	console.log(lng + "===" + lat);
+	var baseStaticMapUrl = $("#baseStaticMapUrl").val();
+	var location = lng + "," + lat;
+	var imgUrl = baseStaticMapUrl.replace("#{location}",location);
+	console.log(imgUrl);
+	$("#baiduMapImg").attr("src",imgUrl);
+	layer.close(index);
+}
+function selectBind(){
+	var id = $("#dataId").val();
+	layer.open({
+		type: 2,
+		resize:false,
+		title: "选择小区",
+		area: ['90%',"90%"],
+		content: contextRoot+"/village/village_view?id=" + id, //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
+		btn:['确定','取消'],
+		yes:function(index){
+			getBindVillage(index);
+		},
+		cancel:function(){}
+	});
+}
+function getBindVillage(index){
+	var lis = $("iframe").contents().find("#selectUl li");
+	if(lis.length <= 0){
+		layer.msg("必须选择小区");
+		layer.close(index);
+		return;
+	}
+	var cityId = $($("iframe").contents().find("#cityId")).val();
+	var city = $($("iframe").contents().find("#cityId")).find("option:selected").text();
+	var areaId = $($("iframe").contents().find("#areaId")).val();
+	var area = $($("iframe").contents().find("#areaId")).find("option:selected").text();
+	$("input[name='cityId']").val(cityId);
+	$("input[name='city']").val(city);
+	$("input[name='areaId']").val(areaId);
+	$("input[name='area']").val(area);
+	$("#bindVillageInput").empty();
+	$("#selectVillage").empty();
+	$.each(lis,function(index,obj){
+		var id = $(obj).attr("value");
+		var text = $(obj).text();
+		$("#bindVillageInput").append("<input type='text' name='bindVillage' value='" + id + "," + text + "'/>");
+		console.log(id + "========" + text);
+		if($("#selectVillage").text().length > 0){
+			$("#selectVillage").append("、");	
+		}
+		$("#selectVillage").append(text);
+	});
+	layer.close(index);
+}
+</script>
+</html>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.syswin.com.syswin.pipeline.db.repository.ConsumerRepository">
+    <resultMap id="BaseResultMap" type="com.syswin.com.syswin.pipeline.db.model.Consumer">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="user_id" jdbcType="VARCHAR" property="userId"/>
+        <result column="create_time" jdbcType="INTEGER" property="createTime"/>
+        <result column="curversion" jdbcType="VARCHAR" property="curversion"/>
+        <result column="pversion" jdbcType="VARCHAR" property="pversion"/>
+        <result column="role" jdbcType="VARCHAR" property="role"/>
+        <result column="pub_key" jdbcType="VARCHAR" property="pubkey"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+    id, user_id,pub_key,curversion,pversion,role, create_time
+  </sql>
+
+    <insert id="insert">
+        insert into consumer
+        ( user_id,
+        <if test="pubkey != null">
+            pub_key,
+        </if>
+        <if test="pversion != null">
+            pversion,
+        </if>
+        <if test="curversion != null">
+            curversion,
+        </if>
+        <if test="role != null">
+            role,
+        </if>
+        create_time
+        ) values (
+        #{userId},
+        <if test="pubkey != null">
+            #{pubkey},
+        </if>
+        <if test="pversion != null">
+            pversion,
+        </if>
+        <if test="curversion != null">
+            curversion,
+        </if>
+        <if test="role != null">
+            role,
+        </if>
+        #{createTime}
+        )
+    </insert>
+
+    <update id="update">
+        update consumer
+        <set>
+            <if test="pversion != null">
+                pversion = #{pversion},
+            </if>
+            <if test="curversion != null">
+                curversion = #{curversion},
+            </if>
+            <if test="role != null">
+                role = #{role},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=INTEGER},
+            </if>
+        </set>
+        where user_id = #{userId}
+    </update>
+
+    <select id="selectById" resultType="com.syswin.com.syswin.pipeline.db.model.Consumer">
+        select
+        <include refid="Base_Column_List"/>
+        from consumer where user_id = #{userId}
+    </select>
+
+</mapper>

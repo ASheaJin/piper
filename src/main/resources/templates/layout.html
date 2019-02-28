@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+	<div data-th-fragment="header">
+	 
+		<script th:src="@{/layui/jquery.min.js}"></script>
+		<script th:src="@{/layui/layui.js}"></script>
+		
+		<!-- 富文本编辑器 js引入-->
+	 	<script type="text/javascript" charset="utf-8" th:src="@{/ueditor/ueditor.config.js}"></script>
+	    <script type="text/javascript" charset="utf-8" th:src="@{/ueditor/ueditor.all.min.js}"> </script>
+	    <!--建议手动加在语言，避免在ie下有时因为加载语言失败导致编辑器加载失败-->
+	    <!--这里加载的语言文件会覆盖你在配置项目里添加的语言类型，比如你在配置项目里配置的是英文，这里加载的中文，那最后就是中文-->
+	    <script type="text/javascript" charset="utf-8" th:src="@{/ueditor/lang/zh-cn/zh-cn.js}"></script>
+	    
+		<script>
+			function getContent(editorId) {
+		        var arr = UE.getEditor(editorId).getContent();
+		        alert(arr);
+			}
+			
+			function setContent(editorId,content) {
+		        UE.getEditor(editorId).setContent( content);
+		        alert('内容设置完毕');
+		    }
+
+		
+			layui.use([ 'element', 'layer', 'form', 'laydate' ], function() {
+				var element = layui.element;
+				var layer = layui.layer;
+			    var form = layui.form;
+			    var laydate = layui.laydate;
+			});
+			
+			
+			function onFileChange (e, val) {
+		        let files = e.target.files || e.dataTransfer.files;
+		        if (!files.length) {
+		            return;
+		        };
+		        createImage(files, val);
+		    }
+			function createImage (file, val) {
+		        var self = this;
+		     
+		        $.get('http://qiniu.systoon.com/getToken.php', function(e) {
+		            var formData = new FormData();
+		            formData.append('token', e);
+		            formData.append('file', file[0]);
+		            $.ajax({
+		                url: 'http://upload.qiniu.com',
+		                type: 'POST',
+		                data: formData,
+		                async: false,
+		                cache: false,
+		                contentType: false,
+		                processData: false,
+		                success: function(e) {
+		                    var url = 'http://apr.qiniu.toon.mobi/' + e.key;
+		                    console.warn(url);
+		                    if (val === 'sponsorBannerUrl') {
+		                    	$("#sponsorBannerUrl").attr('src',url);
+		                    }else if(val == 'bannerUrl'){
+		                    	$("#bannerUrl").attr('src',url);
+		                    }
+		                    
+		                    self.logo = url;
+		                },
+		                error: function(e) {
+		                    alert('upload error' + e);
+		                }
+		            });
+		        }); 
+			}
+		</script>
+	</div>
+
+	<script th:src="@{/layui/jquery.min.js}"></script>
+	<script th:src="@{js.cookie.js}"></script>
+	<script >
+	$(document).ready(function(){ 
+		$.cookie('groupId', 'g_1449794601224297');
+	}); 
+	</script>
+</body>
+
+</html>

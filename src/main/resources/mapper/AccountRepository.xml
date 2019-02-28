@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.syswin.com.syswin.pipeline.db.repository.AccountRepository">
+    <resultMap id="BaseResultMap" type="com.syswin.com.syswin.pipeline.db.model.Account">
+        <id column="account_id" jdbcType="VARCHAR" property="accountId"/>
+        <result column="user_id" jdbcType="VARCHAR" property="userId"/>
+        <result column="balance" jdbcType="DECIMAL" property="balance"/>
+        <result column="create_time" jdbcType="INTEGER" property="createTime"/>
+        <result column="update_time" jdbcType="INTEGER" property="updateTime"/>
+    </resultMap>
+
+    <sql id="Base_Column_List" >
+      account_id,  user_id, balance, create_time, update_time
+  </sql>
+
+
+    <insert id="insert">
+        insert into account
+        (
+        account_id,
+        user_id,
+        balance,
+        create_time,
+        update_time
+        ) values (
+        #{accountId},
+        #{userId},
+        #{balance},
+        #{createTime},
+        #{updateTime}
+        )
+    </insert>
+
+    <update id="update" parameterType="com.syswin.com.syswin.pipeline.db.model.Account">
+        update account
+        <set >
+            <if test="balance != null" >
+                balance = #{balance,jdbcType=DECIMAL},
+            </if>
+        </set>
+        where account_id = #{accountId,jdbcType=BIGINT}
+        and update_time = #{updateTime}
+    </update>
+
+    <select id="select" resultType="com.syswin.com.syswin.pipeline.db.model.Account">
+        select
+        <include refid="Base_Column_List" />
+        from account
+    </select>
+
+    <select id="selectbyLimit" resultType="com.syswin.com.syswin.pipeline.db.model.Account">
+        select
+        <include refid="Base_Column_List" />
+        from account
+        <if test="end != 0">
+            limit #{start},#{end}
+        </if>
+    </select>
+
+    <select id="getCount" resultType="java.lang.Integer">
+        select
+        count(1)
+        from account
+    </select>
+
+    <select id="selectByUserId" resultType="com.syswin.com.syswin.pipeline.db.model.Account">
+        select
+        <include refid="Base_Column_List" />
+        from account  where user_id = #{userId}
+    </select>
+    <select id="selectByUserIdlike" resultType="com.syswin.com.syswin.pipeline.db.model.Account">
+        select
+        <include refid="Base_Column_List" />
+        from account  where 1=1
+        <if test="userId != ''">
+          and  user_id like CONCAT('%',#{userId},'%')
+        </if>
+        <if test="end != 0">
+        limit #{start},#{end}
+       </if>
+    </select>
+
+</mapper>
