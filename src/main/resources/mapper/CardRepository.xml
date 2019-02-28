@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.syswin.com.syswin.pipeline.db.repository.CardRepository">
-    <resultMap id="BaseResultMap" type="com.syswin.com.syswin.pipeline.db.model.Card">
+<mapper namespace="com.syswin.pipeline.db.repository.CardRepository">
+    <resultMap id="BaseResultMap" type="com.syswin.pipeline.db.model.Card">
         <id column="card_id" jdbcType="VARCHAR" property="cardId"/>
         <result column="user_id" jdbcType="VARCHAR" property="userId"/>
         <result column="card_no" jdbcType="VARCHAR" property="cardNo"/>
@@ -41,13 +41,13 @@
         where card_id = #{cardId,jdbcType=BIGINT}
     </update>
 
-    <select id="select" resultType="com.syswin.com.syswin.pipeline.db.model.Card">
+    <select id="select" resultType="com.syswin.pipeline.db.model.Card">
         select
         <include refid="Base_Column_List" />
         from card
     </select>
 
-    <select id="selectById" resultType="com.syswin.com.syswin.pipeline.db.model.Card">
+    <select id="selectById" resultType="com.syswin.pipeline.db.model.Card">
         select
         <include refid="Base_Column_List" />
         from card  where card_id = #{cardId,jdbcType=BIGINT}

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.syswin.com.syswin.pipeline.db.repository.BrowseRecordRepository">
-    <resultMap id="BaseResultMap" type="com.syswin.com.syswin.pipeline.db.model.BrowseRecord">
+<mapper namespace="com.syswin.pipeline.db.repository.BrowseRecordRepository">
+    <resultMap id="BaseResultMap" type="com.syswin.pipeline.db.model.BrowseRecord">
         <id column="browse_id" jdbcType="VARCHAR" property="browseId"/>
         <result column="user_id" jdbcType="VARCHAR" property="userId"/>
         <result column="fromtemail" jdbcType="VARCHAR" property="fromtemail"/>
@@ -67,7 +67,7 @@
         #{createTime}
         )
     </insert>
-    <update id="update" parameterType="com.syswin.com.syswin.pipeline.db.model.BrowseRecord" >
+    <update id="update" parameterType="com.syswin.pipeline.db.model.BrowseRecord" >
         update browse_record
         <set >
             <if test="userId != null" >
@@ -88,13 +88,13 @@
         </set>
         where browse_id = #{browseId,jdbcType=BIGINT}
     </update>
-    <select id="select" resultType="com.syswin.com.syswin.pipeline.db.model.BrowseRecord">
+    <select id="select" resultType="com.syswin.pipeline.db.model.BrowseRecord">
         select
         <include refid="Base_Column_List" />
         from browse_record
     </select>
 
-    <select id="selectByExample" parameterType="com.syswin.com.syswin.pipeline.db.model.BrowseRecordExample" resultMap="BaseResultMap">
+    <select id="selectByExample" parameterType="com.syswin.pipeline.db.model.BrowseRecordExample" resultMap="BaseResultMap">
         select
         <if test="distinct">
             distinct
@@ -109,7 +109,7 @@
             order by ${orderByClause}
         </if>
     </select>
-    <select id="countByExample" parameterType="com.syswin.com.syswin.pipeline.db.model.BrowseRecordExample" resultType="java.lang.Long">
+    <select id="countByExample" parameterType="com.syswin.pipeline.db.model.BrowseRecordExample" resultType="java.lang.Long">
         select count(*) from browse_record
         <if test="_parameter != null">
             <include refid="Example_Where_Clause" />

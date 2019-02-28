@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.syswin.com.syswin.pipeline.db.repository.TransactionRepository">
-    <resultMap id="BaseResultMap" type="com.syswin.com.syswin.pipeline.db.model.Transaction">
+<mapper namespace="com.syswin.pipeline.db.repository.TransactionRepository">
+    <resultMap id="BaseResultMap" type="com.syswin.pipeline.db.model.Transaction">
         <id column="transaction_id" jdbcType="VARCHAR" property="transactionId"/>
         <result column="user_id" jdbcType="VARCHAR" property="userId"/>
         <result column="money" jdbcType="DECIMAL" property="money"/>
@@ -39,24 +39,24 @@
     </update>
 
 
-    <select id="select" resultType="com.syswin.com.syswin.pipeline.db.model.Transaction">
+    <select id="select" resultType="com.syswin.pipeline.db.model.Transaction">
         select
         <include refid="Base_Column_List"/>
         from transaction_record
     </select>
-    <select id="selectById" resultType="com.syswin.com.syswin.pipeline.db.model.Transaction">
+    <select id="selectById" resultType="com.syswin.pipeline.db.model.Transaction">
         select
         <include refid="Base_Column_List"/>
         from transaction_record where user_id = #{userId}
     </select>
 
-    <select id="selectbyLimit" resultType="com.syswin.com.syswin.pipeline.db.model.Transaction">
+    <select id="selectbyLimit" resultType="com.syswin.pipeline.db.model.Transaction">
         select
         <include refid="Base_Column_List"/>
         from transaction_record limit #{start},#{end}
     </select>
 
-    <select id="selectByIdTypeTime" resultType="com.syswin.com.syswin.pipeline.db.model.Transaction">
+    <select id="selectByIdTypeTime" resultType="com.syswin.pipeline.db.model.Transaction">
         select
         <include refid="Base_Column_List"/>
         from transaction_record

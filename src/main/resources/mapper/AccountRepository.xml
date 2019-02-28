@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.syswin.com.syswin.pipeline.db.repository.AccountRepository">
-    <resultMap id="BaseResultMap" type="com.syswin.com.syswin.pipeline.db.model.Account">
+<mapper namespace="com.syswin.pipeline.db.repository.AccountRepository">
+    <resultMap id="BaseResultMap" type="com.syswin.pipeline.db.model.Account">
         <id column="account_id" jdbcType="VARCHAR" property="accountId"/>
         <result column="user_id" jdbcType="VARCHAR" property="userId"/>
         <result column="balance" jdbcType="DECIMAL" property="balance"/>
@@ -31,7 +31,7 @@
         )
     </insert>
 
-    <update id="update" parameterType="com.syswin.com.syswin.pipeline.db.model.Account">
+    <update id="update" parameterType="com.syswin.pipeline.db.model.Account">
         update account
         <set >
             <if test="balance != null" >
@@ -42,13 +42,13 @@
         and update_time = #{updateTime}
     </update>
 
-    <select id="select" resultType="com.syswin.com.syswin.pipeline.db.model.Account">
+    <select id="select" resultType="com.syswin.pipeline.db.model.Account">
         select
         <include refid="Base_Column_List" />
         from account
     </select>
 
-    <select id="selectbyLimit" resultType="com.syswin.com.syswin.pipeline.db.model.Account">
+    <select id="selectbyLimit" resultType="com.syswin.pipeline.db.model.Account">
         select
         <include refid="Base_Column_List" />
         from account
@@ -63,12 +63,12 @@
         from account
     </select>
 
-    <select id="selectByUserId" resultType="com.syswin.com.syswin.pipeline.db.model.Account">
+    <select id="selectByUserId" resultType="com.syswin.pipeline.db.model.Account">
         select
         <include refid="Base_Column_List" />
         from account  where user_id = #{userId}
     </select>
-    <select id="selectByUserIdlike" resultType="com.syswin.com.syswin.pipeline.db.model.Account">
+    <select id="selectByUserIdlike" resultType="com.syswin.pipeline.db.model.Account">
         select
         <include refid="Base_Column_List" />
         from account  where 1=1

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.syswin.com.syswin.pipeline.db.repository.UserlogRepository">
-    <resultMap id="BaseResultMap" type="com.syswin.com.syswin.pipeline.db.model.Userlog">
+<mapper namespace="com.syswin.pipeline.db.repository.UserlogRepository">
+    <resultMap id="BaseResultMap" type="com.syswin.pipeline.db.model.Userlog">
         <result column="user_id" jdbcType="VARCHAR" property="userId"/>
         <result column="request_data" jdbcType="VARCHAR" property="requestData"/>
         <result column="create_time" jdbcType="VARCHAR" property="createTime"/>
@@ -11,7 +11,7 @@
        user_id, request_data, create_time
     </sql>
 
-    <select id="selectByIdTime" resultType="com.syswin.com.syswin.pipeline.db.model.Userlog">
+    <select id="selectByIdTime" resultType="com.syswin.pipeline.db.model.Userlog">
         select
         <include refid="Base_Column_List"/>
         from server_logs
