@@ -19,7 +19,7 @@
 
 	<properties>
 		<syswin.temail.version>1.2.3</syswin.temail.version>
-		<syswin.vault.version>1.0.7</syswin.vault.version>
+		<syswin.vault.version>1.0.8</syswin.vault.version>
 	</properties>
 
 	<dependencies>
