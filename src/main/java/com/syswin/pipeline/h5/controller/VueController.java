@@ -16,8 +16,7 @@ public class VueController {
 
     @RequestMapping(value={
             "/web",
-            "/web/home",
-            "/web/manage-list"
+            "/web/home"
     })
     public String fowardRouter(){
         return "forward:/index.html";
