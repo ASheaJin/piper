@@ -154,26 +154,26 @@ public class AappMenusHandler implements EventHandler<MessageEvent> {
 		if (PermissionEnums.OrgPerson.name.equals(myRole)) {
 			appList.add(createApp(ICON_ACCOUNT_INFO, "我的出版社", URL_PIPER + H5_PUBLISHER_MANAGE + "?userId=" + userId));
 			appList.add(createApp(ICON_SUBSCRIBE_ADD, "去订阅", URL_PIPER + H5_SUBSCRIBE_ADD + "?userId=" + userId));
-			appList.add(createApp(ICON_SUBSCRIBE_LIST, "管理订阅", URL_PIPER + H5_SUBSCRIBE_LIST + "?userId=" + userId));
+			appList.add(createApp(ICON_SUBSCRIBE_LIST, "我的订阅列表", URL_PIPER + H5_SUBSCRIBE_LIST + "?userId=" + userId));
 			appList.add(createApp(ICON_SUBSCRIBE_LIST, "管理邮件群发", URL_PIPER + "/web?userId=" + userId));
 		}
 		if (PermissionEnums.OnlyOrg.name.equals(myRole)) {
 			appList.add(createApp(ICON_ACCOUNT_INFO, "创建出版社", URL_PIPER + H5_PUBLISHER_CREATE + "?userId=" + userId));
 			appList.add(createApp(ICON_SUBSCRIBE_ADD, "去订阅", URL_PIPER + H5_SUBSCRIBE_ADD + "?userId=" + userId));
-			appList.add(createApp(ICON_SUBSCRIBE_LIST, "管理订阅", URL_PIPER + H5_SUBSCRIBE_LIST + "?userId=" + userId));
+			appList.add(createApp(ICON_SUBSCRIBE_LIST, "我的订阅列表", URL_PIPER + H5_SUBSCRIBE_LIST + "?userId=" + userId));
 			appList.add(createApp(ICON_SUBSCRIBE_LIST, "管理邮件群发", URL_PIPER + "/web?userId=" + userId));
 		}
 		//个人管理者，订阅者
 		if (PermissionEnums.Person.name.equals(myRole)) {
 			appList.add(createApp(ICON_ACCOUNT_INFO, "我的出版社", URL_PIPER + H5_PUBLISHER_MANAGE + "?userId=" + userId));
 			appList.add(createApp(ICON_SUBSCRIBE_ADD, "去订阅", URL_PIPER + H5_SUBSCRIBE_ADD + "?userId=" + userId));
-			appList.add(createApp(ICON_SUBSCRIBE_LIST, "订阅管理", URL_PIPER + H5_SUBSCRIBE_LIST + "?userId=" + userId));
+			appList.add(createApp(ICON_SUBSCRIBE_LIST, "我的订阅列表", URL_PIPER + H5_SUBSCRIBE_LIST + "?userId=" + userId));
 		}
 		//游客，订阅者
 		if (PermissionEnums.Guest.name.equals(myRole)) {
 			appList.add(createApp(ICON_ACCOUNT_INFO, "创建出版社", URL_PIPER + H5_PUBLISHER_CREATE + "?userId=" + userId));
 			appList.add(createApp(ICON_SUBSCRIBE_ADD, "去订阅", URL_PIPER + H5_SUBSCRIBE_ADD + "?userId=" + userId));
-			appList.add(createApp(ICON_SUBSCRIBE_LIST, "订阅管理", URL_PIPER + H5_SUBSCRIBE_LIST + "?userId=" + userId));
+			appList.add(createApp(ICON_SUBSCRIBE_LIST, "我的订阅列表", URL_PIPER + H5_SUBSCRIBE_LIST + "?userId=" + userId));
 		}
 		return appList;
 	}
