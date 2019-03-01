@@ -26,7 +26,7 @@
     </select>
 
     <select id="selectPublisher" resultType="java.lang.Integer">
-        select count(1) from subengine.publisher
+        select count(1) from publisher
         where 1=1
         <if test="startTime != 0">
             and create_time > #{startTime}
