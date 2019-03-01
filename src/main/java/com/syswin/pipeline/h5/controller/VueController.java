@@ -18,7 +18,7 @@ public class VueController {
             "/web",
             "/web/home"
     })
-    public String fowardRouter(){
+    public String fowardRouter(HttpServletRequest req, HttpServletResponse resp){
         return "forward:/index.html";
     }
 

@@ -62,11 +62,11 @@ public class AdminController {
 
 				List<Publisher> publisherList = publisherService.getPubLisherByType(PublisherTypeEnums.organize);
 				try {
-					for (Publisher publisher : publisherList) {
-						//创建成功了，给用户推名片
-						sendMessegeService.sendCard(publisher.getPtemail(), u, "* " + publisher.getName());
-						sendMessegeService.sendTextmessage("恭喜成为组织管理员", u, 0, publisher.getPtemail());
-					}
+//					for (Publisher publisher : publisherList) {
+//						//创建成功了，给用户推名片
+//						sendMessegeService.sendCard(publisher.getPtemail(), u, "* " + publisher.getName());
+//						sendMessegeService.sendTextmessage("恭喜成为组织管理员", u, 0, publisher.getPtemail());
+//					}
 					sendMessegeService.sendTextmessage(u + "恭喜成为组织管理员", mulCreateParam.getUserId());
 					//回执创建完成消息
 				} catch (Exception e) {
