@@ -1,4 +1,4 @@
-var pipercontext ="";
+var pipercontext ="/piper";
 var defWidth = 1200 + "px";
 var defHeight = 674 + "px";
 $(document).ready(function(){
