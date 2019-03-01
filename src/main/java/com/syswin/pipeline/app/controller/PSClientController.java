@@ -85,21 +85,20 @@ public class PSClientController {
 	)
 	public String createPublicKey() {
 		String senderTemail = null;
-		for(int i=1;i<1001;i++) {
+		for (int i = 1; i < 2001; i++) {
 //			senderTemail="p."+(10000000+i)+"@systoontest.com";
-			senderTemail="p."+(10000000+i)+"@t.email";
-			String pub = psClientService.getTemailPublicKey(senderTemail);
-			if (StringUtils.isEmpty(pub)) {
-				pub = psClientService.registerPub(senderTemail);
-			}
+			senderTemail = "p." + (10000000 + i) + "@msgseal.com ";
+//			String pub = psClientService.getTemailPublicKey(senderTemail);
+			psClientService.registerPub(senderTemail);
 		}
+
 		return "success";
 	}
 
 
 	@PostMapping("sendOthermessage")
 	@ApiOperation(
-			value = "测试接口。发送消息"
+					value = "测试接口。发送消息"
 	)
 	public String sendOthermessage(@RequestBody PublishMessageParam message) {
 		String content = "{\"w\":540,\"h\":960,\"isOriginal\":0,\"suffix\":\".png\",\"url\":\"http:\\/\\/temail-test.cn-bj.ufileos.com\\/mediabank%2Fdd8da1b9f51444be842411fd79cbfd8a.zip\",\"size\":28419,\"pwd\":\"7B13B225-10BC-4141-87D9-FD1139FCCF52\"}";
@@ -112,10 +111,11 @@ public class PSClientController {
 	@ApiOperation(
 					value = "发送名片"
 	)
-	public void setCard(String temail,String to,String nick) {
+	public void setCard(String temail, String to, String nick) {
 
-		   sendMessegeService.sendCard(temail,to,nick);
+		sendMessegeService.sendCard(temail, to, nick);
 	}
+
 	@GetMapping("/loginuser")
 	@ApiOperation(
 					value = "登陆出版社监控"
@@ -139,7 +139,7 @@ public class PSClientController {
 
 	@GetMapping("/getOrg")
 	@ApiOperation(
-			value = "登陆出版社监控"
+					value = "登陆出版社监控"
 	)
 	public OrgOut getOrg(HttpServletRequest request, String temail) {
 		OrgOut orgOut = orgService.getOrgByVersion(temail, 0);
