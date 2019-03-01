@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -52,6 +53,7 @@ public class AappMenusHandler implements EventHandler<MessageEvent> {
 	private static final String ICON_SUBSCRIBE_LIST = "http://jco-app.cn/html/icon/sublist.png";
 	private static final String ICON_ACCOUNT_INFO = "http://jco-app.cn/html/icon/mine.png";
 
+	@Lazy
 	@Autowired
 	private PSClientService psClientService;
 
