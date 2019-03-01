@@ -67,7 +67,7 @@ public class AdminController {
 //						sendMessegeService.sendCard(publisher.getPtemail(), u, "* " + publisher.getName());
 //						sendMessegeService.sendTextmessage("恭喜成为组织管理员", u, 0, publisher.getPtemail());
 //					}
-					sendMessegeService.sendTextmessage(u + "恭喜成为组织管理员", mulCreateParam.getUserId());
+					sendMessegeService.sendTextmessage(u + "成为组织管理员", mulCreateParam.getUserId());
 					//回执创建完成消息
 				} catch (Exception e) {
 					logger.error("发送消息失败");
@@ -91,9 +91,9 @@ public class AdminController {
 			for (Publisher publisher : publisherList) {
 				//创建成功了，给用户推名片
 				sendMessegeService.sendCard(publisher.getPtemail(), adminParam.getTmail(), "* " + publisher.getName());
-				sendMessegeService.sendTextmessage("恭喜成为组织管理员", adminParam.getTmail(), 0, publisher.getPtemail());
+				sendMessegeService.sendTextmessage("成为组织管理员", adminParam.getTmail(), 0, publisher.getPtemail());
 			}
-			sendMessegeService.sendTextmessage(adminParam.getTmail() + "恭喜成为组织管理员", adminParam.getUserId());
+			sendMessegeService.sendTextmessage(adminParam.getTmail() + "成为组织管理员", adminParam.getUserId());
 			//回执创建完成消息
 			return new ResponseEntity();
 		}
