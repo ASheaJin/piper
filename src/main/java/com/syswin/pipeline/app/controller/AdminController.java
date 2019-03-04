@@ -73,6 +73,7 @@ public class AdminController {
 //						sendMessegeService.sendCard(publisher.getPtemail(), u, "* " + publisher.getName());
 //						sendMessegeService.sendTextmessage("恭喜成为组织管理员", u, 0, publisher.getPtemail());
 //					}
+					sendMessegeService.sendTextmessage(u + "成为组织管理员", u);
 					sendMessegeService.sendTextmessage(u + "成为组织管理员", mulCreateParam.getUserId());
 					//回执创建完成消息
 				} catch (Exception e) {
