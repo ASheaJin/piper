@@ -47,6 +47,9 @@ public class PiperSubscriptionService {
 		if (StringUtils.isNullOrEmpty(publishTemail) || StringUtils.isNullOrEmpty(userId)) {
 			return new SubResponseEntity("订阅邮箱不能为空");
 		}
+		if (StringUtils.isNullOrEmpty(psClientService.getTemailPublicKey(publishTemail))) {
+			return new SubResponseEntity("订阅邮箱不存在");
+		}
 		SubResponseEntity resp = subSubscriptionService.subscribe(userId, publishTemail, PublisherTypeEnums.person);
 
 		if (!resp.isSuc()) return resp;
@@ -72,9 +75,11 @@ public class PiperSubscriptionService {
 	 * @param userId
 	 * @param publishTemail
 	 */
-	public void unsubscribe(String userId, String publishTemail, PublisherTypeEnums ptype) {
-
-		subSubscriptionService.unsubscribe(userId, publishTemail, ptype);
+	public SubResponseEntity unsubscribe(String userId, String publishTemail, PublisherTypeEnums ptype) {
+		if (StringUtils.isNullOrEmpty(psClientService.getTemailPublicKey(publishTemail))) {
+			return new SubResponseEntity("订阅邮箱不存在");
+		}
+		return subSubscriptionService.unsubscribe(userId, publishTemail, ptype);
 	}
 
 	/**
@@ -96,6 +101,9 @@ public class PiperSubscriptionService {
 		SubResponseEntity resp = subSubscriptionService.subscribeList(userList, publiserId);
 		Publisher publisher = subPublisherService.getPubLisherById(publiserId);
 		for (String userId : userList) {
+			if (StringUtils.isNullOrEmpty(psClientService.getTemailPublicKey(userId))) {
+				continue;
+			}
 			if (!resp.isSuc()) return resp;
 			//判断是否自己订阅自己
 //			if (userId.equals(oweruserId)) {
@@ -124,6 +132,7 @@ public class PiperSubscriptionService {
 	}
 
 	public SubResponseEntity unsubscribeByOwnerId(String userId, String ownerId, Long publiserId, PublisherTypeEnums ptype) {
+
 		return subSubscriptionService.unsubscribeByOwnerId(userId, ownerId, ptype);
 	}
 

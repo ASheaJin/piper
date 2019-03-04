@@ -5,6 +5,7 @@ import com.syswin.pipeline.app.dto.MulCreateParam;
 import com.syswin.pipeline.app.dto.SearchParam;
 import com.syswin.pipeline.service.PiperSubscriptionService;
 import com.syswin.pipeline.service.bussiness.impl.SendMessegeService;
+import com.syswin.pipeline.service.ps.PSClientService;
 import com.syswin.pipeline.service.psserver.bean.ResponseEntity;
 import com.syswin.pipeline.utils.PatternUtils;
 import com.syswin.pipeline.utils.StringUtils;
@@ -39,6 +40,9 @@ public class AdminController {
 	PiperSubscriptionService subscriptionService;
 
 	@Autowired
+	PSClientService psClientService;
+
+	@Autowired
 	PublisherService publisherService;
 	@Autowired
 	SendMessegeService sendMessegeService;
@@ -56,7 +60,9 @@ public class AdminController {
 		List<String> userList = PatternUtils.tranStrstoList(mulCreateParam.getTmails());
 
 		for (String u : userList) {
-
+			if (StringUtils.isNullOrEmpty(psClientService.getTemailPublicKey(u))) {
+				return new ResponseEntity("500", u + "邮箱不存在");
+			}
 			SubResponseEntity subResponseEntity = adminService.createAdmin(mulCreateParam.getUserId(), u, false);
 			if (subResponseEntity.isSuc()) {
 

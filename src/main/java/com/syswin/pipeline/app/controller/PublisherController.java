@@ -87,6 +87,7 @@ public class PublisherController {
 	)
 	public ResponseEntity subscribe(@RequestBody SubParam sub) {
 
+
 		SubResponseEntity subResponseEntity = subscriptionService.subscribe(sub.getUserId(), sub.getPublishTemail());
 		if (subResponseEntity.isSuc()) {
 			return new ResponseEntity();
