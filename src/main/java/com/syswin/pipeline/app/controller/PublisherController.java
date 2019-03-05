@@ -162,8 +162,8 @@ public class PublisherController {
 					value = "获得我的出版社"
 	)
 	public ResponseEntity getMyOrgPublisher(@RequestBody SearchParam searchParam) {
-		int pageno = StringUtils.getInteger(searchParam.getPageNo()) == 0 ? 0 : StringUtils.getInteger(searchParam.getPageNo()) - 1;
-		int pagesize = StringUtils.getInteger(searchParam.getPageNo()) == 0 ? 20 : StringUtils.getInteger(searchParam.getPageSize());
+		int pageno = StringUtils.getInteger(searchParam.getPageNo()) == 0 ? 1 : StringUtils.getInteger(searchParam.getPageNo());
+		int pagesize = StringUtils.getInteger(searchParam.getPageSize()) == 0 ? 20 : StringUtils.getInteger(searchParam.getPageSize());
 
 		List<Publisher> publisherList = publisherService.getMyOrgPublisherList(searchParam.getKeyword(), searchParam.getUserId(), pageno, pagesize);
 		return new ResponseEntity(publisherList);

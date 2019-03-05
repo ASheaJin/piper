@@ -130,8 +130,8 @@ public class AdminController {
 					value = "获取所有管理员名单"
 	)
 	public ResponseEntity getAdminList(@RequestBody SearchParam adminParam) {
-		int pageno = StringUtils.getInteger(adminParam.getPageNo()) == 0 ? 0 : StringUtils.getInteger(adminParam.getPageNo()) - 1;
-		int pagesize = StringUtils.getInteger(adminParam.getPageNo()) == 0 ? 20 : StringUtils.getInteger(adminParam.getPageSize());
+		int pageno = StringUtils.getInteger(adminParam.getPageNo()) == 0 ? 1 : StringUtils.getInteger(adminParam.getPageNo());
+		int pagesize = StringUtils.getInteger(adminParam.getPageSize()) == 0 ? 20 : StringUtils.getInteger(adminParam.getPageSize());
 		List<Admin> sub = adminService.getAdmins(adminParam.getKeyword(), adminParam.getUserId(), pageno, pagesize);
 
 		return new ResponseEntity(sub);
