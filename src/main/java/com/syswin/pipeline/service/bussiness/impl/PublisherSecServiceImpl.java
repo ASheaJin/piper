@@ -146,33 +146,43 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 
 	public void monitorP(String userId, String ptemail, ChatMsg chatMsg) {
 
-		Publisher publisher = subPublisherService.getPubLisherByuserId(userId, PublisherTypeEnums.person);
+//		Publisher publisher = subPublisherService.getPubLisherByuserId(userId, PublisherTypeEnums.person);
 		// 为测试二用
 //		Publisher publisher = publisherRepository.selectByPtemail(ptemail);
 //		ptemail = publisher.getPtemail();
 		int body_type = chatMsg.getBody_type();
 		String orgContent = chatMsg.getContent();
-		//判断出版社是否存在
+		Publisher publisher = subPublisherService.getPubLisherByPublishTmail(ptemail, PublisherTypeEnums.person);
 		if (publisher == null) {
-
-			if(orgContent.contains("《订阅》")){
-				subSubscriptionService.subscribe(userId, publisher.getPtemail(),PublisherTypeEnums.person);
-			}
-			if(orgContent.contains("《取消订阅》")){
-				subSubscriptionService.unsubscribe(userId, publisher.getPtemail(),PublisherTypeEnums.person);
-			}
-			sendMessegeService.sendTextmessage(MessageUtil.sendCreateHelpTip("回复功能暂不支持"), userId, 1000, ptemail);
 			return;
 		}
 
-		if (publisher.getPtemail().equals(ptemail)) {
+		if (orgContent.contains("《订阅》")) {
+			subSubscriptionService.subscribe(userId, ptemail, PublisherTypeEnums.person);
+			return;
+		}
+		if (orgContent.contains("《取消订阅》")) {
+			subSubscriptionService.unsubscribe(userId, ptemail, PublisherTypeEnums.person);
+			return;
+		}
+
+
+		Subscription subscription = subSubscriptionService.getSub(userId, publisher.getPublisherId());
+		if (subscription == null) {
+			sendMessegeService.sendTextmessage("您尚未订阅该出版社 发送 《订阅》 订阅该出版社", userId, 0, publisher.getPtemail());
+
+		} else {
+//			sendMessegeService.sendTextmessage("您已订阅该出版社 发送 《取消订阅》 取消订阅该出版社", userId, 0, publisher.getPtemail());
+		}
+		//判断出版社是否存在
+		if (userId.equals(publisher.getUserId())) {
 			if (!filterset.contains(body_type)) {
 				sendMessegeService.sendTextmessage(MessageUtil.sendCreateHelpTip("请发送文件、语音、图片、视频"), userId, 1000, ptemail);
 				return;
 			}
 			dealpusharticle(publisher, body_type, orgContent, PublisherTypeEnums.person);
 		} else {
-			sendMessegeService.sendTextmessage("您的个人出版社邮箱为：" + publisher.getPtemail() + "  请在它里面发文章", userId, 1000, ptemail);
+			sendMessegeService.sendTextmessage(MessageUtil.sendCreateHelpTip("回复功能暂不支持"), userId, 1000, ptemail);
 		}
 
 
@@ -186,7 +196,7 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 		//判断发送格式
 		insertLog(userId, ptemail, body_type, body_type > 30 ? "非业务指令" : JSONObject.toJSONString(chatMsg));
 
-		if (body_type >90) {
+		if (body_type > 90) {
 			return;
 		}
 		if (ptemail.equals(from)) {
