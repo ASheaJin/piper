@@ -23,9 +23,9 @@ public class ChatMessageHandler {
 	private final static Logger logger = LoggerFactory.getLogger(ChatMessageHandler.class);
 
 	@Autowired
-	private AappMenusHandler aappMenusHandler;
+	private AMenusHandler aappMenusHandler;
 	@Autowired
-	private PappmenusHandler pappmenusHandler;
+	private PMenusHandler pappmenusHandler;
 	@Autowired
 	private CardHandler cardandler;
 

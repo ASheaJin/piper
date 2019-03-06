@@ -31,7 +31,7 @@ import java.util.UUID;
  * Created by 115477 on 2019/1/14.
  */
 @Component
-public class PappmenusHandler implements EventHandler<MessageEvent> {
+public class AMenusHandler implements EventHandler<MessageEvent> {
 
 	@Value("${url.piper}")
 	private String URL_PIPER;
@@ -42,7 +42,16 @@ public class PappmenusHandler implements EventHandler<MessageEvent> {
 	@Autowired
 	private PublisherService publisherService;
 
+	private static final String H5_PUBLISHER_CREATE = "/h5/publisher/create";
+	private static final String H5_PUBLISHER_MANAGE = "/h5/publisher/manage";
+	private static final String H5_SUBSCRIBE_ADD = "/h5/subcribe/add";
+	private static final String H5_SUBSCRIBE_LIST = "/h5/subcribe/list";
+	private static final String H5_ACCOUNT_INFO = "/h5/account/info";
+	private static final String H5_HELP_INFO = "/h5/help/info";
+	private static final String ICON_PUBLISHER_MANAGE = "http://jco-app.cn/html/icon/file.png";
+	private static final String ICON_SUBSCRIBE_ADD = "http://jco-app.cn/html/icon/tosub.png";
 	private static final String ICON_SUBSCRIBE_LIST = "http://jco-app.cn/html/icon/sublist.png";
+	private static final String ICON_ACCOUNT_INFO = "http://jco-app.cn/html/icon/mine.png";
 
 	@Lazy
 	@Autowired
@@ -59,7 +68,7 @@ public class PappmenusHandler implements EventHandler<MessageEvent> {
 
 	@Value("${app.pipeline.userId}")
 	private String from;
-	private final static Logger logger = LoggerFactory.getLogger(PappmenusHandler.class);
+	private final static Logger logger = LoggerFactory.getLogger(AMenusHandler.class);
 	/**
 	 * 输入板菜单的 bodyType
 	 */
@@ -73,13 +82,7 @@ public class PappmenusHandler implements EventHandler<MessageEvent> {
 			return;
 		}
 		Header header = event.getOriginHeader();
-		if (from.equals(header.getSender())) {
-			return;
-		}
-		Publisher publisher = publisherService.getPubLisherByPublishTmail(header.getSender(), null);
-
-		//如果该出版社
-		if ((publisher != null && publisher.getUserId().equals(header.getReceiver()))) {
+		if (!from.equals(header.getSender())) {
 			return;
 		}
 		String version = PermissionEnums.Guest.name;
@@ -97,7 +100,6 @@ public class PappmenusHandler implements EventHandler<MessageEvent> {
 			return;
 		}
 
-
 		List keyList = new ArrayList();
 		List valueList = new ArrayList();
 
@@ -107,14 +109,14 @@ public class PappmenusHandler implements EventHandler<MessageEvent> {
 		keyList.add("text");
 		valueList.add("请使用智能小助手");
 
-		keyList.add("features");
-		//判断当前用户是读者还是作者
-		valueList.add(appFeaturesList());
+//		keyList.add("features");
+//		//判断当前用户是读者还是作者
+//		valueList.add(appFeaturesList());
 
 		keyList.add("shortcuts");
 		//判断当前用户是读者还是作者
 		Map<String, Object> replyMsgObject = null;
-		valueList.add(appList(publisher.getPtype(), publisher.getUserId(), publisher.getPublisherId()));
+		valueList.add(appList(header.getReceiver()));
 
 		replyMsgObject = CollectionUtil.fastMap(keyList, valueList);
 		replyMsgObject.put("version", myVersion);
@@ -123,10 +125,9 @@ public class PappmenusHandler implements EventHandler<MessageEvent> {
 						UUID.randomUUID().toString(), replyMsgObject);
 		msg.setBody_type(GET_MESSAGE_INFO_FLAG);
 
-		psClientService.sendChatMessage(msg, header.getReceiver(), header.getReceiverPK(), header.getSender(), header.getSenderPK());
+		psClientService.sendChatMessage(msg, header.getReceiver(), header.getReceiverPK());
 	}
 
-	//加载默认按钮
 	private List<Map<String, Object>> appFeaturesList() {
 		List<Map<String, Object>> appList = new ArrayList<>();
 
@@ -145,13 +146,34 @@ public class PappmenusHandler implements EventHandler<MessageEvent> {
 //		return appList;
 //	}
 
-	private List<Map<String, Object>> appList(PublisherTypeEnums ptype, String userId, String publiserId) {
+	private List<Map<String, Object>> appList(String userId) {
 
 		List<Map<String, Object>> appList = new ArrayList<>();
 
 		//既是组织管理者，又是个人传输管理者
-		if (PublisherTypeEnums.organize.equals(ptype)) {
-			appList.add(createApp(ICON_SUBSCRIBE_LIST, "管理订阅人", URL_PIPER + "/web/home?userId=" + userId + "&publisherId=" + publiserId));
+		if (PermissionEnums.OrgPerson.name.equals(myRole)) {
+			appList.add(createApp(ICON_ACCOUNT_INFO, "我的出版社", URL_PIPER + H5_PUBLISHER_MANAGE + "?userId=" + userId));
+			appList.add(createApp(ICON_SUBSCRIBE_ADD, "去订阅", URL_PIPER + H5_SUBSCRIBE_ADD + "?userId=" + userId));
+			appList.add(createApp(ICON_SUBSCRIBE_LIST, "我的订阅列表", URL_PIPER + H5_SUBSCRIBE_LIST + "?userId=" + userId));
+			appList.add(createApp(ICON_SUBSCRIBE_LIST, "管理邮件群发", URL_PIPER + "/web?userId=" + userId));
+		}
+		if (PermissionEnums.OnlyOrg.name.equals(myRole)) {
+			appList.add(createApp(ICON_ACCOUNT_INFO, "创建出版社", URL_PIPER + H5_PUBLISHER_CREATE + "?userId=" + userId));
+			appList.add(createApp(ICON_SUBSCRIBE_ADD, "去订阅", URL_PIPER + H5_SUBSCRIBE_ADD + "?userId=" + userId));
+			appList.add(createApp(ICON_SUBSCRIBE_LIST, "我的订阅列表", URL_PIPER + H5_SUBSCRIBE_LIST + "?userId=" + userId));
+			appList.add(createApp(ICON_SUBSCRIBE_LIST, "管理邮件群发", URL_PIPER + "/web?userId=" + userId));
+		}
+		//个人管理者，订阅者
+		if (PermissionEnums.Person.name.equals(myRole)) {
+			appList.add(createApp(ICON_ACCOUNT_INFO, "我的出版社", URL_PIPER + H5_PUBLISHER_MANAGE + "?userId=" + userId));
+			appList.add(createApp(ICON_SUBSCRIBE_ADD, "去订阅", URL_PIPER + H5_SUBSCRIBE_ADD + "?userId=" + userId));
+			appList.add(createApp(ICON_SUBSCRIBE_LIST, "我的订阅列表", URL_PIPER + H5_SUBSCRIBE_LIST + "?userId=" + userId));
+		}
+		//游客，订阅者
+		if (PermissionEnums.Guest.name.equals(myRole)) {
+			appList.add(createApp(ICON_ACCOUNT_INFO, "创建出版社", URL_PIPER + H5_PUBLISHER_CREATE + "?userId=" + userId));
+			appList.add(createApp(ICON_SUBSCRIBE_ADD, "去订阅", URL_PIPER + H5_SUBSCRIBE_ADD + "?userId=" + userId));
+			appList.add(createApp(ICON_SUBSCRIBE_LIST, "我的订阅列表", URL_PIPER + H5_SUBSCRIBE_LIST + "?userId=" + userId));
 		}
 		return appList;
 	}
@@ -174,24 +196,25 @@ public class PappmenusHandler implements EventHandler<MessageEvent> {
 		Consumer consumer = consumerRepository.selectById(header.getReceiver());
 		if (consumer == null) {
 			consumer = new Consumer();
-			consumer.setPversion(version);
+			consumer.setCurversion(version);
 			consumer.setPubkey(header.getReceiverPK());
 			consumer.setUserId(header.getReceiver());
 			consumer.setRole(myRole);
 			consumerRepository.insert(consumer);
 		} else {
-			if (version.equals(consumer.getPversion()) && myRole.equals(consumer.getRole())) {
+			if (version.equals(consumer.getCurversion()) && myRole.equals(consumer.getRole())) {
 				return version;
 			}
 		}
+
 		return String.valueOf(Integer.parseInt(version) + 1);
 	}
 
 	private void updateUserLogVersion(String userId, String version) {
 		Consumer consumer = new Consumer();
+		consumer.setCurversion(version);
 		consumer.setUserId(userId);
 		consumer.setRole(myRole);
-		consumer.setPversion(version);
 		consumerRepository.update(consumer);
 	}
 

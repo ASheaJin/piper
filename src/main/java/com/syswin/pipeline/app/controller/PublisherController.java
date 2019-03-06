@@ -64,7 +64,7 @@ public class PublisherController {
 
 	@PostMapping("deleteOrg")
 	@ApiOperation(
-					value = "创建组织出版社"
+					value = "删除组织出版社"
 	)
 	public ResponseEntity deleteOrg(@RequestBody DeleteParam unSubParam) {
 
