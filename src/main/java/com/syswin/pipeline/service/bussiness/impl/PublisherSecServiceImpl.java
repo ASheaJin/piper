@@ -167,7 +167,7 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 			return;
 		}
 		if (orgContent.contains("《取消订阅》")) {
-			piperSubscriptionService.unsubscribe(userId, ptemail);
+			piperSubscriptionService.unsubscribe(userId, publisher.getPublisherId());
 			return;
 		}
 
@@ -177,7 +177,7 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 			sendMessegeService.sendTextmessage("您尚未订阅该出版社 发送 《订阅》 订阅该出版社", userId, 0, publisher.getPtemail());
 
 		} else {
-//			sendMessegeService.sendTextmessage("您已订阅该出版社 发送 《取消订阅》 取消订阅该出版社", userId, 0, publisher.getPtemail());
+			sendMessegeService.sendTextmessage("您已订阅该出版社 发送 《取消订阅》 取消订阅该出版社", userId, 0, publisher.getPtemail());
 		}
 		//判断出版社是否存在
 		if (userId.equals(publisher.getUserId())) {
