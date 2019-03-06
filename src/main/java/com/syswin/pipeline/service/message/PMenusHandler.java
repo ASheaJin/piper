@@ -86,9 +86,8 @@ public class PMenusHandler implements EventHandler<MessageEvent> {
 		}
 		myRole = getPermission(header);
 		Publisher publisher = publisherService.getPubLisherByPublishTmail(header.getSender(), null);
-		//发送提醒消息
 
-		//如果该出版社
+		//如果不是出版社
 		if (publisher == null) {
 			return;
 		}
