@@ -4,6 +4,7 @@ import com.lmax.disruptor.EventHandler;
 import com.syswin.pipeline.db.model.Consumer;
 import com.syswin.pipeline.db.repository.ConsumerRepository;
 import com.syswin.pipeline.enums.PermissionEnums;
+import com.syswin.pipeline.service.bussiness.impl.SendMessegeService;
 import com.syswin.pipeline.service.ps.ChatMsg;
 import com.syswin.pipeline.service.ps.PSClientService;
 import com.syswin.pipeline.service.ps.util.CollectionUtil;
@@ -11,8 +12,10 @@ import com.syswin.pipeline.service.ps.util.FastJsonUtil;
 import com.syswin.pipeline.utils.PermissionUtil;
 import com.syswin.sub.api.AdminService;
 import com.syswin.sub.api.PublisherService;
+import com.syswin.sub.api.SubscriptionService;
 import com.syswin.sub.api.db.model.Admin;
 import com.syswin.sub.api.db.model.Publisher;
+import com.syswin.sub.api.db.model.Subscription;
 import com.syswin.sub.api.enums.PublisherTypeEnums;
 import com.syswin.temail.ps.client.Header;
 import org.slf4j.Logger;
@@ -43,13 +46,18 @@ public class PMenusHandler implements EventHandler<MessageEvent> {
 	private PublisherService publisherService;
 
 	private static final String ICON_SUBSCRIBE_LIST = "http://jco-app.cn/html/icon/sublist.png";
-
+	@Lazy
+	@Autowired
+	private SendMessegeService sendMessegeService;
 	@Lazy
 	@Autowired
 	private PSClientService psClientService;
 
 	@Autowired
 	ConsumerRepository consumerRepository;
+
+	@Autowired
+	SubscriptionService subSubscriptionService;
 	/**
 	 * 菜单的版本判断。
 	 * 对999消息判断version，如果version与此值相等，则不处理。
@@ -76,10 +84,12 @@ public class PMenusHandler implements EventHandler<MessageEvent> {
 		if (from.equals(header.getSender())) {
 			return;
 		}
+		myRole = getPermission(header);
 		Publisher publisher = publisherService.getPubLisherByPublishTmail(header.getSender(), null);
+		//发送提醒消息
 
 		//如果该出版社
-		if ((publisher != null && publisher.getUserId().equals(header.getReceiver()))) {
+		if (publisher == null) {
 			return;
 		}
 		String version = PermissionEnums.Guest.name;
@@ -90,13 +100,13 @@ public class PMenusHandler implements EventHandler<MessageEvent> {
 		} catch (Exception e) {
 			logger.info("处理消息中的version字段失败", e);
 		}
-		myRole = getPermission(header);
+
 		String myVersion = getUserLogVersion(header, version);
 		if (version.equals(myVersion)) {
 			//版本号相同，不做加载
 			return;
 		}
-
+		sendTipsMessage(publisher, header.getReceiver());
 
 		List keyList = new ArrayList();
 		List valueList = new ArrayList();
@@ -145,6 +155,35 @@ public class PMenusHandler implements EventHandler<MessageEvent> {
 //		return appList;
 //	}
 
+	void sendTipsMessage(Publisher publisher, String userId) {
+		if (publisher.getPtype().equals(PublisherTypeEnums.organize)) {
+
+			if (userId.equals(publisher.getUserId())) {
+				sendMessegeService.sendTextmessage("您是 该出版社管理者 您可以在此向所有订阅者发消息、文件、图片等", userId);
+			} else {
+				Subscription subscription = subSubscriptionService.getSub(userId, publisher.getPublisherId());
+				if (subscription == null) {
+					sendMessegeService.sendTextmessage("您尚未订阅该组织邮件组 您可联系管理员加入", userId);
+
+				} else {
+					sendMessegeService.sendTextmessage("邮件组管理员在此给您发消息", userId);
+				}
+			}
+		} else {
+			if (userId.equals(publisher.getUserId())) {
+				sendMessegeService.sendTextmessage("您是 该出版社管理者 您可以在此向所有订阅者发消息、文件、图片等", userId);
+			} else {
+				Subscription subscription = subSubscriptionService.getSub(userId, publisher.getPublisherId());
+				if (subscription == null) {
+					sendMessegeService.sendTextmessage("您尚未订阅该出版社 发送 《订阅》 订阅该出版社", userId);
+
+				} else {
+					sendMessegeService.sendTextmessage("您已订阅该出版社 发送 《取消订阅》 取消订阅该出版社", userId);
+				}
+			}
+		}
+	}
+
 	private List<Map<String, Object>> appList(PublisherTypeEnums ptype, String userId, String publiserId) {
 
 		List<Map<String, Object>> appList = new ArrayList<>();
@@ -153,6 +192,8 @@ public class PMenusHandler implements EventHandler<MessageEvent> {
 		if (PublisherTypeEnums.organize.equals(ptype)) {
 			appList.add(createApp(ICON_SUBSCRIBE_LIST, "管理订阅人", URL_PIPER + "/web/home?userId=" + userId + "&publisherId=" + publiserId));
 		}
+		//既是组织管理者，又是个人出版社管理者
+
 		return appList;
 	}
 

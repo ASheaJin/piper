@@ -154,6 +154,13 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 		String orgContent = chatMsg.getContent();
 		//判断出版社是否存在
 		if (publisher == null) {
+
+			if(orgContent.contains("《订阅》")){
+				subSubscriptionService.subscribe(userId, publisher.getPtemail(),PublisherTypeEnums.person);
+			}
+			if(orgContent.contains("《取消订阅》")){
+				subSubscriptionService.unsubscribe(userId, publisher.getPtemail(),PublisherTypeEnums.person);
+			}
 			sendMessegeService.sendTextmessage(MessageUtil.sendCreateHelpTip("回复功能暂不支持"), userId, 1000, ptemail);
 			return;
 		}
@@ -172,7 +179,7 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 	}
 
 	//处理组织消息
-	public void monitorORG(String userId, String ptemail, ChatMsg chatMsg) {
+	public void monitor(String userId, String ptemail, ChatMsg chatMsg) {
 		String orgContent = chatMsg.getContent();
 		int body_type = chatMsg.getBody_type();
 
@@ -185,6 +192,7 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 		if (ptemail.equals(from)) {
 			return;
 		}
+
 		Publisher publisher = subPublisherService.getPubLisherByPublishTmail(ptemail, PublisherTypeEnums.organize);
 
 		//判断该出版社是组织出版社还是个人出版社

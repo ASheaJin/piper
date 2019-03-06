@@ -18,7 +18,7 @@ public class BusinessHandler implements EventHandler<MessageEvent> {
 	@Override
 	public void onEvent(MessageEvent event, long sequence, boolean endOfBatch) throws Exception {
 		//会话式应用处理
-		publisherSecService.monitorORG(event.getOriginHeader().getReceiver(), event.getOriginHeader().getSender(), event.getChatMsg());
+		publisherSecService.monitor(event.getOriginHeader().getReceiver(), event.getOriginHeader().getSender(), event.getChatMsg());
 
 	}
 

@@ -23,9 +23,9 @@ public class ChatMessageHandler {
 	private final static Logger logger = LoggerFactory.getLogger(ChatMessageHandler.class);
 
 	@Autowired
-	private AMenusHandler aappMenusHandler;
+	private AMenusHandler aMenusHandler;
 	@Autowired
-	private PMenusHandler pappmenusHandler;
+	private PMenusHandler pMenusHandler;
 	@Autowired
 	private CardHandler cardandler;
 
@@ -37,8 +37,8 @@ public class ChatMessageHandler {
 
 	@PostConstruct
 	public void init() {
-		disruptor.handleEventsWith(aappMenusHandler);
-		disruptor.handleEventsWith(pappmenusHandler);
+		disruptor.handleEventsWith(aMenusHandler);
+		disruptor.handleEventsWith(pMenusHandler);
 		disruptor.handleEventsWith(cardandler);
 		disruptor.handleEventsWith(businessHandler);
 

@@ -4,6 +4,8 @@ import com.lmax.disruptor.EventHandler;
 import com.syswin.pipeline.db.model.Consumer;
 import com.syswin.pipeline.db.repository.ConsumerRepository;
 import com.syswin.pipeline.enums.PermissionEnums;
+import com.syswin.pipeline.service.ConsumerService;
+import com.syswin.pipeline.service.bussiness.impl.SendMessegeService;
 import com.syswin.pipeline.service.ps.ChatMsg;
 import com.syswin.pipeline.service.ps.PSClientService;
 import com.syswin.pipeline.service.ps.util.CollectionUtil;
@@ -33,32 +35,24 @@ import java.util.UUID;
 @Component
 public class AMenusHandler implements EventHandler<MessageEvent> {
 
-	@Value("${url.piper}")
-	private String URL_PIPER;
-
-	@Autowired
-	private AdminService adminService;
-
-	@Autowired
-	private PublisherService publisherService;
-
 	private static final String H5_PUBLISHER_CREATE = "/h5/publisher/create";
 	private static final String H5_PUBLISHER_MANAGE = "/h5/publisher/manage";
 	private static final String H5_SUBSCRIBE_ADD = "/h5/subcribe/add";
 	private static final String H5_SUBSCRIBE_LIST = "/h5/subcribe/list";
-	private static final String H5_ACCOUNT_INFO = "/h5/account/info";
-	private static final String H5_HELP_INFO = "/h5/help/info";
-	private static final String ICON_PUBLISHER_MANAGE = "http://jco-app.cn/html/icon/file.png";
 	private static final String ICON_SUBSCRIBE_ADD = "http://jco-app.cn/html/icon/tosub.png";
 	private static final String ICON_SUBSCRIBE_LIST = "http://jco-app.cn/html/icon/sublist.png";
 	private static final String ICON_ACCOUNT_INFO = "http://jco-app.cn/html/icon/mine.png";
 
+	@Value("${url.piper}")
+	private String URL_PIPER;
+	@Autowired
+	ConsumerService consumerService;
+	@Lazy
+	@Autowired
+	private SendMessegeService sendMessegeService;
 	@Lazy
 	@Autowired
 	private PSClientService psClientService;
-
-	@Autowired
-	ConsumerRepository consumerRepository;
 	/**
 	 * 菜单的版本判断。
 	 * 对999消息判断version，如果version与此值相等，则不处理。
@@ -93,8 +87,8 @@ public class AMenusHandler implements EventHandler<MessageEvent> {
 		} catch (Exception e) {
 			logger.info("处理消息中的version字段失败", e);
 		}
-		myRole = getPermission(header);
-		String myVersion = getUserLogVersion(header, version);
+		myRole = consumerService.getPermission(header);
+		String myVersion = consumerService.getUserLogVersion(header, version, myRole);
 		if (version.equals(myVersion)) {
 			//版本号相同，不做加载
 			return;
@@ -120,7 +114,7 @@ public class AMenusHandler implements EventHandler<MessageEvent> {
 
 		replyMsgObject = CollectionUtil.fastMap(keyList, valueList);
 		replyMsgObject.put("version", myVersion);
-		updateUserLogVersion(header.getReceiver(), myVersion);
+		consumerService.updateUserLogVersion(header.getReceiver(), myVersion, myRole);
 		ChatMsg msg = new ChatMsg(header.getSender(), header.getReceiver(),
 						UUID.randomUUID().toString(), replyMsgObject);
 		msg.setBody_type(GET_MESSAGE_INFO_FLAG);
@@ -137,43 +131,40 @@ public class AMenusHandler implements EventHandler<MessageEvent> {
 		return appList;
 	}
 
-//	private List<Map<String, Object>> appHelp() {
-//
-//		List<Map<String, Object>> appList = new ArrayList<>();
-//
-//		appList.add(createApp(ICON_ACCOUNT_INFO, "帮助", URL_PIPER + H5_HELP_INFO));
-//
-//		return appList;
-//	}
-
 	private List<Map<String, Object>> appList(String userId) {
 
 		List<Map<String, Object>> appList = new ArrayList<>();
 
-		//既是组织管理者，又是个人传输管理者
+		//既是组织管理者，又是个人出版社管理者
 		if (PermissionEnums.OrgPerson.name.equals(myRole)) {
-			appList.add(createApp(ICON_ACCOUNT_INFO, "我的出版社", URL_PIPER + H5_PUBLISHER_MANAGE + "?userId=" + userId));
+			appList.add(createApp(ICON_ACCOUNT_INFO, "我的个人出版社", URL_PIPER + H5_PUBLISHER_MANAGE + "?userId=" + userId));
 			appList.add(createApp(ICON_SUBSCRIBE_ADD, "去订阅", URL_PIPER + H5_SUBSCRIBE_ADD + "?userId=" + userId));
 			appList.add(createApp(ICON_SUBSCRIBE_LIST, "我的订阅列表", URL_PIPER + H5_SUBSCRIBE_LIST + "?userId=" + userId));
 			appList.add(createApp(ICON_SUBSCRIBE_LIST, "管理邮件群发", URL_PIPER + "/web?userId=" + userId));
+			sendMessegeService.sendTextmessage("您的身份是 邮件组管理者 和 个人出版社管理者 您可以在a.piper小助手中管理个人出版社、订阅出版社、管理我的订阅、管理邮件组",userId);
 		}
 		if (PermissionEnums.OnlyOrg.name.equals(myRole)) {
-			appList.add(createApp(ICON_ACCOUNT_INFO, "创建出版社", URL_PIPER + H5_PUBLISHER_CREATE + "?userId=" + userId));
+			appList.add(createApp(ICON_ACCOUNT_INFO, "创建个人出版社", URL_PIPER + H5_PUBLISHER_CREATE + "?userId=" + userId));
 			appList.add(createApp(ICON_SUBSCRIBE_ADD, "去订阅", URL_PIPER + H5_SUBSCRIBE_ADD + "?userId=" + userId));
 			appList.add(createApp(ICON_SUBSCRIBE_LIST, "我的订阅列表", URL_PIPER + H5_SUBSCRIBE_LIST + "?userId=" + userId));
 			appList.add(createApp(ICON_SUBSCRIBE_LIST, "管理邮件群发", URL_PIPER + "/web?userId=" + userId));
+			sendMessegeService.sendTextmessage("您的身份是 邮件组管理者 ， 您可以在a.piper小助手中创建个人出版社、订阅出版社、管理我的订阅、管理邮件组",userId);
 		}
 		//个人管理者，订阅者
 		if (PermissionEnums.Person.name.equals(myRole)) {
 			appList.add(createApp(ICON_ACCOUNT_INFO, "我的出版社", URL_PIPER + H5_PUBLISHER_MANAGE + "?userId=" + userId));
 			appList.add(createApp(ICON_SUBSCRIBE_ADD, "去订阅", URL_PIPER + H5_SUBSCRIBE_ADD + "?userId=" + userId));
 			appList.add(createApp(ICON_SUBSCRIBE_LIST, "我的订阅列表", URL_PIPER + H5_SUBSCRIBE_LIST + "?userId=" + userId));
+			sendMessegeService.sendTextmessage("您的身份是 个人出版社管理者 ， 您可以在a.piper小助手中管理个人出版社、订阅出版社、管理我的订阅",userId);
+
 		}
 		//游客，订阅者
 		if (PermissionEnums.Guest.name.equals(myRole)) {
 			appList.add(createApp(ICON_ACCOUNT_INFO, "创建出版社", URL_PIPER + H5_PUBLISHER_CREATE + "?userId=" + userId));
 			appList.add(createApp(ICON_SUBSCRIBE_ADD, "去订阅", URL_PIPER + H5_SUBSCRIBE_ADD + "?userId=" + userId));
 			appList.add(createApp(ICON_SUBSCRIBE_LIST, "我的订阅列表", URL_PIPER + H5_SUBSCRIBE_LIST + "?userId=" + userId));
+			sendMessegeService.sendTextmessage("您的身份是 游客 ， 您可以在a.piper小助手中创建个人出版社、订阅出版社、管理我的订阅",userId);
+
 		}
 		return appList;
 	}
@@ -192,43 +183,5 @@ public class AMenusHandler implements EventHandler<MessageEvent> {
 //		return CollectionUtil.fastMap(keys1, app11);
 //	}
 
-	private String getUserLogVersion(Header header, String version) {
-		Consumer consumer = consumerRepository.selectById(header.getReceiver());
-		if (consumer == null) {
-			consumer = new Consumer();
-			consumer.setCurversion(version);
-			consumer.setPubkey(header.getReceiverPK());
-			consumer.setUserId(header.getReceiver());
-			consumer.setRole(myRole);
-			consumerRepository.insert(consumer);
-		} else {
-			if (version.equals(consumer.getCurversion()) && myRole.equals(consumer.getRole())) {
-				return version;
-			}
-		}
 
-		return String.valueOf(Integer.parseInt(version) + 1);
-	}
-
-	private void updateUserLogVersion(String userId, String version) {
-		Consumer consumer = new Consumer();
-		consumer.setCurversion(version);
-		consumer.setUserId(userId);
-		consumer.setRole(myRole);
-		consumerRepository.update(consumer);
-	}
-
-	private String getPermission(Header header) {
-		Publisher publisher = publisherService.getPubLisherByuserId(header.getReceiver(), PublisherTypeEnums.person);
-		//判断version字段，是否需要发送菜单
-		//不是个人出版社
-		int isPerson = publisher != null ? 1 : 0;
-		Admin admin = adminService.getAdmin(header.getReceiver());
-		//判断是不是组织出版社
-		int isOrg = admin != null ? 1 : 0;
-
-		String per = "00" + String.valueOf(isOrg) + String.valueOf(isPerson);
-
-		return PermissionUtil.getMyVersion(per);
-	}
 }
