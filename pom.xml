@@ -71,6 +71,10 @@
 			<artifactId>fastjson</artifactId>
 			<version>1.2.47</version>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
 		<!-- swagger-ui所需依赖包 -->
 		<dependency>
 			<groupId>io.springfox</groupId>
