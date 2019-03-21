@@ -132,8 +132,8 @@ public class PSClientController {
 	@ApiOperation(
 					value = "批量发名片"
 	)
-	public ResponseEntity sendCards(@RequestBody PsSubOrgListParam subList) {
-		Publisher publisher = subPublisherService.getPubLisherById(subList.getPublisherId());
+	public ResponseEntity sendCards(@RequestBody PsSubOrgListParam modify) {
+		Publisher publisher = subPublisherService.getPubLisherById(modify.getPublisherId());
 		if (publisher == null){
 			return new ResponseEntity("500","该出版社不存在");
 		}
@@ -144,9 +144,9 @@ public class PSClientController {
 			}
 			//判断是否自己订阅自己
 			if (userId.equals(publisher.getUserId())) {
-				sendMessegeService.sendCard(publisher.getPtemail(), userId, "* " + publisher.getName());
+				sendMessegeService.sendCard(publisher.getPtemail(), userId, "* " + modify.getName(),modify.getIconUrl());
 			} else {
-				sendMessegeService.sendCard(publisher.getPtemail(), userId, publisher.getName());
+				sendMessegeService.sendCard(publisher.getPtemail(), userId, modify.getName(),modify.getIconUrl());
 			}
 
 		}

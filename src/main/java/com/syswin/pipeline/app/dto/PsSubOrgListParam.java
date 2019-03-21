@@ -8,5 +8,10 @@ import lombok.Data;
  */
 @Data
 public class PsSubOrgListParam {
+	//出版社Id
 	private String publisherId;
+	//要改的出版社名字
+	private String name;
+	//要改的出版社名字
+	private String iconUrl;
 }
