@@ -20,7 +20,11 @@
 		</Async>
 	</appenders>
 	<loggers>
-		<root level="ERROR">
+		<!-- Druid 日志配置 -->
+		<Logger name="com.alibaba.druid" level="warn" additivity="false">
+			<AppenderRef ref="Async"/>
+		</Logger>
+		<root level="INFO">
 			<appender-ref ref="CONSOLE"/>
 			<appender-ref ref="Async"/>
 		</root>
