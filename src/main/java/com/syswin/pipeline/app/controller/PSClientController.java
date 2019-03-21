@@ -45,7 +45,7 @@ public class PSClientController {
 	private IOrgService orgService;
 
 	@Autowired
-	PiperSubscriptionService subscriptionService;
+	com.syswin.sub.api.SubscriptionService scriptionService;
 
 	@Autowired
 	private com.syswin.sub.api.PublisherService subPublisherService;
@@ -134,19 +134,19 @@ public class PSClientController {
 	)
 	public ResponseEntity sendCards(@RequestBody PsSubOrgListParam modify) {
 		Publisher publisher = subPublisherService.getPubLisherById(modify.getPublisherId());
-		if (publisher == null){
-			return new ResponseEntity("500","该出版社不存在");
+		if (publisher == null) {
+			return new ResponseEntity("500", "该出版社不存在");
 		}
-		List<String> userList =subscriptionService.getSubscriber(publisher.getPtemail());
+		List<String> userList = scriptionService.getSubscribers(publisher.getPtemail(), null);
 		for (String userId : userList) {
 			if (com.syswin.pipeline.utils.StringUtils.isNullOrEmpty(psClientService.getTemailPublicKey(userId))) {
 				continue;
 			}
 			//判断是否自己订阅自己
 			if (userId.equals(publisher.getUserId())) {
-				sendMessegeService.sendCard(publisher.getPtemail(), userId, "* " + modify.getName(),modify.getIconUrl());
+				sendMessegeService.sendCard(publisher.getPtemail(), userId, "* " + modify.getName(), modify.getIconUrl());
 			} else {
-				sendMessegeService.sendCard(publisher.getPtemail(), userId, modify.getName(),modify.getIconUrl());
+				sendMessegeService.sendCard(publisher.getPtemail(), userId, modify.getName(), modify.getIconUrl());
 			}
 
 		}
