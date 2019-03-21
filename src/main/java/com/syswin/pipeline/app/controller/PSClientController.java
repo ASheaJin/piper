@@ -1,6 +1,9 @@
 package com.syswin.pipeline.app.controller;
 
+import com.syswin.pipeline.app.dto.PsSubOrgListParam;
 import com.syswin.pipeline.app.dto.PublishMessageParam;
+import com.syswin.pipeline.app.dto.SubOrgListParam;
+import com.syswin.pipeline.service.PiperSubscriptionService;
 import com.syswin.pipeline.service.bussiness.impl.SendMessegeService;
 import com.syswin.pipeline.service.org.IOrgService;
 import com.syswin.pipeline.service.org.OrgOut;
@@ -8,6 +11,9 @@ import com.syswin.pipeline.service.ps.ChatMsg;
 import com.syswin.pipeline.service.ps.PSClientService;
 import com.syswin.pipeline.service.ps.PubKey;
 import com.syswin.pipeline.service.psserver.bean.ResponseEntity;
+import com.syswin.pipeline.utils.PatternUtils;
+import com.syswin.sub.api.db.model.Publisher;
+import com.syswin.sub.api.response.SubResponseEntity;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -17,6 +23,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * Created by 115477 on 2018/12/18.
@@ -37,6 +44,11 @@ public class PSClientController {
 	@Autowired
 	private IOrgService orgService;
 
+	@Autowired
+	PiperSubscriptionService subscriptionService;
+
+	@Autowired
+	private com.syswin.sub.api.PublisherService subPublisherService;
 
 	@PostMapping("sendMsg")
 	@ApiOperation(
@@ -114,6 +126,32 @@ public class PSClientController {
 	public void setCard(String temail, String to, String nick) {
 
 		sendMessegeService.sendCard(temail, to, nick);
+	}
+
+	@PostMapping("sendCards")
+	@ApiOperation(
+					value = "批量发名片"
+	)
+	public ResponseEntity sendCards(@RequestBody PsSubOrgListParam subList) {
+		Publisher publisher = subPublisherService.getPubLisherById(subList.getPublisherId());
+		if (publisher == null){
+			return new ResponseEntity("500","该出版社不存在");
+		}
+		List<String> userList =subscriptionService.getSubscriber(publisher.getPtemail());
+		for (String userId : userList) {
+			if (com.syswin.pipeline.utils.StringUtils.isNullOrEmpty(psClientService.getTemailPublicKey(userId))) {
+				continue;
+			}
+			//判断是否自己订阅自己
+			if (userId.equals(publisher.getUserId())) {
+				sendMessegeService.sendCard(publisher.getPtemail(), userId, "* " + publisher.getName());
+			} else {
+				sendMessegeService.sendCard(publisher.getPtemail(), userId, publisher.getName());
+			}
+
+		}
+		return new ResponseEntity();
+
 	}
 
 	@GetMapping("/loginuser")

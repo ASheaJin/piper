@@ -216,11 +216,10 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 			return;
 		}
 
-		Admin admin = adminService.getAdmin(userId);
-		if (admin != null) {
+		if (userId.equals(publisher.getUserId())) {
 			dealpusharticle(publisher, body_type, orgContent, PublisherTypeEnums.organize);
 		} else {
-			sendMessegeService.sendTextmessage(MessageUtil.sendCreateHelpTip("只有组织管理者有权限操作"), userId, 1000, ptemail);
+			sendMessegeService.sendTextmessage(MessageUtil.sendCreateHelpTip("只有创建者有权限操作"), userId, 1000, ptemail);
 		}
 
 	}

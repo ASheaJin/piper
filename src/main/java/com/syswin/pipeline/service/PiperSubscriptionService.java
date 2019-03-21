@@ -106,16 +106,16 @@ public class PiperSubscriptionService {
 			}
 			if (!resp.isSuc()) return resp;
 			//判断是否自己订阅自己
-//			if (userId.equals(oweruserId)) {
-//				sendMessegeService.sendCard(publisher.getPtemail(), userId, "* " + publisher.getName());
-//			} else {
-//				sendMessegeService.sendCard(publisher.getPtemail(), userId, publisher.getName());
-//			}
-			if (admin != null) {
+			if (userId.equals(publisher.getUserId())) {
 				sendMessegeService.sendCard(publisher.getPtemail(), userId, "* " + publisher.getName());
 			} else {
 				sendMessegeService.sendCard(publisher.getPtemail(), userId, publisher.getName());
 			}
+//			if (admin != null) {
+//				sendMessegeService.sendCard(publisher.getPtemail(), userId, "* " + publisher.getName());
+//			} else {
+//				sendMessegeService.sendCard(publisher.getPtemail(), userId, publisher.getName());
+//			}
 			sendMessegeService.sendTextmessage("订阅组织出版社成功", userId, 0, publisher.getPtemail());
 		}
 		return resp;
