@@ -97,9 +97,9 @@ public class PSClientController {
 	)
 	public String createPublicKey() {
 		String senderTemail = null;
-		for (int i = 1; i < 2001; i++) {
+		for (int i = 1; i < 201; i++) {
 //			senderTemail="p."+(10000000+i)+"@systoontest.com";
-			senderTemail = "p." + (10000000 + i) + "@msgseal.com ";
+			senderTemail = ("p." + (20000000 + i) + "@msgseal.com").trim();
 //			String pub = psClientService.getTemailPublicKey(senderTemail);
 			psClientService.registerPub(senderTemail);
 		}
