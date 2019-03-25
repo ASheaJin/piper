@@ -12,6 +12,6 @@ public class PsSubOrgListParam {
 	private String publisherId;
 	//要改的出版社名字
 	private String name;
-	//要改的出版社名字
+	//要改的出版社头像，有bug
 	private String iconUrl;
 }

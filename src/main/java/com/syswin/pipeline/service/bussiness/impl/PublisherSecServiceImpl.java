@@ -71,7 +71,12 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 		filterset.add(2);//语音
 		filterset.add(3);//图片
 		filterset.add(10);//视频
+		filterset.add(12);//GIF
 		filterset.add(14);//文件
+		filterset.add(15);//分享
+		filterset.add(22);//邮件eml
+		filterset.add(23);//命令操作类
+		filterset.add(30);//复合消息体
 
 		childset.add(String.valueOf(PeriodEnums.MenuList.HELP));
 		childset.add(String.valueOf(PeriodEnums.MenuList.CREATPUBLISH));
