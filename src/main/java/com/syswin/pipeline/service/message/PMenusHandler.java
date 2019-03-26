@@ -85,8 +85,7 @@ public class PMenusHandler implements EventHandler<MessageEvent> {
 			return;
 		}
 		myRole = getPermission(header);
-		Publisher publisher = publisherService.getPubLisherByPublishTmail(header.getSender(), null);
-
+		Publisher publisher = publisherService.getPubLisherByuserId(header.getReceiver(), null);
 		//如果不是出版社
 		if (publisher == null) {
 			return;
@@ -117,14 +116,15 @@ public class PMenusHandler implements EventHandler<MessageEvent> {
 		valueList.add("请使用智能小助手");
 
 		keyList.add("features");
-		//判断当前用户是读者还是作者
 		valueList.add(appFeaturesList());
 
-		keyList.add("shortcuts");
-		//判断当前用户是读者还是作者
-		Map<String, Object> replyMsgObject = null;
-		valueList.add(appList(publisher.getPtype(), publisher.getUserId(), publisher.getPublisherId()));
 
+		Map<String, Object> replyMsgObject = null;
+//判断当前用户是读者还是作者
+		if (header.getReceiver().equals(publisher.getUserId())) {
+			keyList.add("shortcuts");
+			valueList.add(appList(publisher.getPtype(), publisher.getUserId(), publisher.getPublisherId()));
+		}
 		replyMsgObject = CollectionUtil.fastMap(keyList, valueList);
 		replyMsgObject.put("version", myVersion);
 		updateUserLogVersion(header.getReceiver(), myVersion);
@@ -187,11 +187,10 @@ public class PMenusHandler implements EventHandler<MessageEvent> {
 
 		List<Map<String, Object>> appList = new ArrayList<>();
 
-		//既是组织管理者，又是个人传输管理者
+		//既是组织管理者
 		if (PublisherTypeEnums.organize.equals(ptype)) {
 			appList.add(createApp(ICON_SUBSCRIBE_LIST, "管理订阅人", URL_PIPER + "/web/home?userId=" + userId + "&publisherId=" + publiserId));
 		}
-		//既是组织管理者，又是个人出版社管理者
 
 		return appList;
 	}

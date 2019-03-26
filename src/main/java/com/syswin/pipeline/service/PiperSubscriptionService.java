@@ -39,6 +39,9 @@ public class PiperSubscriptionService {
 	@Autowired
 	private com.syswin.sub.api.SubscriptionService subSubscriptionService;
 
+	@Autowired
+	SendSubscriptionService sendSubscriptionService;
+
 	/**
 	 * 订阅
 	 */
@@ -82,6 +85,7 @@ public class PiperSubscriptionService {
 		return subSubscriptionService.unsubscribe(userId, publishTemail, ptype);
 	}
 
+
 	/**
 	 * 批量订阅组织号
 	 * 根据组织名称获取组织下所有有的邮箱
@@ -101,22 +105,7 @@ public class PiperSubscriptionService {
 		SubResponseEntity resp = subSubscriptionService.subscribeList(userList, publiserId);
 		Publisher publisher = subPublisherService.getPubLisherById(publiserId);
 		for (String userId : userList) {
-			if (StringUtils.isNullOrEmpty(psClientService.getTemailPublicKey(userId))) {
-				continue;
-			}
-			if (!resp.isSuc()) return resp;
-			//判断是否自己订阅自己
-			if (userId.equals(publisher.getUserId())) {
-				sendMessegeService.sendCard(publisher.getPtemail(), userId, "* " + publisher.getName());
-			} else {
-				sendMessegeService.sendCard(publisher.getPtemail(), userId, publisher.getName());
-			}
-//			if (admin != null) {
-//				sendMessegeService.sendCard(publisher.getPtemail(), userId, "* " + publisher.getName());
-//			} else {
-//				sendMessegeService.sendCard(publisher.getPtemail(), userId, publisher.getName());
-//			}
-			sendMessegeService.sendTextmessage("订阅组织出版社成功", userId, 0, publisher.getPtemail());
+			sendSubscriptionService.sendSub(userId, publisher);
 		}
 		return resp;
 	}
