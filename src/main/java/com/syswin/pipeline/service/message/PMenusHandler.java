@@ -85,7 +85,7 @@ public class PMenusHandler implements EventHandler<MessageEvent> {
 			return;
 		}
 		myRole = getPermission(header);
-		Publisher publisher = publisherService.getPubLisherByuserId(header.getReceiver(), null);
+		Publisher publisher = publisherService.getPubLisherByPublishTmail(header.getSender(), null);
 		//如果不是出版社
 		if (publisher == null) {
 			return;
