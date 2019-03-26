@@ -128,6 +128,13 @@ public class PiperSubscriptionService {
 	 * @param publisherId
 	 */
 	public SubResponseEntity unsubscribe(String userId, String publisherId) {
+		Publisher publisher = subPublisherService.getPubLisherById(publisherId);
+		if (publisher == null) {
+			return new SubResponseEntity(false, "出版社不能为空");
+		}
+		if (PublisherTypeEnums.organize.equals(publisher.getPtype())) {
+			return new SubResponseEntity(false, "组织出版社不能取消订阅");
+		}
 		return subSubscriptionService.unsubscribe(userId, publisherId);
 	}
 
