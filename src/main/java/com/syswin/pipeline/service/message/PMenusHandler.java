@@ -138,7 +138,7 @@ public class PMenusHandler implements EventHandler<MessageEvent> {
 	//加载默认按钮
 	private List<Map<String, Object>> appFeaturesList() {
 		List<Map<String, Object>> appList = new ArrayList<>();
-		appList.add(createApp("", "#@" + 13, ""));
+//		appList.add(createApp("", "#@" + 13, ""));
 		for (int i = 1; i < 10; i++) {
 			appList.add(createApp("", "#@" + i, ""));
 		}
