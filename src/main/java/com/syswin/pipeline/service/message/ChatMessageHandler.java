@@ -37,10 +37,10 @@ public class ChatMessageHandler {
 
 	@PostConstruct
 	public void init() {
-		disruptor.handleEventsWith(aMenusHandler);
-		disruptor.handleEventsWith(pMenusHandler);
-		disruptor.handleEventsWith(cardandler);
-		disruptor.handleEventsWith(businessHandler);
+		disruptor.handleEventsWith(aMenusHandler,pMenusHandler,cardandler,businessHandler);
+//		disruptor.handleEventsWith(pMenusHandler);
+//		disruptor.handleEventsWith(cardandler);
+//		disruptor.handleEventsWith(businessHandler);
 
 		disruptor.start();
 	}
