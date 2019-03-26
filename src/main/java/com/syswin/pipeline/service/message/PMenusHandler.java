@@ -120,10 +120,14 @@ public class PMenusHandler implements EventHandler<MessageEvent> {
 
 
 		Map<String, Object> replyMsgObject = null;
+		keyList.add("shortcuts");
 //判断当前用户是读者还是作者
+
 		if (header.getReceiver().equals(publisher.getUserId())) {
-			keyList.add("shortcuts");
+
 			valueList.add(appList(publisher.getPtype(), publisher.getUserId(), publisher.getPublisherId()));
+		} else {
+			valueList.add(new ArrayList<>());
 		}
 		replyMsgObject = CollectionUtil.fastMap(keyList, valueList);
 		replyMsgObject.put("version", myVersion);
