@@ -19,7 +19,7 @@ public class TokenGenerator {
 
     //token 5分钟有效
     private static Cache<String, String> cacheMap = CacheBuilder.newBuilder()
-            .expireAfterWrite(5L, TimeUnit.MINUTES)
+            .expireAfterWrite(6L, TimeUnit.MINUTES)
             .concurrencyLevel(6)
             .initialCapacity(10)
             .softValues()

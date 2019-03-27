@@ -89,15 +89,21 @@ public class PatternUtils {
 		}
 		return aList;
 	}
+
+	public static boolean orEmail(String email) {
+		if (email == null || "".equals(email)) return false;
+		String regex = "\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*";
+		return email.matches(regex);
+	}
 	/**
 	 *  测试
 	 *  @param args
 	 *     
 	 */
 	public static void main(String[] args) {
-		String str = "p.10000010@t.email";
+		String str = "p.aa啊啊10000010@t.email";
 		String str1 = "p.10000010@systoontest.com";
-		System.out.println(tranStrstoList("1212 systoontest.com"));
+		System.out.println(orEmail(str));
 	}
 
 }

@@ -39,12 +39,13 @@ public class HelpH5Controller {
         String userId = StringUtils.getParam(request, "userId", null);
         String token = tokenGenerator.generator(publisherId, userId);
         token = token != null ? token : "error";
-        String url = URL_PIPER + H5_UPLOAD + "?token=" + token;
+        String url = URL_PIPER + H5_UPLOAD + "?t=" + token;
 
         Publisher publisher = publisherService.getPubLisherById(publisherId);
         String ptemail = publisher.getPtemail();
 
         model.addAttribute("ptemail", ptemail);
+        model.addAttribute("pname", publisher.getName());
         model.addAttribute("url", url);
         return "h5/helpupload";
     }

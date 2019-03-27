@@ -7,6 +7,7 @@ import com.syswin.pipeline.service.psserver.bean.ResponseEntity;
 import com.syswin.pipeline.service.psserver.impl.BusinessException;
 import com.syswin.pipeline.service.security.TokenGenerator;
 import com.syswin.pipeline.utils.ExcelUtil;
+import com.syswin.pipeline.utils.PatternUtils;
 import com.syswin.pipeline.utils.StringUtils;
 import com.syswin.sub.api.db.model.Publisher;
 import com.syswin.sub.api.enums.PublisherTypeEnums;
@@ -122,13 +123,23 @@ public class PublisherController {
 					value = "Excel批量上传订阅组织出版社"
 	)
 	public ResponseEntity uploadExcel(HttpServletRequest request, HttpServletResponse response, @RequestParam MultipartFile file) {
-		List<String> listString = ExcelUtil.getExcelData(file);
-		if (listString.size() == 0) {
-			throw new BusinessException("名单导入为空");
-		}
-		String[] param = tokenGenerator.getIdsByToken(request.getParameter("token"));
+
+		String[] param = tokenGenerator.getIdsByToken(request.getParameter("t"));
 		if (param == null) {
 			throw new BusinessException("token已经失效");
+		}
+		List<String> listString = ExcelUtil.getExcelData(file);
+		String error = "";
+		for (String tmail : listString) {
+			if (!PatternUtils.orEmail(tmail)) {
+				error = tmail + " , " + error;
+			}
+		}
+		if (!StringUtils.isNullOrEmpty(error)) {
+			throw new BusinessException("非邮箱号： " + error);
+		}
+		if (listString.size() == 0) {
+			throw new BusinessException("名单导入为空");
 		}
 		SubResponseEntity subResponseEntity = subscriptionService.subscribeList(listString, param[0], param[1]);
 
