@@ -136,7 +136,7 @@ public class PublisherController {
 			}
 		}
 		if (!StringUtils.isNullOrEmpty(error)) {
-			throw new BusinessException("非邮箱号： " + error);
+			throw new BusinessException("失败！非法邮箱号： " + error);
 		}
 		if (listString.size() == 0) {
 			throw new BusinessException("名单导入为空");
