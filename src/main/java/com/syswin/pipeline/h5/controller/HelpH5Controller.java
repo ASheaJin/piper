@@ -31,7 +31,7 @@ public class HelpH5Controller {
     @Value("${url.piper}")
     private String URL_PIPER;
 
-    private static final String H5_UPLOAD = "/h5/upload";
+    private static final String H5_UPLOAD = "/h5/publisher/upload";
 
     @GetMapping("/upload")
     public String upload(Model model, HttpServletRequest request) {

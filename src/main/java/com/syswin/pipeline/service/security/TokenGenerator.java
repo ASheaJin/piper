@@ -53,6 +53,9 @@ public class TokenGenerator {
     }
 
     public String[] getIdsByToken(String token) {
+        if (token == null) {
+            return null;
+        }
         String uniqueKey = cacheMap.getIfPresent(token);
         if (uniqueKey == null) {
             return null;

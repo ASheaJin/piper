@@ -5,6 +5,7 @@ import com.syswin.pipeline.service.PiperPublisherService;
 import com.syswin.pipeline.service.PiperSubscriptionService;
 import com.syswin.pipeline.service.psserver.bean.ResponseEntity;
 import com.syswin.pipeline.service.psserver.impl.BusinessException;
+import com.syswin.pipeline.service.security.TokenGenerator;
 import com.syswin.pipeline.utils.ExcelUtil;
 import com.syswin.pipeline.utils.StringUtils;
 import com.syswin.sub.api.db.model.Publisher;
@@ -30,6 +31,8 @@ import java.util.List;
 @Api(value = "publish", tags = "publish")
 public class PublisherController {
 
+	@Autowired
+	private TokenGenerator tokenGenerator;
 	@Autowired
 	PiperPublisherService publisherService;
 	@Autowired
@@ -116,14 +119,18 @@ public class PublisherController {
 
 	@PostMapping("uploadExcel")
 	@ApiOperation(
-					value = "Excel批量上传"
+					value = "Excel批量上传订阅组织出版社"
 	)
 	public ResponseEntity uploadExcel(HttpServletRequest request, HttpServletResponse response, @RequestParam MultipartFile file) {
 		List<String> listString = ExcelUtil.getExcelData(file);
 		if (listString.size() == 0) {
 			throw new BusinessException("名单导入为空");
 		}
-		SubResponseEntity subResponseEntity = subscriptionService.subscribeList(listString, "1", "1");
+		String[] param = tokenGenerator.getIdsByToken(request.getParameter("token"));
+		if (param == null) {
+			throw new BusinessException("token已经失效");
+		}
+		SubResponseEntity subResponseEntity = subscriptionService.subscribeList(listString, param[0], param[1]);
 
 		if (subResponseEntity.isSuc()) {
 			return new ResponseEntity();

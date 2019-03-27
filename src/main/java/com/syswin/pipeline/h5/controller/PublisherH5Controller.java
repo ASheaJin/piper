@@ -4,8 +4,10 @@ import com.syswin.pipeline.utils.StringUtils;
 import com.syswin.sub.api.db.model.Publisher;
 import com.syswin.sub.api.enums.PublisherTypeEnums;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,6 +18,9 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 @RequestMapping("/h5/publisher")
 public class PublisherH5Controller {
+
+	@Value("${url.piper}")
+	private String URL_PIPER;
 
 	@Autowired
 	private com.syswin.sub.api.PublisherService subPublisherService;
@@ -44,4 +49,15 @@ public class PublisherH5Controller {
 //	    return "h5/createPublisher";
 	}
 
+
+
+	@GetMapping("/upload")
+	public String upload(Model model, HttpServletRequest request) {
+		String token = StringUtils.getParam(request, "token", null);
+
+		model.addAttribute("token", token);
+		model.addAttribute("uploadurl", URL_PIPER+"/publish/uploadExcel");
+		model.addAttribute("downUrl", URL_PIPER+"/web/static/file/upload.xlsx");
+		return "h5/uploadpage";
+	}
 }
