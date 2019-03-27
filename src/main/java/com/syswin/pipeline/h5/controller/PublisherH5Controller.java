@@ -53,6 +53,7 @@ public class PublisherH5Controller {
 
 	@GetMapping("/upload")
 	public String upload(Model model, HttpServletRequest request) {
+
 		String token = StringUtils.getParam(request, "token", null);
 
 		model.addAttribute("token", token);
