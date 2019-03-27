@@ -9,5 +9,5 @@ import com.syswin.pipeline.service.ps.ChatMsg;
 public interface PublisherSecService {
 
 	//处理组织的消息
-	public void monitorORG(String userId, String ptemail, ChatMsg chatMsg) ;
+	public void monitor(String userId, String ptemail, ChatMsg chatMsg) ;
 }

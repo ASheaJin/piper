@@ -1,6 +1,9 @@
 package com.syswin.pipeline.app.controller;
 
+import com.syswin.pipeline.app.dto.PsSubOrgListParam;
 import com.syswin.pipeline.app.dto.PublishMessageParam;
+import com.syswin.pipeline.app.dto.SubOrgListParam;
+import com.syswin.pipeline.service.PiperSubscriptionService;
 import com.syswin.pipeline.service.bussiness.impl.SendMessegeService;
 import com.syswin.pipeline.service.org.IOrgService;
 import com.syswin.pipeline.service.org.OrgOut;
@@ -8,6 +11,9 @@ import com.syswin.pipeline.service.ps.ChatMsg;
 import com.syswin.pipeline.service.ps.PSClientService;
 import com.syswin.pipeline.service.ps.PubKey;
 import com.syswin.pipeline.service.psserver.bean.ResponseEntity;
+import com.syswin.pipeline.utils.PatternUtils;
+import com.syswin.sub.api.db.model.Publisher;
+import com.syswin.sub.api.response.SubResponseEntity;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -17,6 +23,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * Created by 115477 on 2018/12/18.
@@ -37,6 +44,11 @@ public class PSClientController {
 	@Autowired
 	private IOrgService orgService;
 
+	@Autowired
+	com.syswin.sub.api.SubscriptionService scriptionService;
+
+	@Autowired
+	private com.syswin.sub.api.PublisherService subPublisherService;
 
 	@PostMapping("sendMsg")
 	@ApiOperation(
@@ -85,21 +97,20 @@ public class PSClientController {
 	)
 	public String createPublicKey() {
 		String senderTemail = null;
-		for(int i=1;i<1001;i++) {
+		for (int i = 1; i < 201; i++) {
 //			senderTemail="p."+(10000000+i)+"@systoontest.com";
-			senderTemail="p."+(10000000+i)+"@t.email";
-			String pub = psClientService.getTemailPublicKey(senderTemail);
-			if (StringUtils.isEmpty(pub)) {
-				pub = psClientService.registerPub(senderTemail);
-			}
+			senderTemail = ("p." + (20000000 + i) + "@msgseal.com").trim();
+//			String pub = psClientService.getTemailPublicKey(senderTemail);
+			psClientService.registerPub(senderTemail);
 		}
+
 		return "success";
 	}
 
 
 	@PostMapping("sendOthermessage")
 	@ApiOperation(
-			value = "测试接口。发送消息"
+					value = "测试接口。发送消息"
 	)
 	public String sendOthermessage(@RequestBody PublishMessageParam message) {
 		String content = "{\"w\":540,\"h\":960,\"isOriginal\":0,\"suffix\":\".png\",\"url\":\"http:\\/\\/temail-test.cn-bj.ufileos.com\\/mediabank%2Fdd8da1b9f51444be842411fd79cbfd8a.zip\",\"size\":28419,\"pwd\":\"7B13B225-10BC-4141-87D9-FD1139FCCF52\"}";
@@ -112,10 +123,37 @@ public class PSClientController {
 	@ApiOperation(
 					value = "发送名片"
 	)
-	public void setCard(String temail,String to,String nick) {
+	public void setCard(String temail, String to, String nick) {
 
-		   sendMessegeService.sendCard(temail,to,nick);
+		sendMessegeService.sendCard(temail, to, nick);
 	}
+
+	@PostMapping("sendCards")
+	@ApiOperation(
+					value = "批量发名片"
+	)
+	public ResponseEntity sendCards(@RequestBody PsSubOrgListParam modify) {
+		Publisher publisher = subPublisherService.getPubLisherById(modify.getPublisherId());
+		if (publisher == null) {
+			return new ResponseEntity("500", "该出版社不存在");
+		}
+		List<String> userList = scriptionService.getSubscribers(publisher.getPtemail(), null);
+		for (String userId : userList) {
+			if (com.syswin.pipeline.utils.StringUtils.isNullOrEmpty(psClientService.getTemailPublicKey(userId))) {
+				continue;
+			}
+			//判断是否自己订阅自己
+			if (userId.equals(publisher.getUserId())) {
+				sendMessegeService.sendCard(publisher.getPtemail(), userId, "* " + modify.getName(), modify.getIconUrl());
+			} else {
+				sendMessegeService.sendCard(publisher.getPtemail(), userId, modify.getName(), modify.getIconUrl());
+			}
+
+		}
+		return new ResponseEntity();
+
+	}
+
 	@GetMapping("/loginuser")
 	@ApiOperation(
 					value = "登陆出版社监控"
@@ -139,7 +177,7 @@ public class PSClientController {
 
 	@GetMapping("/getOrg")
 	@ApiOperation(
-			value = "登陆出版社监控"
+					value = "登陆出版社监控"
 	)
 	public OrgOut getOrg(HttpServletRequest request, String temail) {
 		OrgOut orgOut = orgService.getOrgByVersion(temail, 0);

@@ -81,25 +81,31 @@ public class SendMessegeService {
 	 * @param from      谁发
 	 */
 	public void sendCard( String from ,String to,String name ) {
+		this.sendCard(from, to, name, null);
+	}
+
+	public void sendCard( String from ,String to,String name , String imgUrl) {
+		imgUrl = imgUrl == null ? url : imgUrl;
 		ChatMsg msg = new ChatMsg(from, to,
-						UUID.randomUUID().toString(), cardContent(from,name));
+						UUID.randomUUID().toString(), cardContent(from,name,imgUrl));
 
 		msg.setBody_type(4);
 		String publickey = psClientService.getTemailPublicKey(from);
 		String senderPK = psClientService.getTemailPublicKey(to);
 		psClientService.sendCardMessage(msg, from, publickey, to, senderPK);
 	}
+
 	//名片消息
 	@Value("${app.pipeline.imgUrl}")
 	private String url;
 
 	public static final String VCARD_TEMPLATE="BEGIN:VCARD\r\nPHOTO:%s\r\nVERSION:3.0\r\nN:%s\r\nEMAIL:%s\r\nEND:VCARD";
-	private Card cardContent(String temail,String name) {
+	private Card cardContent(String temail,String name,String imgUrl) {
 		String vcard=String.format(VCARD_TEMPLATE, url,name,temail);
 		Card card = new Card();
 		card.setNick(name);
 		card.setFeedId(vcard);
-		card.setUrl(url);
+		card.setUrl(imgUrl);
 		card.setDesc(temail);
 		return card;
 	}

@@ -2,6 +2,7 @@ package com.syswin.pipeline.service.bussiness.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.syswin.pipeline.enums.PeriodEnums;
+import com.syswin.pipeline.service.PiperSubscriptionService;
 import com.syswin.pipeline.service.bussiness.PublisherSecService;
 import com.syswin.pipeline.service.ps.ChatMsg;
 import com.syswin.pipeline.utils.MessageUtil;
@@ -9,12 +10,14 @@ import com.syswin.pipeline.utils.SnowflakeIdWorker;
 import com.syswin.pipeline.utils.SwithUtil;
 import com.syswin.sub.api.AdminService;
 import com.syswin.sub.api.SendRecordService;
+import com.syswin.sub.api.SubscriptionService;
 import com.syswin.sub.api.db.model.*;
 import com.syswin.sub.api.enums.PublisherTypeEnums;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +36,7 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 
 	@Value("${app.pipeline.userId}")
 	private String from;
+	@Lazy
 	@Autowired
 	SendMessegeService sendMessegeService;
 
@@ -49,7 +53,10 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 	private com.syswin.sub.api.PublisherService subPublisherService;
 
 	@Autowired
-	private com.syswin.sub.api.SubscriptionService subSubscriptionService;
+	private PiperSubscriptionService piperSubscriptionService;
+
+	@Autowired
+	private SubscriptionService subscriptionService;
 
 	@Autowired
 	private SendRecordService subSendRecordService;
@@ -64,7 +71,12 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 		filterset.add(2);//语音
 		filterset.add(3);//图片
 		filterset.add(10);//视频
+		filterset.add(12);//GIF
 		filterset.add(14);//文件
+		filterset.add(15);//分享
+		filterset.add(22);//邮件eml
+		filterset.add(23);//命令操作类
+		filterset.add(30);//复合消息体
 
 		childset.add(String.valueOf(PeriodEnums.MenuList.HELP));
 		childset.add(String.valueOf(PeriodEnums.MenuList.CREATPUBLISH));
@@ -110,7 +122,7 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 
 		subContentService.addContent(content);
 		//2、获取订阅该用户的读者列表
-		List<String> userIds = subSubscriptionService.getSubscribers(publisher.getPtemail(), publisherTypeEnums);
+		List<String> userIds = subscriptionService.getSubscribers(publisher.getPtemail(), publisherTypeEnums);
 
 		int num = 0;
 		//3、逐个发文章
@@ -144,45 +156,63 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 
 	public void monitorP(String userId, String ptemail, ChatMsg chatMsg) {
 
-		Publisher publisher = subPublisherService.getPubLisherByuserId(userId, PublisherTypeEnums.person);
+//		Publisher publisher = subPublisherService.getPubLisherByuserId(userId, PublisherTypeEnums.person);
 		// 为测试二用
 //		Publisher publisher = publisherRepository.selectByPtemail(ptemail);
 //		ptemail = publisher.getPtemail();
 		int body_type = chatMsg.getBody_type();
 		String orgContent = chatMsg.getContent();
-		//判断出版社是否存在
+		Publisher publisher = subPublisherService.getPubLisherByPublishTmail(ptemail, PublisherTypeEnums.person);
 		if (publisher == null) {
-			sendMessegeService.sendTextmessage(MessageUtil.sendCreateHelpTip("回复功能暂不支持"), userId, 1000, ptemail);
 			return;
 		}
 
-		if (publisher.getPtemail().equals(ptemail)) {
+		if (orgContent.contains("《订阅》")) {
+			piperSubscriptionService.subscribe(userId, ptemail);
+			return;
+		}
+		if (orgContent.contains("《取消订阅》")) {
+			piperSubscriptionService.unsubscribe(userId, publisher.getPublisherId());
+			return;
+		}
+
+
+		Subscription subscription = subscriptionService.getSub(userId, publisher.getPublisherId());
+		if (subscription == null) {
+			sendMessegeService.sendTextmessage("您尚未订阅该出版社 发送 《订阅》 订阅该出版社", userId, 0, publisher.getPtemail());
+
+		} else {
+//			sendMessegeService.sendTextmessage("您已订阅该出版社 发送 《取消订阅》 取消订阅该出版社", userId, 0, publisher.getPtemail());
+		}
+		//判断出版社是否存在
+		if (userId.equals(publisher.getUserId())) {
 			if (!filterset.contains(body_type)) {
 				sendMessegeService.sendTextmessage(MessageUtil.sendCreateHelpTip("请发送文件、语音、图片、视频"), userId, 1000, ptemail);
 				return;
 			}
 			dealpusharticle(publisher, body_type, orgContent, PublisherTypeEnums.person);
 		} else {
-			sendMessegeService.sendTextmessage("您的个人出版社邮箱为：" + publisher.getPtemail() + "  请在它里面发文章", userId, 1000, ptemail);
+			sendMessegeService.sendTextmessage(MessageUtil.sendCreateHelpTip("回复功能暂不支持"), userId, 1000, ptemail);
 		}
 
 
 	}
 
 	//处理组织消息
-	public void monitorORG(String userId, String ptemail, ChatMsg chatMsg) {
+	public void monitor(String userId, String ptemail, ChatMsg chatMsg) {
 		String orgContent = chatMsg.getContent();
 		int body_type = chatMsg.getBody_type();
 
 		//判断发送格式
 		insertLog(userId, ptemail, body_type, body_type > 30 ? "非业务指令" : JSONObject.toJSONString(chatMsg));
 
-		if (body_type >90) {
+		if (body_type > 90) {
 			return;
 		}
 		if (ptemail.equals(from)) {
 			return;
 		}
+
 		Publisher publisher = subPublisherService.getPubLisherByPublishTmail(ptemail, PublisherTypeEnums.organize);
 
 		//判断该出版社是组织出版社还是个人出版社
@@ -191,11 +221,10 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 			return;
 		}
 
-		Admin admin = adminService.getAdmin(userId);
-		if (admin != null) {
+		if (userId.equals(publisher.getUserId())) {
 			dealpusharticle(publisher, body_type, orgContent, PublisherTypeEnums.organize);
 		} else {
-			sendMessegeService.sendTextmessage(MessageUtil.sendCreateHelpTip("只有组织管理者有权限操作"), userId, 1000, ptemail);
+			sendMessegeService.sendTextmessage(MessageUtil.sendCreateHelpTip("只有创建者有权限操作"), userId, 1000, ptemail);
 		}
 
 	}

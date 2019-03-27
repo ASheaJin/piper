@@ -50,8 +50,8 @@ public class SubcribeController {
 
 	@RequestMapping(value = "/getPubSubsions", method = RequestMethod.POST)
 	public ResponseEntity getPublisersubsions(@RequestBody SubSearchParam subSearchParam) {
-		int pageno = StringUtils.getInteger(subSearchParam.getPageNo()) == 0 ? 0 : StringUtils.getInteger(subSearchParam.getPageNo()) - 1;
-		int pagesize = StringUtils.getInteger(subSearchParam.getPageNo()) == 0 ? 20 : StringUtils.getInteger(subSearchParam.getPageSize());
+		int pageno = StringUtils.getInteger(subSearchParam.getPageNo()) == 0 ? 1 : StringUtils.getInteger(subSearchParam.getPageNo());
+		int pagesize = StringUtils.getInteger(subSearchParam.getPageSize()) == 0 ? 20 : StringUtils.getInteger(subSearchParam.getPageSize());
 
 		return new ResponseEntity(subscriptionService.getSubscribersByUserId(subSearchParam.getKeyword(), subSearchParam.getUserId(), subSearchParam.getPublisherId(), PublisherTypeEnums.organize, pageno, pagesize));
 	}

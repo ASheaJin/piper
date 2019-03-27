@@ -64,7 +64,7 @@ public class PublisherController {
 
 	@PostMapping("deleteOrg")
 	@ApiOperation(
-					value = "创建组织出版社"
+					value = "删除组织出版社"
 	)
 	public ResponseEntity deleteOrg(@RequestBody DeleteParam unSubParam) {
 
@@ -86,6 +86,7 @@ public class PublisherController {
 					value = "订阅提交"
 	)
 	public ResponseEntity subscribe(@RequestBody SubParam sub) {
+
 
 		SubResponseEntity subResponseEntity = subscriptionService.subscribe(sub.getUserId(), sub.getPublishTemail());
 		if (subResponseEntity.isSuc()) {
@@ -161,8 +162,8 @@ public class PublisherController {
 					value = "获得我的出版社"
 	)
 	public ResponseEntity getMyOrgPublisher(@RequestBody SearchParam searchParam) {
-		int pageno = StringUtils.getInteger(searchParam.getPageNo()) == 0 ? 0 : StringUtils.getInteger(searchParam.getPageNo()) - 1;
-		int pagesize = StringUtils.getInteger(searchParam.getPageNo()) == 0 ? 20 : StringUtils.getInteger(searchParam.getPageSize());
+		int pageno = StringUtils.getInteger(searchParam.getPageNo()) == 0 ? 1 : StringUtils.getInteger(searchParam.getPageNo());
+		int pagesize = StringUtils.getInteger(searchParam.getPageSize()) == 0 ? 20 : StringUtils.getInteger(searchParam.getPageSize());
 
 		List<Publisher> publisherList = publisherService.getMyOrgPublisherList(searchParam.getKeyword(), searchParam.getUserId(), pageno, pagesize);
 		return new ResponseEntity(publisherList);

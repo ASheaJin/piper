@@ -13,7 +13,6 @@ import java.util.List;
 @Repository
 public interface BrowseRecordRepository extends BaseRepository< BrowseRecord> {
 
-
     Long countByExample(BrowseRecordExample publisherExample);
 
     List<BrowseRecord> selectByExample(BrowseRecordExample publisherExample);

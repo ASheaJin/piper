@@ -39,6 +39,9 @@ public class PiperSubscriptionService {
 	@Autowired
 	private com.syswin.sub.api.SubscriptionService subSubscriptionService;
 
+	@Autowired
+	SendSubscriptionService sendSubscriptionService;
+
 	/**
 	 * 订阅
 	 */
@@ -46,6 +49,9 @@ public class PiperSubscriptionService {
 
 		if (StringUtils.isNullOrEmpty(publishTemail) || StringUtils.isNullOrEmpty(userId)) {
 			return new SubResponseEntity("订阅邮箱不能为空");
+		}
+		if (StringUtils.isNullOrEmpty(psClientService.getTemailPublicKey(publishTemail))) {
+			return new SubResponseEntity("订阅邮箱不存在");
 		}
 		SubResponseEntity resp = subSubscriptionService.subscribe(userId, publishTemail, PublisherTypeEnums.person);
 
@@ -72,10 +78,13 @@ public class PiperSubscriptionService {
 	 * @param userId
 	 * @param publishTemail
 	 */
-	public void unsubscribe(String userId, String publishTemail, PublisherTypeEnums ptype) {
-
-		subSubscriptionService.unsubscribe(userId, publishTemail, ptype);
+	public SubResponseEntity unsubscribe(String userId, String publishTemail, PublisherTypeEnums ptype) {
+		if (StringUtils.isNullOrEmpty(psClientService.getTemailPublicKey(publishTemail))) {
+			return new SubResponseEntity("订阅邮箱不存在");
+		}
+		return subSubscriptionService.unsubscribe(userId, publishTemail, ptype);
 	}
+
 
 	/**
 	 * 批量订阅组织号
@@ -96,19 +105,7 @@ public class PiperSubscriptionService {
 		SubResponseEntity resp = subSubscriptionService.subscribeList(userList, publiserId);
 		Publisher publisher = subPublisherService.getPubLisherById(publiserId);
 		for (String userId : userList) {
-			if (!resp.isSuc()) return resp;
-			//判断是否自己订阅自己
-//			if (userId.equals(oweruserId)) {
-//				sendMessegeService.sendCard(publisher.getPtemail(), userId, "* " + publisher.getName());
-//			} else {
-//				sendMessegeService.sendCard(publisher.getPtemail(), userId, publisher.getName());
-//			}
-			if (admin != null) {
-				sendMessegeService.sendCard(publisher.getPtemail(), userId, "* " + publisher.getName());
-			} else {
-				sendMessegeService.sendCard(publisher.getPtemail(), userId, publisher.getName());
-			}
-			sendMessegeService.sendTextmessage("订阅组织出版社成功", userId, 0, publisher.getPtemail());
+			sendSubscriptionService.sendSub(userId, publisher);
 		}
 		return resp;
 	}
@@ -120,10 +117,18 @@ public class PiperSubscriptionService {
 	 * @param publisherId
 	 */
 	public SubResponseEntity unsubscribe(String userId, String publisherId) {
+		Publisher publisher = subPublisherService.getPubLisherById(publisherId);
+		if (publisher == null) {
+			return new SubResponseEntity(false, "出版社不能为空");
+		}
+		if (PublisherTypeEnums.organize.equals(publisher.getPtype())) {
+			return new SubResponseEntity(false, "组织出版社不能取消订阅");
+		}
 		return subSubscriptionService.unsubscribe(userId, publisherId);
 	}
 
 	public SubResponseEntity unsubscribeByOwnerId(String userId, String ownerId, Long publiserId, PublisherTypeEnums ptype) {
+
 		return subSubscriptionService.unsubscribeByOwnerId(userId, ownerId, ptype);
 	}
 

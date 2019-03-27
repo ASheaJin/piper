@@ -14,7 +14,6 @@
   <meta name="msapplication-tap-highlight" content="no">
   <!--去掉winphone系统a、input标签被点击时产生的半透明灰色背景-->
   <!--<link rel="Shortcut Icon" href="static/img/favicon.ico" />-->
-  <link rel="stylesheet" href="./style/core.css">
   <link rel="stylesheet" th:href="@{/style/core.css}">
     <script type="text/javascript" charset="utf-8"
             th:src="@{/toongine20190104.js}"></script>
@@ -94,7 +93,7 @@
                     userId: userId,
                     name: name
                 }),
-                url: "/piper/publish/create",
+                url: pipercontext+"/publish/create",
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 beforeSend:function(xhr){

@@ -3,6 +3,7 @@ package com.syswin.pipeline.service.message;
 import com.lmax.disruptor.EventHandler;
 import com.syswin.pipeline.service.bussiness.PublisherSecService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 /**
@@ -10,13 +11,14 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class BusinessHandler implements EventHandler<MessageEvent> {
+	@Lazy
 	@Autowired
 	private PublisherSecService publisherSecService;
 
 	@Override
 	public void onEvent(MessageEvent event, long sequence, boolean endOfBatch) throws Exception {
 		//会话式应用处理
-		publisherSecService.monitorORG(event.getOriginHeader().getReceiver(), event.getOriginHeader().getSender(), event.getChatMsg());
+		publisherSecService.monitor(event.getOriginHeader().getReceiver(), event.getOriginHeader().getSender(), event.getChatMsg());
 
 	}
 

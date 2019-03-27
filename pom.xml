@@ -6,7 +6,7 @@
 
 	<groupId>com.syswin.pipeline</groupId>
 	<artifactId>piper</artifactId>
-	<version>1.2-SNAPSHOT</version>
+	<version>1.38-SNAPSHOT</version>
 
 	<name>${project.artifactId}</name>
 	<description>pipeline</description>
@@ -19,7 +19,7 @@
 
 	<properties>
 		<syswin.temail.version>1.2.3</syswin.temail.version>
-		<syswin.vault.version>1.0.7</syswin.vault.version>
+		<syswin.vault.version>1.0.8</syswin.vault.version>
 	</properties>
 
 	<dependencies>
@@ -71,6 +71,10 @@
 			<artifactId>fastjson</artifactId>
 			<version>1.2.47</version>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
 		<!-- swagger-ui所需依赖包 -->
 		<dependency>
 			<groupId>io.springfox</groupId>
@@ -89,14 +93,14 @@
 			<version>1.16.20</version>
 		</dependency>
 		<!-- Redis 依赖包 -->
-		<dependency>
-			<groupId>redis.clients</groupId>
-			<artifactId>jedis</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.data</groupId>
-			<artifactId>spring-data-redis</artifactId>
-		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>redis.clients</groupId>-->
+			<!--<artifactId>jedis</artifactId>-->
+		<!--</dependency>-->
+		<!--<dependency>-->
+			<!--<groupId>org.springframework.data</groupId>-->
+			<!--<artifactId>spring-data-redis</artifactId>-->
+		<!--</dependency>-->
 		<dependency>
 			<groupId>io.netty</groupId>
 			<artifactId>netty-all</artifactId>

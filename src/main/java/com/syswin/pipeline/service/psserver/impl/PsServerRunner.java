@@ -18,7 +18,7 @@ import org.springframework.context.annotation.Configuration;
  * Created by GuoMengnan on 2018/9/27.
  */
 
-@Configuration
+//@Configuration
 public class PsServerRunner implements ApplicationRunner {
 
 	private static final Logger logger = LoggerFactory.getLogger(PsServerRunner.class);
@@ -34,7 +34,7 @@ public class PsServerRunner implements ApplicationRunner {
 	 * @param requestService
 	 * @return
 	 */
-	@Bean
+//	@Bean
 	PsServer psServer(SessionService sessionService, RequestService requestService) {
 		psServer = new PsServer(
 						sessionService, requestService,

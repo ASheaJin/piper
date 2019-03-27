@@ -5,6 +5,7 @@ import com.syswin.pipeline.app.dto.MulCreateParam;
 import com.syswin.pipeline.app.dto.SearchParam;
 import com.syswin.pipeline.service.PiperSubscriptionService;
 import com.syswin.pipeline.service.bussiness.impl.SendMessegeService;
+import com.syswin.pipeline.service.ps.PSClientService;
 import com.syswin.pipeline.service.psserver.bean.ResponseEntity;
 import com.syswin.pipeline.utils.PatternUtils;
 import com.syswin.pipeline.utils.StringUtils;
@@ -39,6 +40,9 @@ public class AdminController {
 	PiperSubscriptionService subscriptionService;
 
 	@Autowired
+	PSClientService psClientService;
+
+	@Autowired
 	PublisherService publisherService;
 	@Autowired
 	SendMessegeService sendMessegeService;
@@ -56,18 +60,21 @@ public class AdminController {
 		List<String> userList = PatternUtils.tranStrstoList(mulCreateParam.getTmails());
 
 		for (String u : userList) {
-
+			if (StringUtils.isNullOrEmpty(psClientService.getTemailPublicKey(u))) {
+				return new ResponseEntity("500", u + "邮箱不存在");
+			}
 			SubResponseEntity subResponseEntity = adminService.createAdmin(mulCreateParam.getUserId(), u, false);
 			if (subResponseEntity.isSuc()) {
 
 				List<Publisher> publisherList = publisherService.getPubLisherByType(PublisherTypeEnums.organize);
 				try {
-					for (Publisher publisher : publisherList) {
-						//创建成功了，给用户推名片
-						sendMessegeService.sendCard(publisher.getPtemail(), u, "* " + publisher.getName());
-						sendMessegeService.sendTextmessage("恭喜成为组织管理员", u, 0, publisher.getPtemail());
-					}
-					sendMessegeService.sendTextmessage(u + "恭喜成为组织管理员", mulCreateParam.getUserId());
+//					for (Publisher publisher : publisherList) {
+//						//创建成功了，给用户推名片
+//						sendMessegeService.sendCard(publisher.getPtemail(), u, "* " + publisher.getName());
+//						sendMessegeService.sendTextmessage("恭喜成为组织管理员", u, 0, publisher.getPtemail());
+//					}
+					sendMessegeService.sendTextmessage(u + "成为组织管理员", u);
+					sendMessegeService.sendTextmessage(u + "成为组织管理员", mulCreateParam.getUserId());
 					//回执创建完成消息
 				} catch (Exception e) {
 					logger.error("发送消息失败");
@@ -91,9 +98,9 @@ public class AdminController {
 			for (Publisher publisher : publisherList) {
 				//创建成功了，给用户推名片
 				sendMessegeService.sendCard(publisher.getPtemail(), adminParam.getTmail(), "* " + publisher.getName());
-				sendMessegeService.sendTextmessage("恭喜成为组织管理员", adminParam.getTmail(), 0, publisher.getPtemail());
+				sendMessegeService.sendTextmessage("成为组织管理员", adminParam.getTmail(), 0, publisher.getPtemail());
 			}
-			sendMessegeService.sendTextmessage(adminParam.getTmail() + "恭喜成为组织管理员", adminParam.getUserId());
+			sendMessegeService.sendTextmessage(adminParam.getTmail() + "成为组织管理员", adminParam.getUserId());
 			//回执创建完成消息
 			return new ResponseEntity();
 		}
@@ -123,8 +130,8 @@ public class AdminController {
 					value = "获取所有管理员名单"
 	)
 	public ResponseEntity getAdminList(@RequestBody SearchParam adminParam) {
-		int pageno = StringUtils.getInteger(adminParam.getPageNo()) == 0 ? 0 : StringUtils.getInteger(adminParam.getPageNo()) - 1;
-		int pagesize = StringUtils.getInteger(adminParam.getPageNo()) == 0 ? 20 : StringUtils.getInteger(adminParam.getPageSize());
+		int pageno = StringUtils.getInteger(adminParam.getPageNo()) == 0 ? 1 : StringUtils.getInteger(adminParam.getPageNo());
+		int pagesize = StringUtils.getInteger(adminParam.getPageSize()) == 0 ? 20 : StringUtils.getInteger(adminParam.getPageSize());
 		List<Admin> sub = adminService.getAdmins(adminParam.getKeyword(), adminParam.getUserId(), pageno, pagesize);
 
 		return new ResponseEntity(sub);
