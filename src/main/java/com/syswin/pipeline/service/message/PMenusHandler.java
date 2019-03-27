@@ -194,6 +194,7 @@ public class PMenusHandler implements EventHandler<MessageEvent> {
 		//既是组织管理者
 		if (PublisherTypeEnums.organize.equals(ptype)) {
 			appList.add(createApp(ICON_SUBSCRIBE_LIST, "管理订阅人", URL_PIPER + "/web/home?userId=" + userId + "&publisherId=" + publiserId));
+			appList.add(createApp(ICON_SUBSCRIBE_LIST, "账号上传说明", URL_PIPER + "/h5/help/upload?userId=" + userId + "&publisherId=" + publiserId));
 		}
 
 		return appList;
