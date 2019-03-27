@@ -110,6 +110,22 @@ public class PiperSubscriptionService {
 		return resp;
 	}
 
+	public SubResponseEntity subscribeList(List<String> userIds, String publiserId, String oweruserId) {
+		if (StringUtils.isNullOrEmpty(oweruserId)) {
+			return new SubResponseEntity("userId为空");
+		}
+		Admin admin = adminService.getAdmin(oweruserId);
+		if (admin == null) {
+			return new SubResponseEntity("你不是邮件组管理者");
+		}
+		SubResponseEntity resp = subSubscriptionService.subscribeList(userIds, publiserId);
+		Publisher publisher = subPublisherService.getPubLisherById(publiserId);
+		for (String userId : userIds) {
+			sendSubscriptionService.sendSub(userId, publisher);
+		}
+		return resp;
+	}
+
 	/**
 	 * 取消订阅
 	 *

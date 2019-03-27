@@ -30,7 +30,7 @@ public class SendSubscriptionService {
 //			} else {
 //				sendMessegeService.sendCard(publisher.getPtemail(), userId, publisher.getName());
 //			}
-		sendMessegeService.sendTextmessage("订阅组织出版社成功", userId, 0, publisher.getPtemail());
+		sendMessegeService.sendTextmessage("管理员邀请您进入该邮件组，之后管理员会在这给您发文档或消息", userId, 0, publisher.getPtemail());
 
 	}
 }

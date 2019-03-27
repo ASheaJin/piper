@@ -4,6 +4,8 @@ import com.syswin.pipeline.app.dto.*;
 import com.syswin.pipeline.service.PiperPublisherService;
 import com.syswin.pipeline.service.PiperSubscriptionService;
 import com.syswin.pipeline.service.psserver.bean.ResponseEntity;
+import com.syswin.pipeline.service.psserver.impl.BusinessException;
+import com.syswin.pipeline.utils.ExcelUtil;
 import com.syswin.pipeline.utils.StringUtils;
 import com.syswin.sub.api.db.model.Publisher;
 import com.syswin.sub.api.enums.PublisherTypeEnums;
@@ -12,7 +14,10 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -107,8 +112,25 @@ public class PublisherController {
 			return new ResponseEntity();
 		}
 		return new ResponseEntity("500", subResponseEntity.getMsg());
-
 	}
+
+	@PostMapping("uploadExcel")
+	@ApiOperation(
+					value = "Excel批量上传"
+	)
+	public ResponseEntity uploadExcel(HttpServletRequest request, HttpServletResponse response, @RequestParam MultipartFile file) {
+		List<String> listString = ExcelUtil.getExcelData(file);
+		if (listString.size() == 0) {
+			throw new BusinessException("名单导入为空");
+		}
+		SubResponseEntity subResponseEntity = subscriptionService.subscribeList(listString, "1", "1");
+
+		if (subResponseEntity.isSuc()) {
+			return new ResponseEntity();
+		}
+		return new ResponseEntity("500", subResponseEntity.getMsg());
+	}
+
 
 	@PostMapping("subscribeByList")
 	@ApiOperation(

@@ -15,6 +15,9 @@ public class BusinessException extends RuntimeException{
 	public BusinessException(){
 		super();
 	}
+	public BusinessException(String msg){
+		super(msg);
+	}
 
 	public BusinessException(Exception e,CDTPPacket reqPacket) {
 		super(e.getMessage());
