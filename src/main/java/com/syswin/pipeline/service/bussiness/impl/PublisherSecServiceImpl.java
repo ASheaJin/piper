@@ -186,10 +186,10 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 		}
 		//判断出版社是否存在
 		if (userId.equals(publisher.getUserId())) {
-			if (!filterset.contains(body_type)) {
-				sendMessegeService.sendTextmessage(MessageUtil.sendCreateHelpTip("请发送文件、语音、图片、视频"), userId, 1000, ptemail);
-				return;
-			}
+//			if (!filterset.contains(body_type)) {
+//				sendMessegeService.sendTextmessage(MessageUtil.sendCreateHelpTip("请发送文件、语音、图片、视频"), userId, 1000, ptemail);
+//				return;
+//			}
 			dealpusharticle(publisher, body_type, orgContent, PublisherTypeEnums.person);
 		} else {
 			sendMessegeService.sendTextmessage(MessageUtil.sendCreateHelpTip("回复功能暂不支持"), userId, 1000, ptemail);
