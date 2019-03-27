@@ -39,7 +39,7 @@ public class HelpH5Controller {
         String userId = StringUtils.getParam(request, "userId", null);
         String token = tokenGenerator.generator(publisherId, userId);
         token = token != null ? token : "error";
-        String url = URL_PIPER + H5_UPLOAD + "?t=" + token;
+        String url = URL_PIPER + H5_UPLOAD + "?token=" + token;
 
         Publisher publisher = publisherService.getPubLisherById(publisherId);
         String ptemail = publisher.getPtemail();
