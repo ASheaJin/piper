@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="format-detection" content="telephone=no,email=no,address=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-touch-fullscreen" content="yes">
+    <meta name="App-Config" content="fullscreen=yes,useHistoryState=yes,transition=yes">
+    <meta name="msapplication-tap-highlight" content="no">
+    <title>邮件组账号上传说明</title>
+    <script th:src="@{/clipboard.min.js}"></script>
+</head>
+<body>
+<h2>  上传说明 </h2>
+<p th:text="'为邮件组 ' + ${ptemail} + ' 上传订阅者账号，请在pc端的浏览器输入以下地址：' "/>
+<p th:text="${url}" id="url">1</p>
+<p class="copy" onClick="copy()" data-clipboard-target="#url">复制</p>
+</body>
+<script>
+function copy() {
+    var clipboard = new Clipboard('.copy');
+    clipboard.on('success', e => {
+        alert('复制成功');
+        // 释放内存
+        clipboard.destroy();
+    });
+    clipboard.on('error', e => {
+        // 不支持复制
+        alert('该浏览器不支持自动复制');
+        // 释放内存
+        clipboard.destroy();
+    });
+
+}
+</script>
+</html>
