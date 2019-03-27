@@ -29,7 +29,7 @@ public class PSSeverController {
 
 	@GetMapping("send")
 	@ApiOperation(
-					value = "發送消息"
+					value = "发送消息"
 	)
 	public String send() {
 		ChatMsg chatMsg = new ChatMsg("1112112",1, "a.piper@t.email", "luohongzhou@t.email");
