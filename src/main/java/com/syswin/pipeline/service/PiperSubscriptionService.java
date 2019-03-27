@@ -7,6 +7,7 @@ import com.syswin.pipeline.utils.StringUtils;
 import com.syswin.sub.api.AdminService;
 import com.syswin.sub.api.db.model.Admin;
 import com.syswin.sub.api.db.model.Publisher;
+import com.syswin.sub.api.db.model.Subscription;
 import com.syswin.sub.api.enums.PublisherTypeEnums;
 import com.syswin.sub.api.response.SubResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -105,7 +106,11 @@ public class PiperSubscriptionService {
 		SubResponseEntity resp = subSubscriptionService.subscribeList(userList, publiserId);
 		Publisher publisher = subPublisherService.getPubLisherById(publiserId);
 		for (String userId : userList) {
-			sendSubscriptionService.sendSub(userId, publisher);
+			//防止重复推送
+			Subscription subscription = subSubscriptionService.getSub(userId, publiserId);
+			if (subscription == null) {
+				sendSubscriptionService.sendSub(userId, publisher);
+			}
 		}
 		return resp;
 	}
@@ -121,7 +126,11 @@ public class PiperSubscriptionService {
 		SubResponseEntity resp = subSubscriptionService.subscribeList(userIds, publiserId);
 		Publisher publisher = subPublisherService.getPubLisherById(publiserId);
 		for (String userId : userIds) {
-			sendSubscriptionService.sendSub(userId, publisher);
+			//防止重复推送
+			Subscription subscription = subSubscriptionService.getSub(userId, publiserId);
+			if (subscription == null) {
+				sendSubscriptionService.sendSub(userId, publisher);
+			}
 		}
 		return resp;
 	}
