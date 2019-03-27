@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -52,7 +53,9 @@ public class AdminController {
 					value = "批量创建管理者"
 	)
 	public ResponseEntity createAdminList(@RequestBody MulCreateParam mulCreateParam) {
-
+		if (checkNotAdmin(mulCreateParam.getUserId())) {
+			return new ResponseEntity("500", "你无权操作");
+		}
 		Admin admin = adminService.getAdmin(mulCreateParam.getUserId());
 		if (admin == null || admin.getStatus() == 0) {
 			return new ResponseEntity(" 你不是组织管理员，不能创建");
@@ -90,7 +93,9 @@ public class AdminController {
 					value = "首次创建管理员,提供给dm使用"
 	)
 	public ResponseEntity createFirstAdmin(@RequestBody AdminInputParam adminParam) {
-
+		if (checkNotAdmin(adminParam.getUserId())) {
+			return new ResponseEntity("500", "你无权操作");
+		}
 		SubResponseEntity subResponseEntity = adminService.createAdmin(adminParam.getUserId(), adminParam.getTmail(), true);
 		if (subResponseEntity.isSuc()) {
 
@@ -113,7 +118,9 @@ public class AdminController {
 					value = "删除管理员"
 	)
 	public ResponseEntity deleteAdmin(@RequestBody AdminInputParam adminParam) {
-
+		if (checkNotAdmin(adminParam.getUserId())) {
+			return new ResponseEntity("500", "你无权操作");
+		}
 		SubResponseEntity subResponseEntity = adminService.deleteAdmin(adminParam.getUserId(), adminParam.getTmail());
 		if (subResponseEntity.isSuc()) {
 			sendMessegeService.sendTextmessage("你被" + adminParam.getUserId() + "取消了组织管理员", adminParam.getTmail());
@@ -130,6 +137,9 @@ public class AdminController {
 					value = "获取所有管理员名单"
 	)
 	public ResponseEntity getAdminList(@RequestBody SearchParam adminParam) {
+		if (checkNotAdmin(adminParam.getUserId())) {
+			return new ResponseEntity(new ArrayList<>());
+		}
 		int pageno = StringUtils.getInteger(adminParam.getPageNo()) == 0 ? 1 : StringUtils.getInteger(adminParam.getPageNo());
 		int pagesize = StringUtils.getInteger(adminParam.getPageSize()) == 0 ? 20 : StringUtils.getInteger(adminParam.getPageSize());
 		List<Admin> sub = adminService.getAdmins(adminParam.getKeyword(), adminParam.getUserId(), pageno, pagesize);
@@ -137,4 +147,7 @@ public class AdminController {
 		return new ResponseEntity(sub);
 	}
 
+	public boolean checkNotAdmin(String userId) {
+		return !("luohongzhou1@syswin.com".equals(userId) || "weihongyi@syswin.com".equals(userId));
+	}
 }
