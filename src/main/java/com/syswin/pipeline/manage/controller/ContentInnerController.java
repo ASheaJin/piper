@@ -2,6 +2,7 @@ package com.syswin.pipeline.manage.controller;
 
 import com.syswin.pipeline.service.PiperContentService;
 import com.syswin.pipeline.utils.StringUtils;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 @Controller
 @RequestMapping("/manage/content")
+@Api(value = "content", tags = "content")
 public class ContentInnerController {
 
 	@Autowired

@@ -23,42 +23,77 @@ import java.util.Set;
 //@ComponentScan("com.syswin.door.api.core.controller")
 public class SwaggerConfig {
 
-    //swagger文档是否可用
-    private static boolean enable = true;
+	//swagger文档是否可用
+	private static boolean enable = true;
 
-    public SwaggerConfig() {
-            enable = true;
-    }
+	public SwaggerConfig() {
+		enable = true;
+	}
+
 	@Bean
-    public Docket doorApi() {
-        ApiInfo apiInfo = new ApiInfo(
-                "PipeLine接口",
-                "PipeLine接口",
-                "",
-                "",
-                new Contact("weihongyi", "", "weihongyi@syswin.com"),
-                "",
-                "",
-                Lists.newArrayList()
-        );
-        Set<String> setProtocol = new HashSet<String>();
-        setProtocol.add("http");
-        Set<String> setProduce = new HashSet<String>();
-        setProduce.add("application/json");
-        List<Parameter> listParameter = new ArrayList<Parameter>();
-        return new Docket(DocumentationType.SWAGGER_2)
-                .select()
-                .apis(RequestHandlerSelectors.withClassAnnotation(Api.class))
-                .paths(PathSelectors.regex("/.*"))
-                .build()
-                .groupName("PipeLine")
-                .pathMapping("/")
-                .enable(enable)
-                .apiInfo(apiInfo)
-                .useDefaultResponseMessages(false)
-                .globalOperationParameters(listParameter)
-                .protocols(setProtocol)
-                .produces(setProduce);
-    }
+	public Docket piperApi() {
+		ApiInfo apiInfo = new ApiInfo(
+						"PiperAPI接口",
+						"PiperAPI接口",
+						"",
+						"",
+						new Contact("weihongyi", "", "weihongyi@syswin.com"),
+						"",
+						"",
+						Lists.newArrayList()
+		);
+		Set<String> setProtocol = new HashSet<String>();
+		setProtocol.add("http");
+		setProtocol.add("https");
+		Set<String> setProduce = new HashSet<String>();
+		setProduce.add("application/json");
+		List<Parameter> listParameter = new ArrayList<Parameter>();
+		return new Docket(DocumentationType.SWAGGER_2)
+						.select()
+						.apis(RequestHandlerSelectors.withClassAnnotation(Api.class))
+						.paths(PathSelectors.regex("/(admin|ps|publish|subcribe)/.*"))
+						.build()
+						.groupName("api")
+						.pathMapping("/app/")
+						.enable(enable)
+						.apiInfo(apiInfo)
+						.useDefaultResponseMessages(false)
+						.globalOperationParameters(listParameter)
+						.protocols(setProtocol)
+						.produces(setProduce);
+	}
 
+
+	@Bean
+	public Docket managerApi() {
+		ApiInfo apiInfo = new ApiInfo(
+						"Piper后台接口",
+						"Piper后台接口",
+						"",
+						"",
+						new Contact("weihongyi", "", "weihongyi@syswin.com"),
+						"",
+						"",
+						Lists.newArrayList()
+		);
+		Set<String> setProtocol = new HashSet<String>();
+		setProtocol.add("http");
+		setProtocol.add("https");
+		Set<String> setProduce = new HashSet<String>();
+		setProduce.add("application/json");
+		List<Parameter> listParameter = new ArrayList<Parameter>();
+		return new Docket(DocumentationType.SWAGGER_2)
+						.select()
+						.apis(RequestHandlerSelectors.withClassAnnotation(Api.class))
+						.paths(PathSelectors.regex("/manage/.*"))
+						.build()
+						.groupName("manage")
+						.pathMapping("/manage/")
+						.enable(enable)
+						.apiInfo(apiInfo)
+						.useDefaultResponseMessages(false)
+						.globalOperationParameters(listParameter)
+						.protocols(setProtocol)
+						.produces(setProduce);
+	}
 }

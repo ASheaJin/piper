@@ -1,6 +1,7 @@
 package com.syswin.pipeline.manage.controller;
 
 import com.syswin.pipeline.db.model.Account;
+import io.swagger.annotations.Api;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -10,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @Controller
 @RequestMapping("/manage/account")
-//@Api(value = "account", tags = "account")
+@Api(value = "account", tags = "account")
 public class AccountInnerController extends BaseAction<Account> {
 
 }

@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 @CrossOrigin
 @RestController
 @RequestMapping("/token")
-@Api(value = "token", tags = "token")
+//@Api(value = "token", tags = "token")
 public class TokenController {
     private static final Logger logger = LoggerFactory.getLogger(TokenController.class);
 
