@@ -1,16 +1,19 @@
 package com.syswin.pipeline.service;
 
+import com.github.pagehelper.PageInfo;
 import com.syswin.pipeline.app.controller.PSSeverController;
 import com.syswin.pipeline.service.bussiness.impl.SendMessegeService;
 import com.syswin.pipeline.service.ps.PSClientService;
 import com.syswin.pipeline.service.ps.util.ValidationUtil;
 import com.syswin.pipeline.service.psserver.SendMsgService;
+import com.syswin.pipeline.service.psserver.impl.BusinessException;
 import com.syswin.pipeline.utils.MessageUtil;
 import com.syswin.pipeline.utils.PatternUtils;
 import com.syswin.pipeline.utils.StringUtils;
 import com.syswin.sub.api.AdminService;
 import com.syswin.sub.api.db.model.Admin;
 import com.syswin.sub.api.db.model.Publisher;
+import com.syswin.sub.api.exceptions.SubException;
 import com.syswin.sub.api.response.SubResponseEntity;
 import com.syswin.sub.api.utils.EnumsUtil;
 import org.slf4j.Logger;
@@ -51,38 +54,43 @@ public class PiperPublisherService {
 	 * @param userId
 	 * @param name
 	 */
-	public SubResponseEntity addPublisher(String userId, String name, int ptype) {
+	public Publisher addPublisher(String userId, String name, String pmail, Integer ptype) {
 		if (StringUtils.isNullOrEmpty(name) || StringUtils.isNullOrEmpty(userId)) {
-			return new SubResponseEntity("名称不能为空");
+			throw new BusinessException("名称不能为空");
 		}
-		String ptemail = "p.10000001@" + from.split("@")[1];
 		if (!ValidationUtil.isChineseCharNum(name)) {
-			return new SubResponseEntity("名称只能是中文、字母、数字及组合");
+			throw new BusinessException("名称只能是中文、字母、数字及组合");
 		}
-		//获取最新创建的出版社
-		Publisher lastPublisher = subPublisherService.getLastPublisher();
-		if (lastPublisher != null) {
-			int lastInt = Integer.parseInt(PatternUtils.getSubUtilSimple(lastPublisher.getPtemail(), from.split("@")[1]));
-			ptemail = PatternUtils.getEmail(String.valueOf(lastInt + 1), from.split("@")[1]);
+		// TODO: 2019/3/29 后期加入靓号处理
+		String ptemail = pmail;
+		if (StringUtils.isNullOrEmpty(pmail)) {
+			ptemail = "p.10000001@" + from.split("@")[1];
+
+
+			//获取最新创建的出版社
+			Publisher lastPublisher = subPublisherService.getLastPublisher();
+			if (lastPublisher != null) {
+				int lastInt = Integer.parseInt(PatternUtils.getSubUtilSimple(lastPublisher.getPtemail(), from.split("@")[1]));
+				ptemail = PatternUtils.getEmail(String.valueOf(lastInt + 1), from.split("@")[1]);
+			}
 		}
 		//获取中间的数字
 
-		subPublisherService.addPublisher(userId, name, ptemail, EnumsUtil.getPubliserTypeEnums(ptype));
+		Publisher publisher = subPublisherService.addPublisher(userId, name, ptemail, EnumsUtil.getPubliserTypeEnums(ptype));
 		psClientService.loginTemail(ptemail);
 		try {
 			psClientService.sendTextmessage(MessageUtil.sendCreatePublisher(ptemail, name), userId, 0);
 			psClientService.sendTextmessage(MessageUtil.shareNewTip(ptemail), userId, 200);
+
 			sendMessegeService.sendCard(ptemail, userId, "* " + name);
 			//注册了出版社后登陆下
-			if (ptype == 2) {
-				sendMessegeService.sendTextmessage("组织Piper创建成功，您发的所有消息都会同步到订阅者", userId, 0, ptemail);
-			} else {
-				sendMessegeService.sendTextmessage("个人Piper创建成功，您可在此发文章", userId, 0, ptemail);
-			}
+
+			sendMessegeService.sendTextmessage("<" + name + ">创建成功，您发的所有消息都会同步到订阅者", userId, 0, ptemail);
+
 		} catch (Exception e) {
-			logger.error("PS连接异常");
+			throw new SubException("PS连接异常");
 		}
-		return new SubResponseEntity();
+		return publisher;
 	}
 
 	public Publisher getLastPublisher() {
@@ -122,9 +130,9 @@ public class PiperPublisherService {
 
 	//================================ manage方法 =========================================>
 
-	public Map<String, Object> list(int pageIndex, int pageSize, String name, String userId, String ptmail) {
+	public PageInfo<Publisher> list(int pageIndex, int pageSize, String keyword, String userId) {
 
-		return subPublisherService.list(pageIndex, pageSize, name, userId, ptmail);
+		return subPublisherService.list(pageIndex, pageSize, keyword, userId);
 	}
 
 	//获取我创建的组织出版社

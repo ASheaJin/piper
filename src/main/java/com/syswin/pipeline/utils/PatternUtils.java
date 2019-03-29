@@ -11,8 +11,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class PatternUtils {
-	private static final String rgex = "p.(.*?)@t.email";
-
 	/**
 	 * 获取邮箱
 	 *

@@ -18,18 +18,4 @@ public class PiperApplication {
 
 	}
 
-//	@Bean
-//	public FilterRegistrationBean testFilterRegistration() {
-//
-//		FilterRegistrationBean registration = new FilterRegistrationBean();
-//		registration.setFilter(new RewriteFilter());//注册rewrite过滤器
-//		registration.addUrlPatterns("/*");
-//		registration.addInitParameter(RewriteFilter.REWRITE_TO, "/index.html");
-//		registration.addInitParameter(RewriteFilter.REWRITE_PATTERNS, "/vue/*");
-//		registration.setName("rewriteFilter");
-//		registration.setOrder(1);
-//		return registration;
-//
-//	}
-
 }

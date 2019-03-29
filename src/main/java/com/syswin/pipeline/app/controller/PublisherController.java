@@ -47,12 +47,9 @@ public class PublisherController {
 	public ResponseEntity create(@RequestBody CreatePublisherParam createPublisher) {
 
 
-		SubResponseEntity subResponseEntity = publisherService.addPublisher(createPublisher.getUserId(), createPublisher.getName(), createPublisher.getPtype() == null ? 0 : createPublisher.getPtype());
-		if (subResponseEntity.isSuc()) {
-			//回执创建完成消息
-			return new ResponseEntity();
-		}
-		return new ResponseEntity("500", subResponseEntity.getMsg());
+		Publisher publisher = publisherService.addPublisher(createPublisher.getUserId(), createPublisher.getName(), null, createPublisher.getPtype() == null ? 0 : createPublisher.getPtype());
+		//回执创建完成消息
+		return new ResponseEntity(publisher);
 
 	}
 
@@ -62,12 +59,9 @@ public class PublisherController {
 	)
 	public ResponseEntity createOrg(@RequestBody CreateOrgPublisher createPublisher) {
 
-		SubResponseEntity subResponseEntity = publisherService.addPublisher(createPublisher.getUserId(), createPublisher.getName(), 2);
-		if (subResponseEntity.isSuc()) {
-			//回执创建完成消息
-			return new ResponseEntity();
-		}
-		return new ResponseEntity("500", subResponseEntity.getMsg());
+		Publisher publisher = publisherService.addPublisher(createPublisher.getUserId(), createPublisher.getName(), null, 2);
+		//回执创建完成消息
+		return new ResponseEntity(publisher);
 
 	}
 
