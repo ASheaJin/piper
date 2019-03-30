@@ -12,6 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/manage/userlog")
 @Api(value = "userlog", tags = "userlog")
-public class UserlogInnerController extends BaseAction<Userlog> {
+public class UserlogInnerController {
 
 }
