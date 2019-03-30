@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * Created by 115477 on 2018/11/28.
  */
 @Controller
-@RequestMapping("/manage/userlog")
+@RequestMapping("/manage/operating")
 @Api(value = "operating", tags = "operating")
 public class OperatingInnerController extends BaseAction<Userlog> {
 
