@@ -38,15 +38,6 @@ public class SubcriptionInnerController {
 	}
 
 
-	@PostMapping("/getPiperType")
-	@ApiOperation(
-					value = "获取出版社类型"
-	)
-	public ResponseEntity getPiperType() {
-
-		return new ResponseEntity(EnumsUtil.toList());
-	}
-
 	@PostMapping("/subscribe")
 	@ApiOperation(
 					value = "添加出版社"
