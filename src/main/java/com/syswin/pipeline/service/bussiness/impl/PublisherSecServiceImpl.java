@@ -168,7 +168,7 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 		}
 
 		if (orgContent.contains("《订阅》")) {
-			piperSubscriptionService.subscribe(userId, ptemail);
+			piperSubscriptionService.subscribe(userId, ptemail, PublisherTypeEnums.person);
 			return;
 		}
 		if (orgContent.contains("《取消订阅》")) {
