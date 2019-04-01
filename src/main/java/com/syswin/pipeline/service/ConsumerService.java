@@ -28,7 +28,7 @@ public class ConsumerService {
 	private PublisherService publisherService;
 
 	public String getUserLogVersion(Header header, String version,String myRole) {
-		Consumer consumer = consumerRepository.selectById(header.getReceiver());
+		Consumer consumer = consumerRepository.selectByUserId(header.getReceiver());
 		if (consumer == null) {
 			consumer = new Consumer();
 			consumer.setCurversion(version);

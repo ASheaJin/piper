@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ServerLogRepository {
 
-    ServerLog selectById(@Param("userId") String userId);
+    ServerLog selectByUserId(@Param("userId") String userId);
     Integer insert(ServerLog serverLog);
     Integer update(ServerLog serverLog);
 }

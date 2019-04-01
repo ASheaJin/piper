@@ -215,7 +215,7 @@ public class PMenusHandler implements EventHandler<MessageEvent> {
 //	}
 
 	private String getUserLogVersion(Header header, String version) {
-		Consumer consumer = consumerRepository.selectById(header.getReceiver());
+		Consumer consumer = consumerRepository.selectByUserId(header.getReceiver());
 		if (consumer == null) {
 			consumer = new Consumer();
 			consumer.setPversion(version);

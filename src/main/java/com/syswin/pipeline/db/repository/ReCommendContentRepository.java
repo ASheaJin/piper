@@ -9,8 +9,6 @@ import org.springframework.stereotype.Repository;
  * Created by 115477 on 2018/11/27.
  */
 @Repository
-public interface ConsumerRepository extends BaseRepository<Consumer> {
+public interface ReCommendContentRepository extends BaseRepository<Consumer> {
 
-
-	Consumer selectByUserId(@Param("userId") String userId);
 }
