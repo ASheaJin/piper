@@ -11,7 +11,6 @@ import com.syswin.pipeline.utils.PatternUtils;
 import com.syswin.pipeline.utils.StringUtils;
 import com.syswin.sub.api.db.model.Publisher;
 import com.syswin.sub.api.enums.PublisherTypeEnums;
-import com.syswin.sub.api.response.SubResponseEntity;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,7 +70,7 @@ public class PublisherController {
 	)
 	public ResponseEntity deleteOrg(@RequestBody DeleteParam unSubParam) {
 
-		publisherService.delete(unSubParam.getUserId(), unSubParam.getPublisherId());
+		publisherService.delete(unSubParam.getPublisherId());
 
 		//回执删除消息
 		return new ResponseEntity();

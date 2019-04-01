@@ -1,4 +1,4 @@
-package com.syswin.pipeline.manage.vo;
+package com.syswin.pipeline.manage.vo.input;
 
 import lombok.Data;
 
@@ -8,6 +8,5 @@ import lombok.Data;
  */
 @Data
 public class AddAdmin {
-	private String adminUserId;
 	private String userId;
 }

@@ -1,18 +1,21 @@
 package com.syswin.pipeline.manage.controller;
 
 import com.github.pagehelper.PageInfo;
-import com.syswin.pipeline.manage.vo.*;
-import com.syswin.pipeline.service.PiperPublisherService;
+import com.syswin.pipeline.manage.vo.input.DelPublisherParam;
+import com.syswin.pipeline.manage.vo.input.DelSubParam;
+import com.syswin.pipeline.manage.vo.input.SubcriptionAddParam;
+import com.syswin.pipeline.manage.vo.input.SubcriptionListParam;
 import com.syswin.pipeline.service.PiperSubscriptionService;
 import com.syswin.pipeline.service.psserver.bean.ResponseEntity;
+import com.syswin.pipeline.utils.HeaderUtil;
 import com.syswin.pipeline.utils.StringUtils;
-import com.syswin.sub.api.db.model.Publisher;
 import com.syswin.sub.api.db.model.Subscription;
-import com.syswin.sub.api.utils.EnumsUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Created by 115477 on 2019/1/8.
@@ -30,11 +33,11 @@ public class SubcriptionInnerController {
 	@ApiOperation(
 					value = "出版社列表"
 	)
-	public ResponseEntity<PageInfo> list(@RequestBody SubcriptionListParam slp) {
+	public ResponseEntity<PageInfo> list(@RequestBody SubcriptionListParam slp, HttpServletRequest request) {
 		Integer pageNo = StringUtils.isNullOrEmpty(slp.getPageNo()) ? 1 : Integer.parseInt(slp.getPageNo());
 		Integer pageSize = StringUtils.isNullOrEmpty(slp.getPageSize()) ? 20 : Integer.parseInt(slp.getPageSize());
-
-		return new ResponseEntity(subscriptionService.list(pageNo, pageSize, slp.getUserId(), slp.getKeyword(), slp.getPublisherId()));
+		//判断权限身份
+		return new ResponseEntity(subscriptionService.list(pageNo, pageSize, slp.getKeyword(), slp.getPublisherId()));
 	}
 
 
@@ -42,7 +45,7 @@ public class SubcriptionInnerController {
 	@ApiOperation(
 					value = "添加出版社"
 	)
-	public ResponseEntity<Subscription> subscribe(@RequestBody SubcriptionAddParam sap) {
+	public ResponseEntity<Subscription> subscribe(@RequestBody SubcriptionAddParam sap, HttpServletRequest request) {
 		Subscription subscription = subscriptionService.subscribe(sap.getUserId(), sap.getPublisherId(), null);
 		return new ResponseEntity(subscription);
 	}
@@ -52,8 +55,8 @@ public class SubcriptionInnerController {
 	@ApiOperation(
 					value = "取消订阅"
 	)
-	public ResponseEntity unsubscribe(@RequestBody DelPublisherParam publisherParam) {
-		subscriptionService.unsubscribe(publisherParam.getUserId(), publisherParam.getPublusherId());
+	public ResponseEntity unsubscribe(@RequestBody DelSubParam publisherParam, HttpServletRequest request) {
+		subscriptionService.unsubscribe(publisherParam.getUserId(), publisherParam.getPublisherId());
 		return new ResponseEntity();
 	}
 }

@@ -4,8 +4,10 @@ import com.google.common.collect.Lists;
 import io.swagger.annotations.Api;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import springfox.documentation.builders.ParameterBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.schema.ModelRef;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Contact;
 import springfox.documentation.service.Parameter;
@@ -65,6 +67,16 @@ public class SwaggerConfig {
 
 	@Bean
 	public Docket managerApi() {
+
+		//在配置好的配置类中增加此段代码即可
+		ParameterBuilder ticketPar = new ParameterBuilder();
+		List<Parameter> pars = new ArrayList<Parameter>();
+		ticketPar.name("Authorization").description("登录校验")//name表示名称，description表示描述
+						.modelRef(new ModelRef("string")).parameterType("header")
+						.required(false).defaultValue("token=12345").build();//required表示是否必填，defaultvalue表示默认值
+		pars.add(ticketPar.build());//添加完此处一定要把下边的带***的也加上否则不生效
+
+
 		ApiInfo apiInfo = new ApiInfo(
 						"Piper后台接口",
 						"Piper后台接口",
@@ -80,7 +92,7 @@ public class SwaggerConfig {
 		setProtocol.add("https");
 		Set<String> setProduce = new HashSet<String>();
 		setProduce.add("application/json");
-		List<Parameter> listParameter = new ArrayList<Parameter>();
+//		List<Parameter> listParameter = new ArrayList<Parameter>();
 		return new Docket(DocumentationType.SWAGGER_2)
 						.select()
 						.apis(RequestHandlerSelectors.withClassAnnotation(Api.class))
@@ -91,7 +103,7 @@ public class SwaggerConfig {
 						.enable(enable)
 						.apiInfo(apiInfo)
 						.useDefaultResponseMessages(false)
-						.globalOperationParameters(listParameter)
+						.globalOperationParameters(pars)
 						.protocols(setProtocol)
 						.produces(setProduce);
 	}

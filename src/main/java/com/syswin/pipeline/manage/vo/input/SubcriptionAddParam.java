@@ -1,4 +1,4 @@
-package com.syswin.pipeline.manage.vo;
+package com.syswin.pipeline.manage.vo.input;
 
 import lombok.Data;
 
@@ -8,7 +8,6 @@ import lombok.Data;
 @Data
 public class SubcriptionAddParam {
 
-    private String addUserId;
     private String userId;
     private String publisherId;
 

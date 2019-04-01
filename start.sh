@@ -4,7 +4,7 @@
 #nohup java -agentpath:/opt/jprofiler9/bin/linux-x64/libjprofilerti.so=port=10012,nowait -jar target/piper-1.0-SNAPSHOT.jar > pipeline-api.log 2>&1 &
 
 #杀进程
-ps -ef|grep "piper-1.0-SNAPSHOT.jar" | grep java | awk '{print $2}' | xargs kill -9
+ps -ef|grep "piper-1.44-SNAPSHOT.jar" | grep java | awk '{print $2}' | xargs kill -9
 #打包
 /usr/maven/bin/mvn -U package
 #重启

@@ -1,4 +1,4 @@
-package com.syswin.pipeline.manage.vo;
+package com.syswin.pipeline.manage.vo.input;
 
 import lombok.Data;
 
@@ -7,6 +7,7 @@ import lombok.Data;
  */
 @Data
 public class AddPublisherParam {
+
     private String userId;
     private String publishName;
     private String publishMail;

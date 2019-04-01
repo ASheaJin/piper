@@ -17,7 +17,7 @@ import java.util.Map;
  * Created by 115477 on 2019/1/9.
  */
 @Service
-public class PiperReCommendContentService {
+public class PiperRecommendContentService {
 
 	@Autowired
 	private ReCommendContentRepository reCommendContentRepository;

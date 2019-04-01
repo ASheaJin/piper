@@ -141,12 +141,12 @@ public class PiperSubscriptionService {
 	public void unsubscribe(String userId, String publisherId) {
 		Publisher publisher = subPublisherService.getPubLisherById(publisherId);
 		if (publisher == null) {
-			throw new BusinessException( "出版社不能为空");
+			throw new BusinessException("出版社不能为空");
 		}
 		if (PublisherTypeEnums.organize.equals(publisher.getPtype())) {
 			throw new BusinessException("组织出版社不能取消订阅");
 		}
-		 subSubscriptionService.unsubscribeByPubliserId(userId, publisherId);
+		subSubscriptionService.unsubscribeByPubliserId(userId, publisherId);
 	}
 
 	public void unsubscribeByOwnerId(String userId, String ownerId, String publiserId, PublisherTypeEnums ptype) {
@@ -186,9 +186,9 @@ public class PiperSubscriptionService {
 	//================================ manage方法 =========================================>
 
 
-	public PageInfo<Subscription> list(int pageIndex, int pageSize, String userId, String keyword, String publisherId) {
-
-		return subSubscriptionService.list(pageIndex, pageSize, keyword, publisherId);
+	public PageInfo<Subscription> list(int pageIndex, int pageSize, String keyword, String publisherId) {
+		List<Subscription> list = subSubscriptionService.list(pageIndex, pageSize, keyword, publisherId);
+		return new PageInfo<>(list);
 	}
 
 	public List<String> getSubscribersByUserId(String keyword, String userId, String publisherId, PublisherTypeEnums organize, int pageNo, int pageSize) {

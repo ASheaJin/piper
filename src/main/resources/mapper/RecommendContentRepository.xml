@@ -16,12 +16,10 @@
         (
         content_id,
         user_id,
-        card_no,
         create_time
         ) values (
         #{contentId},
         #{userId},
-        #{cardNo},
         #{createTime}
         )
     </insert>
