@@ -13,6 +13,7 @@ import com.syswin.pipeline.utils.StringUtils;
 import com.syswin.sub.api.AdminService;
 import com.syswin.sub.api.db.model.Admin;
 import com.syswin.sub.api.db.model.Publisher;
+import com.syswin.sub.api.enums.PublisherTypeEnums;
 import com.syswin.sub.api.exceptions.SubException;
 import com.syswin.sub.api.response.SubResponseEntity;
 import com.syswin.sub.api.utils.EnumsUtil;
@@ -55,6 +56,8 @@ public class PiperPublisherService {
 	 * @param name
 	 */
 	public Publisher addPublisher(String userId, String name, String pmail, Integer ptype) {
+
+		// TODO: 2019/3/29 此处要判断用户角色权限
 		if (StringUtils.isNullOrEmpty(name) || StringUtils.isNullOrEmpty(userId)) {
 			throw new BusinessException("名称不能为空");
 		}
@@ -113,8 +116,9 @@ public class PiperPublisherService {
 		return subPublisherService.getPubLisherById(publisherId);
 	}
 
-	public SubResponseEntity deleteOrg(String userId, String publisherId) {
-		return subPublisherService.deletePublisherByPublisherId(userId, publisherId);
+	public void delete(String userId, String publisherId) {
+		// TODO: 2019/3/29 此处要判断用户角色权限
+		 subPublisherService.delete(userId, publisherId);
 	}
 
 	/**
@@ -130,9 +134,12 @@ public class PiperPublisherService {
 
 	//================================ manage方法 =========================================>
 
-	public PageInfo<Publisher> list(int pageIndex, int pageSize, String keyword, String userId) {
-
-		return subPublisherService.list(pageIndex, pageSize, keyword, userId);
+	public PageInfo<Publisher> list(int pageIndex, int pageSize, String keyword, String piperType, String userId) {
+		PublisherTypeEnums pType = null;
+		if (!StringUtils.isNullOrEmpty(piperType)) {
+			pType = EnumsUtil.getPubliserTypeEnums(Integer.parseInt(piperType));
+		}
+		return subPublisherService.list(pageIndex, pageSize, keyword, pType, userId);
 	}
 
 	//获取我创建的组织出版社

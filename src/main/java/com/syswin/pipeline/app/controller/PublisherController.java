@@ -71,12 +71,11 @@ public class PublisherController {
 	)
 	public ResponseEntity deleteOrg(@RequestBody DeleteParam unSubParam) {
 
-		SubResponseEntity subResponseEntity = publisherService.deleteOrg(unSubParam.getUserId(), unSubParam.getPublisherId());
-		if (subResponseEntity.isSuc()) {
-			//回执删除消息
-			return new ResponseEntity();
-		}
-		return new ResponseEntity("500", subResponseEntity.getMsg());
+		publisherService.delete(unSubParam.getUserId(), unSubParam.getPublisherId());
+
+		//回执删除消息
+		return new ResponseEntity();
+
 
 	}
 
@@ -91,11 +90,8 @@ public class PublisherController {
 	public ResponseEntity subscribe(@RequestBody SubParam sub) {
 
 
-		SubResponseEntity subResponseEntity = subscriptionService.subscribe(sub.getUserId(), sub.getPublishTemail());
-		if (subResponseEntity.isSuc()) {
-			return new ResponseEntity();
-		}
-		return new ResponseEntity("500", subResponseEntity.getMsg());
+		subscriptionService.subscribe(sub.getUserId(), sub.getPublishTemail(), PublisherTypeEnums.person);
+		return new ResponseEntity();
 
 	}
 
@@ -105,11 +101,9 @@ public class PublisherController {
 					value = "批量组织名称订阅组织号"
 	)
 	public ResponseEntity subscribebyOrgList(@RequestBody SubOrgListParam subList) {
-		SubResponseEntity subResponseEntity = subscriptionService.subscribeOrgList(subList.getUserIdList(), subList.getPublisherId(), subList.getPublishTemail());
-		if (subResponseEntity.isSuc()) {
-			return new ResponseEntity();
-		}
-		return new ResponseEntity("500", subResponseEntity.getMsg());
+		List<String> sendList = subscriptionService.subscribeOrgList(subList.getUserIdList(), subList.getPublisherId(), subList.getPublishTemail());
+		return new ResponseEntity(sendList);
+
 	}
 
 	@PostMapping("uploadExcel")
@@ -135,12 +129,9 @@ public class PublisherController {
 		if (listString.size() == 0) {
 			throw new BusinessException("名单导入为空");
 		}
-		SubResponseEntity subResponseEntity = subscriptionService.subscribeList(listString, param[0], param[1]);
+		List<String> sendList = subscriptionService.subscribeList(listString, param[0], param[1]);
 
-		if (subResponseEntity.isSuc()) {
-			return new ResponseEntity();
-		}
-		return new ResponseEntity("500", subResponseEntity.getMsg());
+		return new ResponseEntity(sendList);
 	}
 
 
@@ -150,11 +141,8 @@ public class PublisherController {
 	)
 	public ResponseEntity subscribeByList(@RequestBody SubUserListParam subUserList) {
 
-		SubResponseEntity subResponseEntity = subscriptionService.subscribeOrgList(subUserList.getTmails(), subUserList.getPublisherId(), subUserList.getUserId());
-		if (subResponseEntity.isSuc()) {
-			return new ResponseEntity();
-		}
-		return new ResponseEntity("500", subResponseEntity.getMsg());
+		List<String> sendList = subscriptionService.subscribeOrgList(subUserList.getTmails(), subUserList.getPublisherId(), subUserList.getUserId());
+		return new ResponseEntity(sendList);
 
 	}
 
@@ -167,9 +155,9 @@ public class PublisherController {
 					value = "取消订阅"
 	)
 	public ResponseEntity unsubscribe(@RequestBody DeleteParam unSub) {
-		SubResponseEntity sub = subscriptionService.unsubscribe(unSub.getUserId(), unSub.getPublisherId());
+		subscriptionService.unsubscribe(unSub.getUserId(), unSub.getPublisherId());
 
-		return sub.isSuc() ? new ResponseEntity() : new ResponseEntity("500", "取消订阅失败");
+		return new ResponseEntity();
 	}
 
 	@PostMapping("unOrgsubscribe")
@@ -177,8 +165,8 @@ public class PublisherController {
 					value = "取消组织订阅"
 	)
 	public ResponseEntity unOrgsubscribe(@RequestBody UnSubOrgParam unSubOrg) {
-		SubResponseEntity sub = subscriptionService.unsubscribeByOwnerId(unSubOrg.getSubTmail(), unSubOrg.getUserId(), StringUtils.getLong(unSubOrg.getPublisherId()), PublisherTypeEnums.organize);
-		return sub.isSuc() ? new ResponseEntity() : new ResponseEntity("500", sub.getMsg());
+		subscriptionService.unsubscribeByOwnerId(unSubOrg.getSubTmail(), unSubOrg.getUserId(), unSubOrg.getPublisherId(), PublisherTypeEnums.organize);
+		return new ResponseEntity();
 
 	}
 

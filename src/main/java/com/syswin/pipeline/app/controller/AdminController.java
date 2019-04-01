@@ -52,7 +52,7 @@ public class AdminController {
 	@ApiOperation(
 					value = "批量创建管理者"
 	)
-	public ResponseEntity createAdminList(@RequestBody MulCreateParam mulCreateParam) {
+	public ResponseEntity<Admin> createAdminList(@RequestBody MulCreateParam mulCreateParam) {
 		if (checkNotAdmin(mulCreateParam.getUserId())) {
 			return new ResponseEntity("500", "你无权操作");
 		}
@@ -66,25 +66,23 @@ public class AdminController {
 			if (StringUtils.isNullOrEmpty(psClientService.getTemailPublicKey(u))) {
 				return new ResponseEntity("500", u + "邮箱不存在");
 			}
-			SubResponseEntity subResponseEntity = adminService.createAdmin(mulCreateParam.getUserId(), u, false);
-			if (subResponseEntity.isSuc()) {
+			adminService.add(mulCreateParam.getUserId(), u, false);
 
-				List<Publisher> publisherList = publisherService.getPubLisherByType(PublisherTypeEnums.organize);
-				try {
+			List<Publisher> publisherList = publisherService.getPubLisherByType(PublisherTypeEnums.organize);
+			try {
 //					for (Publisher publisher : publisherList) {
 //						//创建成功了，给用户推名片
 //						sendMessegeService.sendCard(publisher.getPtemail(), u, "* " + publisher.getName());
 //						sendMessegeService.sendTextmessage("恭喜成为组织管理员", u, 0, publisher.getPtemail());
 //					}
-					sendMessegeService.sendTextmessage(u + "成为组织管理员", u);
-					sendMessegeService.sendTextmessage(u + "成为组织管理员", mulCreateParam.getUserId());
-					//回执创建完成消息
-				} catch (Exception e) {
-					logger.error("发送消息失败");
-				}
+				sendMessegeService.sendTextmessage(u + "成为组织管理员", u);
+				sendMessegeService.sendTextmessage(u + "成为组织管理员", mulCreateParam.getUserId());
+				//回执创建完成消息
+			} catch (Exception e) {
+				logger.error("发送消息失败");
 			}
 		}
-		return new ResponseEntity();
+		return new ResponseEntity(userList);
 
 	}
 
@@ -96,20 +94,17 @@ public class AdminController {
 		if (checkNotAdmin(adminParam.getUserId())) {
 			return new ResponseEntity("500", "你无权操作");
 		}
-		SubResponseEntity subResponseEntity = adminService.createAdmin(adminParam.getUserId(), adminParam.getTmail(), true);
-		if (subResponseEntity.isSuc()) {
+		Admin admin = adminService.add(adminParam.getUserId(), adminParam.getTmail(), true);
 
-			List<Publisher> publisherList = publisherService.getPubLisherByType(PublisherTypeEnums.organize);
-			for (Publisher publisher : publisherList) {
-				//创建成功了，给用户推名片
-				sendMessegeService.sendCard(publisher.getPtemail(), adminParam.getTmail(), "* " + publisher.getName());
-				sendMessegeService.sendTextmessage("成为组织管理员", adminParam.getTmail(), 0, publisher.getPtemail());
-			}
-			sendMessegeService.sendTextmessage(adminParam.getTmail() + "成为组织管理员", adminParam.getUserId());
-			//回执创建完成消息
-			return new ResponseEntity();
+		List<Publisher> publisherList = publisherService.getPubLisherByType(PublisherTypeEnums.organize);
+		for (Publisher publisher : publisherList) {
+			//创建成功了，给用户推名片
+			sendMessegeService.sendCard(publisher.getPtemail(), adminParam.getTmail(), "* " + publisher.getName());
+			sendMessegeService.sendTextmessage("成为组织管理员", adminParam.getTmail(), 0, publisher.getPtemail());
 		}
-		return new ResponseEntity("500", subResponseEntity.getMsg());
+		sendMessegeService.sendTextmessage(adminParam.getTmail() + "成为组织管理员", adminParam.getUserId());
+		//回执创建完成消息
+		return new ResponseEntity();
 
 	}
 
@@ -121,14 +116,11 @@ public class AdminController {
 		if (checkNotAdmin(adminParam.getUserId())) {
 			return new ResponseEntity("500", "你无权操作");
 		}
-		SubResponseEntity subResponseEntity = adminService.deleteAdmin(adminParam.getUserId(), adminParam.getTmail());
-		if (subResponseEntity.isSuc()) {
-			sendMessegeService.sendTextmessage("你被" + adminParam.getUserId() + "取消了组织管理员", adminParam.getTmail());
-			sendMessegeService.sendTextmessage(adminParam.getTmail() + "被取消了组织管理员", adminParam.getUserId());
+		adminService.delete(adminParam.getUserId(), adminParam.getTmail());
+		sendMessegeService.sendTextmessage("你被" + adminParam.getUserId() + "取消了组织管理员", adminParam.getTmail());
+		sendMessegeService.sendTextmessage(adminParam.getTmail() + "被取消了组织管理员", adminParam.getUserId());
 
-			return new ResponseEntity();
-		}
-		return new ResponseEntity("500", subResponseEntity.getMsg());
+		return new ResponseEntity();
 
 	}
 

@@ -1,13 +1,17 @@
 package com.syswin.pipeline.service;
 
+import com.github.pagehelper.PageInfo;
 import com.syswin.pipeline.service.bussiness.impl.SendMessegeService;
 import com.syswin.pipeline.service.ps.PSClientService;
+import com.syswin.pipeline.service.psserver.impl.BusinessException;
 import com.syswin.pipeline.utils.PatternUtils;
 import com.syswin.pipeline.utils.StringUtils;
 import com.syswin.sub.api.AdminService;
 import com.syswin.sub.api.db.model.Admin;
 import com.syswin.sub.api.db.model.Publisher;
+import com.syswin.sub.api.db.model.Subscription;
 import com.syswin.sub.api.enums.PublisherTypeEnums;
+import com.syswin.sub.api.exceptions.SubException;
 import com.syswin.sub.api.response.SubResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,21 +49,21 @@ public class PiperSubscriptionService {
 	/**
 	 * 订阅
 	 */
-	public SubResponseEntity subscribe(String userId, String publishTemail) {
+	public Subscription subscribe(String userId, String publishTemail, PublisherTypeEnums piperType) {
 
 		if (StringUtils.isNullOrEmpty(publishTemail) || StringUtils.isNullOrEmpty(userId)) {
-			return new SubResponseEntity("订阅邮箱不能为空");
+			throw new BusinessException("订阅邮箱不能为空");
 		}
 		if (StringUtils.isNullOrEmpty(psClientService.getTemailPublicKey(publishTemail))) {
-			return new SubResponseEntity("订阅邮箱不存在");
+			throw new BusinessException("订阅邮箱不存在");
 		}
-		SubResponseEntity resp = subSubscriptionService.subscribe(userId, publishTemail, PublisherTypeEnums.person);
 
-		if (!resp.isSuc()) return resp;
-		Publisher publisher = subPublisherService.getPubLisherByPublishTmail(publishTemail, PublisherTypeEnums.person);
+		Publisher publisher = subPublisherService.getPubLisherByPublishTmail(publishTemail, piperType);
 		if (publisher == null) {
-			return new SubResponseEntity("订阅失败，出版社不存在");
+			throw new BusinessException("订阅失败，出版社不存在");
 		}
+		Subscription subscription = subSubscriptionService.subscribe(userId, publisher.getPtemail());
+
 		//判断是否自己订阅自己
 		if (userId.equals(publisher.getUserId())) {
 			sendMessegeService.sendCard(publisher.getPtemail(), userId, "* " + publisher.getName());
@@ -69,7 +73,7 @@ public class PiperSubscriptionService {
 		psClientService.sendTextmessage(publisher.getName() + "<" + publisher.getPtemail() + "> 订阅成功，作者即将推送文章", userId, 0);
 		sendMessegeService.sendTextmessage("订阅成功，作者会在此为你发文章", userId, 0, publisher.getPtemail());
 
-		return resp;
+		return subscription;
 	}
 
 	/**
@@ -78,11 +82,11 @@ public class PiperSubscriptionService {
 	 * @param userId
 	 * @param publishTemail
 	 */
-	public SubResponseEntity unsubscribe(String userId, String publishTemail, PublisherTypeEnums ptype) {
+	public void unsubscribe(String userId, String publishTemail, PublisherTypeEnums ptype) {
 		if (StringUtils.isNullOrEmpty(psClientService.getTemailPublicKey(publishTemail))) {
-			return new SubResponseEntity("订阅邮箱不存在");
+			throw new SubException("订阅邮箱不存在");
 		}
-		return subSubscriptionService.unsubscribe(userId, publishTemail, ptype);
+		subSubscriptionService.unsubscribeByTemail(userId, publishTemail, ptype);
 	}
 
 
@@ -90,16 +94,16 @@ public class PiperSubscriptionService {
 	 * 批量订阅组织号
 	 * 根据组织名称获取组织下所有有的邮箱
 	 */
-	public SubResponseEntity subscribeOrgList(String comBairuserIds, String publiserId, String oweruserId) {
+	public List<String> subscribeOrgList(String comBairuserIds, String publiserId, String oweruserId) {
 		//以 英文分号隔开
 //		List<String> stringB = Arrays.asList(stringArray);
 //		String [] arr = comBairuserIds.split("\\s+|\\,+|\\;+");
 		if (StringUtils.isNullOrEmpty(oweruserId) || StringUtils.isNullOrEmpty(comBairuserIds)) {
-			return new SubResponseEntity("userId或者邮箱列表为空");
+			throw new BusinessException("userId或者邮箱列表为空");
 		}
 		Admin admin = adminService.getAdmin(oweruserId);
 		if (admin == null) {
-			return new SubResponseEntity("你不是组织管理者");
+			throw new BusinessException("你不是组织管理者");
 		}
 		List<String> userList = PatternUtils.tranStrstoList(comBairuserIds);
 		List<String> sendList = subSubscriptionService.subscribeList(userList, publiserId);
@@ -108,16 +112,16 @@ public class PiperSubscriptionService {
 			//防止重复推送
 			sendSubscriptionService.sendSub(userId, publisher);
 		}
-		return new SubResponseEntity();
+		return sendList;
 	}
 
-	public SubResponseEntity subscribeList(List<String> userIds, String publiserId, String oweruserId) {
+	public List<String> subscribeList(List<String> userIds, String publiserId, String oweruserId) {
 		if (StringUtils.isNullOrEmpty(oweruserId)) {
-			return new SubResponseEntity("userId为空");
+			throw new BusinessException("userId为空");
 		}
 		Admin admin = adminService.getAdmin(oweruserId);
 		if (admin == null) {
-			return new SubResponseEntity("你不是邮件组管理者");
+			throw new BusinessException("你不是邮件组管理者");
 		}
 		List<String> sendList = subSubscriptionService.subscribeList(userIds, publiserId);
 		Publisher publisher = subPublisherService.getPubLisherById(publiserId);
@@ -125,7 +129,7 @@ public class PiperSubscriptionService {
 			//防止重复推送
 			sendSubscriptionService.sendSub(userId, publisher);
 		}
-		return new SubResponseEntity();
+		return sendList;
 	}
 
 	/**
@@ -134,20 +138,26 @@ public class PiperSubscriptionService {
 	 * @param userId
 	 * @param publisherId
 	 */
-	public SubResponseEntity unsubscribe(String userId, String publisherId) {
+	public void unsubscribe(String userId, String publisherId) {
 		Publisher publisher = subPublisherService.getPubLisherById(publisherId);
 		if (publisher == null) {
-			return new SubResponseEntity(false, "出版社不能为空");
+			throw new BusinessException( "出版社不能为空");
 		}
 		if (PublisherTypeEnums.organize.equals(publisher.getPtype())) {
-			return new SubResponseEntity(false, "组织出版社不能取消订阅");
+			throw new BusinessException("组织出版社不能取消订阅");
 		}
-		return subSubscriptionService.unsubscribe(userId, publisherId);
+		 subSubscriptionService.unsubscribeByPubliserId(userId, publisherId);
 	}
 
-	public SubResponseEntity unsubscribeByOwnerId(String userId, String ownerId, Long publiserId, PublisherTypeEnums ptype) {
-
-		return subSubscriptionService.unsubscribeByOwnerId(userId, ownerId, ptype);
+	public void unsubscribeByOwnerId(String userId, String ownerId, String publiserId, PublisherTypeEnums ptype) {
+		Publisher publisher = subPublisherService.getPubLisherById(publiserId);
+		if (publisher == null) {
+			throw new SubException("生产源不存在");
+		}
+		if (!publisher.getPtype().equals(ptype) || !publisher.getUserId().equals(ownerId)) {
+			throw new SubException("您没权限操作该出版社");
+		}
+		subSubscriptionService.unsubscribeByPubliserId(userId, publiserId);
 	}
 
 	/**
@@ -176,10 +186,9 @@ public class PiperSubscriptionService {
 	//================================ manage方法 =========================================>
 
 
-	public Map<String, Object> listByExample(int pageIndex, int pageSize, String publisherId) {
+	public PageInfo<Subscription> list(int pageIndex, int pageSize, String userId, String keyword, String publisherId) {
 
-
-		return subSubscriptionService.list(pageIndex, pageSize, publisherId);
+		return subSubscriptionService.list(pageIndex, pageSize, keyword, publisherId);
 	}
 
 	public List<String> getSubscribersByUserId(String keyword, String userId, String publisherId, PublisherTypeEnums organize, int pageNo, int pageSize) {
