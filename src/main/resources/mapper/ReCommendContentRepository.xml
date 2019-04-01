@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.syswin.pipeline.db.repository.ReCommendContentRepository">
+    <resultMap id="BaseResultMap" type="com.syswin.pipeline.db.model.ReCommendContent">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="content_id" jdbcType="VARCHAR" property="contentId"/>
+        <result column="user_id" jdbcType="VARCHAR" property="userId"/>
+        <result column="create_time" jdbcType="INTEGER" property="createTime"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+      id, content_id,  user_id, create_time
+  </sql>
+    <insert id="insert">
+        insert into recommendcontent
+        (
+        content_id,
+        user_id,
+        card_no,
+        create_time
+        ) values (
+        #{contentId},
+        #{userId},
+        #{cardNo},
+        #{createTime}
+        )
+    </insert>
+
+    <update id="update">
+        update recommendcontent
+        <set>
+            <if test="userId != null  and userId != ''">
+                user_id = #{userId},
+            </if>
+            <if test="contentId != null">
+                content_id = #{contentId},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <select id="select" resultType="com.syswin.pipeline.db.model.ReCommendContent">
+        select
+        <include refid="Base_Column_List"/>
+        from recommendcontent order by create_time desc
+    </select>
+
+    <select id="selectById" resultType="com.syswin.pipeline.db.model.ReCommendContent">
+        select
+        <include refid="Base_Column_List"/>
+        from recommendcontent where id = #{id}
+    </select>
+
+    <select id="selectByContentId" resultType="com.syswin.pipeline.db.model.ReCommendContent">
+        select
+        <include refid="Base_Column_List"/>
+        from recommendcontent where content_id = #{contentId}
+    </select>
+
+    <select id="selectByUserId" resultType="com.syswin.pipeline.db.model.ReCommendContent">
+        select
+        <include refid="Base_Column_List"/>
+        from recommendcontent where user_id = #{userId}
+    </select>
+
+    <select id="selectById" resultType="com.syswin.pipeline.db.model.ReCommendContent">
+        select
+        <include refid="Base_Column_List"/>
+        from recommendcontent where id = #{id}
+    </select>
+
+    <delete id="delete">
+       delete from recommendcontent  where id = #{id}
+  </delete>
+</mapper>

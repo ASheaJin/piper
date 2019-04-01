@@ -9,7 +9,7 @@
         <result column="create_time" jdbcType="INTEGER" property="createTime"/>
     </resultMap>
 
-    <sql id="Base_Column_List" >
+    <sql id="Base_Column_List">
       evaluation_id,  user_id, level, content_id,  create_time
     </sql>
 
@@ -33,13 +33,18 @@
 
     <select id="select" resultType="com.syswin.pipeline.db.model.Evaluation">
         select
-        <include refid="Base_Column_List" />
+        <include refid="Base_Column_List"/>
         from evaluation
     </select>
 
     <select id="selectByUserIdContentId" resultType="com.syswin.pipeline.db.model.Evaluation">
         select
-        <include refid="Base_Column_List" />
-        from evaluation  where user_id = #{userId} and content_id = #{contentId}
+        <include refid="Base_Column_List"/>
+        from evaluation where user_id = #{userId} and content_id = #{contentId}
     </select>
+
+    <delete id="delete">
+       delete from evaluation  where evaluation_id = #{id}
+  </delete>
+
 </mapper>

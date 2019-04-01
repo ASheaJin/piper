@@ -20,7 +20,6 @@ import java.util.Set;
 
 @Configuration
 @EnableSwagger2
-//@ComponentScan("com.syswin.door.api.core.controller")
 public class SwaggerConfig {
 
 	//swagger文档是否可用
@@ -51,7 +50,7 @@ public class SwaggerConfig {
 		return new Docket(DocumentationType.SWAGGER_2)
 						.select()
 						.apis(RequestHandlerSelectors.withClassAnnotation(Api.class))
-						.paths(PathSelectors.regex("/(test|admin|ps|publish|subcribe)/.*"))
+						.paths(PathSelectors.regex("/(test|admin|ps|publish|subcribe|recommend|content)/.*"))
 						.build()
 						.groupName("api")
 						.pathMapping("/")

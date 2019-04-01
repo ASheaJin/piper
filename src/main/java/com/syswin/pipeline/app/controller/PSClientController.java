@@ -50,7 +50,7 @@ public class PSClientController {
 	@Autowired
 	private com.syswin.sub.api.PublisherService subPublisherService;
 
-	@PostMapping("sendMsg")
+	@PostMapping("/sendMsg")
 	@ApiOperation(
 					value = "获取消息详情"
 	)
@@ -61,7 +61,7 @@ public class PSClientController {
 	}
 
 
-	@PostMapping("getPubKey")
+	@PostMapping("/getPubKey")
 	@ApiOperation(
 					value = "获取pubKey"
 	)
@@ -70,7 +70,7 @@ public class PSClientController {
 	}
 
 
-	@PostMapping("registerTemail")
+	@PostMapping("/registerTemail")
 	@ApiOperation(
 					value = "注册Temail, 返回公钥"
 	)
@@ -79,7 +79,7 @@ public class PSClientController {
 	}
 
 
-	@GetMapping("getTemailPublicKey")
+	@GetMapping("/getTemailPublicKey")
 	@ApiOperation(
 					value = "获取公钥"
 	)
@@ -91,7 +91,7 @@ public class PSClientController {
 		return new PubKey(pub);
 	}
 
-	@GetMapping("createPublicKey")
+	@GetMapping("/createPublicKey")
 	@ApiOperation(
 					value = "批量生成密机"
 	)
@@ -108,7 +108,7 @@ public class PSClientController {
 	}
 
 
-	@PostMapping("sendOthermessage")
+	@PostMapping("/sendOthermessage")
 	@ApiOperation(
 					value = "测试接口。发送消息"
 	)
@@ -119,7 +119,7 @@ public class PSClientController {
 		return String.valueOf(result);
 	}
 
-	@GetMapping("setCard")
+	@GetMapping("/setCard")
 	@ApiOperation(
 					value = "发送名片"
 	)
@@ -128,7 +128,7 @@ public class PSClientController {
 		sendMessegeService.sendCard(temail, to, nick);
 	}
 
-	@PostMapping("sendCards")
+	@PostMapping("/sendCards")
 	@ApiOperation(
 					value = "批量发名片"
 	)

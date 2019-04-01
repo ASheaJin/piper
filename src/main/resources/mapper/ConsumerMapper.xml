@@ -68,10 +68,19 @@
         where user_id = #{userId}
     </update>
 
-    <select id="selectById" resultType="com.syswin.pipeline.db.model.Consumer">
+    <select id="selectByUserId" resultType="com.syswin.pipeline.db.model.Consumer">
         select
         <include refid="Base_Column_List"/>
         from consumer where user_id = #{userId}
     </select>
 
+    <select id="selectById" resultType="com.syswin.pipeline.db.model.Consumer">
+        select
+        <include refid="Base_Column_List"/>
+        from consumer where id = #{id}
+    </select>
+
+    <delete id="delete">
+       delete from consumer  where id = #{id}
+  </delete>
 </mapper>

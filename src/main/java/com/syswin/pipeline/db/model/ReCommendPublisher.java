@@ -7,7 +7,8 @@ import lombok.Data;
  * @date:2019/4/1 10:02
  */
 @Data
-public class ReCommendPublish {
+public class ReCommendPublisher {
 	private String reCommendPublishId;
-	private String contentId;
+	private String publisherId;
+	private  String userId;
 }

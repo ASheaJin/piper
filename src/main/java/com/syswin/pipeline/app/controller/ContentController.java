@@ -1,8 +1,12 @@
 package com.syswin.pipeline.app.controller;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.syswin.pipeline.app.dto.SubUserListParam;
+import com.syswin.pipeline.service.psserver.bean.ResponseEntity;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * 发布内容、查看、评价、搜索
@@ -11,16 +15,17 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin
 @RestController
 @RequestMapping("/content")
+@Api(value = "content", tags = "content")
 public class ContentController {
 
-	//help
-	// 1、help消息组装，轮询处理
-	// 2、指令进度控制（指令执行管理表）。超时判断
-  // 3、处理指令
 
-	//发布内容
-	//查看内容详情 记录最近的出版社Id，内容Id。
-	//内容评分
-	//获取当前内容列表
-	//查看历史内容列表 传入已拉取的Id
+	@PostMapping("/list")
+	@ApiOperation(
+					value = "获取出版社列表"
+	)
+	public ResponseEntity list(@RequestBody SubUserListParam subUserList) {
+
+		return new ResponseEntity();
+
+	}
 }

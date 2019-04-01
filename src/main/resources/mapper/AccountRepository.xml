@@ -68,16 +68,26 @@
         <include refid="Base_Column_List" />
         from account  where user_id = #{userId}
     </select>
+
+    <select id="selectById" resultType="com.syswin.pipeline.db.model.Account">
+        select
+        <include refid="Base_Column_List" />
+        from account  where account_id = #{id}
+    </select>
     <select id="selectByUserIdlike" resultType="com.syswin.pipeline.db.model.Account">
         select
         <include refid="Base_Column_List" />
         from account  where 1=1
-        <if test="userId != ''">
+        <if test="userId != null and userId != ''">
           and  user_id like CONCAT('%',#{userId},'%')
         </if>
         <if test="end != 0">
         limit #{start},#{end}
        </if>
     </select>
+
+    <delete id="delete">
+       delete from account  where account_id = #{id}
+  </delete>
 
 </mapper>

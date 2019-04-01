@@ -11,5 +11,6 @@ public class ReCommendContent {
 
 	private  String reCommendContentId;
 	private  String contentId;
+	private  String userId;
 
 }
