@@ -61,6 +61,10 @@
     delete from sys_role_menu
     where role_id = #{roleId,jdbcType=BIGINT}
     </delete>
+    <delete id="deleteByMenuId" parameterType="java.lang.Long">
+    delete from sys_role_menu
+    where menu_id = #{menuId,jdbcType=BIGINT}
+    </delete>
     <insert id="insert" parameterType="com.syswin.pipeline.db.model.RoleMenu">
     insert into sys_role_menu (role_id, menu_id)
     values (#{roleId,jdbcType=BIGINT}, #{menuId,jdbcType=BIGINT})

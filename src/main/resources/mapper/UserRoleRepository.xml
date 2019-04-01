@@ -61,6 +61,10 @@
       delete from sys_user_role
       where user_id = #{userId,jdbcType=BIGINT}
     </delete>
+  <delete id="deleteByRoleId" parameterType="java.lang.Long">
+    delete from sys_user_role
+    where role_id = #{roleId,jdbcType=BIGINT}
+  </delete>
     <insert id="insert" parameterType="com.syswin.pipeline.db.model.UserRole">
     insert into sys_user_role (user_id, role_id)
     values (#{userId,jdbcType=BIGINT}, #{roleId,jdbcType=BIGINT})

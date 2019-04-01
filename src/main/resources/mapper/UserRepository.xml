@@ -12,6 +12,7 @@
     <result column="create_time" jdbcType="INTEGER" property="createTime" />
     <result column="creator_id" jdbcType="BIGINT" property="creatorId" />
     <result column="is_sys" jdbcType="TINYINT" property="isSys" />
+    <result column="salt" jdbcType="VARCHAR" property="salt" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -44,7 +45,7 @@
   </sql>
   <sql id="Base_Column_List">
     user_id, login_name, user_name, password, email, remark, status, create_time, creator_id, 
-    is_sys
+    is_sys, salt
   </sql>
   <select id="selectByExample" parameterType="com.syswin.pipeline.db.model.UserExample" resultMap="BaseResultMap">
     select
@@ -66,6 +67,7 @@
     <include refid="Base_Column_List" />
     from sys_user
     where user_id = #{userId,jdbcType=BIGINT}
+      and status = 1
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from sys_user
@@ -75,11 +77,11 @@
     insert into sys_user (user_id, login_name, user_name, 
       password, email, remark, 
       status, create_time, creator_id, 
-      is_sys)
+      is_sys, salt)
     values (#{userId,jdbcType=BIGINT}, #{loginName,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, 
       #{password,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, 
       #{status,jdbcType=TINYINT}, #{createTime,jdbcType=INTEGER}, #{creatorId,jdbcType=BIGINT}, 
-      #{isSys,jdbcType=TINYINT})
+      #{isSys,jdbcType=TINYINT}, #{salt,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.syswin.pipeline.db.model.User">
     insert into sys_user
@@ -114,6 +116,9 @@
       <if test="isSys != null">
         is_sys,
       </if>
+      <if test="salt != null">
+        salt,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="userId != null">
@@ -145,6 +150,9 @@
       </if>
       <if test="isSys != null">
         #{isSys,jdbcType=TINYINT},
+      </if>
+      <if test="salt != null">
+        #{salt,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>

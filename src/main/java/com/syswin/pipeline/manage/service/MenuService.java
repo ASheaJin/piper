@@ -1,7 +1,14 @@
 package com.syswin.pipeline.manage.service;
 
+import com.syswin.pipeline.db.model.Menu;
+import com.syswin.pipeline.db.model.MenuExample;
+import com.syswin.pipeline.db.repository.MenuRepository;
+import com.syswin.pipeline.db.repository.RoleMenuRepository;
 import com.syswin.pipeline.manage.dto.MenuOut;
+import com.syswin.pipeline.utils.BeanConvertUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -11,18 +18,30 @@ import java.util.List;
 @Service
 public class MenuService {
 
+    @Autowired
+    private MenuRepository menuRepository;
+
+    @Autowired
+    private RoleMenuRepository roleMenuRepository;
     /**
-     * 角色列表
+     * 菜单树
      *
-     * @param pageIndex
-     * @param pageSize
      * @return
      */
-    public List<MenuOut> list(int pageIndex, int pageSize) {
-        return null;
+    public List<MenuOut> list() {
+        MenuExample menuExample = new MenuExample();
+        List<Menu> menus = menuRepository.selectByExample(menuExample);
+        List<MenuOut> menuOuts = BeanConvertUtil.mapList(menus, MenuOut.class);
+        return menuOuts;
     }
+    @Transactional
+    public Boolean deleteMenu(String menuId) {
+        Long mid = Long.parseLong(menuId);
 
-    public Boolean enableMenu(String menuId) {
+        menuRepository.deleteByPrimaryKey(mid);
+
+        roleMenuRepository.deleteByRoleId(mid);
+
         return false;
     }
 }

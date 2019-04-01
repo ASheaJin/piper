@@ -1,6 +1,6 @@
 package com.syswin.pipeline.db.model;
 
-public class Menu {
+public class Menu  extends BaseEntity{
     private Long menuId;
 
     private Long parentId;
@@ -13,7 +13,6 @@ public class Menu {
 
     private Byte status;
 
-    private Integer createTime;
 
     public Long getMenuId() {
         return menuId;
@@ -63,11 +62,4 @@ public class Menu {
         this.status = status;
     }
 
-    public Integer getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Integer createTime) {
-        this.createTime = createTime;
-    }
 }

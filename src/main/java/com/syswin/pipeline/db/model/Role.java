@@ -1,6 +1,6 @@
 package com.syswin.pipeline.db.model;
 
-public class Role {
+public class Role  extends BaseEntity{
     private Long roleId;
 
     private String roleName;
@@ -8,8 +8,6 @@ public class Role {
     private String remark;
 
     private Byte status;
-
-    private Integer createTime;
 
     private Long creatorId;
 
@@ -47,13 +45,6 @@ public class Role {
         this.status = status;
     }
 
-    public Integer getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Integer createTime) {
-        this.createTime = createTime;
-    }
 
     public Long getCreatorId() {
         return creatorId;

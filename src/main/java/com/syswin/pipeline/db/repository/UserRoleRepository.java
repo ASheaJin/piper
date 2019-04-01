@@ -2,6 +2,8 @@ package com.syswin.pipeline.db.repository;
 
 import com.syswin.pipeline.db.model.UserRoleExample;
 import com.syswin.pipeline.db.model.UserRole;
+import org.apache.ibatis.annotations.Param;
+
 import java.util.List;
 
 public interface UserRoleRepository {
@@ -14,5 +16,7 @@ public interface UserRoleRepository {
 
     int deleteByPrimaryKey(UserRole key);
 
-    int deleteByUserId(Long userId);
+    int deleteByUserId(@Param("userId") Long userId);
+
+    int deleteByRoleId(@Param("roleId") Long roleId);
 }

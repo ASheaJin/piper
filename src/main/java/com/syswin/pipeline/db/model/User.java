@@ -21,6 +21,8 @@ public class User {
 
     private Byte isSys;
 
+    private String salt;
+
     public Long getUserId() {
         return userId;
     }
@@ -99,5 +101,13 @@ public class User {
 
     public void setIsSys(Byte isSys) {
         this.isSys = isSys;
+    }
+
+    public String getSalt() {
+        return salt;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt;
     }
 }
