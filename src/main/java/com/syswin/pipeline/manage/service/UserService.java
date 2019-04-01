@@ -5,9 +5,9 @@ import com.github.pagehelper.PageInfo;
 import com.syswin.pipeline.db.model.*;
 import com.syswin.pipeline.db.repository.*;
 import com.syswin.pipeline.manage.dto.*;
-import com.syswin.pipeline.utils.BeanConvertUtil;
 import com.syswin.pipeline.utils.MD5Coder;
 import com.syswin.pipeline.utils.TokenUtil;
+import com.syswin.sub.api.utils.BeanConvertUtil;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,8 +53,10 @@ public class UserService {
         PageHelper.startPage(pageIndex, pageSize);
         List<User> userList = this.userRepository.selectByExample(userExample);
         List<UserOut> userOuts = BeanConvertUtil.mapList(userList, UserOut.class);
+        PageInfo pageInfo = new PageInfo(userList);
+        pageInfo.setList(userOuts);
 
-        return new PageInfo(userOuts);
+        return pageInfo;
     }
 
     /**

@@ -9,7 +9,7 @@ import com.syswin.pipeline.db.repository.RoleRepository;
 import com.syswin.pipeline.db.repository.UserRoleRepository;
 import com.syswin.pipeline.manage.dto.MenuOut;
 import com.syswin.pipeline.manage.dto.RoleOut;
-import com.syswin.pipeline.utils.BeanConvertUtil;
+import com.syswin.sub.api.utils.BeanConvertUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,78 +24,85 @@ import java.util.stream.Collectors;
 @Service
 public class RoleService {
 
-    @Autowired
-    private RoleRepository roleRepository;
+	@Autowired
+	private RoleRepository roleRepository;
 
-    @Autowired
-    private RoleMenuRepository roleMenuRepository;
+	@Autowired
+	private RoleMenuRepository roleMenuRepository;
 
-    @Autowired
-    private MenuRepository menuRepository;
+	@Autowired
+	private MenuRepository menuRepository;
 
-    @Autowired
-    private UserRoleRepository userRoleRepository;
-    /**
-     * 角色列表
-     * @param pageIndex
-     * @param pageSize
-     * @return
-     */
-    public PageInfo<RoleOut> list(int pageIndex, int pageSize) {
-        pageIndex = pageIndex < 1 ? 1 : pageIndex;
-        pageSize = pageSize <= 30 && pageSize >= 1 ? pageSize : 30;
+	@Autowired
+	private UserRoleRepository userRoleRepository;
 
-        RoleExample roleExample = new RoleExample();
-        RoleExample.Criteria criteria = roleExample.createCriteria();
-        criteria.andStatusEqualTo(Byte.valueOf("1"));
+	/**
+	 * 角色列表
+	 *
+	 * @param pageIndex
+	 * @param pageSize
+	 * @return
+	 */
+	public PageInfo<RoleOut> list(int pageIndex, int pageSize) {
+		pageIndex = pageIndex < 1 ? 1 : pageIndex;
+		pageSize = pageSize <= 30 && pageSize >= 1 ? pageSize : 30;
 
-        PageHelper.startPage(pageIndex, pageSize);
-        List<Role> roleList = this.roleRepository.selectByExample(roleExample);
-        List<RoleOut> roleOuts = BeanConvertUtil.mapList(roleList, RoleOut.class);
+		RoleExample roleExample = new RoleExample();
+		RoleExample.Criteria criteria = roleExample.createCriteria();
+		criteria.andStatusEqualTo(Byte.valueOf("1"));
 
-        return new PageInfo(roleOuts);
-    }
+		PageHelper.startPage(pageIndex, pageSize);
+		List<Role> roleList = this.roleRepository.selectByExample(roleExample);
+		List<RoleOut> roleOuts = BeanConvertUtil.mapList(roleList, RoleOut.class);
+
+		PageInfo pageInfo = new PageInfo(roleList);
+		pageInfo.setList(roleOuts);
+
+		return pageInfo;
+	}
 
 
-    public List<MenuOut> getMenuesByRoleId(String roleId) {
-        RoleMenuExample example = new RoleMenuExample();
-        example.createCriteria().andRoleIdEqualTo(Long.parseLong(roleId));
-        List<RoleMenu> roleMenus = roleMenuRepository.selectByExample(example);
+	public List<MenuOut> getMenuesByRoleId(String roleId) {
+		RoleMenuExample example = new RoleMenuExample();
+		example.createCriteria().andRoleIdEqualTo(Long.parseLong(roleId));
+		List<RoleMenu> roleMenus = roleMenuRepository.selectByExample(example);
 
-        if (!roleMenus.isEmpty()) {
-            List<Long> menuIds = roleMenus.stream().map((ur) -> ur.getMenuId()).collect(Collectors.toList());
+		if (!roleMenus.isEmpty()) {
+			List<Long> menuIds = roleMenus.stream().map((ur) -> ur.getMenuId()).collect(Collectors.toList());
 
-            MenuExample menuExample = new MenuExample();
-            menuExample.createCriteria().andMenuIdIn(menuIds);
-            List<Menu> menus = menuRepository.selectByExample(menuExample);
-            List<MenuOut> menuOuts = BeanConvertUtil.mapList(menus, MenuOut.class);
-            return menuOuts;
-        }
-        return new ArrayList<>();
-    }
-    @Transactional
-    public Boolean saveMenuesByRoleId(String roleId, List<String> menuIds) {
-        roleMenuRepository.deleteByRoleId(Long.parseLong(roleId));
+			MenuExample menuExample = new MenuExample();
+			menuExample.createCriteria().andMenuIdIn(menuIds);
+			List<Menu> menus = menuRepository.selectByExample(menuExample);
+			List<MenuOut> menuOuts = BeanConvertUtil.mapList(menus, MenuOut.class);
+			return menuOuts;
+		}
+		return new ArrayList<>();
+	}
 
-        for (String menuId : menuIds) {
-            RoleMenu rm = new RoleMenu();
-            rm.setMenuId(Long.parseLong(menuId));
-            rm.setRoleId(Long.parseLong(roleId));
-            roleMenuRepository.insert(rm);
-        }
+	@Transactional
+	public Boolean saveMenuesByRoleId(String roleId, List<String> menuIds) {
+		roleMenuRepository.deleteByRoleId(Long.parseLong(roleId));
 
-        return true;
-    }
-    @Transactional
-    public Boolean deleteRole(String roleId) {
-        Long rid = Long.parseLong(roleId);
+		for (String menuId : menuIds) {
+			RoleMenu rm = new RoleMenu();
+			rm.setMenuId(Long.parseLong(menuId));
+			rm.setRoleId(Long.parseLong(roleId));
+			roleMenuRepository.insert(rm);
+		}
 
-        roleRepository.deleteByPrimaryKey(rid);
+		return true;
+	}
 
-        userRoleRepository.deleteByRoleId(rid);
+	@Transactional
+	public Boolean deleteRole(String roleId) {
+		Long rid = Long.parseLong(roleId);
 
-        roleMenuRepository.deleteByRoleId(rid);
+		roleRepository.deleteByPrimaryKey(rid);
 
-        return true;
-    }
+		userRoleRepository.deleteByRoleId(rid);
+
+		roleMenuRepository.deleteByRoleId(rid);
+
+		return true;
+	}
 }
