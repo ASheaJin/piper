@@ -12,5 +12,5 @@ import org.springframework.stereotype.Repository;
 public interface ConsumerRepository extends BaseRepository<Consumer> {
 
 
-	Consumer selectById(@Param("userId") String userId);
+	Consumer selectByUserId(@Param("userId") String userId);
 }

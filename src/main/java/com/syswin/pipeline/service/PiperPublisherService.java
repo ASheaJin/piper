@@ -5,7 +5,6 @@ import com.syswin.pipeline.app.controller.PSSeverController;
 import com.syswin.pipeline.service.bussiness.impl.SendMessegeService;
 import com.syswin.pipeline.service.ps.PSClientService;
 import com.syswin.pipeline.service.ps.util.ValidationUtil;
-import com.syswin.pipeline.service.psserver.SendMsgService;
 import com.syswin.pipeline.service.psserver.impl.BusinessException;
 import com.syswin.pipeline.utils.MessageUtil;
 import com.syswin.pipeline.utils.PatternUtils;
@@ -15,7 +14,6 @@ import com.syswin.sub.api.db.model.Admin;
 import com.syswin.sub.api.db.model.Publisher;
 import com.syswin.sub.api.enums.PublisherTypeEnums;
 import com.syswin.sub.api.exceptions.SubException;
-import com.syswin.sub.api.response.SubResponseEntity;
 import com.syswin.sub.api.utils.EnumsUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +23,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 出版社和内容发布的方法
@@ -34,8 +31,6 @@ import java.util.Map;
 @Service
 public class PiperPublisherService {
 
-	@Autowired
-	private SendMsgService sendMsgService;
 	private static final Logger logger = LoggerFactory.getLogger(PSSeverController.class);
 	@Value("${app.pipeline.userId}")
 	private String from;
@@ -118,7 +113,7 @@ public class PiperPublisherService {
 
 	public void delete(String userId, String publisherId) {
 		// TODO: 2019/3/29 此处要判断用户角色权限
-		 subPublisherService.delete(userId, publisherId);
+		subPublisherService.delete(userId, publisherId);
 	}
 
 	/**
@@ -136,7 +131,7 @@ public class PiperPublisherService {
 
 	public PageInfo<Publisher> list(int pageIndex, int pageSize, String keyword, String piperType, String userId) {
 		PublisherTypeEnums pType = null;
-		if (!StringUtils.isNullOrEmpty(piperType)) {
+		if (!StringUtils.isNullOrEmpty(piperType) && !"0".equals(piperType)) {
 			pType = EnumsUtil.getPubliserTypeEnums(Integer.parseInt(piperType));
 		}
 		return subPublisherService.list(pageIndex, pageSize, keyword, pType, userId);

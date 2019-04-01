@@ -10,6 +10,4 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface CardRepository extends BaseRepository<Card> {
-
-    Card selectById(@Param("cardId") Long cardId);
 }

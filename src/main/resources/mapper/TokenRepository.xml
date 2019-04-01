@@ -38,4 +38,8 @@
         from token
         where user_id = #{userId}
     </select>
+
+    <delete id="delete">
+       delete from token  where token_id = #{id}
+  </delete>
 </mapper>

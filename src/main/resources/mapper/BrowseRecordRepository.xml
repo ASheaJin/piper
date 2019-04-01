@@ -70,10 +70,10 @@
     <update id="update" parameterType="com.syswin.pipeline.db.model.BrowseRecord" >
         update browse_record
         <set >
-            <if test="userId != null" >
+            <if test="userId != null and userId != ''" >
                 user_id = #{userId},
             </if>
-            <if test="fromtemail != null" >
+            <if test="fromtemail != null and fromtemail != ''" >
                 fromtemail = #{fromtemail},
             </if>
             <if test="contentId != null" >
@@ -115,4 +115,8 @@
             <include refid="Example_Where_Clause" />
         </if>
     </select>
+
+    <delete id="delete">
+       delete from browse_record  where browse_id = #{id}
+  </delete>
 </mapper>

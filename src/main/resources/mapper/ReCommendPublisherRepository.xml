@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.syswin.pipeline.db.repository.ReCommendPublisherRepository">
+    <resultMap id="BaseResultMap" type="com.syswin.pipeline.db.model.ReCommendPublisher">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="publisher_id" jdbcType="VARCHAR" property="publisherId"/>
+        <result column="user_id" jdbcType="VARCHAR" property="userId"/>
+        <result column="create_time" jdbcType="INTEGER" property="createTime"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+      id, publisher_id,  user_id, create_time
+  </sql>
+    <insert id="insert">
+        insert into recommendpublisher
+        (
+        publisher_id,
+        user_id,
+        card_no,
+        create_time
+        ) values (
+        #{publisherId},
+        #{userId},
+        #{cardNo},
+        #{createTime}
+        )
+    </insert>
+    <update id="update">
+        update recommendpublisher
+        <set>
+            <if test="userId != null  and userId != ''">
+                user_id = #{userId},
+            </if>
+            <if test="publisherId != null">
+                publisher_id = #{publisherId},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <select id="select" resultType="com.syswin.pipeline.db.model.ReCommendPublisher">
+        select
+        <include refid="Base_Column_List"/>
+        from recommendpublisher order by create_time desc
+    </select>
+
+    <select id="selectById" resultType="com.syswin.pipeline.db.model.ReCommendPublisher">
+        select
+        <include refid="Base_Column_List"/>
+        from recommendpublisher where id = #{id}
+    </select>
+
+    <select id="selectByPublisherId" resultType="com.syswin.pipeline.db.model.ReCommendPublisher">
+        select
+        <include refid="Base_Column_List"/>
+        from recommendpublisher where publisher_id = #{publisherId}
+    </select>
+
+    <select id="selectByUserId" resultType="com.syswin.pipeline.db.model.ReCommendPublisher">
+        select
+        <include refid="Base_Column_List"/>
+        from recommendpublisher where user_id = #{userId}
+    </select>
+
+    <delete id="delete">
+       delete from recommendpublisher  where id = #{id}
+  </delete>
+</mapper>

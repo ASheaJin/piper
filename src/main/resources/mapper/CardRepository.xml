@@ -28,17 +28,17 @@
     <update id="update">
         update card
         <set >
-            <if test="userId != null" >
-                user_id = #{userId,jdbcType=BIGINT},
+            <if test="userId != null  and userId != ''" >
+                user_id = #{userId},
             </if>
             <if test="carNo != null" >
-                card_no = #{cardNo,jdbcType=BIGINT},
+                card_no = #{cardNo},
             </if>
             <if test="createTime != null" >
-                create_time = #{createTime,jdbcType=INTEGER},
+                create_time = #{createTime},
             </if>
         </set>
-        where card_id = #{cardId,jdbcType=BIGINT}
+        where card_id = #{cardId}
     </update>
 
     <select id="select" resultType="com.syswin.pipeline.db.model.Card">
@@ -50,6 +50,10 @@
     <select id="selectById" resultType="com.syswin.pipeline.db.model.Card">
         select
         <include refid="Base_Column_List" />
-        from card  where card_id = #{cardId,jdbcType=BIGINT}
+        from card  where card_id = #{cardId}
     </select>
+
+    <delete id="delete">
+       delete from card  where card_id = #{id}
+  </delete>
 </mapper>

@@ -15,7 +15,7 @@ public interface TransactionRepository extends BaseRepository<Transaction> {
 
     Integer updateTransactionStatus(@Param("transactionId") Long transactionId, @Param("status") int status);
 
-    List<Transaction> selectById(@Param("userId") String userId);
+    List<Transaction> selectByUserId(@Param("userId") String userId);
 
     List<Transaction> selectByIdTypeTime(@Param("userId") String userId, @Param("type") int type, @Param("startTime") int startTime, @Param("endTime") int endTime, @Param("start") int start, @Param("end") int end);
 }

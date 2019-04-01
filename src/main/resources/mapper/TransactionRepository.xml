@@ -84,4 +84,8 @@
         count(1)
         from transaction_record
     </select>
+
+    <delete id="delete">
+       delete from transaction_record  where transaction_id = #{id}
+  </delete>
 </mapper>
