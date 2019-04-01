@@ -2,6 +2,8 @@ package com.syswin.pipeline.service;
 
 import com.github.pagehelper.PageInfo;
 import com.syswin.pipeline.app.controller.PSSeverController;
+import com.syswin.pipeline.manage.vo.output.AdminManageVO;
+import com.syswin.pipeline.manage.vo.output.PublisherManageVO;
 import com.syswin.pipeline.service.bussiness.impl.SendMessegeService;
 import com.syswin.pipeline.service.ps.PSClientService;
 import com.syswin.pipeline.service.ps.util.ValidationUtil;
@@ -14,6 +16,7 @@ import com.syswin.sub.api.db.model.Admin;
 import com.syswin.sub.api.db.model.Publisher;
 import com.syswin.sub.api.enums.PublisherTypeEnums;
 import com.syswin.sub.api.exceptions.SubException;
+import com.syswin.sub.api.utils.BeanConvertUtil;
 import com.syswin.sub.api.utils.EnumsUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,8 +55,7 @@ public class PiperPublisherService {
 	 */
 	public Publisher addPublisher(String userId, String name, String pmail, Integer ptype) {
 
-		// TODO: 2019/3/29 此处要判断用户角色权限
-		if (StringUtils.isNullOrEmpty(name) || StringUtils.isNullOrEmpty(userId)) {
+		if (StringUtils.isNullOrEmpty(name)) {
 			throw new BusinessException("名称不能为空");
 		}
 		if (!ValidationUtil.isChineseCharNum(name)) {
@@ -111,9 +113,8 @@ public class PiperPublisherService {
 		return subPublisherService.getPubLisherById(publisherId);
 	}
 
-	public void delete(String userId, String publisherId) {
-		// TODO: 2019/3/29 此处要判断用户角色权限
-		subPublisherService.delete(userId, publisherId);
+	public void delete(String publisherId) {
+		subPublisherService.delete(publisherId);
 	}
 
 	/**
@@ -134,7 +135,22 @@ public class PiperPublisherService {
 		if (!StringUtils.isNullOrEmpty(piperType) && !"0".equals(piperType)) {
 			pType = EnumsUtil.getPubliserTypeEnums(Integer.parseInt(piperType));
 		}
-		return subPublisherService.list(pageIndex, pageSize, keyword, pType, userId);
+		List<Publisher> publisherList = subPublisherService.list(pageIndex, pageSize, keyword, pType, userId);
+		List<PublisherManageVO> pmVOList = new ArrayList<>();
+		for (Publisher publisher : publisherList) {
+			PublisherManageVO pmVO = new PublisherManageVO();
+			pmVO.setCreatTime(pmVO.getCreatTime());
+			pmVO.setUserId(publisher.getUserId());
+			pmVO.setName(publisher.getName());
+			pmVO.setPtemail(publisher.getPtemail());
+			pmVO.setPublisherId(publisher.getPublisherId());
+			pmVO.setPiperType(publisher.getPtype().getName());
+			pmVOList.add(pmVO);
+		}
+
+		PageInfo pageInfo = new PageInfo<>(publisherList);
+		pageInfo.setList(pmVOList);
+		return pageInfo;
 	}
 
 	//获取我创建的组织出版社

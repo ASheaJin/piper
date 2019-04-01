@@ -7,7 +7,7 @@ import lombok.Data;
  * @date:2019/4/1 10:02
  */
 @Data
-public class ReCommendContent {
+public class ReCommendContent  extends BaseEntity {
 
 	private  String reCommendContentId;
 	private  String contentId;

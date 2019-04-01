@@ -18,7 +18,7 @@ import java.util.Map;
  * Created by 115477 on 2019/1/9.
  */
 @Service
-public class PiperReCommendPublisherService {
+public class PiperRecommendPublisherService {
 
 	@Autowired
 	private ReCommendPublisherRepository reCommendPublisherRepository;
@@ -50,8 +50,8 @@ public class PiperReCommendPublisherService {
 		return reCommendPublisher;
 	}
 
-	public void delete(String userId, String id) {
-		if (StringUtils.isNullOrEmpty(userId) || StringUtils.isNullOrEmpty(id)) {
+	public void delete( String id) {
+		if ( StringUtils.isNullOrEmpty(id)) {
 			throw new BusinessException("用户或出版社Id不能为空");
 		}
 		ReCommendPublisher reCommendPublisher = reCommendPublisherRepository.selectById(id);

@@ -1,4 +1,4 @@
-package com.syswin.pipeline.manage.vo;
+package com.syswin.pipeline.manage.vo.input;
 
 import lombok.Data;
 
@@ -7,6 +7,5 @@ import lombok.Data;
  */
 @Data
 public class DelPublisherParam {
-    private String userId;
-    private String publusherId;
+    private String publisherId;
 }

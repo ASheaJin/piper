@@ -1,12 +1,12 @@
 package com.syswin.pipeline.manage.controller;
 
 import com.github.pagehelper.PageInfo;
-import com.syswin.pipeline.manage.vo.DelPublisherParam;
-import com.syswin.pipeline.manage.vo.PublisherListParam;
-import com.syswin.pipeline.manage.vo.AddPublisherParam;
+import com.syswin.pipeline.manage.vo.input.DelPublisherParam;
+import com.syswin.pipeline.manage.vo.input.PublisherListParam;
+import com.syswin.pipeline.manage.vo.input.AddPublisherParam;
 import com.syswin.pipeline.service.PiperPublisherService;
-import com.syswin.pipeline.service.PiperSubscriptionService;
 import com.syswin.pipeline.service.psserver.bean.ResponseEntity;
+import com.syswin.pipeline.utils.HeaderUtil;
 import com.syswin.pipeline.utils.StringUtils;
 import com.syswin.sub.api.db.model.Publisher;
 import com.syswin.sub.api.utils.EnumsUtil;
@@ -14,6 +14,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Created by 115477 on 2019/1/8.
@@ -31,11 +33,10 @@ public class PublisherInnerController {
 	@ApiOperation(
 					value = "出版社列表"
 	)
-	public ResponseEntity<PageInfo> list(@RequestBody PublisherListParam plb) {
+	public ResponseEntity<PageInfo> list(@RequestBody PublisherListParam plb, HttpServletRequest request) {
 		Integer pageNo = StringUtils.isNullOrEmpty(plb.getPageNo()) ? 1 : Integer.parseInt(plb.getPageNo());
 		Integer pageSize = StringUtils.isNullOrEmpty(plb.getPageSize()) ? 20 : Integer.parseInt(plb.getPageSize());
-
-		return new ResponseEntity(publisherService.list(pageNo, pageSize, plb.getKeyword(), plb.getPiperType(), plb.getUserId()));
+		return new ResponseEntity(publisherService.list(pageNo, pageSize, plb.getKeyword(), plb.getPiperType(), null));
 	}
 
 
@@ -52,7 +53,7 @@ public class PublisherInnerController {
 	@ApiOperation(
 					value = "添加出版社"
 	)
-	public ResponseEntity add(@RequestBody AddPublisherParam publisherParam) {
+	public ResponseEntity add(@RequestBody AddPublisherParam publisherParam, HttpServletRequest request) {
 		Publisher publisher = publisherService.addPublisher(publisherParam.getUserId(), publisherParam.getPublishName(), publisherParam.getPublishMail(), Integer.parseInt(publisherParam.getPiperType()));
 		return new ResponseEntity(publisher);
 	}
@@ -62,8 +63,8 @@ public class PublisherInnerController {
 	@ApiOperation(
 					value = "删除出版社,同时删除所有订阅者"
 	)
-	public ResponseEntity delete(@RequestBody DelPublisherParam publisherParam) {
-		publisherService.delete(publisherParam.getUserId(), publisherParam.getPublusherId());
+	public ResponseEntity delete(@RequestBody DelPublisherParam publisherParam, HttpServletRequest request) {
+		publisherService.delete(publisherParam.getPublisherId());
 		return new ResponseEntity();
 	}
 }

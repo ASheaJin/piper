@@ -1,4 +1,4 @@
-package com.syswin.pipeline.manage.vo;
+package com.syswin.pipeline.manage.vo.input;
 
 import lombok.Data;
 
@@ -8,8 +8,6 @@ import lombok.Data;
  */
 @Data
 public class AdminList {
-	private String userId;
-	//出版社名称，或者邮箱模糊查询
 	private String keyword;
 	private String pageNo;
 	private String pageSize;

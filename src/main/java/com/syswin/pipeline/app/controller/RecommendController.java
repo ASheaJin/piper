@@ -2,20 +2,15 @@ package com.syswin.pipeline.app.controller;
 
 import com.github.pagehelper.PageInfo;
 import com.syswin.pipeline.app.dto.RecommendInput;
-import com.syswin.pipeline.app.dto.SubUserListParam;
 import com.syswin.pipeline.db.model.ReCommendContent;
 import com.syswin.pipeline.db.model.ReCommendPublisher;
-import com.syswin.pipeline.db.repository.ReCommendContentRepository;
-import com.syswin.pipeline.db.repository.ReCommendPublisherRepository;
-import com.syswin.pipeline.service.PiperReCommendContentService;
-import com.syswin.pipeline.service.PiperReCommendPublisherService;
+import com.syswin.pipeline.service.PiperRecommendContentService;
+import com.syswin.pipeline.service.PiperRecommendPublisherService;
 import com.syswin.pipeline.service.psserver.bean.ResponseEntity;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * @author:lhz
@@ -28,17 +23,17 @@ import java.util.List;
 public class RecommendController {
 
 	@Autowired
-	PiperReCommendContentService piperReCommendContentService;
+	PiperRecommendContentService piperRecommendContentService;
 
 	@Autowired
-	PiperReCommendPublisherService piperReCommendPublisherService;
+	PiperRecommendPublisherService piperRecommendPublisherService;
 
 	@PostMapping("/publisherList")
 	@ApiOperation(
 					value = "获取出版社列表"
 	)
 	public ResponseEntity publisherList(@RequestBody RecommendInput recommendInput) {
-		PageInfo<ReCommendContent> pageInfo = piperReCommendContentService.list(recommendInput.getPageNo(), recommendInput.getPageSize());
+		PageInfo<ReCommendContent> pageInfo = piperRecommendContentService.list(recommendInput.getPageNo(), recommendInput.getPageSize());
 
 		return new ResponseEntity(pageInfo);
 	}
@@ -49,7 +44,7 @@ public class RecommendController {
 	)
 	public ResponseEntity contentList(@RequestBody RecommendInput recommendInput) {
 
-		PageInfo<ReCommendPublisher> pageInfo = piperReCommendPublisherService.list(recommendInput.getPageNo(), recommendInput.getPageSize());
+		PageInfo<ReCommendPublisher> pageInfo = piperRecommendPublisherService.list(recommendInput.getPageNo(), recommendInput.getPageSize());
 
 		return new ResponseEntity(pageInfo);
 
