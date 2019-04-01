@@ -24,13 +24,16 @@
 
 	<Loggers>
 		<!-- Druid 日志配置 -->
-		<Logger name="com.alibaba.druid" level="warn" additivity="false">
-			<AppenderRef ref="Async"/>
+		<Logger name="com.alibaba.druid" level="info" additivity="false">
+			<AppenderRef ref="CONSOLE"/>
 		</Logger>
 		<Logger name="durid.stat" level="info" additivity="false">
 			<AppenderRef ref="CONSOLE"/>
 		</Logger>
-		<Logger name="com.syswin.temail.kms" level="warn" additivity="false"></Logger>
+		<Logger name="com.syswin.temail.kms" level="warn" additivity="false">
+			<AppenderRef ref="Async"/>
+
+		</Logger>
 		<root level="INFO">
 			<appender-ref ref="CONSOLE"/>
 			<appender-ref ref="Async"/>

@@ -50,7 +50,7 @@ public class MD5Coder {
 
     public static void main(String[] args) {
         try {
-            System.out.println(EncoderByMd5("20121221"));
+            System.out.println(EncoderByMd5("加密"));
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         } catch (UnsupportedEncodingException e) {

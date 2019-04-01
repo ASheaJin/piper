@@ -1,6 +1,6 @@
 package com.syswin.pipeline.db.model;
 
-public class UserRoleKey {
+public class UserRole {
     private Long userId;
 
     private Long roleId;

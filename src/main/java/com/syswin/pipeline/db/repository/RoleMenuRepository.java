@@ -7,6 +7,8 @@ import java.util.List;
 public interface RoleMenuRepository {
     int deleteByPrimaryKey(RoleMenu key);
 
+    int deleteByRoleId(Long roleId);
+
     int insert(RoleMenu record);
 
     int insertSelective(RoleMenu record);
