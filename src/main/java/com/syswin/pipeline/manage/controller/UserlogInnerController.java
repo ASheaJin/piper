@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @Controller
 @RequestMapping("/manage/userlog")
-@Api(value = "userlog", tags = "userlog")
+@Api(value = "userlog", tags = "用户日志")
 public class UserlogInnerController {
 
 }

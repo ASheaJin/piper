@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin
 @RestController
 @RequestMapping("/manage/publisher")
-@Api(value = "publisher", tags = "publisher")
+@Api(value = "publisher", tags = "出版社")
 public class PublisherInnerController {
 
 	@Autowired

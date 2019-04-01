@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @Controller
 @RequestMapping("/manage/operating")
-@Api(value = "operating", tags = "operating")
+@Api(value = "operating", tags = "操作记录")
 public class OperatingInnerController{
 
 }

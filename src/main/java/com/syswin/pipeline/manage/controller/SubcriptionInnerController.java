@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin
 @RestController
 @RequestMapping("/manage/subcription")
-@Api(value = "subcription", tags = "subcription")
+@Api(value = "subcription", tags = "订阅相关")
 public class SubcriptionInnerController {
 
 	@Autowired

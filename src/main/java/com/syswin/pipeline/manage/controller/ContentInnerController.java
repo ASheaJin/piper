@@ -6,6 +6,7 @@ import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,13 +17,13 @@ import javax.servlet.http.HttpServletRequest;
  */
 @Controller
 @RequestMapping("/manage/content")
-@Api(value = "content", tags = "content")
+@Api(value = "content", tags = "内容")
 public class ContentInnerController {
 
 	@Autowired
 	private PiperContentService contentService;
 
-	@RequestMapping("/index")
+	@PostMapping("/index")
 	public String getAllPerson(Model model) {
 //		ModelAndView mav = new ModelAndView("/index");
 //		List list = new ArrayList();
@@ -33,7 +34,7 @@ public class ContentInnerController {
 	}
 
 
-	@RequestMapping("/list")
+	@PostMapping("/list")
 	public String list(HttpServletRequest request, Model model) {
 		int pageIndex = StringUtils.getParam(request, "pageIndex", 1);
 		int pageSize = StringUtils.getParam(request, "pageSize", 10);
