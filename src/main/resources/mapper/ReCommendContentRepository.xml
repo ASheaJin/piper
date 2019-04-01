@@ -66,12 +66,6 @@
         from recommendcontent where user_id = #{userId}
     </select>
 
-    <select id="selectById" resultType="com.syswin.pipeline.db.model.ReCommendContent">
-        select
-        <include refid="Base_Column_List"/>
-        from recommendcontent where id = #{id}
-    </select>
-
     <delete id="delete">
        delete from recommendcontent  where id = #{id}
   </delete>
