@@ -8,6 +8,8 @@ import com.syswin.pipeline.manage.dto.*;
 import com.syswin.pipeline.utils.BeanConvertUtil;
 import com.syswin.pipeline.utils.MD5Coder;
 import com.syswin.pipeline.utils.TokenUtil;
+import org.apache.shiro.authc.IncorrectCredentialsException;
+import org.apache.shiro.authc.UnknownAccountException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -68,6 +70,11 @@ public class UserService {
             }
             if (StringUtils.isEmpty(userParam.getPassword())) {
                 throw new RuntimeException("密码为空");
+            }
+
+            User existUser = userRepository.selectByLoginName(userParam.getLoginName());
+            if (existUser != null) {
+                throw new RuntimeException("用户 " + userParam.getLoginName() + " 已存在");
             }
 
             String salt = TokenUtil.randString(5);
@@ -135,6 +142,36 @@ public class UserService {
         userRepository.updateByPrimaryKeySelective(saveUser);
 
         return true;
+    }
+
+    /**
+     * 登录方法
+     * @param loginParam
+     * @return
+     */
+    public Boolean login(LoginParam loginParam) {
+        String loginName = loginParam.getLoginName();
+        String pwd = loginParam.getPassword();
+
+        User user = this.getUserByLoginName(loginName);
+        if (user == null) {
+            throw new UnknownAccountException("用户名或密码错误！");
+        }
+
+        String encodePwd = MD5Coder.MD5(pwd + user.getSalt());
+        if (!encodePwd.equals(user.getPassword())) {
+            throw new IncorrectCredentialsException("用户名或密码错误！");
+        }
+        return true;
+    }
+
+    /**
+     * 根据登录名获得用户
+     * @param loginName
+     * @return
+     */
+    public User getUserByLoginName(String loginName) {
+        return userRepository.selectByLoginName(loginName);
     }
 
     /**

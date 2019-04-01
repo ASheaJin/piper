@@ -162,6 +162,13 @@
       <include refid="Example_Where_Clause" />
     </if>
   </select>
+  <select id="selectByLoginName" resultType="com.syswin.pipeline.db.model.User">
+    select
+    <include refid="Base_Column_List" />
+    from sys_user
+    where login_name = #{loginName,jdbcType=BIGINT}
+    and status = 1
+  </select>
   <update id="updateByPrimaryKeySelective" parameterType="com.syswin.pipeline.db.model.User">
     update sys_user
     <set>
