@@ -2,7 +2,7 @@ package com.syswin.pipeline.service;
 
 import com.syswin.pipeline.db.model.Account;
 import com.syswin.pipeline.db.repository.AccountRepository;
-import com.syswin.pipeline.utils.SnowflakeIdWorker;
+import com.syswin.sub.api.utils.SnowflakeIdWorker;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +24,8 @@ public class AccountServiceTest {
     private AccountService accountService;
     @Test
     public void insert() {
-        SnowflakeIdWorker idWorker = SnowflakeIdWorker.getInstance();
         Account account = new Account();
-        account.setAccountId(idWorker.nextId()+"");
+        account.setAccountId(SnowflakeIdWorker.getInstance().nextId()+"");
         account.setAccountId(1l+"");
         account.setUserId("1111@temail.com");
         account.setBalance(new BigDecimal("12"));

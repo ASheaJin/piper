@@ -6,13 +6,13 @@ import com.syswin.pipeline.service.PiperSubscriptionService;
 import com.syswin.pipeline.service.bussiness.PublisherSecService;
 import com.syswin.pipeline.service.ps.ChatMsg;
 import com.syswin.pipeline.utils.MessageUtil;
-import com.syswin.pipeline.utils.SnowflakeIdWorker;
 import com.syswin.pipeline.utils.SwithUtil;
 import com.syswin.sub.api.AdminService;
 import com.syswin.sub.api.SendRecordService;
 import com.syswin.sub.api.SubscriptionService;
 import com.syswin.sub.api.db.model.*;
 import com.syswin.sub.api.enums.PublisherTypeEnums;
+import com.syswin.sub.api.utils.SnowflakeIdWorker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -112,8 +112,7 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 	 */
 	private void dealpusharticle(Publisher publisher, int body_type, String txt, PublisherTypeEnums publisherTypeEnums) {
 		//生成文章Id
-		SnowflakeIdWorker idWorker = SnowflakeIdWorker.getInstance();
-		String contentId = String.valueOf(idWorker.nextId());
+		String contentId = String.valueOf(SnowflakeIdWorker.getInstance().nextId());
 		Content content = new Content();
 		content.setStatus(1);
 		content.setContentId(String.valueOf(contentId));

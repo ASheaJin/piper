@@ -2,7 +2,6 @@ package com.syswin.pipeline.service;
 
 import com.syswin.pipeline.db.model.Card;
 import com.syswin.pipeline.db.repository.CardRepository;
-import com.syswin.pipeline.utils.SnowflakeIdWorker;
 import com.syswin.pipeline.utils.StringUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,7 +21,6 @@ public class CardServiceTest {
 
 	@Test
 	public void insert() {
-		SnowflakeIdWorker idWorker = SnowflakeIdWorker.getInstance();
 		Card card = new Card();
 		card.setCardId(1l+"");
 //        card.setCardId(idWorker.nextId());

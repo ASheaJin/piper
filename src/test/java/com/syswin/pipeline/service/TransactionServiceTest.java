@@ -2,7 +2,6 @@ package com.syswin.pipeline.service;
 
 import com.syswin.pipeline.db.model.Transaction;
 import com.syswin.pipeline.db.repository.TransactionRepository;
-import com.syswin.pipeline.utils.SnowflakeIdWorker;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +22,6 @@ public class TransactionServiceTest {
 
     @Test
     public void insert() {
-        SnowflakeIdWorker idWorker = SnowflakeIdWorker.getInstance();
         Transaction transaction = new Transaction();
         transaction.setMoney(new BigDecimal("2.1"));
         transaction.setStatus(1);

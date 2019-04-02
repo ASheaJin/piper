@@ -2,7 +2,6 @@ package com.syswin.pipeline.service;
 
 import com.syswin.pipeline.db.model.Evaluation;
 import com.syswin.pipeline.db.repository.EvaluationRepository;
-import com.syswin.pipeline.utils.SnowflakeIdWorker;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +22,6 @@ public class EvaluationServiceTest {
 
     @Test
     public void insert() {
-        SnowflakeIdWorker idWorker = SnowflakeIdWorker.getInstance();
         Evaluation evaluation = new Evaluation();
         evaluation.setContentId(1l+"");
         evaluation.setEvaluationId(1l+"");

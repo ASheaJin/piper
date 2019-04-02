@@ -5,7 +5,7 @@ import com.syswin.pipeline.db.model.Transaction;
 import com.syswin.pipeline.db.repository.AccountRepository;
 import com.syswin.pipeline.db.repository.TransactionRepository;
 import com.syswin.pipeline.enums.BalanceResultEnums;
-import com.syswin.pipeline.utils.SnowflakeIdWorker;
+import com.syswin.sub.api.utils.SnowflakeIdWorker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

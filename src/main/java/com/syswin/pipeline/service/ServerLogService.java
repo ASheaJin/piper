@@ -2,7 +2,7 @@ package com.syswin.pipeline.service;
 
 import com.syswin.pipeline.db.model.ServerLog;
 import com.syswin.pipeline.db.repository.ServerLogRepository;
-import com.syswin.pipeline.utils.SnowflakeIdWorker;
+import com.syswin.sub.api.utils.SnowflakeIdWorker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

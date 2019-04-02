@@ -2,7 +2,6 @@ package com.syswin.pipeline.service;
 
 import com.syswin.pipeline.db.model.BrowseRecord;
 import com.syswin.pipeline.db.repository.BrowseRecordRepository;
-import com.syswin.pipeline.utils.SnowflakeIdWorker;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +20,6 @@ public class BrowseRecordServiceTest {
 
     @Test
     public void insert() {
-        SnowflakeIdWorker idWorker = SnowflakeIdWorker.getInstance();
         BrowseRecord browseRecord = new  BrowseRecord();
         browseRecord.setContentId(111l+"");
         browseRecord.setBrowseId(1l+"");
@@ -32,7 +30,6 @@ public class BrowseRecordServiceTest {
 
     @Test
     public void update() {
-        SnowflakeIdWorker idWorker = SnowflakeIdWorker.getInstance();
         BrowseRecord browseRecord = new  BrowseRecord();
         browseRecord.setContentId(111l+"");
         browseRecord.setBrowseId(1l+"");
