@@ -6,6 +6,7 @@ import com.syswin.pipeline.db.model.*;
 import com.syswin.pipeline.db.repository.*;
 import com.syswin.pipeline.manage.dto.*;
 import com.syswin.pipeline.utils.MD5Coder;
+import com.syswin.pipeline.utils.SnowflakeIdWorker;
 import com.syswin.pipeline.utils.TokenUtil;
 import com.syswin.sub.api.utils.BeanConvertUtil;
 import org.apache.shiro.authc.IncorrectCredentialsException;
@@ -42,15 +43,15 @@ public class UserService {
     @Autowired
     private MenuRepository menuRepository;
 
-    public PageInfo<UserOutput> list(int pageIndex, int pageSize) {
-        pageIndex = pageIndex < 1 ? 1 : pageIndex;
+    public PageInfo<UserOutput> list(int pageNo, int pageSize) {
+        pageNo = pageNo < 1 ? 1 : pageNo;
         pageSize = pageSize <= 30 && pageSize >= 1 ? pageSize : 30;
 
         UserExample userExample = new UserExample();
         UserExample.Criteria criteria = userExample.createCriteria();
         criteria.andStatusEqualTo(Byte.valueOf("1"));
 
-        PageHelper.startPage(pageIndex, pageSize);
+        PageHelper.startPage(pageNo, pageSize);
         List<User> userList = this.userRepository.selectByExample(userExample);
         List<UserOutput> userOuts = BeanConvertUtil.mapList(userList, UserOutput.class);
         PageInfo pageInfo = new PageInfo(userList);
@@ -64,7 +65,7 @@ public class UserService {
      *
      * @return
      */
-    public Boolean saveUser(UserInput userParam) {
+    public Boolean save(UserInput userParam) {
         String userId = userParam.getUserId();
         if (StringUtils.isEmpty(userId)) {
             if (StringUtils.isEmpty(userParam.getLoginName())) {
@@ -83,14 +84,15 @@ public class UserService {
             String encodePwd = MD5Coder.MD5(userParam.getPassword() + salt);
 
             User user = new User();
-            user.setUserId(Long.parseLong(userId));
+            user.setUserId(SnowflakeIdWorker.getInstance().nextId());
             user.setLoginName(userParam.getLoginName());
             user.setPassword(encodePwd);
             user.setSalt(salt);
             user.setUserName(userParam.getUserName());
             user.setEmail(userParam.getEmail());
             user.setRemark(userParam.getRemark());
-            userRepository.insert(user);
+            user.setStatus(Byte.valueOf("1"));
+            userRepository.insertSelective(user);
         } else {
             User user = new User();
             user.setUserId(Long.parseLong(userId));
@@ -98,7 +100,10 @@ public class UserService {
             user.setUserName(userParam.getUserName());
             user.setEmail(userParam.getEmail());
             user.setRemark(userParam.getRemark());
-            userRepository.updateByPrimaryKeySelective(user);
+            int c = userRepository.updateByPrimaryKeySelective(user);
+            if (c == 0) {
+                throw new RuntimeException("用户id错误 " + userId );
+            }
         }
 
         return true;
@@ -182,7 +187,7 @@ public class UserService {
      * @param userId
      * @return
      */
-    public Boolean deleteUser(String userId) {
+    public Boolean delete(String userId) {
 
         User user = userRepository.selectByPrimaryKey(Long.parseLong(userId));
         if (user == null) {

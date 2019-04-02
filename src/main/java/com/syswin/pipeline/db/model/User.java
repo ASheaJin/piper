@@ -1,6 +1,6 @@
 package com.syswin.pipeline.db.model;
 
-public class User {
+public class User extends BaseEntity {
     private Long userId;
 
     private String loginName;
@@ -14,8 +14,6 @@ public class User {
     private String remark;
 
     private Byte status;
-
-    private Integer createTime;
 
     private Long creatorId;
 
@@ -79,13 +77,6 @@ public class User {
         this.status = status;
     }
 
-    public Integer getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Integer createTime) {
-        this.createTime = createTime;
-    }
 
     public Long getCreatorId() {
         return creatorId;
