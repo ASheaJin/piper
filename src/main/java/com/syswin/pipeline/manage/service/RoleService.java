@@ -7,8 +7,8 @@ import com.syswin.pipeline.db.repository.MenuRepository;
 import com.syswin.pipeline.db.repository.RoleMenuRepository;
 import com.syswin.pipeline.db.repository.RoleRepository;
 import com.syswin.pipeline.db.repository.UserRoleRepository;
-import com.syswin.pipeline.manage.dto.MenuOut;
-import com.syswin.pipeline.manage.dto.RoleOut;
+import com.syswin.pipeline.manage.dto.MenuOutput;
+import com.syswin.pipeline.manage.dto.RoleOutput;
 import com.syswin.sub.api.utils.BeanConvertUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -43,7 +43,7 @@ public class RoleService {
 	 * @param pageSize
 	 * @return
 	 */
-	public PageInfo<RoleOut> list(int pageIndex, int pageSize) {
+	public PageInfo<RoleOutput> list(int pageIndex, int pageSize) {
 		pageIndex = pageIndex < 1 ? 1 : pageIndex;
 		pageSize = pageSize <= 30 && pageSize >= 1 ? pageSize : 30;
 
@@ -53,7 +53,7 @@ public class RoleService {
 
 		PageHelper.startPage(pageIndex, pageSize);
 		List<Role> roleList = this.roleRepository.selectByExample(roleExample);
-		List<RoleOut> roleOuts = BeanConvertUtil.mapList(roleList, RoleOut.class);
+		List<RoleOutput> roleOuts = BeanConvertUtil.mapList(roleList, RoleOutput.class);
 
 		PageInfo pageInfo = new PageInfo(roleList);
 		pageInfo.setList(roleOuts);
@@ -62,7 +62,7 @@ public class RoleService {
 	}
 
 
-	public List<MenuOut> getMenuesByRoleId(String roleId) {
+	public List<MenuOutput> getMenuesByRoleId(String roleId) {
 		RoleMenuExample example = new RoleMenuExample();
 		example.createCriteria().andRoleIdEqualTo(Long.parseLong(roleId));
 		List<RoleMenu> roleMenus = roleMenuRepository.selectByExample(example);
@@ -73,7 +73,7 @@ public class RoleService {
 			MenuExample menuExample = new MenuExample();
 			menuExample.createCriteria().andMenuIdIn(menuIds);
 			List<Menu> menus = menuRepository.selectByExample(menuExample);
-			List<MenuOut> menuOuts = BeanConvertUtil.mapList(menus, MenuOut.class);
+			List<MenuOutput> menuOuts = BeanConvertUtil.mapList(menus, MenuOutput.class);
 			return menuOuts;
 		}
 		return new ArrayList<>();

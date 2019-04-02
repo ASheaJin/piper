@@ -4,7 +4,7 @@ import com.syswin.pipeline.db.model.Menu;
 import com.syswin.pipeline.db.model.MenuExample;
 import com.syswin.pipeline.db.repository.MenuRepository;
 import com.syswin.pipeline.db.repository.RoleMenuRepository;
-import com.syswin.pipeline.manage.dto.MenuOut;
+import com.syswin.pipeline.manage.dto.MenuOutput;
 import com.syswin.sub.api.utils.BeanConvertUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,10 +28,10 @@ public class MenuService {
      *
      * @return
      */
-    public List<MenuOut> list() {
+    public List<MenuOutput> list() {
         MenuExample menuExample = new MenuExample();
         List<Menu> menus = menuRepository.selectByExample(menuExample);
-        List<MenuOut> menuOuts = BeanConvertUtil.mapList(menus, MenuOut.class);
+        List<MenuOutput> menuOuts = BeanConvertUtil.mapList(menus, MenuOutput.class);
         return menuOuts;
     }
     @Transactional

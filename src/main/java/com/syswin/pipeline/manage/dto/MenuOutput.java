@@ -6,7 +6,7 @@ import lombok.Data;
  * Created by 115477 on 2019/4/1.
  */
 @Data
-public class MenuOut {
+public class MenuOutput {
 
     private String menuId;
 

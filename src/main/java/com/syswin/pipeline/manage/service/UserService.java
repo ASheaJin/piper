@@ -42,7 +42,7 @@ public class UserService {
     @Autowired
     private MenuRepository menuRepository;
 
-    public PageInfo<UserOut> list(int pageIndex, int pageSize) {
+    public PageInfo<UserOutput> list(int pageIndex, int pageSize) {
         pageIndex = pageIndex < 1 ? 1 : pageIndex;
         pageSize = pageSize <= 30 && pageSize >= 1 ? pageSize : 30;
 
@@ -52,7 +52,7 @@ public class UserService {
 
         PageHelper.startPage(pageIndex, pageSize);
         List<User> userList = this.userRepository.selectByExample(userExample);
-        List<UserOut> userOuts = BeanConvertUtil.mapList(userList, UserOut.class);
+        List<UserOutput> userOuts = BeanConvertUtil.mapList(userList, UserOutput.class);
         PageInfo pageInfo = new PageInfo(userList);
         pageInfo.setList(userOuts);
 
@@ -64,7 +64,7 @@ public class UserService {
      *
      * @return
      */
-    public Boolean saveUser(UserParam userParam) {
+    public Boolean saveUser(UserInput userParam) {
         String userId = userParam.getUserId();
         if (StringUtils.isEmpty(userId)) {
             if (StringUtils.isEmpty(userParam.getLoginName())) {
@@ -104,7 +104,7 @@ public class UserService {
         return true;
     }
 
-    public Boolean updatePassword(PasswordParam passwordParam) {
+    public Boolean updatePassword(PasswordInput passwordParam) {
         String userId = passwordParam.getUserId();
         String oldPwd = passwordParam.getOldPassword();
         String newPwd = passwordParam.getNewPassword();
@@ -151,7 +151,7 @@ public class UserService {
      * @param loginParam
      * @return
      */
-    public Boolean login(LoginParam loginParam) {
+    public LoginOutput login(LoginInput loginParam) {
         String loginName = loginParam.getLoginName();
         String pwd = loginParam.getPassword();
 
@@ -164,7 +164,7 @@ public class UserService {
         if (!encodePwd.equals(user.getPassword())) {
             throw new IncorrectCredentialsException("用户名或密码错误！");
         }
-        return true;
+        return new LoginOutput(String.valueOf(user.getUserId()), user.getLoginName(), null);
     }
 
     /**
@@ -215,7 +215,7 @@ public class UserService {
         return true;
     }
 
-    public List<RoleOut> getRolesByUserId(String userId) {
+    public List<RoleOutput> getRolesByUserId(String userId) {
         UserRoleExample example = new UserRoleExample();
         example.createCriteria().andUserIdEqualTo(Long.parseLong(userId));
         List<UserRole> userRoles = userRoleRepository.selectByExample(example);
@@ -226,13 +226,13 @@ public class UserService {
             RoleExample roleExample = new RoleExample();
             roleExample.createCriteria().andRoleIdIn(roleIds);
             List<Role> roles = roleRepository.selectByExample(roleExample);
-            List<RoleOut> roleOuts = BeanConvertUtil.mapList(roles, RoleOut.class);
+            List<RoleOutput> roleOuts = BeanConvertUtil.mapList(roles, RoleOutput.class);
             return roleOuts;
         }
         return new ArrayList<>();
     }
 
-    public List<MenuOut> getMenesByUserId(String userId) {
+    public List<MenuOutput> getMenesByUserId(String userId) {
         //先实现一个用户只有一个角色
         UserRoleExample example = new UserRoleExample();
         example.createCriteria().andUserIdEqualTo(Long.parseLong(userId));
@@ -250,7 +250,7 @@ public class UserService {
                 MenuExample menuExample = new MenuExample();
                 menuExample.createCriteria().andMenuIdIn(menuIds);
                 List<Menu> menus = menuRepository.selectByExample(menuExample);
-                List<MenuOut> menuOuts = BeanConvertUtil.mapList(menus, MenuOut.class);
+                List<MenuOutput> menuOuts = BeanConvertUtil.mapList(menus, MenuOutput.class);
                 return menuOuts;
             }
         }
