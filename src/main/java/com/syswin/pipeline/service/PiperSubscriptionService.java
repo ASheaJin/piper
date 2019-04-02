@@ -146,9 +146,9 @@ public class PiperSubscriptionService {
 		if (publisher == null) {
 			throw new BusinessException("出版社不能为空");
 		}
-		if (PublisherTypeEnums.organize.equals(publisher.getPtype())) {
-			throw new BusinessException("组织出版社不能取消订阅");
-		}
+//		if (PublisherTypeEnums.organize.equals(publisher.getPtype())) {
+//			throw new BusinessException("组织出版社不能取消订阅");
+//		}
 		subSubscriptionService.unsubscribeByPubliserId(userId, publisherId);
 	}
 
