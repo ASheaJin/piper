@@ -16,4 +16,6 @@ public interface ReCommendPublisherRepository extends BaseRepository<ReCommendPu
 	ReCommendPublisher selectByPublisherId(@Param("publisherId") String publisherId);
 
 	List<ReCommendPublisher> selectByUserId(@Param("userId") String userId);
+
+	List<ReCommendPublisher> seletByPubliserIds(List<String> publisherIds);
 }

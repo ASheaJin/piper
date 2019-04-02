@@ -2,6 +2,8 @@ package com.syswin.pipeline.service;
 
 import com.github.pagehelper.PageInfo;
 import com.syswin.pipeline.app.controller.PSSeverController;
+import com.syswin.pipeline.db.model.ReCommendContent;
+import com.syswin.pipeline.db.model.ReCommendPublisher;
 import com.syswin.pipeline.manage.vo.output.AdminManageVO;
 import com.syswin.pipeline.manage.vo.output.PublisherManageVO;
 import com.syswin.pipeline.service.bussiness.impl.SendMessegeService;
@@ -26,6 +28,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 出版社和内容发布的方法
@@ -41,6 +44,10 @@ public class PiperPublisherService {
 	PSClientService psClientService;
 	@Autowired
 	SendMessegeService sendMessegeService;
+
+	@Autowired
+	PiperRecommendPublisherService piperRecommendPublisherService;
+
 	@Autowired
 	AdminService adminService;
 
@@ -137,6 +144,11 @@ public class PiperPublisherService {
 		}
 		List<Publisher> publisherList = subPublisherService.list(pageIndex, pageSize, keyword, pType, userId);
 		List<PublisherManageVO> pmVOList = new ArrayList<>();
+		List<String> publisherIds = publisherList.stream().map((p) -> p.getPublisherId()).collect(Collectors.toList());
+		List<ReCommendPublisher> reCommendPublisherList = piperRecommendPublisherService.seletByPubliserIds(publisherIds);
+		if (publisherList == null) {
+			throw new BusinessException("出版社为空");
+		}
 		for (Publisher publisher : publisherList) {
 			PublisherManageVO pmVO = new PublisherManageVO();
 			pmVO.setCreatTime(pmVO.getCreatTime());
@@ -145,6 +157,14 @@ public class PiperPublisherService {
 			pmVO.setPtemail(publisher.getPtemail());
 			pmVO.setPublisherId(publisher.getPublisherId());
 			pmVO.setPiperType(publisher.getPtype().getName());
+			if (reCommendPublisherList != null) {
+				for (ReCommendPublisher rp : reCommendPublisherList) {
+					if (publisher.getPublisherId().equals(rp.getPublisherId())) {
+						pmVO.setHasRecommend("1");
+					}
+				}
+
+			}
 			pmVOList.add(pmVO);
 		}
 

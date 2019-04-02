@@ -50,8 +50,8 @@ public class PiperRecommendPublisherService {
 		return reCommendPublisher;
 	}
 
-	public void delete( String id) {
-		if ( StringUtils.isNullOrEmpty(id)) {
+	public void delete(String id) {
+		if (StringUtils.isNullOrEmpty(id)) {
 			throw new BusinessException("用户或出版社Id不能为空");
 		}
 		ReCommendPublisher reCommendPublisher = reCommendPublisherRepository.selectById(id);
@@ -60,5 +60,10 @@ public class PiperRecommendPublisherService {
 		}
 
 		reCommendPublisherRepository.delete(id);
+	}
+
+	public List<ReCommendPublisher> seletByPubliserIds(List<String> publisherIds) {
+		List<ReCommendPublisher> reCommendPublisherList = reCommendPublisherRepository.seletByPubliserIds(publisherIds);
+		return reCommendPublisherList;
 	}
 }
