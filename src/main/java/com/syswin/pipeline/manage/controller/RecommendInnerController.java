@@ -49,7 +49,7 @@ public class RecommendInnerController {
 					value = "添加推荐出版社"
 	)
 	public ResponseEntity publisherAdd(@RequestBody AddRecommendPublisher acp, HttpServletRequest request) {
-		ReCommendPublisher reCommendPublisher = piperRecommendPublisherService.add(HeaderUtil.getUserId(request), acp.getPubliserId());
+		ReCommendPublisher reCommendPublisher = piperRecommendPublisherService.add(HeaderUtil.getUserId(request), acp.getPublisherId());
 
 		return new ResponseEntity(reCommendPublisher);
 	}

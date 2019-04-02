@@ -34,8 +34,8 @@ public class PiperRecommendContentService {
 	}
 
 	public ReCommendContent add(String userId, String contentId) {
-		if (StringUtils.isNullOrEmpty(userId) || StringUtils.isNullOrEmpty(contentId)) {
-			throw new BusinessException("用户或内容Id不能为空");
+		if ( StringUtils.isNullOrEmpty(contentId)) {
+			throw new BusinessException("内容Id不能为空");
 		}
 		ReCommendContent reCommendContent = reCommendContentRepository.selectByContentId(contentId);
 		if (reCommendContent != null) {

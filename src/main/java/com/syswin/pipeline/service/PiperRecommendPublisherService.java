@@ -35,8 +35,8 @@ public class PiperRecommendPublisherService {
 	}
 
 	public ReCommendPublisher add(String userId, String publisherId) {
-		if (StringUtils.isNullOrEmpty(userId) || StringUtils.isNullOrEmpty(publisherId)) {
-			throw new BusinessException("用户或出版社Id不能为空");
+		if (StringUtils.isNullOrEmpty(publisherId)) {
+			throw new BusinessException("出版社Id不能为空");
 		}
 		ReCommendPublisher reCommendPublisher = reCommendPublisherRepository.selectByPublisherId(publisherId);
 		if (reCommendPublisher != null) {

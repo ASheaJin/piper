@@ -8,5 +8,5 @@ import lombok.Data;
  */
 @Data
 public class AddRecommendPublisher {
-	private String publiserId;
+	private String publisherId;
 }
