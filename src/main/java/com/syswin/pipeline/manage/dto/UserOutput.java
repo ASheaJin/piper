@@ -6,12 +6,14 @@ import lombok.Data;
  * Created by 115477 on 2019/4/1.
  */
 @Data
-public class RoleOut {
-    private Long roleId;
+public class UserOutput {
+    private String userId;
 
-    private String roleName;
+    private String loginName;
+
+    private String userName;
 
     private String remark;
 
-    private Byte roleType;
+    private String email;
 }

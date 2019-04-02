@@ -71,9 +71,9 @@ public class SwaggerConfig {
 		//在配置好的配置类中增加此段代码即可
 		ParameterBuilder ticketPar = new ParameterBuilder();
 		List<Parameter> pars = new ArrayList<Parameter>();
-		ticketPar.name("Authorization").description("登录校验")//name表示名称，description表示描述
+		ticketPar.name("Authorization").description("token校验")//name表示名称，description表示描述
 						.modelRef(new ModelRef("string")).parameterType("header")
-						.required(false).defaultValue("token=12345").build();//required表示是否必填，defaultvalue表示默认值
+						.required(false).defaultValue("loginname_token").build();//required表示是否必填，defaultvalue表示默认值
 		pars.add(ticketPar.build());//添加完此处一定要把下边的带***的也加上否则不生效
 
 
