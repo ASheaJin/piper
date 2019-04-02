@@ -173,8 +173,8 @@ public class PublisherController {
 	@ApiOperation(
 					value = "获得我的个人出版社"
 	)
-	public ResponseEntity getMyPublisher(@RequestBody String userId) {
-		Publisher publisher = publisherService.getPubLisherByuserId(userId);
+	public ResponseEntity getMyPublisher(@RequestBody UserIdParam userIdParam) {
+		Publisher publisher = publisherService.getPubLisherByuserId(userIdParam.getUserId());
 		return new ResponseEntity(publisher);
 	}
 

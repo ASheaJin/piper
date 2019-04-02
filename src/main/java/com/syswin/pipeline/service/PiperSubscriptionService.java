@@ -54,15 +54,18 @@ public class PiperSubscriptionService {
 		if (StringUtils.isNullOrEmpty(publishTemail) || StringUtils.isNullOrEmpty(userId)) {
 			throw new BusinessException("订阅邮箱不能为空");
 		}
-		if (StringUtils.isNullOrEmpty(psClientService.getTemailPublicKey(publishTemail))) {
-			throw new BusinessException("订阅邮箱不存在");
-		}
+//		if (StringUtils.isNullOrEmpty(psClientService.getTemailPublicKey(publishTemail))) {
+//			throw new BusinessException("订阅邮箱不存在");
+//		}
 
 		Publisher publisher = subPublisherService.getPubLisherByPublishTmail(publishTemail, piperType);
 		if (publisher == null) {
-			throw new BusinessException("订阅失败，出版社不存在");
+			publisher = subPublisherService.getPubLisherById(publishTemail);
+			if (publisher == null) {
+				throw new BusinessException("订阅失败，出版社不存在");
+			}
 		}
-		Subscription subscription = subSubscriptionService.subscribe(userId, publisher.getPtemail());
+		Subscription subscription = subSubscriptionService.subscribe(userId, publisher.getPublisherId());
 
 		//判断是否自己订阅自己
 		if (userId.equals(publisher.getUserId())) {

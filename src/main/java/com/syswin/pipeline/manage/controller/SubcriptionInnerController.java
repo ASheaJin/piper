@@ -43,7 +43,7 @@ public class SubcriptionInnerController {
 
 	@PostMapping("/subscribe")
 	@ApiOperation(
-					value = "添加出版社"
+					value = "添加订阅"
 	)
 	public ResponseEntity<Subscription> subscribe(@RequestBody SubcriptionAddParam sap, HttpServletRequest request) {
 		Subscription subscription = subscriptionService.subscribe(sap.getUserId(), sap.getPublisherId(), null);
