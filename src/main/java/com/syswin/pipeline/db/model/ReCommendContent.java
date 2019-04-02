@@ -9,7 +9,7 @@ import lombok.Data;
 @Data
 public class ReCommendContent  extends BaseEntity {
 
-	private  String reCommendContentId;
+	private  String id;
 	private  String contentId;
 	private  String userId;
 

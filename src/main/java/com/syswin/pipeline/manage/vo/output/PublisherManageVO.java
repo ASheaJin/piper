@@ -23,7 +23,7 @@ public class PublisherManageVO {
 	//出版社类型
 	private String piperType;
 	//是否推荐
-	private String hasRecommend;
+	private String hasRecommend = "0";
 	//创建时间
 	private String creatTime;
 }

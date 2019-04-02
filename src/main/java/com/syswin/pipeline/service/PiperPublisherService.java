@@ -147,7 +147,7 @@ public class PiperPublisherService {
 		List<String> publisherIds = publisherList.stream().map((p) -> p.getPublisherId()).collect(Collectors.toList());
 		List<ReCommendPublisher> reCommendPublisherList = piperRecommendPublisherService.seletByPubliserIds(publisherIds);
 		if (publisherList == null) {
-			throw new BusinessException("出版社为空");
+			throw new BusinessException("出版社列表为空");
 		}
 		for (Publisher publisher : publisherList) {
 			PublisherManageVO pmVO = new PublisherManageVO();
