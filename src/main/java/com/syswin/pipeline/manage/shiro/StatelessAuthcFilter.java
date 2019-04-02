@@ -37,6 +37,12 @@ public class StatelessAuthcFilter extends AccessControlFilter {
     @Override
     protected boolean isAccessAllowed(ServletRequest request,
                                       ServletResponse response, Object mappedValue) throws Exception {
+        if (request instanceof HttpServletRequest) {
+            if (((HttpServletRequest) request).getMethod().toUpperCase().equals("OPTIONS")) {
+                return true;
+            }
+        }
+
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         // 前段token授权信息放在请求头中传入
         String authorization = ((HttpServletRequest) request).getHeader("authorization");
