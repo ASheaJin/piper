@@ -74,7 +74,7 @@ public class ShiroConfig {
         //anon 是默认的匿名拦截器，用于不需拦截的资源
         filterChainDefinitionMap.put("/manage/login", "anon");
         filterChainDefinitionMap.put("/manage/logout", "anon");
-        filterChainDefinitionMap.put("/manage/**", "statelessAuthc");
+//        filterChainDefinitionMap.put("/manage/**", "statelessAuthc");
 
         bean.setFilterChainDefinitionMap(filterChainDefinitionMap);
         return bean;
