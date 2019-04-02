@@ -30,9 +30,8 @@ public class PiperAdminService {
 
 	public PageInfo list(Integer pageNo, Integer pageSize, String keyword) {
 
-		List<AdminManageVO> adminMangeVOList = new ArrayList<>();
 		List<Admin> adminList = adminService.list(keyword, pageNo, pageSize);
-		BeanConvertUtil.mapList(adminList, AdminManageVO.class);
+		List<AdminManageVO> adminMangeVOList = BeanConvertUtil.mapList(adminList, AdminManageVO.class);
 
 		PageInfo pageInfo = new PageInfo<>(adminList);
 		pageInfo.setList(adminMangeVOList);

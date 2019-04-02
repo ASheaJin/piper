@@ -6,6 +6,7 @@ import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -15,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
  * 内容举报操作、删帖
  * Created by 115477 on 2018/11/28.
  */
+@CrossOrigin
 @Controller
 @RequestMapping("/manage/content")
 @Api(value = "content", tags = "内容")
