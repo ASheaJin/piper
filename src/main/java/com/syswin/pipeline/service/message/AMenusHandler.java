@@ -1,8 +1,6 @@
 package com.syswin.pipeline.service.message;
 
 import com.lmax.disruptor.EventHandler;
-import com.syswin.pipeline.db.model.Consumer;
-import com.syswin.pipeline.db.repository.ConsumerRepository;
 import com.syswin.pipeline.enums.PermissionEnums;
 import com.syswin.pipeline.service.ConsumerService;
 import com.syswin.pipeline.service.bussiness.impl.SendMessegeService;
@@ -10,12 +8,6 @@ import com.syswin.pipeline.service.ps.ChatMsg;
 import com.syswin.pipeline.service.ps.PSClientService;
 import com.syswin.pipeline.service.ps.util.CollectionUtil;
 import com.syswin.pipeline.service.ps.util.FastJsonUtil;
-import com.syswin.pipeline.utils.PermissionUtil;
-import com.syswin.sub.api.AdminService;
-import com.syswin.sub.api.PublisherService;
-import com.syswin.sub.api.db.model.Admin;
-import com.syswin.sub.api.db.model.Publisher;
-import com.syswin.sub.api.enums.PublisherTypeEnums;
 import com.syswin.temail.ps.client.Header;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,9 +31,6 @@ public class AMenusHandler implements EventHandler<MessageEvent> {
 	private static final String H5_PUBLISHER_MANAGE = "/h5/publisher/manage";
 	private static final String H5_SUBSCRIBE_ADD = "/h5/subcribe/add";
 	private static final String H5_SUBSCRIBE_LIST = "/h5/subcribe/list";
-	private static final String ICON_SUBSCRIBE_ADD = "http://jco-app.cn/html/icon/tosub.png";
-	private static final String ICON_SUBSCRIBE_LIST = "http://jco-app.cn/html/icon/sublist.png";
-	private static final String ICON_ACCOUNT_INFO = "http://jco-app.cn/html/icon/mine.png";
 
 	@Value("${url.piper}")
 	private String URL_PIPER;
@@ -87,8 +76,8 @@ public class AMenusHandler implements EventHandler<MessageEvent> {
 		} catch (Exception e) {
 			logger.info("处理消息中的version字段失败", e);
 		}
-		myRole = consumerService.getPermission(header);
-		String myVersion = consumerService.getUserLogVersion(header, version, myRole);
+		myRole = consumerService.getAMenuRole(header.getReceiver());
+		String myVersion = consumerService.getUserVersion(header, version, myRole);
 		if (version.equals(myVersion)) {
 			//版本号相同，不做加载
 			return;
@@ -114,7 +103,7 @@ public class AMenusHandler implements EventHandler<MessageEvent> {
 
 		replyMsgObject = CollectionUtil.fastMap(keyList, valueList);
 		replyMsgObject.put("version", myVersion);
-		consumerService.updateUserLogVersion(header.getReceiver(), myVersion, myRole);
+		consumerService.updateUserVersion(header, myVersion, myRole);
 		ChatMsg msg = new ChatMsg(header.getSender(), header.getReceiver(),
 						UUID.randomUUID().toString(), replyMsgObject);
 		msg.setBody_type(GET_MESSAGE_INFO_FLAG);
@@ -137,33 +126,33 @@ public class AMenusHandler implements EventHandler<MessageEvent> {
 
 		//既是组织管理者，又是个人出版社管理者
 		if (PermissionEnums.OrgPerson.name.equals(myRole)) {
-			appList.add(createApp(ICON_ACCOUNT_INFO, "我的个人出版社", URL_PIPER + H5_PUBLISHER_MANAGE + "?userId=" + userId));
-			appList.add(createApp(ICON_SUBSCRIBE_ADD, "去订阅", URL_PIPER + H5_SUBSCRIBE_ADD + "?userId=" + userId));
-			appList.add(createApp(ICON_SUBSCRIBE_LIST, "我的订阅列表", URL_PIPER + H5_SUBSCRIBE_LIST + "?userId=" + userId));
-			appList.add(createApp(ICON_SUBSCRIBE_LIST, "管理邮件群发", URL_PIPER + "/web?userId=" + userId));
-			sendMessegeService.sendTextmessage("您的身份是 邮件组管理者 和 个人出版社管理者 您可以在a.piper小助手中管理个人出版社、订阅出版社、管理我的订阅、管理邮件组",userId);
+			appList.add(createApp("", "我的个人出版社", URL_PIPER + H5_PUBLISHER_MANAGE + "?userId=" + userId));
+			appList.add(createApp("", "去订阅", URL_PIPER + H5_SUBSCRIBE_ADD + "?userId=" + userId));
+			appList.add(createApp("", "我的订阅列表", URL_PIPER + H5_SUBSCRIBE_LIST + "?userId=" + userId));
+			appList.add(createApp("", "管理邮件群发", URL_PIPER + "/web?userId=" + userId));
+			sendMessegeService.sendTextmessage("您的身份是 邮件组管理者 和 个人出版社管理者 您可以在a.piper小助手中管理个人出版社、订阅出版社、管理我的订阅、管理邮件组", userId);
 		}
 		if (PermissionEnums.OnlyOrg.name.equals(myRole)) {
-			appList.add(createApp(ICON_ACCOUNT_INFO, "创建个人出版社", URL_PIPER + H5_PUBLISHER_CREATE + "?userId=" + userId));
-			appList.add(createApp(ICON_SUBSCRIBE_ADD, "去订阅", URL_PIPER + H5_SUBSCRIBE_ADD + "?userId=" + userId));
-			appList.add(createApp(ICON_SUBSCRIBE_LIST, "我的订阅列表", URL_PIPER + H5_SUBSCRIBE_LIST + "?userId=" + userId));
-			appList.add(createApp(ICON_SUBSCRIBE_LIST, "管理邮件群发", URL_PIPER + "/web?userId=" + userId));
-			sendMessegeService.sendTextmessage("您的身份是 邮件组管理者 ， 您可以在a.piper小助手中创建个人出版社、订阅出版社、管理我的订阅、管理邮件组",userId);
+			appList.add(createApp("", "创建个人出版社", URL_PIPER + H5_PUBLISHER_CREATE + "?userId=" + userId));
+			appList.add(createApp("", "去订阅", URL_PIPER + H5_SUBSCRIBE_ADD + "?userId=" + userId));
+			appList.add(createApp("", "我的订阅列表", URL_PIPER + H5_SUBSCRIBE_LIST + "?userId=" + userId));
+			appList.add(createApp("", "管理邮件群发", URL_PIPER + "/web?userId=" + userId));
+			sendMessegeService.sendTextmessage("您的身份是 邮件组管理者 ， 您可以在a.piper小助手中创建个人出版社、订阅出版社、管理我的订阅、管理邮件组", userId);
 		}
 		//个人管理者，订阅者
 		if (PermissionEnums.Person.name.equals(myRole)) {
-			appList.add(createApp(ICON_ACCOUNT_INFO, "我的出版社", URL_PIPER + H5_PUBLISHER_MANAGE + "?userId=" + userId));
-			appList.add(createApp(ICON_SUBSCRIBE_ADD, "去订阅", URL_PIPER + H5_SUBSCRIBE_ADD + "?userId=" + userId));
-			appList.add(createApp(ICON_SUBSCRIBE_LIST, "我的订阅列表", URL_PIPER + H5_SUBSCRIBE_LIST + "?userId=" + userId));
-			sendMessegeService.sendTextmessage("您的身份是 个人出版社管理者 ， 您可以在a.piper小助手中管理个人出版社、订阅出版社、管理我的订阅",userId);
+			appList.add(createApp("", "我的出版社", URL_PIPER + H5_PUBLISHER_MANAGE + "?userId=" + userId));
+			appList.add(createApp("", "去订阅", URL_PIPER + H5_SUBSCRIBE_ADD + "?userId=" + userId));
+			appList.add(createApp("", "我的订阅列表", URL_PIPER + H5_SUBSCRIBE_LIST + "?userId=" + userId));
+			sendMessegeService.sendTextmessage("您的身份是 个人出版社管理者 ， 您可以在a.piper小助手中管理个人出版社、订阅出版社、管理我的订阅", userId);
 
 		}
 		//游客，订阅者
 		if (PermissionEnums.Guest.name.equals(myRole)) {
-			appList.add(createApp(ICON_ACCOUNT_INFO, "创建出版社", URL_PIPER + H5_PUBLISHER_CREATE + "?userId=" + userId));
-			appList.add(createApp(ICON_SUBSCRIBE_ADD, "去订阅", URL_PIPER + H5_SUBSCRIBE_ADD + "?userId=" + userId));
-			appList.add(createApp(ICON_SUBSCRIBE_LIST, "我的订阅列表", URL_PIPER + H5_SUBSCRIBE_LIST + "?userId=" + userId));
-			sendMessegeService.sendTextmessage("您的身份是 游客 ， 您可以在a.piper小助手中创建个人出版社、订阅出版社、管理我的订阅",userId);
+			appList.add(createApp("", "创建出版社", URL_PIPER + H5_PUBLISHER_CREATE + "?userId=" + userId));
+			appList.add(createApp("", "去订阅", URL_PIPER + H5_SUBSCRIBE_ADD + "?userId=" + userId));
+			appList.add(createApp("", "我的订阅列表", URL_PIPER + H5_SUBSCRIBE_LIST + "?userId=" + userId));
+			sendMessegeService.sendTextmessage("您的身份是 游客 ， 您可以在a.piper小助手中创建个人出版社、订阅出版社、管理我的订阅", userId);
 
 		}
 		return appList;

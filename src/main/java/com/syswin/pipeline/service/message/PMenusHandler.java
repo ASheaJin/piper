@@ -1,19 +1,16 @@
 package com.syswin.pipeline.service.message;
 
 import com.lmax.disruptor.EventHandler;
-import com.syswin.pipeline.db.model.Consumer;
 import com.syswin.pipeline.db.repository.ConsumerRepository;
 import com.syswin.pipeline.enums.PermissionEnums;
+import com.syswin.pipeline.service.ConsumerService;
 import com.syswin.pipeline.service.bussiness.impl.SendMessegeService;
 import com.syswin.pipeline.service.ps.ChatMsg;
 import com.syswin.pipeline.service.ps.PSClientService;
 import com.syswin.pipeline.service.ps.util.CollectionUtil;
 import com.syswin.pipeline.service.ps.util.FastJsonUtil;
-import com.syswin.pipeline.utils.PermissionUtil;
-import com.syswin.sub.api.AdminService;
 import com.syswin.sub.api.PublisherService;
 import com.syswin.sub.api.SubscriptionService;
-import com.syswin.sub.api.db.model.Admin;
 import com.syswin.sub.api.db.model.Publisher;
 import com.syswin.sub.api.db.model.Subscription;
 import com.syswin.sub.api.enums.PublisherTypeEnums;
@@ -40,12 +37,11 @@ public class PMenusHandler implements EventHandler<MessageEvent> {
 	private String URL_PIPER;
 
 	@Autowired
-	private AdminService adminService;
+	ConsumerService consumerService;
 
 	@Autowired
 	private PublisherService publisherService;
 
-	private static final String ICON_SUBSCRIBE_LIST = "http://jco-app.cn/html/icon/sublist.png";
 	@Lazy
 	@Autowired
 	private SendMessegeService sendMessegeService;
@@ -84,7 +80,6 @@ public class PMenusHandler implements EventHandler<MessageEvent> {
 		if (from.equals(header.getSender())) {
 			return;
 		}
-		myRole = getPermission(header);
 		Publisher publisher = publisherService.getPubLisherByPublishTmail(header.getSender(), null);
 		//如果不是出版社
 		if (publisher == null) {
@@ -99,7 +94,8 @@ public class PMenusHandler implements EventHandler<MessageEvent> {
 			logger.info("处理消息中的version字段失败", e);
 		}
 
-		String myVersion = getUserLogVersion(header, version);
+		myRole = consumerService.getPiperMenuRole(header.getReceiver(), header.getSender());
+		String myVersion = consumerService.getUserVersion(header, version, myRole);
 		if (version.equals(myVersion)) {
 			//版本号相同，不做加载
 			return;
@@ -131,7 +127,7 @@ public class PMenusHandler implements EventHandler<MessageEvent> {
 		}
 		replyMsgObject = CollectionUtil.fastMap(keyList, valueList);
 		replyMsgObject.put("version", myVersion);
-		updateUserLogVersion(header.getReceiver(), myVersion);
+		consumerService.updateUserVersion(header, myVersion, myRole);
 		ChatMsg msg = new ChatMsg(header.getSender(), header.getReceiver(),
 						UUID.randomUUID().toString(), replyMsgObject);
 		msg.setBody_type(GET_MESSAGE_INFO_FLAG);
@@ -139,7 +135,7 @@ public class PMenusHandler implements EventHandler<MessageEvent> {
 		psClientService.sendChatMessage(msg, header.getReceiver(), header.getReceiverPK(), header.getSender(), header.getSenderPK());
 	}
 
-	//加载默认按钮
+	//加载默认按钮 http://wiki.syswin.com/pages/viewpage.action?pageId=33708676
 	private List<Map<String, Object>> appFeaturesList() {
 		List<Map<String, Object>> appList = new ArrayList<>();
 //		appList.add(createApp("", "#@" + 13, ""));
@@ -193,8 +189,8 @@ public class PMenusHandler implements EventHandler<MessageEvent> {
 
 		//既是组织管理者
 		if (PublisherTypeEnums.organize.equals(ptype)) {
-			appList.add(createApp(ICON_SUBSCRIBE_LIST, "管理订阅人", URL_PIPER + "/web/home?userId=" + userId + "&publisherId=" + publiserId));
-			appList.add(createApp(ICON_SUBSCRIBE_LIST, "账号上传说明", URL_PIPER + "/h5/help/upload?userId=" + userId + "&publisherId=" + publiserId));
+			appList.add(createApp("", "管理订阅人", URL_PIPER + "/web/home?userId=" + userId + "&publisherId=" + publiserId));
+			appList.add(createApp("", "账号上传说明", URL_PIPER + "/h5/help/upload?userId=" + userId + "&publisherId=" + publiserId));
 		}
 
 		return appList;
@@ -207,49 +203,4 @@ public class PMenusHandler implements EventHandler<MessageEvent> {
 		return CollectionUtil.fastMap(keys1, app11);
 	}
 
-
-//	private Map<String, Object> createFileApp(String iconUrl, String appName, String helper) {
-//		List<String> keys1 = CollectionUtil.fastList("icon", "title", "helper", "url", "extInfo");
-//		List<Object> app11 = CollectionUtil.fastList(iconUrl, appName, helper, "", new HashMap());
-//		return CollectionUtil.fastMap(keys1, app11);
-//	}
-
-	private String getUserLogVersion(Header header, String version) {
-		Consumer consumer = consumerRepository.selectByUserId(header.getReceiver());
-		if (consumer == null) {
-			consumer = new Consumer();
-			consumer.setPversion(version);
-			consumer.setPubkey(header.getReceiverPK());
-			consumer.setUserId(header.getReceiver());
-			consumer.setRole(myRole);
-			consumerRepository.insert(consumer);
-		} else {
-			if (version.equals(consumer.getPversion()) && myRole.equals(consumer.getRole())) {
-				return version;
-			}
-		}
-		return String.valueOf(Integer.parseInt(version) + 1);
-	}
-
-	private void updateUserLogVersion(String userId, String version) {
-		Consumer consumer = new Consumer();
-		consumer.setUserId(userId);
-		consumer.setRole(myRole);
-		consumer.setPversion(version);
-		consumerRepository.update(consumer);
-	}
-
-	private String getPermission(Header header) {
-		Publisher publisher = publisherService.getPubLisherByuserId(header.getReceiver(), PublisherTypeEnums.person);
-		//判断version字段，是否需要发送菜单
-		//不是个人出版社
-		int isPerson = publisher != null ? 1 : 0;
-		Admin admin = adminService.getAdmin(header.getReceiver());
-		//判断是不是组织出版社
-		int isOrg = admin != null ? 1 : 0;
-
-		String per = "00" + String.valueOf(isOrg) + String.valueOf(isPerson);
-
-		return PermissionUtil.getMyVersion(per);
-	}
 }

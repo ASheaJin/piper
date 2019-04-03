@@ -1,86 +1,223 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.syswin.pipeline.db.repository.ConsumerRepository">
-    <resultMap id="BaseResultMap" type="com.syswin.pipeline.db.model.Consumer">
-        <id column="id" jdbcType="INTEGER" property="id"/>
-        <result column="user_id" jdbcType="VARCHAR" property="userId"/>
-        <result column="create_time" jdbcType="INTEGER" property="createTime"/>
-        <result column="curversion" jdbcType="VARCHAR" property="curversion"/>
-        <result column="pversion" jdbcType="VARCHAR" property="pversion"/>
-        <result column="role" jdbcType="VARCHAR" property="role"/>
-        <result column="pub_key" jdbcType="VARCHAR" property="pubkey"/>
-    </resultMap>
-
-    <sql id="Base_Column_List">
-    id, user_id,pub_key,curversion,pversion,role, create_time
+<mapper namespace="com.syswin.pipeline.db.mapper.ConsumerMapper">
+  <resultMap id="BaseResultMap" type="com.syswin.pipeline.db.model.Consumer">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="create_time" jdbcType="INTEGER" property="createTime" />
+    <result column="ptemail" jdbcType="VARCHAR" property="ptemail" />
+    <result column="curversion" jdbcType="VARCHAR" property="curversion" />
+    <result column="role" jdbcType="VARCHAR" property="role" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
   </sql>
-
-    <insert id="insert">
-        insert into consumer
-        ( user_id,
-        <if test="pubkey != null">
-            pub_key,
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
         </if>
-        <if test="pversion != null">
-            pversion,
-        </if>
-        <if test="curversion != null">
-            curversion,
-        </if>
-        <if test="role != null">
-            role,
-        </if>
-        create_time
-        ) values (
-        #{userId},
-        <if test="pubkey != null">
-            #{pubkey},
-        </if>
-        <if test="pversion != null">
-            pversion,
-        </if>
-        <if test="curversion != null">
-            curversion,
-        </if>
-        <if test="role != null">
-            role,
-        </if>
-        #{createTime}
-        )
-    </insert>
-
-    <update id="update">
-        update consumer
-        <set>
-            <if test="pversion != null">
-                pversion = #{pversion},
-            </if>
-            <if test="curversion != null">
-                curversion = #{curversion},
-            </if>
-            <if test="role != null">
-                role = #{role},
-            </if>
-            <if test="createTime != null">
-                create_time = #{createTime,jdbcType=INTEGER},
-            </if>
-        </set>
-        where user_id = #{userId}
-    </update>
-
-    <select id="selectByUserId" resultType="com.syswin.pipeline.db.model.Consumer">
-        select
-        <include refid="Base_Column_List"/>
-        from consumer where user_id = #{userId}
-    </select>
-
-    <select id="selectById" resultType="com.syswin.pipeline.db.model.Consumer">
-        select
-        <include refid="Base_Column_List"/>
-        from consumer where id = #{id}
-    </select>
-
-    <delete id="delete">
-       delete from consumer  where id = #{id}
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, user_id, create_time, ptemail, curversion, role
+  </sql>
+  <select id="selectByExample" parameterType="com.syswin.pipeline.db.model.ConsumerExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from consumer
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from consumer
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from consumer
+    where id = #{id,jdbcType=INTEGER}
   </delete>
+  <insert id="insert" parameterType="com.syswin.pipeline.db.model.Consumer">
+    insert into consumer (id, user_id, create_time, 
+      ptemail, curversion, role
+      )
+    values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=VARCHAR}, #{createTime,jdbcType=INTEGER}, 
+      #{ptemail,jdbcType=VARCHAR}, #{curversion,jdbcType=VARCHAR}, #{role,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.syswin.pipeline.db.model.Consumer">
+    insert into consumer
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="ptemail != null">
+        ptemail,
+      </if>
+      <if test="curversion != null">
+        curversion,
+      </if>
+      <if test="role != null">
+        role,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=INTEGER},
+      </if>
+      <if test="ptemail != null">
+        #{ptemail,jdbcType=VARCHAR},
+      </if>
+      <if test="curversion != null">
+        #{curversion,jdbcType=VARCHAR},
+      </if>
+      <if test="role != null">
+        #{role,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.syswin.pipeline.db.model.ConsumerExample" resultType="java.lang.Long">
+    select count(*) from consumer
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update consumer
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.userId != null">
+        user_id = #{record.userId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createTime != null">
+        create_time = #{record.createTime,jdbcType=INTEGER},
+      </if>
+      <if test="record.ptemail != null">
+        ptemail = #{record.ptemail,jdbcType=VARCHAR},
+      </if>
+      <if test="record.curversion != null">
+        curversion = #{record.curversion,jdbcType=VARCHAR},
+      </if>
+      <if test="record.role != null">
+        role = #{record.role,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update consumer
+    set id = #{record.id,jdbcType=INTEGER},
+      user_id = #{record.userId,jdbcType=VARCHAR},
+      create_time = #{record.createTime,jdbcType=INTEGER},
+      ptemail = #{record.ptemail,jdbcType=VARCHAR},
+      curversion = #{record.curversion,jdbcType=VARCHAR},
+      role = #{record.role,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.syswin.pipeline.db.model.Consumer">
+    update consumer
+    <set>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=INTEGER},
+      </if>
+      <if test="ptemail != null">
+        ptemail = #{ptemail,jdbcType=VARCHAR},
+      </if>
+      <if test="curversion != null">
+        curversion = #{curversion,jdbcType=VARCHAR},
+      </if>
+      <if test="role != null">
+        role = #{role,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.syswin.pipeline.db.model.Consumer">
+    update consumer
+    set user_id = #{userId,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=INTEGER},
+      ptemail = #{ptemail,jdbcType=VARCHAR},
+      curversion = #{curversion,jdbcType=VARCHAR},
+      role = #{role,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
 </mapper>
