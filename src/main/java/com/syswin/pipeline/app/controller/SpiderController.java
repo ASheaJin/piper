@@ -40,9 +40,8 @@ public class SpiderController {
 					value = "发送消息"
 	)
 	public String sendOthermessage(@RequestBody SendParam message) {
-		Integer bodyType = message.getBodyType() == null ? 1 : Integer.parseInt(message.getBodyType());
-		Boolean result = sendMessegeService.sendOthermessage(message.getContent(), bodyType, message.getForm(), message.getTo());
-		return String.valueOf(result);
+		sendMessegeService.sendTextmessage(message.getContent(), message.getTo(), 0, message.getFrom());
+		return "success";
 	}
 
 }
