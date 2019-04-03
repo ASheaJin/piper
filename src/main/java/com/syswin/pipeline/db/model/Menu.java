@@ -7,6 +7,8 @@ public class Menu  extends BaseEntity{
 
     private String name;
 
+    private String url;
+
     private Byte isLeaf;
 
     private Integer sort;
@@ -62,4 +64,11 @@ public class Menu  extends BaseEntity{
         this.status = status;
     }
 
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
 }

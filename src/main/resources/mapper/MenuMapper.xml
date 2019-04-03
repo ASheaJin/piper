@@ -5,6 +5,7 @@
     <id column="menu_id" jdbcType="BIGINT" property="menuId" />
     <result column="parent_id" jdbcType="BIGINT" property="parentId" />
     <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
     <result column="is_leaf" jdbcType="TINYINT" property="isLeaf" />
     <result column="sort" jdbcType="INTEGER" property="sort" />
     <result column="status" jdbcType="TINYINT" property="status" />
@@ -40,7 +41,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    menu_id, parent_id, name, is_leaf, sort, status, create_time
+    menu_id, parent_id, name, url, is_leaf, sort, status, create_time
   </sql>
   <select id="selectByExample" parameterType="com.syswin.pipeline.db.model.MenuExample" resultMap="BaseResultMap">
     select
@@ -68,10 +69,10 @@
     where menu_id = #{menuId,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.syswin.pipeline.db.model.Menu">
-    insert into sys_menu (menu_id, parent_id, name, 
+    insert into sys_menu (menu_id, parent_id, name, url,
       is_leaf, sort, status, 
       create_time)
-    values (#{menuId,jdbcType=BIGINT}, #{parentId,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, 
+    values (#{menuId,jdbcType=BIGINT}, #{parentId,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR},
       #{isLeaf,jdbcType=TINYINT}, #{sort,jdbcType=INTEGER}, #{status,jdbcType=TINYINT}, 
       #{createTime,jdbcType=INTEGER})
   </insert>
@@ -86,6 +87,9 @@
       </if>
       <if test="name != null">
         name,
+      </if>
+      <if test="url != null">
+        url,
       </if>
       <if test="isLeaf != null">
         is_leaf,
@@ -109,6 +113,9 @@
       </if>
       <if test="name != null">
         #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        #{url,jdbcType=VARCHAR},
       </if>
       <if test="isLeaf != null">
         #{isLeaf,jdbcType=TINYINT},
@@ -139,6 +146,9 @@
       <if test="name != null">
         name = #{name,jdbcType=VARCHAR},
       </if>
+      <if test="url != null">
+        name = #{url,jdbcType=VARCHAR},
+      </if>
       <if test="isLeaf != null">
         is_leaf = #{isLeaf,jdbcType=TINYINT},
       </if>
@@ -158,6 +168,7 @@
     update sys_menu
     set parent_id = #{parentId,jdbcType=BIGINT},
       name = #{name,jdbcType=VARCHAR},
+      url = #{url,jdbcType=VARCHAR},
       is_leaf = #{isLeaf,jdbcType=TINYINT},
       sort = #{sort,jdbcType=INTEGER},
       status = #{status,jdbcType=TINYINT},

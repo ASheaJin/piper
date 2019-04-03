@@ -15,4 +15,6 @@ public class MenuOutput {
     private String name;
 
     private Byte isLeaf;
+
+    private String url;
 }

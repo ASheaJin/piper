@@ -52,10 +52,17 @@ public class UserController {
         return new ResponseEntity(out);
     }
 
+
     @PostMapping("saveRolesByUserId")
     public ResponseEntity saveRolesByUserId(@RequestBody UserRolesInput param) {
         userService.saveRolesByUserId(param.getUserId(), param.getRoleIds());
         return new ResponseEntity();
+    }
+
+    @GetMapping("getMenesByUserId")
+    public ResponseEntity<List<MenuOutput>> getMenesByUserId(@ModelAttribute UserIdInput param) {
+        List<MenuOutput> out = userService.getMenesByUserId(param.getUserId());
+        return new ResponseEntity(out);
     }
 
     @PostMapping("updatePassword")
