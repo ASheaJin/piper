@@ -5,6 +5,7 @@ import com.syswin.pipeline.app.dto.ContentIdInput;
 import com.syswin.pipeline.app.dto.ContentOutput;
 import com.syswin.pipeline.app.dto.SubUserListParam;
 import com.syswin.pipeline.service.psserver.bean.ResponseEntity;
+import com.syswin.pipeline.utils.DateUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
@@ -45,6 +46,7 @@ public class ContentController {
 	private Map<String, ContentOutput> m = new LinkedHashMap(){
 		{
 			ContentOutput text = new ContentOutput("1");
+			text.setPublishTime((long) DateUtil.getDate());
 			text.setBodyType(1);
 			text.setText("基于springfox使用swagger非常简单，只需要maven依赖以及少量config配置就可以实现，上面的demo中都有体现，或者直接访问springfox的github上面的demospringfox/springfox-demos 。\n" +
 					"springfox更详细配置请参考官方文档Springfox Reference Documentation。\n" +
@@ -52,12 +54,14 @@ public class ContentController {
 			put(text.getContentId(), text);
 
 			ContentOutput voice = new ContentOutput("2");
+			voice.setPublishTime((long) DateUtil.getDate());
 			voice.setBodyType(2);
 			voice.setUrl(domain + "/1554184989535.amr");
 			voice.setTime(3);
 			put(voice.getContentId(), voice);
 
 			ContentOutput pic = new ContentOutput("3");
+			pic.setPublishTime((long) DateUtil.getDate());
 			pic.setBodyType(3);
 			pic.setW(609);
 			pic.setH(565);
@@ -67,6 +71,7 @@ public class ContentController {
 			put(pic.getContentId(), pic);
 
 			ContentOutput v = new ContentOutput("4");
+			v.setPublishTime((long) DateUtil.getDate());
 			v.setBodyType(10);
 			v.setW(540);
 			v.setH(960);
@@ -76,6 +81,7 @@ public class ContentController {
 			put(v.getContentId(), v);
 
 			ContentOutput f = new ContentOutput("6");
+			f.setPublishTime((long) DateUtil.getDate());
 			f.setBodyType(14);
 			f.setFormat("application/pdf");
 			f.setSize(333563);
@@ -84,6 +90,7 @@ public class ContentController {
 			put(f.getContentId(), f);
 
 			ContentOutput mail = new ContentOutput("8");
+			mail.setPublishTime((long) DateUtil.getDate());
 			mail.setBodyType(22);
 			mail.setTitle("03月22日-03月29日云监控周报");
 			mail.setAttachCount(1);
@@ -104,6 +111,7 @@ public class ContentController {
 
 
 			ContentOutput msg = new ContentOutput("9");
+			msg.setPublishTime((long) DateUtil.getDate());
 			msg.setBodyType(30);
 			msg.setTitle("swagge");
 			msg.setIntro("基于springfox使用swagger非常简单");

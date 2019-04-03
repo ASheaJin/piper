@@ -21,6 +21,14 @@ public class ContentOutput extends MediaContent {
     private String contentId;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ApiModelProperty(value = "出版社id")
+    private String publisherId;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ApiModelProperty(value = "出版社名称")
+    private String publisherName;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     @ApiModelProperty(value = "标题")
     private String title;
 
