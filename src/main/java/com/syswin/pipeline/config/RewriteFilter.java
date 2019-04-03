@@ -1,6 +1,6 @@
 package com.syswin.pipeline.config;
 
-import tk.mybatis.mapper.util.StringUtil;
+import com.syswin.pipeline.utils.StringUtils;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -35,7 +35,7 @@ public class RewriteFilter implements Filter {
 		//初始化拦截配置
 		rewriteTo = cfg.getInitParameter(REWRITE_TO);
 		String exceptUrlString = cfg.getInitParameter(REWRITE_PATTERNS);
-		if (StringUtil.isNotEmpty(exceptUrlString)) {
+		if (!StringUtils.isNullOrEmpty(exceptUrlString)) {
 			urlPatterns = Collections.unmodifiableSet(
 							new HashSet<>(Arrays.asList(exceptUrlString.split(";", 0))));
 		} else {
@@ -48,7 +48,7 @@ public class RewriteFilter implements Filter {
 		HttpServletRequest request = (HttpServletRequest) req;
 		String servletPath = request.getServletPath();
 		String context = request.getContextPath();
-		System.out.println("context:"+context);
+		System.out.println("context:" + context);
 		//匹配的路径重写
 		if (isMatches(urlPatterns, servletPath)) {
 			req.getRequestDispatcher(context + "/" + rewriteTo).forward(req, resp);

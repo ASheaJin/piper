@@ -138,7 +138,7 @@
 		<dependency>
 			<groupId>com.syswin.sub</groupId>
 			<artifactId>SubEngine</artifactId>
-			<version>1.0.1-SNAPSHOT</version>
+			<version>1.0.2</version>
 		</dependency>
 
 		<dependency>
