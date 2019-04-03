@@ -71,9 +71,9 @@ public class UserService {
             if (StringUtils.isEmpty(userParam.getLoginName())) {
                 throw new RuntimeException("登录名为空");
             }
-            if (StringUtils.isEmpty(userParam.getPassword())) {
-                throw new RuntimeException("密码为空");
-            }
+//            if (StringUtils.isEmpty(userParam.getPassword())) {
+//                throw new RuntimeException("密码为空");
+//            }
 
             User existUser = userRepository.selectByLoginName(userParam.getLoginName());
             if (existUser != null) {
