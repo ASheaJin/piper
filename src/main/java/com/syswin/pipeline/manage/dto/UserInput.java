@@ -12,7 +12,7 @@ public class UserInput {
 
     private String loginName;
 
-    private String password;
+//    private String password;
 
     private String userName;
 

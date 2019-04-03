@@ -80,8 +80,9 @@ public class UserService {
                 throw new RuntimeException("用户 " + userParam.getLoginName() + " 已存在");
             }
 
+            //新用户都用默认密码
             String salt = TokenUtil.randString(5);
-            String encodePwd = MD5Coder.MD5(userParam.getPassword() + salt);
+            String encodePwd = MD5Coder.MD5(defaultPwd + salt);
 
             User user = new User();
             user.setUserId(SnowflakeIdWorker.getInstance().nextId());
