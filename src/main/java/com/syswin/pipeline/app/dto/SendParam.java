@@ -7,9 +7,10 @@ import lombok.Data;
  */
 @Data
 public class SendParam {
-    private String content;
-    /**
-     * 出版社账号
-     */
-    private String piperTemail;
+	private String token;
+	private String content;
+	/**
+	 * 出版社账号
+	 */
+	private String piperTemail;
 }

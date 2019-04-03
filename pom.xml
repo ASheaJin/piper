@@ -204,30 +204,30 @@
 					</nonFilteredFileExtensions>
 				</configuration>
 			</plugin>
-			<!--<plugin>-->
-			<!--<groupId>org.mybatis.generator</groupId>-->
-			<!--<artifactId>mybatis-generator-maven-plugin</artifactId>-->
-			<!--<version>1.3.7</version>-->
-			<!--<configuration>-->
-			<!--<configurationFile>doc\mybatis\MybatisGeneratorConfig.xml</configurationFile>-->
-			<!--<verbose>true</verbose>-->
-			<!--</configuration>-->
-			<!--<dependencies>-->
-			<!--<dependency>-->
-			<!--<groupId>mysql</groupId>-->
-			<!--<artifactId>mysql-connector-java</artifactId>-->
-			<!--<version>5.1.45</version>-->
-			<!--</dependency>-->
-			<!--</dependencies>-->
-			<!--<executions>-->
-			<!--<execution>-->
-			<!--<id>Generate MyBatis Artifacts</id>-->
-			<!--<goals>-->
-			<!--<goal>generate</goal>-->
-			<!--</goals>-->
-			<!--</execution>-->
-			<!--</executions>-->
-			<!--</plugin>-->
+			<plugin>
+			<groupId>org.mybatis.generator</groupId>
+			<artifactId>mybatis-generator-maven-plugin</artifactId>
+			<version>1.3.7</version>
+			<configuration>
+			<configurationFile>doc\mybatis\MybatisGeneratorConfig.xml</configurationFile>
+			<verbose>true</verbose>
+			</configuration>
+			<dependencies>
+			<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.45</version>
+			</dependency>
+			</dependencies>
+			<executions>
+			<execution>
+			<id>Generate MyBatis Artifacts</id>
+			<goals>
+			<goal>generate</goal>
+			</goals>
+			</execution>
+			</executions>
+			</plugin>
 		</plugins>
 	</build>
 </project>

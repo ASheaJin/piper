@@ -51,7 +51,7 @@ public class SwaggerConfig {
 		return new Docket(DocumentationType.SWAGGER_2)
 						.select()
 						.apis(RequestHandlerSelectors.withClassAnnotation(Api.class))
-						.paths(PathSelectors.regex("/(admin|ps|publish|subcribe)/.*"))
+						.paths(PathSelectors.regex("/(spider|admin|ps|publish|subcribe)/.*"))
 						.build()
 						.groupName("api")
 						.pathMapping("/")
