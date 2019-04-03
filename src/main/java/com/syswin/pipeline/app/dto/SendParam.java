@@ -11,9 +11,5 @@ public class SendParam {
     /**
      * 出版社账号
      */
-    private String from;
-    /**
-     * 出版社的用户账号
-     */
-    private String to;
+    private String piperTemail;
 }
