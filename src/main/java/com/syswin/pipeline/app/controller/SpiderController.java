@@ -51,7 +51,7 @@ public class SpiderController {
 	public ResponseEntity sendOthermessage(@RequestBody SendParam msg) {
 		List<String> userIds = scriptionService.getSubscribers(msg.getPiperTemail(), null);
 		for (String userId : userIds) {
-			sendMessegeService.sendTextmessage(msg.getContent(), msg.getPiperTemail(), 0, userId);
+			sendMessegeService.sendTextmessage(msg.getContent(), userId, 0, msg.getPiperTemail());
 		}
 		return new ResponseEntity();
 	}
