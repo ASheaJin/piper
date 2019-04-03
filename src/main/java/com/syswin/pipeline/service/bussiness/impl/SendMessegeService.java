@@ -74,20 +74,24 @@ public class SendMessegeService {
 		psClientService.sendChatMessage(chatMsg, to, publickey, from, senderPK);
 	}
 
+	public void sendTextmessage(String content, String to, String from) {
+		sendTextmessage(content, to, 0, from);
+	}
+
 	/**
 	 * 发送文本的消息
 	 *
-	 * @param to        发给谁
-	 * @param from      谁发
+	 * @param to   发给谁
+	 * @param from 谁发
 	 */
-	public void sendCard( String from ,String to,String name ) {
+	public void sendCard(String from, String to, String name) {
 		this.sendCard(from, to, name, null);
 	}
 
-	public void sendCard( String from ,String to,String name , String imgUrl) {
+	public void sendCard(String from, String to, String name, String imgUrl) {
 		imgUrl = imgUrl == null ? url : imgUrl;
 		ChatMsg msg = new ChatMsg(from, to,
-						UUID.randomUUID().toString(), cardContent(from,name,imgUrl));
+						UUID.randomUUID().toString(), cardContent(from, name, imgUrl));
 
 		msg.setBody_type(4);
 		String publickey = psClientService.getTemailPublicKey(from);
@@ -99,9 +103,10 @@ public class SendMessegeService {
 	@Value("${app.pipeline.imgUrl}")
 	private String url;
 
-	public static final String VCARD_TEMPLATE="BEGIN:VCARD\r\nPHOTO:%s\r\nVERSION:3.0\r\nN:%s\r\nEMAIL:%s\r\nEND:VCARD";
-	private Card cardContent(String temail,String name,String imgUrl) {
-		String vcard=String.format(VCARD_TEMPLATE, url,name,temail);
+	public static final String VCARD_TEMPLATE = "BEGIN:VCARD\r\nPHOTO:%s\r\nVERSION:3.0\r\nN:%s\r\nEMAIL:%s\r\nEND:VCARD";
+
+	private Card cardContent(String temail, String name, String imgUrl) {
+		String vcard = String.format(VCARD_TEMPLATE, url, name, temail);
 		Card card = new Card();
 		card.setNick(name);
 		card.setFeedId(vcard);
@@ -109,6 +114,7 @@ public class SendMessegeService {
 		card.setDesc(temail);
 		return card;
 	}
+
 	/**
 	 * 发送其他类型的消息
 	 *
