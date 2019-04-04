@@ -1,5 +1,8 @@
 package com.syswin.pipeline.utils;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
@@ -106,6 +109,26 @@ public class StringUtils {
 		}
 	}
 
+
+	/**
+	 * 获取内容提String类型，同时过滤
+	 *
+	 * @param txt
+	 * @return
+	 */
+	public static String filterStr(String txt) {
+		JSONObject jsonObject = JSON.parseObject(txt);
+		String ret = jsonObject.getString("text");
+		if (StringUtils.isNullOrEmpty(ret)) {
+			return ret;
+		}
+		ret= ret.replaceAll("\\[","").replaceAll("\\]","").
+						replaceAll("\\{","").replaceAll("\\}","").
+						replaceAll("\\(","").replaceAll("\\)","").
+						replaceAll("\\,","").replaceAll("\\，","").trim();
+		return ret;
+	}
+
 	/**
 	 * 获取String类型
 	 *
@@ -180,5 +203,10 @@ public class StringUtils {
 		Pattern pattern = Pattern.compile("^(?!_)(?!.*?_$)[a-zA-Z0-9_，。,.?？!！\\u4e00-\\u9fa5]+$");
 		Matcher matcher = pattern.matcher(str);
 		return (matcher.find());
+	}
+
+	public static void main(String[] args) {
+		String ss = filterStr("{\"text\":\"Yhh\"}");
+		System.out.println(ss);
 	}
 }

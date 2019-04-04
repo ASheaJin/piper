@@ -5,8 +5,10 @@ import com.syswin.pipeline.enums.PeriodEnums;
 import com.syswin.pipeline.service.PiperSubscriptionService;
 import com.syswin.pipeline.service.bussiness.PublisherSecService;
 import com.syswin.pipeline.service.ps.ChatMsg;
+import com.syswin.pipeline.service.ps.util.StringUtil;
 import com.syswin.pipeline.utils.MessageUtil;
 import com.syswin.pipeline.utils.SnowflakeIdWorker;
+import com.syswin.pipeline.utils.StringUtils;
 import com.syswin.pipeline.utils.SwithUtil;
 import com.syswin.sub.api.AdminService;
 import com.syswin.sub.api.SendRecordService;
@@ -110,7 +112,8 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 	 * @param txt
 	 * @param publisherTypeEnums
 	 */
-	private void dealpusharticle(Publisher publisher, int body_type, String txt, PublisherTypeEnums publisherTypeEnums) {
+	@Override
+	public Integer dealpusharticle(Publisher publisher, int body_type, String txt, PublisherTypeEnums publisherTypeEnums) {
 		//生成文章Id
 		SnowflakeIdWorker idWorker = SnowflakeIdWorker.getInstance();
 		String contentId = String.valueOf(idWorker.nextId());
@@ -151,7 +154,7 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 		sendRecord.setSendnum(num);
 		sendRecord.setUserId(publisher.getPtemail());
 		subSendRecordService.addSendRecord(sendRecord);
-
+		return num;
 	}
 
 	public void monitorP(String userId, String ptemail, ChatMsg chatMsg) {
@@ -167,19 +170,22 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 			return;
 		}
 
-		if (orgContent.contains("《订阅》")) {
-			piperSubscriptionService.subscribe(userId, ptemail);
-			return;
+		//如果用户输入的是文本
+		if (body_type == 1) {
+			String txt = StringUtils.filterStr(orgContent);
+			if (txt.equals("订阅") || txt.equals("1")) {
+				piperSubscriptionService.subscribe(userId, ptemail);
+				return;
+			}
+//			if (orgContent.contains("《取消订阅》")) {
+//				piperSubscriptionService.unsubscribe(userId, publisher.getPublisherId());
+//				return;
+//			}
 		}
-		if (orgContent.contains("《取消订阅》")) {
-			piperSubscriptionService.unsubscribe(userId, publisher.getPublisherId());
-			return;
-		}
-
 
 		Subscription subscription = subscriptionService.getSub(userId, publisher.getPublisherId());
 		if (subscription == null) {
-			sendMessegeService.sendTextmessage("您尚未订阅该出版社 发送 《订阅》 订阅该出版社", userId, 0, publisher.getPtemail());
+			sendMessegeService.sendTextmessage("您尚未订阅该出版社 发送 （'订阅' 或 '1'） 订阅该出版社", userId, 0, publisher.getPtemail());
 
 		} else {
 //			sendMessegeService.sendTextmessage("您已订阅该出版社 发送 《取消订阅》 取消订阅该出版社", userId, 0, publisher.getPtemail());

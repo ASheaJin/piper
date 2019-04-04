@@ -1,12 +1,15 @@
 package com.syswin.pipeline.app.controller;
 
 import com.syswin.pipeline.app.dto.SendParam;
+import com.syswin.pipeline.service.PiperPublisherService;
 import com.syswin.pipeline.service.SpiderTokenService;
+import com.syswin.pipeline.service.bussiness.PublisherSecService;
 import com.syswin.pipeline.service.bussiness.impl.SendMessegeService;
 import com.syswin.pipeline.service.psserver.bean.ResponseEntity;
 import com.syswin.pipeline.service.psserver.impl.BusinessException;
 import com.syswin.sub.api.PublisherService;
 import com.syswin.sub.api.SubscriptionService;
+import com.syswin.sub.api.db.model.Publisher;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,11 +27,11 @@ import java.util.List;
 public class SpiderController {
 
 	@Autowired
-	SendMessegeService sendMessegeService;
+	PublisherSecService publisherSecService;
 	@Autowired
 	SpiderTokenService spiderTokenService;
 	@Autowired
-	SubscriptionService scriptionService;
+	private PublisherService publisherService;
 
 	@PostMapping("/send")
 	@ApiOperation(
@@ -38,11 +41,12 @@ public class SpiderController {
 		if (spiderTokenService.getSpiderToken(msg.getToken(), msg.getPiperTemail()) == null) {
 			throw new BusinessException("Token错误");
 		}
-		List<String> userIds = scriptionService.getSubscribers(msg.getPiperTemail(), null);
-		for (String userId : userIds) {
-			sendMessegeService.sendTextmessage(msg.getContent(), userId, msg.getPiperTemail());
+		Publisher publisher = publisherService.getPubLisherByPublishTmail(msg.getPiperTemail(), null);
+		if (publisher == null) {
+			throw new BusinessException("该出版社不存在");
 		}
-		return new ResponseEntity();
+		Integer num = publisherSecService.dealpusharticle(publisher, 1, msg.getContent(), publisher.getPtype());
+		return new ResponseEntity(num);
 	}
 
 }
