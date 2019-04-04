@@ -113,8 +113,9 @@ public class RoleService {
 			Long pid = parentIds.get(Long.parseLong(menuId)).getParentId();
 			if (pid != null && !existsPids.contains(pid)) {
 				RoleMenu prm = new RoleMenu();
-				prm.setMenuId(Long.parseLong(menuId));
-				prm.setRoleId(pid);
+				prm.setMenuId(pid);
+				prm.setRoleId(Long.parseLong(roleId));
+
 				roleMenuRepository.insert(prm);
 				existsPids.add(pid);
 			}
