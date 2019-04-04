@@ -182,15 +182,17 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 
 		Subscription subscription = subscriptionService.getSub(userId, publisher.getPublisherId());
 		if (subscription == null) {
-			sendMessegeService.sendTextmessage("您尚未订阅该出版社 发送 （'订阅' 或 '1'） 订阅该出版社", userId, 0, publisher.getPtemail());
 			if (body_type == 1) {
 				String txt = StringUtils.filterStr(orgContent);
 				if (txt.equals("订阅") || txt.equals("1")) {
 					piperSubscriptionService.subscribe(userId, ptemail);
 					return;
+				} else {
+					sendMessegeService.sendTextmessage("您尚未订阅该出版社 发送 （'订阅' 或 '1'） 订阅该出版社", userId, 0, publisher.getPtemail());
 				}
 			}
 		} else {
+			sendMessegeService.sendTextmessage(MessageUtil.sendCreateHelpTip("回复功能暂不支持"), userId, 1000, ptemail);
 //			sendMessegeService.sendTextmessage("您已订阅该出版社 发送 《取消订阅》 取消订阅该出版社", userId, 0, publisher.getPtemail());
 		}
 		//判断出版社是否存在
@@ -200,8 +202,6 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 //				return;
 //			}
 			dealpusharticle(publisher, body_type, orgContent, PublisherTypeEnums.person);
-		} else {
-			sendMessegeService.sendTextmessage(MessageUtil.sendCreateHelpTip("回复功能暂不支持"), userId, 1000, ptemail);
 		}
 
 
