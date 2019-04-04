@@ -36,6 +36,7 @@ public class PublisherInnerController {
 	public ResponseEntity<PageInfo> list(@RequestBody PublisherListParam plb, HttpServletRequest request) {
 		Integer pageNo = StringUtils.isNullOrEmpty(plb.getPageNo()) ? 1 : Integer.parseInt(plb.getPageNo());
 		Integer pageSize = StringUtils.isNullOrEmpty(plb.getPageSize()) ? 20 : Integer.parseInt(plb.getPageSize());
+
 		return new ResponseEntity(publisherService.list(pageNo, pageSize, plb.getKeyword(), plb.getPiperType(), null));
 	}
 
