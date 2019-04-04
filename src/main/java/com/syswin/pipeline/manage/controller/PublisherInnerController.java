@@ -43,7 +43,6 @@ public class PublisherInnerController {
 	public ResponseEntity<PageInfo> list(@RequestBody PublisherListParam plb, HttpServletRequest request) {
 		Integer pageNo = StringUtils.isNullOrEmpty(plb.getPageNo()) ? 1 : Integer.parseInt(plb.getPageNo());
 		Integer pageSize = StringUtils.isNullOrEmpty(plb.getPageSize()) ? 20 : Integer.parseInt(plb.getPageSize());
-		HttpServletRequest httpRequest = (HttpServletRequest) request;
 		// 前段token授权信息放在请求头中传入
 
 		String manageId = headerService.getUserId(request);

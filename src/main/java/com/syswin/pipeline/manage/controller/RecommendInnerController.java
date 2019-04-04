@@ -4,6 +4,7 @@ import com.github.pagehelper.PageInfo;
 import com.syswin.pipeline.app.dto.RecommendInput;
 import com.syswin.pipeline.db.model.ReCommendContent;
 import com.syswin.pipeline.db.model.ReCommendPublisher;
+import com.syswin.pipeline.manage.service.HeaderService;
 import com.syswin.pipeline.manage.vo.input.AddRecommendContent;
 import com.syswin.pipeline.manage.vo.input.AddRecommendPublisher;
 import com.syswin.pipeline.manage.vo.input.DelReCommend;
@@ -27,6 +28,8 @@ import javax.servlet.http.HttpServletRequest;
 @Api(value = "recommend", tags = "推荐")
 public class RecommendInnerController {
 
+	@Autowired
+	private HeaderService headerService;
 	@Autowired
 	PiperRecommendContentService piperRecommendContentService;
 
@@ -79,7 +82,8 @@ public class RecommendInnerController {
 					value = "添加推荐出版社"
 	)
 	public ResponseEntity contentAdd(@RequestBody AddRecommendContent acc, HttpServletRequest request) {
-		ReCommendContent reCommendContent = piperRecommendContentService.add(null, acc.getContentId());
+		String manageId = headerService.getUserId(request);
+		ReCommendContent reCommendContent = piperRecommendContentService.add(manageId, acc.getContentId());
 
 		return new ResponseEntity(reCommendContent);
 	}
@@ -89,7 +93,8 @@ public class RecommendInnerController {
 					value = "删除推荐内容"
 	)
 	public ResponseEntity contentDelete(@RequestBody DelReCommend dc, HttpServletRequest request) {
-		piperRecommendContentService.delete(null, dc.getId());
+		String manageId = headerService.getUserId(request);
+		piperRecommendContentService.delete(manageId, dc.getId());
 
 		return new ResponseEntity();
 	}

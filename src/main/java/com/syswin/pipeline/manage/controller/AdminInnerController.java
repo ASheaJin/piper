@@ -1,6 +1,7 @@
 package com.syswin.pipeline.manage.controller;
 
 import com.github.pagehelper.PageInfo;
+import com.syswin.pipeline.manage.service.HeaderService;
 import com.syswin.pipeline.manage.vo.input.AddAdmin;
 import com.syswin.pipeline.manage.vo.input.AdminList;
 import com.syswin.pipeline.service.PiperAdminService;
@@ -25,7 +26,8 @@ public class AdminInnerController {
 
 	@Autowired
 	private PiperAdminService piperAdminService;
-
+	@Autowired
+	private HeaderService headerService;
 	@PostMapping("/list")
 	@ApiOperation(
 					value = "管理员列表"
@@ -42,7 +44,8 @@ public class AdminInnerController {
 					value = "添加管理员"
 	)
 	public ResponseEntity<Admin> add(@RequestBody AddAdmin addAdmin, HttpServletRequest request) {
-		Admin admin = piperAdminService.add(null, addAdmin.getUserId(), false);
+		String manageId = headerService.getUserId(request);
+		Admin admin = piperAdminService.add(manageId, addAdmin.getUserId(), false);
 		return new ResponseEntity(admin);
 	}
 
@@ -52,8 +55,8 @@ public class AdminInnerController {
 					value = "删除管理员"
 	)
 	public ResponseEntity delete(@RequestBody AddAdmin delAdmin, HttpServletRequest request) {
-
-		piperAdminService.delete(null, delAdmin.getUserId());
+		String manageId = headerService.getUserId(request);
+		piperAdminService.delete(manageId, delAdmin.getUserId());
 		return new ResponseEntity();
 	}
 }

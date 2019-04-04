@@ -157,6 +157,7 @@ public class PiperPublisherService {
 			pmVO.setPtemail(publisher.getPtemail());
 			pmVO.setPublisherId(publisher.getPublisherId());
 			pmVO.setPiperType(publisher.getPtype().getName());
+			pmVO.setCreatTime(String.valueOf(publisher.getCreateTime()));
 			if (reCommendPublisherList != null) {
 				for (ReCommendPublisher rp : reCommendPublisherList) {
 					if (publisher.getPublisherId().equals(rp.getPublisherId())) {
