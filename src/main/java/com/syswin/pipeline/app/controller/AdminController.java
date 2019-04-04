@@ -14,6 +14,7 @@ import com.syswin.sub.api.PublisherService;
 import com.syswin.sub.api.db.model.Admin;
 import com.syswin.sub.api.db.model.Publisher;
 import com.syswin.sub.api.enums.PublisherTypeEnums;
+import com.syswin.sub.api.exceptions.SubException;
 import com.syswin.sub.api.response.SubResponseEntity;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -115,6 +116,10 @@ public class AdminController {
 	public ResponseEntity deleteAdmin(@RequestBody AdminInputParam adminParam) {
 		if (checkNotAdmin(adminParam.getUserId())) {
 			return new ResponseEntity("500", "你无权操作");
+		}
+		Admin admin = adminService.getAdmin(adminParam.getUserId());
+		if (admin == null || admin.getStatus() == 0) {
+			throw new SubException("删除失败，你不是管理员");
 		}
 		adminService.delete(adminParam.getUserId(), adminParam.getTmail());
 		sendMessegeService.sendTextmessage("你被" + adminParam.getUserId() + "取消了组织管理员", adminParam.getTmail());

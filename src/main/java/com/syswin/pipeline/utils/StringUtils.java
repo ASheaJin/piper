@@ -46,6 +46,11 @@ public class StringUtils {
 		}
 	}
 
+	public static String filterString(String txt) {
+		String filterStr = "";
+		return filterStr;
+	}
+
 	/**
 	 * 获取double类型
 	 *
