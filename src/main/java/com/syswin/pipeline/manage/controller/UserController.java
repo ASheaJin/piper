@@ -67,13 +67,15 @@ public class UserController {
 
     @PostMapping("updatePassword")
     public ResponseEntity updatePassword(@RequestBody PasswordInput passwordParam) {
-        userService.updatePassword(passwordParam);
+        String loginName = null; //TODO
+        userService.updatePassword(loginName, passwordParam);
         return new ResponseEntity();
     }
 
     @PostMapping("resetPassword")
     public ResponseEntity resetPassword(@RequestBody PasswordInput passwordParam) {
-        userService.resetPassword(passwordParam.getUserId());
+        String loginName = null; //TODO
+        userService.resetPassword(loginName);
         return new ResponseEntity();
     }
 }
