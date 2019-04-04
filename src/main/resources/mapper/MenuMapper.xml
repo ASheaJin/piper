@@ -137,7 +137,7 @@
       <include refid="Example_Where_Clause" />
     </if>
   </select>
-  <select id="selectParentIds" resultType="java.util.Map">
+  <select id="selectParentIds" resultMap="BaseResultMap">
     select menu_id, parent_id from sys_menu
   </select>
 

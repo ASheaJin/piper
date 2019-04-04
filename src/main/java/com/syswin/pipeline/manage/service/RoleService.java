@@ -77,7 +77,7 @@ public class RoleService {
 			role.setRemark(param.getRemark());
 			int c = roleRepository.updateByPrimaryKeySelective(role);
 			if (c == 0) {
-				throw new RuntimeException("角色id错误 " + roleId );
+				throw new RuntimeException("角色id错误 " + roleId);
 			}
 		}
 		return true;
@@ -106,11 +106,11 @@ public class RoleService {
 		roleMenuRepository.deleteByRoleId(Long.parseLong(roleId));
 
 		//页面只传过来叶子节点的id，这里重新获得父节点id
-		Map<Long, Long> parentIds = menuRepository.selectParentIds();
+		Map<Long, Menu> parentIds = menuRepository.selectParentIds();
 
 		Set<Long> existsPids = new HashSet<>();
 		for (String menuId : menuIds) {
-			Long pid = parentIds.get(Long.parseLong(menuId));
+			Long pid = parentIds.get(Long.parseLong(menuId)).getParentId();
 			if (pid != null && !existsPids.contains(pid)) {
 				RoleMenu prm = new RoleMenu();
 				prm.setMenuId(Long.parseLong(menuId));

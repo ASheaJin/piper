@@ -27,5 +27,5 @@ public interface MenuRepository extends BaseRepository<Menu> {
     int updateByPrimaryKey(Menu record);
 
     @MapKey("menuId")
-    Map<Long, Long> selectParentIds();
+    Map<Long, Menu> selectParentIds();
 }
