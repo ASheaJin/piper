@@ -42,6 +42,7 @@ public class PMenusHandler implements EventHandler<MessageEvent> {
 	@Autowired
 	private PublisherService publisherService;
 
+	//	private static final String ICON_SUBSCRIBE_LIST = "http://jco-app.cn/html/icon/sublist.png";
 	@Lazy
 	@Autowired
 	private SendMessegeService sendMessegeService;
@@ -155,29 +156,12 @@ public class PMenusHandler implements EventHandler<MessageEvent> {
 //	}
 
 	void sendTipsMessage(Publisher publisher, String userId) {
-		if (publisher.getPtype().equals(PublisherTypeEnums.organize)) {
-
+		if (publisher.getPtype().equals(PublisherTypeEnums.person)) {
 			if (userId.equals(publisher.getUserId())) {
-				sendMessegeService.sendTextmessage("您是 该出版社管理者 您可以在此向所有订阅者发消息、文件、图片等", userId, 0, publisher.getPtemail());
 			} else {
 				Subscription subscription = subSubscriptionService.getSub(userId, publisher.getPublisherId());
 				if (subscription == null) {
-					sendMessegeService.sendTextmessage("您尚未订阅该组织邮件组 您可联系管理员加入", userId, 0, publisher.getPtemail());
-
-				} else {
-					sendMessegeService.sendTextmessage("邮件组管理员在此给您发消息", userId, 0, publisher.getPtemail());
-				}
-			}
-		} else {
-			if (userId.equals(publisher.getUserId())) {
-				sendMessegeService.sendTextmessage("您是 该出版社管理者 您可以在此向所有订阅者发消息、文件、图片等", userId, 0, publisher.getPtemail());
-			} else {
-				Subscription subscription = subSubscriptionService.getSub(userId, publisher.getPublisherId());
-				if (subscription == null) {
-					sendMessegeService.sendTextmessage("您尚未订阅该出版社 发送 《订阅》 订阅该出版社", userId, 0, publisher.getPtemail());
-
-				} else {
-					sendMessegeService.sendTextmessage("您已订阅该出版社 发送 《取消订阅》 取消订阅该出版社", userId, 0, publisher.getPtemail());
+					sendMessegeService.sendTextmessage("您尚未订阅该出版社 发送 （'订阅' 或 '1'） 订阅该出版社", userId, 0, publisher.getPtemail());
 				}
 			}
 		}
