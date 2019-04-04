@@ -110,23 +110,24 @@ public class UserService {
         return true;
     }
 
-    public Boolean updatePassword(PasswordInput passwordParam) {
-        String userId = passwordParam.getUserId();
+    public Boolean updatePassword(String loginName, PasswordInput passwordParam) {
         String oldPwd = passwordParam.getOldPassword();
         String newPwd = passwordParam.getNewPassword();
 
-        User user = userRepository.selectByPrimaryKey(Long.parseLong(userId));
+        User user = userRepository.selectByLoginName(loginName);
         if (user == null) {
-            throw new RuntimeException("用户id错误 " + userId );
+            throw new RuntimeException("用户错误 " + loginName );
         }
+
+        Long userId = user.getUserId();
         String encodePwd = MD5Coder.MD5(oldPwd + user.getSalt());
         if (encodePwd.equals(user.getPassword())) {
-            throw new RuntimeException("原密码错误 " + userId );
+            throw new RuntimeException("原密码错误 " + loginName );
         }
 
         User saveUser = new User();
         String newEncodePwd = MD5Coder.MD5(newPwd + user.getSalt());
-        saveUser.setUserId(Long.parseLong(userId));
+        saveUser.setUserId(userId);
         saveUser.setPassword(newEncodePwd);
         userRepository.updateByPrimaryKeySelective(saveUser);
 

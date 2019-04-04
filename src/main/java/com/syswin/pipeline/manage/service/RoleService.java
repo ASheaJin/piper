@@ -17,8 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -106,13 +105,25 @@ public class RoleService {
 	public Boolean saveMenuesByRoleId(String roleId, List<String> menuIds) {
 		roleMenuRepository.deleteByRoleId(Long.parseLong(roleId));
 
+		//页面只传过来叶子节点的id，这里重新获得父节点id
+		Map<Long, Long> parentIds = menuRepository.selectParentIds();
+
+		Set<Long> existsPids = new HashSet<>();
 		for (String menuId : menuIds) {
+			Long pid = parentIds.get(Long.parseLong(menuId));
+			if (pid != null && !existsPids.contains(pid)) {
+				RoleMenu prm = new RoleMenu();
+				prm.setMenuId(Long.parseLong(menuId));
+				prm.setRoleId(pid);
+				roleMenuRepository.insert(prm);
+				existsPids.add(pid);
+			}
+
 			RoleMenu rm = new RoleMenu();
 			rm.setMenuId(Long.parseLong(menuId));
 			rm.setRoleId(Long.parseLong(roleId));
 			roleMenuRepository.insert(rm);
 		}
-
 		return true;
 	}
 
