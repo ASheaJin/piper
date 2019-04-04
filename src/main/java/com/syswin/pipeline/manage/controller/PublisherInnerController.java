@@ -11,6 +11,7 @@ import com.syswin.pipeline.manage.vo.input.PublisherListParam;
 import com.syswin.pipeline.manage.vo.input.AddPublisherParam;
 import com.syswin.pipeline.service.PiperPublisherService;
 import com.syswin.pipeline.service.psserver.bean.ResponseEntity;
+import com.syswin.pipeline.service.psserver.impl.BusinessException;
 import com.syswin.pipeline.utils.StringUtils;
 import com.syswin.sub.api.db.model.Publisher;
 import com.syswin.sub.api.exceptions.SubException;
@@ -66,6 +67,12 @@ public class PublisherInnerController {
 	)
 	public ResponseEntity add(@RequestBody AddPublisherParam publisherParam, HttpServletRequest request) {
 		publisherParam.setPublishMail(null);
+		String manageId = headerService.getUserId(request);
+		if (manageId != null && !manageId.equals(publisherParam.getUserId())) {
+			//用户不是系统管理员，只能创建自己的出版社
+			publisherParam.setUserId(manageId);
+		}
+
 		Publisher publisher = publisherService.addPublisher(publisherParam.getUserId(), publisherParam.getPublishName(), publisherParam.getPublishMail(), Integer.parseInt(publisherParam.getPiperType()));
 		return new ResponseEntity(publisher);
 	}
