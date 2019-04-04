@@ -48,7 +48,7 @@ public class RecommendInnerController {
 					value = "添加推荐出版社"
 	)
 	public ResponseEntity publisherAdd(@RequestBody AddRecommendPublisher acp, HttpServletRequest request) {
-		ReCommendPublisher reCommendPublisher = piperRecommendPublisherService.add(HeaderUtil.getUserId(request), acp.getPublisherId());
+		ReCommendPublisher reCommendPublisher = piperRecommendPublisherService.add(null, acp.getPublisherId());
 
 		return new ResponseEntity(reCommendPublisher);
 	}
@@ -79,7 +79,7 @@ public class RecommendInnerController {
 					value = "添加推荐出版社"
 	)
 	public ResponseEntity contentAdd(@RequestBody AddRecommendContent acc, HttpServletRequest request) {
-		ReCommendContent reCommendContent = piperRecommendContentService.add(HeaderUtil.getUserId(request), acc.getContentId());
+		ReCommendContent reCommendContent = piperRecommendContentService.add(null, acc.getContentId());
 
 		return new ResponseEntity(reCommendContent);
 	}
@@ -89,7 +89,7 @@ public class RecommendInnerController {
 					value = "删除推荐内容"
 	)
 	public ResponseEntity contentDelete(@RequestBody DelReCommend dc, HttpServletRequest request) {
-		piperRecommendContentService.delete(HeaderUtil.getUserId(request), dc.getId());
+		piperRecommendContentService.delete(null, dc.getId());
 
 		return new ResponseEntity();
 	}

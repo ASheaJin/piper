@@ -42,7 +42,7 @@ public class AdminInnerController {
 					value = "添加管理员"
 	)
 	public ResponseEntity<Admin> add(@RequestBody AddAdmin addAdmin, HttpServletRequest request) {
-		Admin admin = piperAdminService.add(HeaderUtil.getUserId(request), addAdmin.getUserId(), false);
+		Admin admin = piperAdminService.add(null, addAdmin.getUserId(), false);
 		return new ResponseEntity(admin);
 	}
 
@@ -52,7 +52,8 @@ public class AdminInnerController {
 					value = "删除管理员"
 	)
 	public ResponseEntity delete(@RequestBody AddAdmin delAdmin, HttpServletRequest request) {
-		piperAdminService.delete(HeaderUtil.getUserId(request), delAdmin.getUserId());
+
+		piperAdminService.delete(null, delAdmin.getUserId());
 		return new ResponseEntity();
 	}
 }
