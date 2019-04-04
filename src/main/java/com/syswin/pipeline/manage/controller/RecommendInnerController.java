@@ -10,7 +10,6 @@ import com.syswin.pipeline.manage.vo.input.DelReCommend;
 import com.syswin.pipeline.service.PiperRecommendContentService;
 import com.syswin.pipeline.service.PiperRecommendPublisherService;
 import com.syswin.pipeline.service.psserver.bean.ResponseEntity;
-import com.syswin.pipeline.utils.HeaderUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;

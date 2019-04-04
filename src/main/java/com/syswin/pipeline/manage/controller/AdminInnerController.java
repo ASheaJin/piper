@@ -5,7 +5,6 @@ import com.syswin.pipeline.manage.vo.input.AddAdmin;
 import com.syswin.pipeline.manage.vo.input.AdminList;
 import com.syswin.pipeline.service.PiperAdminService;
 import com.syswin.pipeline.service.psserver.bean.ResponseEntity;
-import com.syswin.pipeline.utils.HeaderUtil;
 import com.syswin.pipeline.utils.StringUtils;
 import com.syswin.sub.api.db.model.Admin;
 import io.swagger.annotations.Api;

@@ -1,14 +1,19 @@
 package com.syswin.pipeline.manage.controller;
 
 import com.github.pagehelper.PageInfo;
+import com.syswin.pipeline.db.model.User;
+import com.syswin.pipeline.manage.service.HeaderService;
+import com.syswin.pipeline.manage.service.UserService;
+import com.syswin.pipeline.manage.shiro.StatelessToken;
+import com.syswin.pipeline.manage.shiro.TokenManager;
 import com.syswin.pipeline.manage.vo.input.DelPublisherParam;
 import com.syswin.pipeline.manage.vo.input.PublisherListParam;
 import com.syswin.pipeline.manage.vo.input.AddPublisherParam;
 import com.syswin.pipeline.service.PiperPublisherService;
 import com.syswin.pipeline.service.psserver.bean.ResponseEntity;
-import com.syswin.pipeline.utils.HeaderUtil;
 import com.syswin.pipeline.utils.StringUtils;
 import com.syswin.sub.api.db.model.Publisher;
+import com.syswin.sub.api.exceptions.SubException;
 import com.syswin.sub.api.utils.EnumsUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -28,6 +33,8 @@ public class PublisherInnerController {
 
 	@Autowired
 	private PiperPublisherService publisherService;
+	@Autowired
+	private HeaderService headerService;
 
 	@PostMapping("/list")
 	@ApiOperation(
@@ -36,8 +43,12 @@ public class PublisherInnerController {
 	public ResponseEntity<PageInfo> list(@RequestBody PublisherListParam plb, HttpServletRequest request) {
 		Integer pageNo = StringUtils.isNullOrEmpty(plb.getPageNo()) ? 1 : Integer.parseInt(plb.getPageNo());
 		Integer pageSize = StringUtils.isNullOrEmpty(plb.getPageSize()) ? 20 : Integer.parseInt(plb.getPageSize());
+		HttpServletRequest httpRequest = (HttpServletRequest) request;
+		// 前段token授权信息放在请求头中传入
 
-		return new ResponseEntity(publisherService.list(pageNo, pageSize, plb.getKeyword(), plb.getPiperType(), null));
+		String manageId = headerService.getUserId(request);
+
+		return new ResponseEntity(publisherService.list(pageNo, pageSize, plb.getKeyword(), plb.getPiperType(), manageId));
 	}
 
 
