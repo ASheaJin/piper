@@ -65,6 +65,7 @@ public class PublisherInnerController {
 					value = "添加出版社"
 	)
 	public ResponseEntity add(@RequestBody AddPublisherParam publisherParam, HttpServletRequest request) {
+		publisherParam.setPublishMail(null);
 		Publisher publisher = publisherService.addPublisher(publisherParam.getUserId(), publisherParam.getPublishName(), publisherParam.getPublishMail(), Integer.parseInt(publisherParam.getPiperType()));
 		return new ResponseEntity(publisher);
 	}
