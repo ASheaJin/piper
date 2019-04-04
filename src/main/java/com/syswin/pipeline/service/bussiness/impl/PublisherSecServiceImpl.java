@@ -1,5 +1,6 @@
 package com.syswin.pipeline.service.bussiness.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.syswin.pipeline.enums.PeriodEnums;
 import com.syswin.pipeline.service.PiperSubscriptionService;
@@ -133,8 +134,14 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 				String fromTemail = publisher.getPtemail();
 				logger.info("Thread.currentThread().getName()--------" + Thread.currentThread().getName());
 //			fromTemail ="a_piper@systoontest.com";
-				sendMessegeService.sendOthermessage(txt, body_type, orderUserId, fromTemail);
+				//分别对不同类型的文章进行处理
+				if (body_type == 1) {
+					String cont = JSON.parseObject(txt).getString("text");
+					sendMessegeService.sendTextmessage(cont, orderUserId, fromTemail);
+				} else {
+					sendMessegeService.sendOthermessage(txt, body_type, orderUserId, fromTemail);
 
+				}
 				if (SwithUtil.ISLOG) {
 					logger.info(publisher.getPtemail() + " send to " + orderUserId + "----   contentId：" + contentId);
 				}
