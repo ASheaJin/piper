@@ -64,6 +64,7 @@ public class SendMessegeService {
 	 * @param deloytime 延时时间
 	 * @param from      谁发
 	 */
+	@Async("msgThreadPool")
 	public void sendTextmessage(String content, String to, int deloytime, String from) {
 		Map<String, String> contentMap = new HashMap<>();
 		contentMap.put("text", content);
@@ -74,6 +75,7 @@ public class SendMessegeService {
 		psClientService.sendChatMessage(chatMsg, to, publickey, from, senderPK);
 	}
 
+	@Async("msgThreadPool")
 	public void sendTextmessage(String content, String to, String from) {
 		sendTextmessage(content, to, 0, from);
 	}
