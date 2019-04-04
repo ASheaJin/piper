@@ -140,6 +140,7 @@
   <select id="selectParentIds" resultType="java.util.Map">
     select menu_id, parent_id from sys_menu
   </select>
+
   <update id="updateByPrimaryKeySelective" parameterType="com.syswin.pipeline.db.model.Menu">
     update sys_menu
     <set>
