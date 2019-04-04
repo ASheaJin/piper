@@ -171,22 +171,18 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 		}
 
 		//如果用户输入的是文本
-		if (body_type == 1) {
-			String txt = StringUtils.filterStr(orgContent);
-			if (txt.equals("订阅") || txt.equals("1")) {
-				piperSubscriptionService.subscribe(userId, ptemail);
-				return;
-			}
-//			if (orgContent.contains("《取消订阅》")) {
-//				piperSubscriptionService.unsubscribe(userId, publisher.getPublisherId());
-//				return;
-//			}
-		}
+
 
 		Subscription subscription = subscriptionService.getSub(userId, publisher.getPublisherId());
 		if (subscription == null) {
 			sendMessegeService.sendTextmessage("您尚未订阅该出版社 发送 （'订阅' 或 '1'） 订阅该出版社", userId, 0, publisher.getPtemail());
-
+			if (body_type == 1) {
+				String txt = StringUtils.filterStr(orgContent);
+				if (txt.equals("订阅") || txt.equals("1")) {
+					piperSubscriptionService.subscribe(userId, ptemail);
+					return;
+				}
+			}
 		} else {
 //			sendMessegeService.sendTextmessage("您已订阅该出版社 发送 《取消订阅》 取消订阅该出版社", userId, 0, publisher.getPtemail());
 		}

@@ -45,7 +45,8 @@ public class SpiderController {
 		if (publisher == null) {
 			throw new BusinessException("该出版社不存在");
 		}
-		Integer num = publisherSecService.dealpusharticle(publisher, 1, msg.getContent(), publisher.getPtype());
+		String txt = "{\"text\":\"" + msg.getContent() + "\"}";
+		Integer num = publisherSecService.dealpusharticle(publisher, 1, txt, publisher.getPtype());
 		return new ResponseEntity(num);
 	}
 
