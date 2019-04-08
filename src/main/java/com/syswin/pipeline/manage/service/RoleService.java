@@ -110,6 +110,9 @@ public class RoleService {
 
 		Set<Long> existsPids = new HashSet<>();
 		for (String menuId : menuIds) {
+			if (parentIds.get(Long.parseLong(menuId)) == null) {
+				continue;
+			}
 			Long pid = parentIds.get(Long.parseLong(menuId)).getParentId();
 			if (pid != null && !existsPids.contains(pid)) {
 				RoleMenu prm = new RoleMenu();
