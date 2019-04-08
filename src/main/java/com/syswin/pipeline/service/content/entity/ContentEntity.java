@@ -1,8 +1,9 @@
-package com.syswin.pipeline.app.dto;
+package com.syswin.pipeline.service.content.entity;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.ToString;
 
 import java.util.List;
 
@@ -11,9 +12,12 @@ import java.util.List;
  * Created by 115477 on 2019/4/2.
  */
 @Data
-public class ContentOutput extends MediaContent {
+public class ContentEntity extends MediaContentEntity {
 
-    public ContentOutput(String contentId) {
+    public ContentEntity() {
+    }
+
+    public ContentEntity(String contentId) {
         this.contentId = contentId;
     }
 
@@ -53,5 +57,10 @@ public class ContentOutput extends MediaContent {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @ApiModelProperty(value = "复合消息体的内容列表")
-    private List<MediaContent> contentArray;
+    private List<MediaContentEntity> contentArray;
+
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ApiModelProperty(value = "url的媒体类型，目前只放几种：2语音3图片10视频")
+    private Integer mediaBodyType;
 }

@@ -1,0 +1,236 @@
+package com.syswin.pipeline.service.content;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.syswin.pipeline.enums.BodyTypeEnums;
+import com.syswin.pipeline.service.content.entity.ContentEntity;
+import com.syswin.pipeline.service.content.entity.MediaContentEntity;
+import com.syswin.pipeline.utils.JacksonJsonUtil;
+import com.syswin.sub.api.ContentOutService;
+import com.syswin.sub.api.utils.BeanConvertUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
+
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+/**
+ * 处理消息内容的类
+ * 从content字段解析，获取zip地址，下载zip解压并把文件放到指定地址
+ * Created by 115477 on 2019/4/3.
+ */
+@Component
+public class ContentHandleJobManager {
+
+    private static final int INTRO_MAX_LENGTH = 40;
+
+    private static ExecutorService servicePool = Executors.newFixedThreadPool(10);
+
+
+    @Autowired
+    private FileManager fileManager;
+
+    @Autowired
+    private ContentOutService contentOutService;
+
+    public void addJob(String publisherId, String contentId, Integer bodyType, String content) {
+        servicePool.execute(() -> {
+            ContentEntity contentEntity = parseContent(publisherId, contentId, bodyType, content);
+            if (contentEntity == null) {
+                return;
+            }
+            ContentEntity listContent = parseListContent(contentEntity);
+
+            contentOutService.add(Long.parseLong(contentId),
+                    JacksonJsonUtil.toJson(listContent), JacksonJsonUtil.toJson(contentEntity));
+        });
+    }
+
+    /**
+     * 解析成列表内容
+     * @return
+     */
+    public ContentEntity parseListContent(ContentEntity contentEntity) {
+        if (contentEntity == null) {
+            return null;
+        }
+        ContentEntity listContent = BeanConvertUtil.map(contentEntity, ContentEntity.class);
+        if (BodyTypeEnums.MAIL.getType().equals(listContent.getBodyType()) ) {
+            //TODO
+        }
+
+        if (BodyTypeEnums.COMPOSE.getType().equals(listContent.getBodyType()) ) {
+            listContent.setContentArray(null);
+            List<MediaContentEntity> contentArray = contentEntity.getContentArray();
+
+            String intro = null;
+            String url = null;
+            Integer mediaBodyType = null;
+            for (MediaContentEntity media : contentArray) {
+                if (BodyTypeEnums.TEXT.getType().equals(media.getBodyType()) && StringUtils.isEmpty(intro)) {
+                    intro = media.getText();
+                    listContent.setIntro(limitIntro(intro));
+                    continue;
+                }
+                if ((BodyTypeEnums.VOICE.getType().equals(media.getBodyType())
+                    || BodyTypeEnums.PIC.getType().equals(media.getBodyType())
+                    || BodyTypeEnums.VIDEO.getType().equals(media.getBodyType())
+                    )  && !StringUtils.isEmpty(url)) {
+                    url = media.getUrl();
+                    mediaBodyType = media.getBodyType();
+                    listContent.setUrl(url);
+                    listContent.setMediaBodyType(mediaBodyType);
+                    continue;
+                }
+            }
+        }
+        return listContent;
+    }
+
+    private String limitIntro(String intro) {
+        if (StringUtils.isEmpty(intro)) {
+            return null;
+        }
+
+        //截取摘要
+        if (INTRO_MAX_LENGTH >= intro.length()) {
+            return intro;
+        } else {
+            intro = intro.substring(0, INTRO_MAX_LENGTH);
+            int byteLen = intro.getBytes(StandardCharsets.UTF_8).length;
+            //防止全英文字符 不够长
+            if (byteLen < (INTRO_MAX_LENGTH + INTRO_MAX_LENGTH / 4)) {
+                intro = intro.substring(0, INTRO_MAX_LENGTH + INTRO_MAX_LENGTH / 2);
+            } else if (byteLen < (INTRO_MAX_LENGTH + INTRO_MAX_LENGTH / 2)) {
+                intro = intro.substring(0, INTRO_MAX_LENGTH +INTRO_MAX_LENGTH / 4);
+            }
+            return intro;
+        }
+    }
+
+    /**
+     * 解析成详情内容
+     * @return
+     */
+    public ContentEntity parseContent(String publisherId, String contentId, Integer bodyType, String content) {
+        JSONObject jsonObject = JSON.parseObject(content);
+        bodyType = guessBodyType(bodyType, jsonObject);
+        if (BodyTypeEnums.CARD.getType().equals(bodyType) ||
+                BodyTypeEnums.MAP.getType().equals(bodyType)||
+                BodyTypeEnums.SHARE.getType().equals(bodyType)||
+                BodyTypeEnums.SYSTEM.getType().equals(bodyType)||
+                BodyTypeEnums.OP.getType().equals(bodyType)) {
+            //不支持以上类型
+            return null;
+        }
+
+
+        ContentEntity allContent = JSON.parseObject(content, ContentEntity.class);
+        allContent.setContentId(contentId);
+        allContent.setBodyType(bodyType);
+
+        String url = allContent.getUrl();
+        String pwd = allContent.getPwd();
+        if (!StringUtils.isEmpty(url) && !StringUtils.isEmpty(pwd)) {
+            FileManager.DownloadResult downloadResult = download(url, pwd, publisherId, contentId);
+            if (downloadResult == null) {
+                return null;
+            }
+            allContent.setUrl(downloadResult.getDownloadFile());
+        }
+
+        if (BodyTypeEnums.MAIL.getType().equals(bodyType)) {
+            //解析eml文件 TODO
+
+
+        } else  if (BodyTypeEnums.COMPOSE.getType().equals(bodyType)) {
+            allContent.setContentArray(new ArrayList<>());
+
+            JSONArray contentArray = jsonObject.getJSONArray("dynamicContentArray");
+
+            int contentCount = 0;
+            for (Iterator<Object> ite = contentArray.iterator(); ite.hasNext();) {
+                JSONObject dynamicContentJson = (JSONObject)ite.next();
+                int aBodyType = dynamicContentJson.getInteger("bodyType");
+                MediaContentEntity subContent = dynamicContentJson.getJSONObject("bodyContent").toJavaObject(MediaContentEntity.class);
+                subContent.setBodyType(aBodyType);
+
+                String subUrl = subContent.getUrl();
+                String subPwd = subContent.getPwd();
+                if (!StringUtils.isEmpty(subUrl) && !StringUtils.isEmpty(subPwd)) {
+                    FileManager.DownloadResult downloadResult = download(subUrl, subPwd, publisherId, contentId + "-" + contentCount);
+                    if (downloadResult == null) {
+                        continue;
+                    }
+                    subContent.setUrl(downloadResult.getDownloadFile());
+                }
+                subContent.setPwd(null);
+                allContent.getContentArray().add(subContent);
+                contentCount++;
+            }
+        }
+        allContent.setPwd(null);
+        return allContent;
+    }
+
+    private FileManager.DownloadResult download(String url, String pwd , String relativePath, String fileName) {
+        if (false) {
+            return new FileManager.DownloadResult(null, null);
+        }
+
+        FileManager.DownloadResult file = fileManager.download(url, pwd, relativePath, fileName);
+
+        return file;
+    }
+
+    /**
+     * 根据content猜测bodyType，从字段是否存在和字段内容
+     * @param bodyType
+     * @param jsonObject
+     * @return
+     */
+    private Integer guessBodyType(Integer bodyType, JSONObject jsonObject) {
+        if (bodyType != null && !bodyType.equals(0)) {
+            return bodyType;
+        }
+
+        if (jsonObject.get("text") != null) {
+            return BodyTypeEnums.TEXT.getType();
+        } else if ("application/eml".equals(jsonObject.get("format"))){
+            return BodyTypeEnums.MAIL.getType();
+        } else if (jsonObject.get("dynamicContentArray") != null){
+            return BodyTypeEnums.COMPOSE.getType();
+        } else if ("singleVideoAudio".equals(jsonObject.get("type"))) {
+            return BodyTypeEnums.OP.getType();
+        } else if (jsonObject.get("lat") != null){
+            return BodyTypeEnums.MAP.getType();
+        } else if (jsonObject.get("feedId") != null){
+            return BodyTypeEnums.CARD.getType();
+        } else if (jsonObject.get("desc") != null){
+            return BodyTypeEnums.FILE.getType();
+        } else if (jsonObject.get("time") != null && jsonObject.get("url") != null && jsonObject.get("w") == null){
+            return BodyTypeEnums.VOICE.getType();
+        } else if (jsonObject.get("time") != null && jsonObject.get("url") != null && jsonObject.get("w") != null){
+            return BodyTypeEnums.VIDEO.getType();
+        } else if (jsonObject.get("time") == null && jsonObject.get("url") != null && jsonObject.get("w") != null){
+            return BodyTypeEnums.PIC.getType();
+        }
+
+        return null;
+    }
+
+    public FileManager getFileManager() {
+        return fileManager;
+    }
+
+    public void setFileManager(FileManager fileManager) {
+        this.fileManager = fileManager;
+    }
+}
