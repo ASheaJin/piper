@@ -67,4 +67,8 @@
     <delete id="delete">
        delete from recommendcontent  where id = #{id}
   </delete>
+
+    <delete id="deleteBycid">
+       delete from recommendcontent  where content_id = #{contentId}
+  </delete>
 </mapper>

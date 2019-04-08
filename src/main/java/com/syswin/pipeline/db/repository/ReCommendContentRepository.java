@@ -17,4 +17,5 @@ public interface ReCommendContentRepository extends BaseRepository<ReCommendCont
 
 	List<ReCommendContent> selectByUserId(@Param("userId") String userId);
 
+	int deleteBycid(@Param("contentId") String contentId);
 }

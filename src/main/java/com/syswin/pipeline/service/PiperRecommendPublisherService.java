@@ -66,4 +66,8 @@ public class PiperRecommendPublisherService {
 		List<ReCommendPublisher> reCommendPublisherList = reCommendPublisherRepository.seletByPubliserIds(publisherIds);
 		return reCommendPublisherList;
 	}
+
+	public void deleteBypid(String publisherId) {
+		reCommendPublisherRepository.deleteBypid(publisherId);
+	}
 }

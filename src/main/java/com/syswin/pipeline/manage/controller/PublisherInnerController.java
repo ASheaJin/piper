@@ -80,7 +80,7 @@ public class PublisherInnerController {
 
 	@PostMapping("/delete")
 	@ApiOperation(
-					value = "删除出版社,同时删除所有订阅者"
+					value = "删除出版社,同时删除所有订阅者，所有的推荐"
 	)
 	public ResponseEntity delete(@RequestBody DelPublisherParam publisherParam, HttpServletRequest request) {
 		publisherService.delete(publisherParam.getPublisherId());
