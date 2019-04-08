@@ -87,5 +87,16 @@ public class ContentHandleJobManagerTest {
         }
 
     }
+
+    @Test
+    public void testParseEml() {
+
+        String file = "D:\\temp\\temp\\34890954153918464\\35165511403700224-1\\7530119032500579928_2019.03.25 145555_12965b_weihongyi@syswin.com.eml";
+        ContentEntity allContent = new ContentEntity();
+        contentHandleJobManager.parseEml(allContent);
+
+        System.out.println(allContent);
+    }
+
 }
 

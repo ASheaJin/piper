@@ -40,6 +40,14 @@ public class ContentHandleJobManager {
     @Autowired
     private ContentOutService contentOutService;
 
+
+    /**
+     * 对外方法
+     * @param publisherId
+     * @param contentId
+     * @param bodyType
+     * @param content
+     */
     public void addJob(String publisherId, String contentId, Integer bodyType, String content) {
         servicePool.execute(() -> {
             ContentEntity contentEntity = parseContent(publisherId, contentId, bodyType, content);
@@ -63,7 +71,7 @@ public class ContentHandleJobManager {
         }
         ContentEntity listContent = BeanConvertUtil.map(contentEntity, ContentEntity.class);
         if (BodyTypeEnums.MAIL.getType().equals(listContent.getBodyType()) ) {
-            //TODO
+            //暂不处理
         }
 
         if (BodyTypeEnums.COMPOSE.getType().equals(listContent.getBodyType()) ) {
@@ -119,13 +127,14 @@ public class ContentHandleJobManager {
      * 解析成详情内容
      * @return
      */
-    public ContentEntity parseContent(String publisherId, String contentId, Integer bodyType, String content) {
+    protected ContentEntity parseContent(String publisherId, String contentId, Integer bodyType, String content) {
         JSONObject jsonObject = JSON.parseObject(content);
         bodyType = guessBodyType(bodyType, jsonObject);
         if (BodyTypeEnums.CARD.getType().equals(bodyType) ||
                 BodyTypeEnums.MAP.getType().equals(bodyType)||
                 BodyTypeEnums.SHARE.getType().equals(bodyType)||
                 BodyTypeEnums.SYSTEM.getType().equals(bodyType)||
+                BodyTypeEnums.MAIL.getType().equals(bodyType)||
                 BodyTypeEnums.OP.getType().equals(bodyType)) {
             //不支持以上类型
             return null;
@@ -144,10 +153,11 @@ public class ContentHandleJobManager {
                 return null;
             }
             allContent.setUrl(downloadResult.getDownloadFile());
+//            allContent.setFilePath(downloadResult.getStoreFile());
         }
 
         if (BodyTypeEnums.MAIL.getType().equals(bodyType)) {
-            //解析eml文件 TODO
+            //解析eml文件 暂不处理
 
 
         } else  if (BodyTypeEnums.COMPOSE.getType().equals(bodyType)) {
@@ -178,6 +188,10 @@ public class ContentHandleJobManager {
         }
         allContent.setPwd(null);
         return allContent;
+    }
+
+    protected void parseEml(ContentEntity allContent) {
+
     }
 
     private FileManager.DownloadResult download(String url, String pwd , String relativePath, String fileName) {

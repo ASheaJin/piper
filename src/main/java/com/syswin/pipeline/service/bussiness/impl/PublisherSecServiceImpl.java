@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.syswin.pipeline.enums.PeriodEnums;
 import com.syswin.pipeline.service.PiperSubscriptionService;
 import com.syswin.pipeline.service.bussiness.PublisherSecService;
+import com.syswin.pipeline.service.content.ContentHandleJobManager;
 import com.syswin.pipeline.service.ps.ChatMsg;
 import com.syswin.pipeline.utils.MessageUtil;
 import com.syswin.pipeline.utils.StringUtils;
@@ -62,6 +63,9 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 
 	@Autowired
 	private SendRecordService subSendRecordService;
+
+	@Autowired
+	private ContentHandleJobManager contentHandleJobManager;
 
 	private final static Logger logger = LoggerFactory.getLogger(PublisherSecServiceImpl.class);
 	//过滤能用作发的
@@ -125,6 +129,9 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 		subContentService.addContent(content);
 		//2、获取订阅该用户的读者列表
 		List<String> userIds = subscriptionService.getSubscribers(publisher.getPtemail(), publisherTypeEnums);
+
+		//内容处理
+		contentHandleJobManager.addJob(publisher.getPublisherId(), contentId, body_type, txt);
 
 		int num = 0;
 		//3、逐个发文章
