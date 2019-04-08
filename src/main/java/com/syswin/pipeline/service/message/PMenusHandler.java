@@ -163,7 +163,7 @@ public class PMenusHandler implements EventHandler<MessageEvent> {
 			if (userId.equals(publisher.getUserId())) {
 			} else {
 				Subscription subscription = subSubscriptionService.getSub(userId, publisher.getPublisherId());
-				if (subscription == null) {
+				if (subscription == null && !publisher.getUserId().equals(userId)) {
 					sendMessegeService.sendTextmessage("您尚未订阅该出版社 发送 （'订阅' 或 '1'） 订阅该出版社", userId, 0, publisher.getPtemail());
 				}
 			}

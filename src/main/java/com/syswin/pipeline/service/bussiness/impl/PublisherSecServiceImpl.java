@@ -181,7 +181,7 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 
 
 		Subscription subscription = subscriptionService.getSub(userId, publisher.getPublisherId());
-		if (subscription == null) {
+		if (subscription == null && !publisher.getUserId().equals(userId)) {
 			if (body_type == 1) {
 				String txt = StringUtils.filterStr(orgContent);
 				if (txt.equals("订阅") || txt.equals("1")) {
