@@ -1,9 +1,6 @@
-package com.syswin.pipeline.manage.vo.output;
+package com.syswin.pipeline.manage.dto.output;
 
-import com.syswin.sub.api.enums.PublisherTypeEnums;
 import lombok.Data;
-
-import javax.validation.constraints.NotNull;
 
 /**
  * @author:lhz

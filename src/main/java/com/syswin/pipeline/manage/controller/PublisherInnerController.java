@@ -1,20 +1,17 @@
 package com.syswin.pipeline.manage.controller;
 
 import com.github.pagehelper.PageInfo;
-import com.syswin.pipeline.db.model.User;
 import com.syswin.pipeline.manage.service.HeaderService;
-import com.syswin.pipeline.manage.service.UserService;
-import com.syswin.pipeline.manage.shiro.StatelessToken;
-import com.syswin.pipeline.manage.shiro.TokenManager;
-import com.syswin.pipeline.manage.vo.input.DelPublisherParam;
-import com.syswin.pipeline.manage.vo.input.PublisherListParam;
-import com.syswin.pipeline.manage.vo.input.AddPublisherParam;
+import com.syswin.pipeline.manage.dto.input.DelPublisherParam;
+import com.syswin.pipeline.manage.dto.input.PublisherListParam;
+import com.syswin.pipeline.manage.dto.input.AddPublisherParam;
 import com.syswin.pipeline.service.PiperPublisherService;
 import com.syswin.pipeline.service.psserver.bean.ResponseEntity;
-import com.syswin.pipeline.service.psserver.impl.BusinessException;
 import com.syswin.pipeline.utils.StringUtils;
+import com.syswin.sub.api.AdminService;
+import com.syswin.sub.api.db.model.Admin;
 import com.syswin.sub.api.db.model.Publisher;
-import com.syswin.sub.api.exceptions.SubException;
+import com.syswin.sub.api.enums.PublisherTypeEnums;
 import com.syswin.sub.api.utils.EnumsUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -22,6 +19,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by 115477 on 2019/1/8.
@@ -36,6 +37,8 @@ public class PublisherInnerController {
 	private PiperPublisherService publisherService;
 	@Autowired
 	private HeaderService headerService;
+	@Autowired
+	private AdminService adminService;
 
 	@PostMapping("/list")
 	@ApiOperation(
@@ -48,7 +51,7 @@ public class PublisherInnerController {
 
 		String manageId = headerService.getUserId(request);
 
-		return new ResponseEntity(publisherService.list(pageNo, pageSize, plb.getKeyword(), plb.getPiperType(), manageId));
+		return new ResponseEntity(publisherService.list(pageNo, pageSize, plb.getKeyword(), plb.getHasRecommend(), plb.getPiperType(), manageId));
 	}
 
 
@@ -56,9 +59,39 @@ public class PublisherInnerController {
 	@ApiOperation(
 					value = "获取出版社类型"
 	)
-	public ResponseEntity getPiperType() {
+	public ResponseEntity getPiperType(HttpServletRequest request) {
+		String manageId = headerService.getUserId(request);
 
-		return new ResponseEntity(EnumsUtil.toList());
+		if (manageId == null) {
+			//用户不是系统管理员，只能创建自己的出版社
+			return new ResponseEntity(EnumsUtil.toList());
+		} else {
+			List list = new ArrayList();
+			Map<String, Object> map = new HashMap();
+			map.put("code", PublisherTypeEnums.person.getCode());
+			map.put("name", PublisherTypeEnums.person.getName());
+			Map<String, Object> map1 = new HashMap();
+			map1.put("code", PublisherTypeEnums.feedpublish.getCode());
+			map1.put("name", PublisherTypeEnums.feedpublish.getName());
+			list.add(map);
+			list.add(map1);
+			Admin admin = adminService.getAdmin(manageId, PublisherTypeEnums.organize);
+			if (admin != null) {
+				Map<String, Object> map2 = new HashMap();
+				map2.put("code", PublisherTypeEnums.organize.getCode());
+				map2.put("name", PublisherTypeEnums.organize.getName());
+				list.add(map2);
+			}
+			Admin admin1 = adminService.getAdmin(manageId, PublisherTypeEnums.organize);
+			if (admin1 != null) {
+				Map<String, Object> map2 = new HashMap();
+				map2.put("code", PublisherTypeEnums.ciftis.getCode());
+				map2.put("name", PublisherTypeEnums.ciftis.getName());
+				list.add(map2);
+			}
+			return new ResponseEntity(list);
+		}
+
 	}
 
 	@PostMapping("/add")

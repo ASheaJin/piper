@@ -104,7 +104,7 @@ public class PiperSubscriptionService {
 		if (StringUtils.isNullOrEmpty(oweruserId) || StringUtils.isNullOrEmpty(comBairuserIds)) {
 			throw new BusinessException("userId或者邮箱列表为空");
 		}
-		Admin admin = adminService.getAdmin(oweruserId);
+		Admin admin = adminService.getAdmin(oweruserId, PublisherTypeEnums.organize);
 		if (admin == null) {
 			throw new BusinessException("你不是组织管理者");
 		}
@@ -122,7 +122,7 @@ public class PiperSubscriptionService {
 		if (StringUtils.isNullOrEmpty(oweruserId)) {
 			throw new BusinessException("userId为空");
 		}
-		Admin admin = adminService.getAdmin(oweruserId);
+		Admin admin = adminService.getAdmin(oweruserId, PublisherTypeEnums.organize);
 		if (admin == null) {
 			throw new BusinessException("你不是邮件组管理者");
 		}
@@ -197,7 +197,7 @@ public class PiperSubscriptionService {
 	public List<String> getSubscribersByUserId(String keyword, String userId, String publisherId, PublisherTypeEnums organize, int pageNo, int pageSize) {
 		//// TODO: 2019/2/20
 //		pageSize = pageSize == 0 ? 20 : pageSize;
-		Admin admin = adminService.getAdmin(userId);
+		Admin admin = adminService.getAdmin(userId, PublisherTypeEnums.organize);
 		if (admin == null) {
 			return new ArrayList<>();
 		}

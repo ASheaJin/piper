@@ -1,4 +1,4 @@
-package com.syswin.pipeline.manage.vo.output;
+package com.syswin.pipeline.manage.dto.output;
 
 import lombok.Data;
 

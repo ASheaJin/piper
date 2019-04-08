@@ -1,7 +1,7 @@
 package com.syswin.pipeline.manage.controller;
 
-import com.syswin.pipeline.manage.dto.LoginOutput;
-import com.syswin.pipeline.manage.dto.LoginInput;
+import com.syswin.pipeline.manage.dto.output.LoginOutput;
+import com.syswin.pipeline.manage.dto.input.LoginInput;
 import com.syswin.pipeline.manage.service.UserService;
 import com.syswin.pipeline.manage.shiro.StatelessToken;
 import com.syswin.pipeline.manage.shiro.TokenManager;

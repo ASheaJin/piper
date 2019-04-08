@@ -1,8 +1,13 @@
 package com.syswin.pipeline.manage.controller;
 
 import com.github.pagehelper.PageInfo;
-import com.syswin.pipeline.manage.dto.*;
 import com.syswin.pipeline.manage.service.RoleService;
+import com.syswin.pipeline.manage.dto.input.RoleIdInput;
+import com.syswin.pipeline.manage.dto.input.RoleInput;
+import com.syswin.pipeline.manage.dto.input.RoleListInput;
+import com.syswin.pipeline.manage.dto.input.RoleMenusInput;
+import com.syswin.pipeline.manage.dto.output.MenuOutput;
+import com.syswin.pipeline.manage.dto.output.RoleOutput;
 import com.syswin.pipeline.service.psserver.bean.ResponseEntity;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -22,7 +22,7 @@ public class PiperRecommendContentService {
 	@Autowired
 	private ReCommendContentRepository reCommendContentRepository;
 
-	public PageInfo<ReCommendContent> list(int pageIndex, int pageSize) {
+	public PageInfo<ReCommendContent> list(String userId, int pageIndex, int pageSize) {
 
 		pageIndex = pageIndex < 1 ? 1 : pageIndex;
 		pageSize = pageSize > 30 || pageSize < 1 ? 30 : pageSize;

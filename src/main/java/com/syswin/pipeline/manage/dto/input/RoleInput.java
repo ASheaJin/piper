@@ -1,4 +1,4 @@
-package com.syswin.pipeline.manage.dto;
+package com.syswin.pipeline.manage.dto.input;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

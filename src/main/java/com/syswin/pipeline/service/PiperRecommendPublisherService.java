@@ -6,13 +6,17 @@ import com.syswin.pipeline.db.model.ReCommendContent;
 import com.syswin.pipeline.db.model.ReCommendPublisher;
 import com.syswin.pipeline.db.repository.ReCommendContentRepository;
 import com.syswin.pipeline.db.repository.ReCommendPublisherRepository;
+import com.syswin.pipeline.service.ps.util.StringUtil;
 import com.syswin.pipeline.service.psserver.impl.BusinessException;
 import com.syswin.pipeline.utils.StringUtils;
+import com.syswin.sub.api.PublisherService;
+import com.syswin.sub.api.db.model.Publisher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Created by 115477 on 2019/1/9.
@@ -22,14 +26,25 @@ public class PiperRecommendPublisherService {
 
 	@Autowired
 	private ReCommendPublisherRepository reCommendPublisherRepository;
+	@Autowired
+	private PublisherService publisherService;
 
-	public PageInfo<ReCommendPublisher> list(int pageIndex, int pageSize) {
+	public PageInfo<ReCommendPublisher> list(String userId, int pageIndex, int pageSize) {
+
 
 		pageIndex = pageIndex < 1 ? 1 : pageIndex;
 		pageSize = pageSize > 30 || pageSize < 1 ? 30 : pageSize;
 
 		PageHelper.startPage(pageIndex, pageSize);
-		List<ReCommendPublisher> reList = reCommendPublisherRepository.select();
+
+		List<ReCommendPublisher> reList;
+		if (StringUtil.isEmpty(userId)) {
+			reList = reCommendPublisherRepository.select();
+		} else {
+			List<Publisher> publisherList = publisherService.getPublisherListByUserId(userId, null);
+			List<String> pids = publisherList.stream().map((p) -> p.getPublisherId()).collect(Collectors.toList());
+			reList = reCommendPublisherRepository.seletByPubliserIds(pids);
+		}
 		PageInfo<ReCommendPublisher> pageInfo = new PageInfo<>(reList);
 		return pageInfo;
 	}

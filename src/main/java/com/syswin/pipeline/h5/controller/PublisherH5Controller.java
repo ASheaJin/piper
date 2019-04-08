@@ -33,7 +33,7 @@ public class PublisherH5Controller {
 	@RequestMapping("/create")
 	public String create(Model model, HttpServletRequest request) {
 		String userId = StringUtils.getParam(request, "userId", null);
-		Publisher publisher = subPublisherService.getPubLisherByuserId(userId, PublisherTypeEnums.person);
+		Publisher publisher = subPublisherService.getPublisherByUserId(userId, PublisherTypeEnums.person);
 
 		model.addAttribute("data", publisher);
 		model.addAttribute("userId", userId);
@@ -44,7 +44,7 @@ public class PublisherH5Controller {
 	public String manage(Model model, HttpServletRequest request) {
 		String userId = StringUtils.getParam(request, "userId", null);
 		//判断是否有出版社
-		Publisher publisher = subPublisherService.getPubLisherByuserId(userId, PublisherTypeEnums.person);
+		Publisher publisher = subPublisherService.getPublisherByUserId(userId, PublisherTypeEnums.person);
 //	    if(publisher !=null){
 		model.addAttribute("data", publisher);
 		model.addAttribute("userId", userId);

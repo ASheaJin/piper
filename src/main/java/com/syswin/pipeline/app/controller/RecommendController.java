@@ -33,8 +33,8 @@ public class RecommendController {
 					value = "获取出版社列表"
 	)
 	public ResponseEntity publisherList(@RequestBody RecommendInput recommendInput) {
-		PageInfo<ReCommendContent> pageInfo = piperRecommendContentService.list(recommendInput.getPageNo(), recommendInput.getPageSize());
-
+		PageInfo<ReCommendContent> pageInfo = piperRecommendContentService.list(null, recommendInput.getPageNo(), recommendInput.getPageSize());
+		//TODO 处理京交会
 		return new ResponseEntity(pageInfo);
 	}
 
@@ -44,7 +44,8 @@ public class RecommendController {
 	)
 	public ResponseEntity contentList(@RequestBody RecommendInput recommendInput) {
 
-		PageInfo<ReCommendPublisher> pageInfo = piperRecommendPublisherService.list(recommendInput.getPageNo(), recommendInput.getPageSize());
+		//TODO 处理京交会
+		PageInfo<ReCommendPublisher> pageInfo = piperRecommendPublisherService.list(null,recommendInput.getPageNo(), recommendInput.getPageSize());
 
 		return new ResponseEntity(pageInfo);
 

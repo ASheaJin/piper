@@ -1,4 +1,4 @@
-package com.syswin.pipeline.manage.vo.input;
+package com.syswin.pipeline.manage.dto.input;
 
 import lombok.Data;
 
@@ -9,4 +9,5 @@ import lombok.Data;
 @Data
 public class AddAdmin {
 	private String userId;
+	private String piperType;
 }
