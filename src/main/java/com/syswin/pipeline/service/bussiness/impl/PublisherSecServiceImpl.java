@@ -1,5 +1,6 @@
 package com.syswin.pipeline.service.bussiness.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.syswin.pipeline.enums.PeriodEnums;
 import com.syswin.pipeline.service.PiperSubscriptionService;
@@ -133,8 +134,14 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 				String fromTemail = publisher.getPtemail();
 				logger.info("Thread.currentThread().getName()--------" + Thread.currentThread().getName());
 //			fromTemail ="a_piper@systoontest.com";
-				sendMessegeService.sendOthermessage(txt, body_type, orderUserId, fromTemail);
+				//分别对不同类型的文章进行处理
+				if (body_type == 1) {
+					String cont = JSON.parseObject(txt).getString("text");
+					sendMessegeService.sendTextmessage(cont, orderUserId, fromTemail);
+				} else {
+					sendMessegeService.sendOthermessage(txt, body_type, orderUserId, fromTemail);
 
+				}
 				if (SwithUtil.ISLOG) {
 					logger.info(publisher.getPtemail() + " send to " + orderUserId + "----   contentId：" + contentId);
 				}
@@ -173,15 +180,17 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 
 		Subscription subscription = subscriptionService.getSub(userId, publisher.getPublisherId());
 		if (subscription == null) {
-			sendMessegeService.sendTextmessage("您尚未订阅该出版社 发送 （'订阅' 或 '1'） 订阅该出版社", userId, 0, publisher.getPtemail());
 			if (body_type == 1) {
 				String txt = StringUtils.filterStr(orgContent);
 				if (txt.equals("订阅") || txt.equals("1")) {
 					piperSubscriptionService.subscribe(userId, ptemail, publisher.getPtype());
 					return;
+				} else {
+					sendMessegeService.sendTextmessage("您尚未订阅该出版社 发送 （'订阅' 或 '1'） 订阅该出版社", userId, 0, publisher.getPtemail());
 				}
 			}
 		} else {
+			sendMessegeService.sendTextmessage(MessageUtil.sendCreateHelpTip("回复功能暂不支持"), userId, 1000, ptemail);
 //			sendMessegeService.sendTextmessage("您已订阅该出版社 发送 《取消订阅》 取消订阅该出版社", userId, 0, publisher.getPtemail());
 		}
 		//判断出版社是否存在
@@ -191,8 +200,6 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 //				return;
 //			}
 			dealpusharticle(publisher, body_type, orgContent, PublisherTypeEnums.person);
-		} else {
-			sendMessegeService.sendTextmessage(MessageUtil.sendCreateHelpTip("回复功能暂不支持"), userId, 1000, ptemail);
 		}
 
 

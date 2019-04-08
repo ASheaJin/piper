@@ -1,5 +1,6 @@
 package com.syswin.pipeline.manage.service;
 
+import com.syswin.pipeline.db.repository.MenuRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +16,15 @@ import static org.junit.Assert.*;
 @SpringBootTest
 public class UserServiceTest {
 
+
+    @Autowired
+    private MenuRepository menuRepository;
     @Autowired
     private UserService userService;
 
     @Test
     public void list() {
+        menuRepository.selectParentIds();
         System.out.println(userService.list(1,1));
     }
 }
