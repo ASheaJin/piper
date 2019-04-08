@@ -181,7 +181,7 @@ public class PiperPublisherService {
 		PageInfo pageInfo = new PageInfo<>(publisherList);
 		pageInfo.setTotal(pmVOList.size());
 		pageInfo.setPages(1 + pmVOList.size() / pageSize);
-		pageInfo.setNextPage(pageSize > pageNo ? pageNo + 1 : pageNo);
+		pageInfo.setNextPage(pageInfo.getPages() > pageNo ? pageNo + 1 : pageNo);
 
 		if (pmVOList != null) {
 			pageInfo.setList(pmVOList);
