@@ -4,6 +4,8 @@ import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 import net.lingala.zip4j.model.ZipParameters;
 import net.lingala.zip4j.util.Zip4jConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 
@@ -11,6 +13,7 @@ import java.io.File;
  * Created by 601387 on 2019/03/28.
  */
 public class ZipUtil {
+	private final static Logger logger = LoggerFactory.getLogger(ZipUtil.class);
 	public static void main(String[] args) {
 		try {
 			//zip("D:\\资料", "D:\\资料.zip", "123");
@@ -60,9 +63,26 @@ public class ZipUtil {
 	 * @throws ZipException 抛出异常
 	 */
 	public static void unZip(String zipfile, String dest, String passwd) throws ZipException {
+		/**
+		 * 秘邮上传的zip文件名存在两种编码，
+		 * 当使用GBK出现异常时，用UTF-8再尝试一次，如果还不行就抛出异常
+		 */
+		try {
+			unZipWithCharset(zipfile, dest, passwd, "UTF-8");
+		} catch (ZipException z) {
+			logger.info("unzip with UTF-8 fail~ " + zipfile);
+			try {
+				unZipWithCharset(zipfile, dest, passwd, "GBK");
+			} catch (ZipException z1) {
+				logger.error(String.format("解压文件出错 zipfile=%s dest=%s pwd=%s", zipfile, dest, passwd), z1);
+				throw z1;
+			}
+		}
+	}
+
+	private static void unZipWithCharset(String zipfile, String dest, String passwd, String charset) throws ZipException {
 		ZipFile zfile = new ZipFile(zipfile);
-//		zfile.setFileNameCharset("UTF-8");//在GBK系统中需要设置
-		zfile.setFileNameCharset("GBK");//在GBK系统中需要设置
+		zfile.setFileNameCharset(charset);
 		if (!zfile.isValidZipFile()) {
 			throw new ZipException("压缩文件不合法，可能已经损坏！");
 		}

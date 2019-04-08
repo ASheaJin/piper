@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.syswin.pipeline.enums.PeriodEnums;
 import com.syswin.pipeline.service.PiperSubscriptionService;
 import com.syswin.pipeline.service.bussiness.PublisherSecService;
+import com.syswin.pipeline.service.content.ContentHandleJobManager;
 import com.syswin.pipeline.service.ps.ChatMsg;
 import com.syswin.pipeline.utils.MessageUtil;
 import com.syswin.pipeline.utils.StringUtils;
@@ -62,6 +63,9 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 
 	@Autowired
 	private SendRecordService subSendRecordService;
+
+	@Autowired
+	private ContentHandleJobManager contentHandleJobManager;
 
 	private final static Logger logger = LoggerFactory.getLogger(PublisherSecServiceImpl.class);
 	//过滤能用作发的
@@ -126,6 +130,9 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 		//2、获取订阅该用户的读者列表
 		List<String> userIds = subscriptionService.getSubscribers(publisher.getPtemail(), publisherTypeEnums);
 
+		//内容处理
+		contentHandleJobManager.addJob(publisher.getPublisherId(), contentId, body_type, txt);
+
 		int num = 0;
 		//3、逐个发文章
 		for (String orderUserId : userIds) {
@@ -179,7 +186,7 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 
 
 		Subscription subscription = subscriptionService.getSub(userId, publisher.getPublisherId());
-		if (subscription == null) {
+		if (subscription == null && !publisher.getUserId().equals(userId)) {
 			if (body_type == 1) {
 				String txt = StringUtils.filterStr(orgContent);
 				if (txt.equals("订阅") || txt.equals("1")) {
