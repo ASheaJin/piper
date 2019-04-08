@@ -1,6 +1,5 @@
 package com.syswin.pipeline.config;
 
-import com.syswin.pipeline.service.bussiness.impl.PublisherSecServiceImpl;
 import com.syswin.pipeline.service.psserver.impl.BusinessException;
 import com.syswin.sub.api.exceptions.SubException;
 import org.slf4j.Logger;
