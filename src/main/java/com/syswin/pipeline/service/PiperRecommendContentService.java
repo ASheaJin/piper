@@ -43,6 +43,10 @@ public class PiperRecommendContentService {
 		PageInfo pageInfo = contentOutService.listByContentIds(ids, pageNo, pageSize);
 		//BO转VO
 		List<ContentOut> contentOuts = pageInfo.getList();
+		if (contentOuts == null || contentOuts.size() == 0) {
+			return pageInfo;
+		}
+
 		List<ContentOutput> outputs = new ArrayList();
 
 		//获取Publiser
@@ -73,6 +77,7 @@ public class PiperRecommendContentService {
 
 		//重置pageInfo参数
 		pageInfo.setTotal(outputs.size());
+
 		pageInfo.setPages(1 + outputs.size() / pageSize);
 		pageInfo.setNextPage(pageInfo.getPages() > pageNo ? pageNo + 1 : pageNo);
 

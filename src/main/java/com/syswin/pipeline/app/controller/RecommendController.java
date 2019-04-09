@@ -7,6 +7,7 @@ import com.syswin.pipeline.db.model.ReCommendPublisher;
 import com.syswin.pipeline.service.PiperRecommendContentService;
 import com.syswin.pipeline.service.PiperRecommendPublisherService;
 import com.syswin.pipeline.service.psserver.bean.ResponseEntity;
+import com.syswin.pipeline.utils.StringUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,8 +33,12 @@ public class RecommendController {
 	@ApiOperation(
 					value = "获取出版社列表"
 	)
-	public ResponseEntity publisherList(@RequestBody RecommendInput recommendInput) {
-		PageInfo<ReCommendContent> pageInfo = piperRecommendContentService.list(null, recommendInput.getPageNo(), recommendInput.getPageSize());
+	public ResponseEntity publisherList(@RequestBody RecommendInput ri) {
+		Integer pageNo = StringUtils.isNullOrEmpty(ri.getPageNo()) ? 1 : Integer.parseInt(ri.getPageNo());
+		Integer pageSize = StringUtils.isNullOrEmpty(ri.getPageSize()) ? 20 : Integer.parseInt(ri.getPageSize());
+
+
+		PageInfo<ReCommendContent> pageInfo = piperRecommendContentService.list(null, pageNo, pageSize);
 		//TODO 处理京交会
 		return new ResponseEntity(pageInfo);
 	}
@@ -42,10 +47,12 @@ public class RecommendController {
 	@ApiOperation(
 					value = "获取推荐内容列表"
 	)
-	public ResponseEntity contentList(@RequestBody RecommendInput recommendInput) {
+	public ResponseEntity contentList(@RequestBody RecommendInput ri) {
+		Integer pageNo = StringUtils.isNullOrEmpty(ri.getPageNo()) ? 1 : Integer.parseInt(ri.getPageNo());
+		Integer pageSize = StringUtils.isNullOrEmpty(ri.getPageSize()) ? 20 : Integer.parseInt(ri.getPageSize());
 
 		//TODO 处理京交会
-		PageInfo<ReCommendPublisher> pageInfo = piperRecommendPublisherService.list(null,recommendInput.getPageNo(), recommendInput.getPageSize());
+		PageInfo<ReCommendPublisher> pageInfo = piperRecommendPublisherService.list(null, pageNo, pageSize);
 
 		return new ResponseEntity(pageInfo);
 

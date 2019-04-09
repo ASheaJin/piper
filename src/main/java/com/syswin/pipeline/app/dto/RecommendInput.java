@@ -8,6 +8,6 @@ import lombok.Data;
  */
 @Data
 public class RecommendInput {
-	private Integer pageSize;
-	private Integer pageNo;
+	private String pageSize;
+	private String pageNo;
 }

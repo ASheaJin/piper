@@ -46,7 +46,7 @@ public class PiperRecommendPublisherService {
 			List<String> pids = publisherList.stream().map((p) -> p.getPublisherId()).collect(Collectors.toList());
 			reList = reCommendPublisherRepository.seletByPubliserIds(pids);
 		}
-		PageInfo<ReCommendPublisher> pageInfo = new PageInfo<>(reList);
+		PageInfo pageInfo = new PageInfo(reList);
 		return pageInfo;
 	}
 

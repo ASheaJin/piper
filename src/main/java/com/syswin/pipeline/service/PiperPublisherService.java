@@ -126,7 +126,7 @@ public class PiperPublisherService {
 
 	//================================ manage方法 =========================================>
 
-	public PageInfo<Publisher> list(int pageNo, int pageSize, String keyword, String hasRecommend, String piperType, String userId) {
+	public PageInfo list(int pageNo, int pageSize, String keyword, String hasRecommend, String piperType, String userId) {
 		PublisherTypeEnums pType = null;
 		if (!StringUtils.isNullOrEmpty(piperType) && !"0".equals(piperType)) {
 			pType = EnumsUtil.getPubliserTypeEnums(Integer.parseInt(piperType));
@@ -167,7 +167,7 @@ public class PiperPublisherService {
 			}
 		}
 
-		PageInfo pageInfo = new PageInfo<>(publisherList);
+		PageInfo pageInfo = new PageInfo(publisherList);
 		pageInfo.setTotal(pmVOList.size());
 		pageInfo.setPages(1 + pmVOList.size() / pageSize);
 		pageInfo.setNextPage(pageInfo.getPages() > pageNo ? pageNo + 1 : pageNo);

@@ -189,9 +189,9 @@ public class PiperSubscriptionService {
 	//================================ manage方法 =========================================>
 
 
-	public PageInfo<Subscription> list(int pageIndex, int pageSize, String keyword, String publisherId) {
+	public PageInfo list(int pageIndex, int pageSize, String keyword, String publisherId) {
 		List<Subscription> list = subSubscriptionService.list(pageIndex, pageSize, keyword, publisherId);
-		return new PageInfo<>(list);
+		return new PageInfo(list);
 	}
 
 	public List<String> getSubscribersByUserId(String keyword, String userId, String publisherId, PublisherTypeEnums organize, int pageNo, int pageSize) {
