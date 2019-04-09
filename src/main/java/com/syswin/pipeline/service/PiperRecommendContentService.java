@@ -77,8 +77,9 @@ public class PiperRecommendContentService {
 
 		//重置pageInfo参数
 		pageInfo.setTotal(outputs.size());
-
-		pageInfo.setPages(1 + outputs.size() / pageSize);
+		if (pageSize != 0) {
+			pageInfo.setPages(1 + outputs.size() / pageSize);
+		}
 		pageInfo.setNextPage(pageInfo.getPages() > pageNo ? pageNo + 1 : pageNo);
 
 		return pageInfo;
