@@ -10,6 +10,7 @@ import lombok.Data;
 public class ReCommendContent  extends BaseEntity {
 
 	private  String id;
+	//推荐Id
 	private  String contentId;
 	private  String userId;
 

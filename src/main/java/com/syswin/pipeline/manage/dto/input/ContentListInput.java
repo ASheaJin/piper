@@ -9,8 +9,8 @@ import lombok.Data;
 @Data
 public class ContentListInput {
 
-	private String keyword;
 	private String publiserId;
+	private String hasRecommend;
 	private String pageNo;
 	private String pageSize;
 }

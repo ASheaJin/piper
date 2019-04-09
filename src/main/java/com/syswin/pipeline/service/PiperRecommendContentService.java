@@ -1,18 +1,22 @@
 package com.syswin.pipeline.service;
 
-import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.syswin.pipeline.db.model.ReCommendContent;
 import com.syswin.pipeline.db.repository.ReCommendContentRepository;
+import com.syswin.pipeline.manage.dto.output.ContentOutput;
 import com.syswin.pipeline.service.psserver.impl.BusinessException;
 import com.syswin.pipeline.utils.StringUtils;
+import com.syswin.sub.api.ContentOutService;
+import com.syswin.sub.api.ContentService;
+import com.syswin.sub.api.PublisherService;
+import com.syswin.sub.api.db.model.ContentOut;
 import com.syswin.sub.api.db.model.Publisher;
-import com.syswin.sub.api.utils.PageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Created by 115477 on 2019/1/9.
@@ -23,14 +27,55 @@ public class PiperRecommendContentService {
 	@Autowired
 	private ReCommendContentRepository reCommendContentRepository;
 
-	public PageInfo<ReCommendContent> list(String userId, Integer pageNo, Integer pageSize) {
+	@Autowired
+	private PublisherService publisherService;
 
-		pageNo = PageUtil.getPageNo(pageNo);
-		pageSize = PageUtil.getPageSize(pageSize);
+	@Autowired
+	private ContentService contentService;
 
-		PageHelper.startPage(pageNo, pageSize);
-		List<ReCommendContent> reList = reCommendContentRepository.select();
-		PageInfo<ReCommendContent> pageInfo = new PageInfo<>(reList);
+	@Autowired
+	private ContentOutService contentOutService;
+
+	public PageInfo list(String userId, Integer pageNo, Integer pageSize) {
+
+		List<ReCommendContent> reCommendContents = reCommendContentRepository.selectByUserId(userId);
+		List<String> ids = reCommendContents.stream().map(r -> r.getContentId()).collect(Collectors.toList());
+		PageInfo pageInfo = contentOutService.listByContentIds(ids, pageNo, pageSize);
+		//BO转VO
+		List<ContentOut> contentOuts = pageInfo.getList();
+		List<ContentOutput> outputs = new ArrayList();
+
+		//获取Publiser
+		List<String> pids = contentOuts.stream().map(r -> r.getPublisherId()).collect(Collectors.toList());
+		List<Publisher> publisers = null;
+		if (pids.size() > 0) {
+			publisers = publisherService.selectListByIds(pids, 0, 0);
+		}
+		for (ContentOut contentOut : contentOuts) {
+			ContentOutput output = new ContentOutput();
+			output.setContentId(contentOut.getContentId());
+			output.setCreateTime(String.valueOf(contentOut.getCreateTime()));
+			output.setListdesc(contentOut.getListdesc());
+			output.setHasRecommend("1");
+			//Todo 此处要修改为H5 链接
+			output.setDecUrl("www.baidu.com/" + contentOut.getContentId());
+			output.setPublisherId(contentOut.getPublisherId());
+			if (publisers != null) {
+				for (Publisher p : publisers) {
+					if (contentOut.getPublisherId().equals(p.getPublisherId())) {
+						output.setPublisherName(p.getName());
+					}
+				}
+			}
+			outputs.add(output);
+		}
+		pageInfo.setList(outputs);
+
+		//重置pageInfo参数
+		pageInfo.setTotal(outputs.size());
+		pageInfo.setPages(1 + outputs.size() / pageSize);
+		pageInfo.setNextPage(pageInfo.getPages() > pageNo ? pageNo + 1 : pageNo);
+
 		return pageInfo;
 	}
 

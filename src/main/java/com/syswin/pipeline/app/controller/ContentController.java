@@ -56,13 +56,14 @@ public class ContentController {
 		return new ResponseEntity(contentOutPageInfo);
 
 	}
+
 	@GetMapping("/detail")
 	@ApiOperation(
-			value = "内容详情"
+					value = "内容详情"
 	)
 	public ResponseEntity<ContentEntity> detail(@ModelAttribute ContentIdInput input) {
 		String contentId = input.getContentId();
-		ContentOut contentOut = contentOutService.getContentOutById(Long.parseLong(contentId));
+		ContentOut contentOut = contentOutService.getContentById(contentId);
 		ContentEntity contentEntity = JacksonJsonUtil.fromJson(contentOut.getAllcontent(), ContentEntity.class);
 
 		return new ResponseEntity(contentEntity);
@@ -71,6 +72,7 @@ public class ContentController {
 
 	/**
 	 * 按contentId重新解析内容
+	 *
 	 * @param input
 	 * @return
 	 */
@@ -83,6 +85,7 @@ public class ContentController {
 
 	/**
 	 * 重新解析所有内容
+	 *
 	 * @return
 	 */
 	@PostMapping("/pa")

@@ -58,10 +58,23 @@
         from recommendcontent where content_id = #{contentId}
     </select>
 
+    <select id="selectByContentIds" resultType="com.syswin.pipeline.db.model.ReCommendContent">
+        select
+        <include refid="Base_Column_List"/>
+        from recommendcontent
+        where content_id in
+        <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
     <select id="selectByUserId" resultType="com.syswin.pipeline.db.model.ReCommendContent">
         select
         <include refid="Base_Column_List"/>
-        from recommendcontent where user_id = #{userId}
+        from recommendcontent
+        <if test="userId != null  and userId != ''">
+            and user_id = #{userId}
+        </if>
     </select>
 
     <delete id="delete">

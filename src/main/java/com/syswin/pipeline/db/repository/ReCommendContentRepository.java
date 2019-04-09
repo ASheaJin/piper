@@ -1,6 +1,7 @@
 package com.syswin.pipeline.db.repository;
 
 import com.syswin.pipeline.db.model.ReCommendContent;
+import com.syswin.pipeline.db.model.ReCommendPublisher;
 import com.syswin.sub.api.db.repository.BaseRepository;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -16,6 +17,8 @@ public interface ReCommendContentRepository extends BaseRepository<ReCommendCont
 	ReCommendContent selectByContentId(@Param("contentId") String contentId);
 
 	List<ReCommendContent> selectByUserId(@Param("userId") String userId);
+
+	List<ReCommendContent> selectByContentIds(List<String> contentIds);
 
 	int deleteBycid(@Param("contentId") String contentId);
 }

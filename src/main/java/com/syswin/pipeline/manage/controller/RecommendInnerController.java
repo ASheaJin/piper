@@ -82,7 +82,7 @@ public class RecommendInnerController {
 
 	@PostMapping("/contentAdd")
 	@ApiOperation(
-					value = "添加推荐出版社"
+					value = "添加推荐内容"
 	)
 	public ResponseEntity contentAdd(@RequestBody AddRecommendContent acc, HttpServletRequest request) {
 		String manageId = headerService.getUserId(request);
