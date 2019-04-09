@@ -42,7 +42,7 @@ public class ContentInnerController {
 		int pageSize = StringUtils.getParam(request, "pageSize", 10);
 		String publisherId = StringUtils.getParam(request, "publisherId", null);
 
-		model.addAllAttributes(contentService.listByExample(pageIndex, pageSize, publisherId));
+//		model.addAllAttributes(contentService.listByExample(pageIndex, pageSize, publisherId).get);
 		model.addAttribute("pageIndex", pageIndex);
 		model.addAttribute("pageSize", pageSize);
 		model.addAttribute("publisherId", publisherId);
