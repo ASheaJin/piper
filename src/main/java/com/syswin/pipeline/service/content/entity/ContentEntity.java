@@ -42,7 +42,7 @@ public class ContentEntity extends MediaContentEntity {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @ApiModelProperty(value = "发布时间")
-    private Long publishTime;
+    private Integer publishTime;
 
 
     @JsonInclude(JsonInclude.Include.NON_NULL)

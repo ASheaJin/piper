@@ -131,7 +131,7 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 		List<String> userIds = subscriptionService.getSubscribers(publisher.getPtemail(), publisherTypeEnums);
 
 		//内容处理
-		contentHandleJobManager.addJob(publisher.getPublisherId(), contentId, body_type, txt);
+		contentHandleJobManager.addJob(publisher.getPublisherId(), contentId, body_type, txt, content.getCreateTime());
 
 		int num = 0;
 		//3、逐个发文章

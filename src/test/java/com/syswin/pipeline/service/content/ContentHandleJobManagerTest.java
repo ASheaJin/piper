@@ -5,7 +5,6 @@ import com.opencsv.CSVReaderBuilder;
 import com.opencsv.RFC4180Parser;
 import com.opencsv.RFC4180ParserBuilder;
 import com.syswin.pipeline.service.content.entity.ContentEntity;
-import com.syswin.pipeline.utils.JacksonJsonUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,12 +43,13 @@ public class ContentHandleJobManagerTest {
 
         for (String[] c : contents) {
             String contentId = c[0];
+            String createTime = c[1];
             String publisherId = c[2];
             String bodyType = c[4];
             String content = c[5];
             Integer bodyTypeInt = !StringUtils.isEmpty(bodyType) ? Integer.parseInt(bodyType) : null;
 //
-            contentHandleJobManager.addJob(publisherId, contentId, bodyTypeInt, content);
+            contentHandleJobManager.addJob(publisherId, contentId, bodyTypeInt, content, Integer.parseInt(createTime));
         }
 
         while(true) {

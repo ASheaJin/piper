@@ -2,13 +2,16 @@ package com.syswin.pipeline.app.controller;
 
 import com.github.pagehelper.PageInfo;
 import com.syswin.pipeline.app.dto.ContentIdInput;
+import com.syswin.pipeline.app.dto.ContentListParam;
 import com.syswin.pipeline.app.dto.SubUserListParam;
 import com.syswin.pipeline.service.content.ContentHandleJobManager;
 import com.syswin.pipeline.service.content.entity.ContentEntity;
 import com.syswin.pipeline.service.psserver.bean.ResponseEntity;
 import com.syswin.pipeline.utils.DateUtil;
+import com.syswin.pipeline.utils.JacksonJsonUtil;
 import com.syswin.sub.api.ContentOutService;
 import com.syswin.sub.api.ContentService;
+import com.syswin.sub.api.db.model.ContentOut;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,8 +41,19 @@ public class ContentController {
 	@ApiOperation(
 					value = "出版社的历史内容列表"
 	)
-	public ResponseEntity<PageInfo<ContentEntity>> list(@RequestBody SubUserListParam subUserList) {
-		return new ResponseEntity(null);
+	public ResponseEntity<PageInfo<ContentEntity>> list(@RequestBody ContentListParam input) {
+		int pageNo = !StringUtils.isEmpty(input.getPageNo()) ? Integer.parseInt(input.getPageNo()) : 1;
+		int pageSize = !StringUtils.isEmpty(input.getPageSize()) ? Integer.parseInt(input.getPageSize()) : 30;
+
+		PageInfo contentOutPageInfo = contentOutService.listByPublisherId(input.getPublisherId(), pageNo, pageSize);
+		List<ContentOut> contents = contentOutPageInfo.getList();
+		List<ContentEntity> contentEntities = contents.stream().map((out) -> {
+			ContentEntity entity = JacksonJsonUtil.fromJson(out.getListdesc(), ContentEntity.class);
+			return entity;
+		}).collect(Collectors.toList());
+		contentOutPageInfo.setList(contentEntities);
+
+		return new ResponseEntity(contentOutPageInfo);
 
 	}
 	@GetMapping("/detail")
@@ -48,8 +62,10 @@ public class ContentController {
 	)
 	public ResponseEntity<ContentEntity> detail(@ModelAttribute ContentIdInput input) {
 		String contentId = input.getContentId();
+		ContentOut contentOut = contentOutService.getContentOutById(Long.parseLong(contentId));
+		ContentEntity contentEntity = JacksonJsonUtil.fromJson(contentOut.getAllcontent(), ContentEntity.class);
 
-		return new ResponseEntity(null);
+		return new ResponseEntity(contentEntity);
 	}
 
 
@@ -60,6 +76,7 @@ public class ContentController {
 	 */
 	@PostMapping("/p")
 	public ResponseEntity parseContent(@RequestBody ContentIdInput input) {
+
 //		contentService.activeContent()
 		return new ResponseEntity();
 	}

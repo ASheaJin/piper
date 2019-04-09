@@ -10,7 +10,6 @@ import com.syswin.pipeline.utils.JacksonJsonUtil;
 import com.syswin.sub.api.ContentOutService;
 import com.syswin.sub.api.utils.BeanConvertUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -47,13 +46,15 @@ public class ContentHandleJobManager {
      * @param contentId
      * @param bodyType
      * @param content
+     * @param createTime
      */
-    public void addJob(String publisherId, String contentId, Integer bodyType, String content) {
+    public void addJob(String publisherId, String contentId, Integer bodyType, String content, int createTime) {
         servicePool.execute(() -> {
             ContentEntity contentEntity = parseContent(publisherId, contentId, bodyType, content);
             if (contentEntity == null) {
                 return;
             }
+            contentEntity.setPublishTime(createTime);
             ContentEntity listContent = parseListContent(contentEntity);
 
             contentOutService.add(Long.parseLong(contentId),

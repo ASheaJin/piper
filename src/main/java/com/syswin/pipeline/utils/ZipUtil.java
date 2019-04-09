@@ -72,63 +72,61 @@ public class ZipUtil {
 		 * 秘邮上传的zip文件名存在两种编码，
 		 * 当使用GBK出现异常时，用UTF-8再尝试一次，如果还不行就抛出异常
 		 */
-//		try {
-//			unZipWithCharset(zipfile, dest, passwd, "UTF-8");
-////			System.out.println("GB18030");
-//		} catch (ZipException z) {
-////			logger.info("unzip with GB18030 fail~ " + zipfile);
-//			try {
-//				unZipWithCharset(zipfile, dest, passwd, "GB18030");
-////				System.out.println("UTF-8");
-//			} catch (ZipException z1) {
-//				logger.error(String.format("解压文件出错 zipfile=%s dest=%s pwd=%s", zipfile, dest, passwd), z1);
-//				throw z1;
-//			}
-//		}
-
-
-		ZipFile zipFile = new ZipFile(zipfile);
-
-		if (!zipFile.isValidZipFile()) {
-			throw new ZipException("压缩文件不合法，可能已经损坏！");
-		}
-
-		File file = new File(dest);
-		if (file.isDirectory() && !file.exists()) {
-			file.mkdirs();
-		}
-
-
-		UnzipParameters param = new UnzipParameters();
-		zipFile.setFileNameCharset("ISO8859-1");
-		List list = zipFile.getFileHeaders();
-		for (Iterator iterator = list.iterator(); iterator.hasNext();) {
-			FileHeader fh = (FileHeader) iterator.next();
-			String fname = null;
+		try {
+			unZipWithCharset(zipfile, dest, passwd, "UTF-8");
+		} catch (ZipException z) {
+			logger.info("unzip with GB18030 fail~ " + zipfile);
 			try {
-				byte[] b = fh.getFileName().getBytes("ISO8859-1");
-//				CharsetDetector charDetect = new CharsetDetector();
-//				charDetect.setText(b);
-//				String charSet = charDetect.detect().getName();
-				fname = new String(b, "UTF-8");
-				if (fname.getBytes("UTF-8").length != b.length) {
-					fname = new String(b,"GB18030");//most possible charset
-//					System.out.println("UTF-8");
-				} else {
-
-//					System.out.println("GB18030");
-				}
-			} catch (Throwable e) {
-				System.out.println("others");
-				fname = fh.getFileName();
+				unZipWithCharset(zipfile, dest, passwd, "GB18030");
+			} catch (ZipException z1) {
+				logger.error(String.format("解压文件出错 zipfile=%s dest=%s pwd=%s", zipfile, dest, passwd), z1);
+				throw z1;
 			}
-
-			System.out.println(fname);
-			if (zipFile.isEncrypted()) {
-				zipFile.setPassword(passwd.toCharArray());
-			}
-			zipFile.extractFile(fh, dest, param, fname);
 		}
+
+
+//		ZipFile zipFile = new ZipFile(zipfile);
+//
+//		if (!zipFile.isValidZipFile()) {
+//			throw new ZipException("压缩文件不合法，可能已经损坏！");
+//		}
+//
+//		File file = new File(dest);
+//		if (file.isDirectory() && !file.exists()) {
+//			file.mkdirs();
+//		}
+//
+//
+//		UnzipParameters param = new UnzipParameters();
+//		zipFile.setFileNameCharset("ISO8859-1");
+//		List list = zipFile.getFileHeaders();
+//		for (Iterator iterator = list.iterator(); iterator.hasNext();) {
+//			FileHeader fh = (FileHeader) iterator.next();
+//			String fname = null;
+//			try {
+//				byte[] b = fh.getFileName().getBytes("ISO8859-1");
+////				CharsetDetector charDetect = new CharsetDetector();
+////				charDetect.setText(b);
+////				String charSet = charDetect.detect().getName();
+//				fname = new String(b, "UTF-8");
+//				if (fname.getBytes("UTF-8").length != b.length) {
+//					fname = new String(b,"GB18030");//most possible charset
+////					System.out.println("UTF-8");
+//				} else {
+//
+////					System.out.println("GB18030");
+//				}
+//			} catch (Throwable e) {
+//				System.out.println("others");
+//				fname = fh.getFileName();
+//			}
+//
+//			System.out.println(fname);
+//			if (zipFile.isEncrypted()) {
+//				zipFile.setPassword(passwd.toCharArray());
+//			}
+//			zipFile.extractFile(fh, dest, param, fname);
+//		}
 	}
 
 	public static void unZipWithCharset(String zipfile, String dest, String passwd, String charset) throws ZipException {
