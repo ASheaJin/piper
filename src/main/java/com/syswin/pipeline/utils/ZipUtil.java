@@ -6,7 +6,6 @@ import net.lingala.zip4j.model.FileHeader;
 import net.lingala.zip4j.model.UnzipParameters;
 import net.lingala.zip4j.model.ZipParameters;
 import net.lingala.zip4j.util.Zip4jConstants;
-import org.apache.tika.parser.txt.CharsetDetector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
