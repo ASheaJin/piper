@@ -3,23 +3,24 @@ package com.syswin.pipeline.app.controller;
 import com.github.pagehelper.PageInfo;
 import com.syswin.pipeline.app.dto.ContentIdInput;
 import com.syswin.pipeline.app.dto.ContentListParam;
-import com.syswin.pipeline.app.dto.SubUserListParam;
 import com.syswin.pipeline.service.content.ContentHandleJobManager;
 import com.syswin.pipeline.service.content.entity.ContentEntity;
 import com.syswin.pipeline.service.psserver.bean.ResponseEntity;
-import com.syswin.pipeline.utils.DateUtil;
 import com.syswin.pipeline.utils.JacksonJsonUtil;
 import com.syswin.sub.api.ContentOutService;
 import com.syswin.sub.api.ContentService;
+import com.syswin.sub.api.PublisherService;
+import com.syswin.sub.api.db.model.Content;
 import com.syswin.sub.api.db.model.ContentOut;
+import com.syswin.sub.api.db.model.Publisher;
+import com.syswin.sub.api.enums.PublisherTypeEnums;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.*;
-import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -32,62 +33,87 @@ import java.util.stream.Collectors;
 @Api(value = "content", tags = "content")
 public class ContentController {
 
-	@Autowired
-	private ContentService contentService;
-	@Autowired
-	private ContentOutService contentOutService;
+    @Autowired
+    private PublisherService publisherService;
+    @Autowired
+    private ContentService contentService;
+    @Autowired
+    private ContentOutService contentOutService;
+    @Autowired
+    private ContentHandleJobManager contentHandleJobManager;
 
-	@PostMapping("/list")
-	@ApiOperation(
-					value = "出版社的历史内容列表"
-	)
-	public ResponseEntity<PageInfo<ContentEntity>> list(@RequestBody ContentListParam input) {
-		int pageNo = !StringUtils.isEmpty(input.getPageNo()) ? Integer.parseInt(input.getPageNo()) : 1;
-		int pageSize = !StringUtils.isEmpty(input.getPageSize()) ? Integer.parseInt(input.getPageSize()) : 30;
+    @PostMapping("/list")
+    @ApiOperation(
+            value = "出版社的历史内容列表"
+    )
+    public ResponseEntity<PageInfo<ContentEntity>> list(@RequestBody ContentListParam input) {
+        int pageNo = !StringUtils.isEmpty(input.getPageNo()) ? Integer.parseInt(input.getPageNo()) : 1;
+        int pageSize = !StringUtils.isEmpty(input.getPageSize()) ? Integer.parseInt(input.getPageSize()) : 30;
 
-		PageInfo contentOutPageInfo = contentOutService.listByPublisherId(input.getPublisherId(), pageNo, pageSize);
-		List<ContentOut> contents = contentOutPageInfo.getList();
-		List<ContentEntity> contentEntities = contents.stream().map((out) -> {
-			ContentEntity entity = JacksonJsonUtil.fromJson(out.getListdesc(), ContentEntity.class);
-			return entity;
-		}).collect(Collectors.toList());
-		contentOutPageInfo.setList(contentEntities);
+        PageInfo contentOutPageInfo = contentOutService.listByPublisherId(input.getPublisherId(), pageNo, pageSize);
+        List<ContentOut> contents = contentOutPageInfo.getList();
+        List<ContentEntity> contentEntities = contents.stream().map((out) -> {
+            ContentEntity entity = JacksonJsonUtil.fromJson(out.getListdesc(), ContentEntity.class);
+            entity.setPublisherId(out.getPublisherId());
+            entity.setPublishTime(out.getCreateTime());
+            return entity;
+        }).collect(Collectors.toList());
+        contentOutPageInfo.setList(contentEntities);
 
-		return new ResponseEntity(contentOutPageInfo);
+        return new ResponseEntity(contentOutPageInfo);
 
-	}
-	@GetMapping("/detail")
-	@ApiOperation(
-			value = "内容详情"
-	)
-	public ResponseEntity<ContentEntity> detail(@ModelAttribute ContentIdInput input) {
-		String contentId = input.getContentId();
-		ContentOut contentOut = contentOutService.getContentOutById(Long.parseLong(contentId));
-		ContentEntity contentEntity = JacksonJsonUtil.fromJson(contentOut.getAllcontent(), ContentEntity.class);
+    }
 
-		return new ResponseEntity(contentEntity);
-	}
+    @GetMapping("/detail")
+    @ApiOperation(
+            value = "内容详情"
+    )
+    public ResponseEntity<ContentEntity> detail(@ModelAttribute ContentIdInput input) {
+        String contentId = input.getContentId();
+        ContentOut contentOut = contentOutService.getContentOutById(contentId);
+        ContentEntity contentEntity = JacksonJsonUtil.fromJson(contentOut.getAllcontent(), ContentEntity.class);
+        contentEntity.setPublisherId(contentOut.getPublisherId());
+        contentEntity.setPublishTime(contentOut.getCreateTime());
+        return new ResponseEntity(contentEntity);
+    }
 
 
-	/**
-	 * 按contentId重新解析内容
-	 * @param input
-	 * @return
-	 */
-	@PostMapping("/p")
-	public ResponseEntity parseContent(@RequestBody ContentIdInput input) {
+    /**
+     * 按publisherId重新解析内容
+     *
+     * @param input
+     * @return
+     */
+    @PostMapping("/p")
+    public ResponseEntity parseContent(@RequestBody ContentListParam input) {
 
-//		contentService.activeContent()
-		return new ResponseEntity();
-	}
+        List<Content> contentList = contentService.getMyContentsbyPid(input.getPublisherId(), 1, 10000);
+        for (Content content : contentList) {
+            contentHandleJobManager.addJob(content.getPublisherId(), content.getContentId(), content.getBodyType(),
+                    content.getContent(),
+                    content.getCreateTime());
+        }
 
-	/**
-	 * 重新解析所有内容
-	 * @return
-	 */
-	@PostMapping("/pa")
-	public ResponseEntity parseAllContent() {
-//		contentService.activeContent()
-		return new ResponseEntity();
-	}
+        return new ResponseEntity();
+    }
+
+    /**
+     * 重新解析所有内容
+     *
+     * @return
+     */
+    @PostMapping("/pa")
+    public ResponseEntity parseAllContent() {
+        List<Publisher> publishers = publisherService.list(1, 10000, null, PublisherTypeEnums.organize, null);
+        for (Publisher publisher : publishers) {
+            List<Content> contentList = contentService.getMyContentsbyPid(publisher.getPublisherId(), 1, 10000);
+            for (Content content : contentList) {
+                contentHandleJobManager.addJob(content.getPublisherId(), content.getContentId(), content.getBodyType(),
+                        content.getContent(),
+                        content.getCreateTime());
+            }
+        }
+
+        return new ResponseEntity();
+    }
 }

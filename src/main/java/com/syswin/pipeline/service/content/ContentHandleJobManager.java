@@ -54,11 +54,11 @@ public class ContentHandleJobManager {
             if (contentEntity == null) {
                 return;
             }
-            contentEntity.setPublishTime(createTime);
+//            contentEntity.setPublishTime(createTime);
             ContentEntity listContent = parseListContent(contentEntity);
 
-            contentOutService.add(Long.parseLong(contentId),
-                    JacksonJsonUtil.toJson(listContent), JacksonJsonUtil.toJson(contentEntity));
+            contentOutService.add(contentId, publisherId,
+                    JacksonJsonUtil.toJson(listContent), JacksonJsonUtil.toJson(contentEntity), createTime);
         });
     }
 
