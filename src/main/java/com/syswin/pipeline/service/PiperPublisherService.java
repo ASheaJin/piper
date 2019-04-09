@@ -102,17 +102,6 @@ public class PiperPublisherService {
 		return subPublisherService.getLastPublisher();
 	}
 
-	/**
-	 * 发布文章
-	 *
-	 * @param userId
-	 * @param article
-	 * @param bodyType 1文本 2语音 3图片 10视频 14文件  see http://wiki.syswin.com/pages/viewpage.action?pageId=33689922
-	 */
-	@Deprecated
-	public void publishContent(String userId, String article, int bodyType) {
-
-	}
 
 	public Publisher getPubLisherById(String publisherId) {
 		return subPublisherService.getPubLisherById(publisherId);

@@ -11,6 +11,7 @@ import com.syswin.pipeline.service.psserver.impl.BusinessException;
 import com.syswin.pipeline.utils.StringUtils;
 import com.syswin.sub.api.PublisherService;
 import com.syswin.sub.api.db.model.Publisher;
+import com.syswin.sub.api.utils.PageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,13 +30,13 @@ public class PiperRecommendPublisherService {
 	@Autowired
 	private PublisherService publisherService;
 
-	public PageInfo<ReCommendPublisher> list(String userId, int pageIndex, int pageSize) {
+	public PageInfo<ReCommendPublisher> list(String userId, Integer pageNo, Integer pageSize) {
 
 
-		pageIndex = pageIndex < 1 ? 1 : pageIndex;
-		pageSize = pageSize > 30 || pageSize < 1 ? 30 : pageSize;
+		pageNo = PageUtil.getPageNo(pageNo);
+		pageSize = PageUtil.getPageSize(pageSize);
 
-		PageHelper.startPage(pageIndex, pageSize);
+		PageHelper.startPage(pageNo, pageSize);
 
 		List<ReCommendPublisher> reList;
 		if (StringUtil.isEmpty(userId)) {

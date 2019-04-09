@@ -7,6 +7,7 @@ import com.syswin.pipeline.db.repository.ReCommendContentRepository;
 import com.syswin.pipeline.service.psserver.impl.BusinessException;
 import com.syswin.pipeline.utils.StringUtils;
 import com.syswin.sub.api.db.model.Publisher;
+import com.syswin.sub.api.utils.PageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,19 +23,19 @@ public class PiperRecommendContentService {
 	@Autowired
 	private ReCommendContentRepository reCommendContentRepository;
 
-	public PageInfo<ReCommendContent> list(String userId, int pageIndex, int pageSize) {
+	public PageInfo<ReCommendContent> list(String userId, Integer pageNo, Integer pageSize) {
 
-		pageIndex = pageIndex < 1 ? 1 : pageIndex;
-		pageSize = pageSize > 30 || pageSize < 1 ? 30 : pageSize;
+		pageNo = PageUtil.getPageNo(pageNo);
+		pageSize = PageUtil.getPageSize(pageSize);
 
-		PageHelper.startPage(pageIndex, pageSize);
+		PageHelper.startPage(pageNo, pageSize);
 		List<ReCommendContent> reList = reCommendContentRepository.select();
 		PageInfo<ReCommendContent> pageInfo = new PageInfo<>(reList);
 		return pageInfo;
 	}
 
 	public ReCommendContent add(String userId, String contentId) {
-		if ( StringUtils.isNullOrEmpty(contentId)) {
+		if (StringUtils.isNullOrEmpty(contentId)) {
 			throw new BusinessException("内容Id不能为空");
 		}
 		ReCommendContent reCommendContent = reCommendContentRepository.selectByContentId(contentId);
@@ -45,7 +46,6 @@ public class PiperRecommendContentService {
 		reCommendContent.setContentId(contentId);
 		reCommendContent.setUserId(userId);
 		reCommendContentRepository.insert(reCommendContent);
-
 		return reCommendContent;
 	}
 
@@ -57,7 +57,6 @@ public class PiperRecommendContentService {
 		if (reCommendContent == null) {
 			throw new BusinessException("该内容不存在推荐");
 		}
-
 		reCommendContentRepository.delete(id);
 	}
 }
