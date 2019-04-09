@@ -45,15 +45,15 @@ public class ContentEntity extends MediaContentEntity {
     private Integer publishTime;
 
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    @ApiModelProperty(value = "发件人")
-    private String from;
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    @ApiModelProperty(value = "收件人")
-    private String to;
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    @ApiModelProperty(value = "附件数量")
-    private Integer attachCount;
+//    @JsonInclude(JsonInclude.Include.NON_NULL)
+//    @ApiModelProperty(value = "发件人")
+//    private String from;
+//    @JsonInclude(JsonInclude.Include.NON_NULL)
+//    @ApiModelProperty(value = "收件人")
+//    private String to;
+//    @JsonInclude(JsonInclude.Include.NON_NULL)
+//    @ApiModelProperty(value = "附件数量")
+//    private Integer attachCount;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @ApiModelProperty(value = "复合消息体的内容列表")
@@ -61,6 +61,6 @@ public class ContentEntity extends MediaContentEntity {
 
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @ApiModelProperty(value = "url的媒体类型，目前只放几种：2语音3图片10视频")
+    @ApiModelProperty(value = "只在bodyType=30的情况下，url的媒体类型，目前只放几种：2语音3图片10视频")
     private Integer mediaBodyType;
 }
