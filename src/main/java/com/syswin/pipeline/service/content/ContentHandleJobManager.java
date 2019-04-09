@@ -28,7 +28,7 @@ import java.util.concurrent.Executors;
 @Component
 public class ContentHandleJobManager {
 
-    private static final int INTRO_MAX_LENGTH = 40;
+    private static final int INTRO_MAX_LENGTH = 100;
 
     private static ExecutorService servicePool = Executors.newFixedThreadPool(10);
 
@@ -71,6 +71,10 @@ public class ContentHandleJobManager {
             return null;
         }
         ContentEntity listContent = BeanConvertUtil.map(contentEntity, ContentEntity.class);
+        if (BodyTypeEnums.TEXT.getType().equals(listContent.getBodyType()) ) {
+            listContent.setText(limitIntro(listContent.getText()));
+        }
+
         if (BodyTypeEnums.MAIL.getType().equals(listContent.getBodyType()) ) {
             //暂不处理
         }
@@ -112,15 +116,15 @@ public class ContentHandleJobManager {
         if (INTRO_MAX_LENGTH >= intro.length()) {
             return intro;
         } else {
-            intro = intro.substring(0, INTRO_MAX_LENGTH);
-            int byteLen = intro.getBytes(StandardCharsets.UTF_8).length;
+            String introText = intro.substring(0, INTRO_MAX_LENGTH);
+            int byteLen = introText.getBytes(StandardCharsets.UTF_8).length;
             //防止全英文字符 不够长
             if (byteLen < (INTRO_MAX_LENGTH + INTRO_MAX_LENGTH / 4)) {
-                intro = intro.substring(0, INTRO_MAX_LENGTH + INTRO_MAX_LENGTH / 2);
+                introText = intro.substring(0, INTRO_MAX_LENGTH + INTRO_MAX_LENGTH / 2);
             } else if (byteLen < (INTRO_MAX_LENGTH + INTRO_MAX_LENGTH / 2)) {
-                intro = intro.substring(0, INTRO_MAX_LENGTH +INTRO_MAX_LENGTH / 4);
+                introText = intro.substring(0, INTRO_MAX_LENGTH +INTRO_MAX_LENGTH / 4);
             }
-            return intro;
+            return introText;
         }
     }
 

@@ -85,6 +85,7 @@ public class ContentController {
      * @return
      */
     @PostMapping("/p")
+    @ApiOperation(hidden = true, value = "按publisherId重新解析内容")
     public ResponseEntity parseContent(@RequestBody ContentListParam input) {
 
         List<Content> contentList = contentService.getMyContentsbyPid(input.getPublisherId(), 1, 10000);
@@ -103,8 +104,9 @@ public class ContentController {
      * @return
      */
     @PostMapping("/pa")
+    @ApiOperation(hidden = true, value = "按publisherId重新解析所有内容")
     public ResponseEntity parseAllContent() {
-        List<Publisher> publishers = publisherService.list(1, 10000, null, PublisherTypeEnums.organize, null);
+        List<Publisher> publishers = publisherService.list(1, 10000, null, null, null);
         for (Publisher publisher : publishers) {
             List<Content> contentList = contentService.getMyContentsbyPid(publisher.getPublisherId(), 1, 10000);
             for (Content content : contentList) {
