@@ -80,12 +80,12 @@ public class ConsumerService {
 		//什么都不是
 		int role = 0;
 		//是个人出版社
-		Publisher publisher = publisherService.getPubLisherByuserId(userId, PublisherTypeEnums.person);
+		Publisher publisher = publisherService.getPublisherByUserId(userId, PublisherTypeEnums.person);
 		if (publisher != null) {
 			role = role + 1;
 		}
 		//是组织出版社
-		Admin admin = adminService.getAdmin(userId);
+		Admin admin = adminService.getAdmin(userId, PublisherTypeEnums.organize);
 		if (admin != null) {
 			role = role + 2;
 		}

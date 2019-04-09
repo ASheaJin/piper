@@ -2,10 +2,8 @@ package com.syswin.pipeline.service;
 
 import com.github.pagehelper.PageInfo;
 import com.syswin.pipeline.app.controller.PSSeverController;
-import com.syswin.pipeline.db.model.ReCommendContent;
 import com.syswin.pipeline.db.model.ReCommendPublisher;
-import com.syswin.pipeline.manage.vo.output.AdminManageVO;
-import com.syswin.pipeline.manage.vo.output.PublisherManageVO;
+import com.syswin.pipeline.manage.dto.output.PublisherManageVO;
 import com.syswin.pipeline.service.bussiness.impl.SendMessegeService;
 import com.syswin.pipeline.service.ps.PSClientService;
 import com.syswin.pipeline.service.ps.util.ValidationUtil;
@@ -18,13 +16,13 @@ import com.syswin.sub.api.db.model.Admin;
 import com.syswin.sub.api.db.model.Publisher;
 import com.syswin.sub.api.enums.PublisherTypeEnums;
 import com.syswin.sub.api.exceptions.SubException;
-import com.syswin.sub.api.utils.BeanConvertUtil;
 import com.syswin.sub.api.utils.EnumsUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -104,48 +102,42 @@ public class PiperPublisherService {
 		return subPublisherService.getLastPublisher();
 	}
 
-	/**
-	 * 发布文章
-	 *
-	 * @param userId
-	 * @param article
-	 * @param bodyType 1文本 2语音 3图片 10视频 14文件  see http://wiki.syswin.com/pages/viewpage.action?pageId=33689922
-	 */
-	@Deprecated
-	public void publishContent(String userId, String article, int bodyType) {
-
-	}
 
 	public Publisher getPubLisherById(String publisherId) {
 		return subPublisherService.getPubLisherById(publisherId);
 	}
 
+	@Transactional
 	public void delete(String publisherId) {
 		subPublisherService.delete(publisherId);
+		piperRecommendPublisherService.deleteBypid(publisherId);
 	}
 
 	/**
-	 * 获取当前temail的出版社
+	 * 获取当前temail的个人出版社
 	 *
 	 * @param userId
 	 * @return
 	 */
 	public Publisher getPubLisherByuserId(String userId) {
-		return subPublisherService.getPersonPublisherByuserId(userId);
+		return subPublisherService.getPublisherByUserId(userId, PublisherTypeEnums.person);
 	}
 
 
 	//================================ manage方法 =========================================>
 
-	public PageInfo<Publisher> list(int pageIndex, int pageSize, String keyword, String piperType, String userId) {
+	public PageInfo<Publisher> list(int pageNo, int pageSize, String keyword, String hasRecommend, String piperType, String userId) {
 		PublisherTypeEnums pType = null;
 		if (!StringUtils.isNullOrEmpty(piperType) && !"0".equals(piperType)) {
 			pType = EnumsUtil.getPubliserTypeEnums(Integer.parseInt(piperType));
 		}
-		List<Publisher> publisherList = subPublisherService.list(pageIndex, pageSize, keyword, pType, userId);
+		List<Publisher> publisherList = subPublisherService.list(pageNo, pageSize, keyword, pType, userId);
 		List<PublisherManageVO> pmVOList = new ArrayList<>();
 		List<String> publisherIds = publisherList.stream().map((p) -> p.getPublisherId()).collect(Collectors.toList());
-		List<ReCommendPublisher> reCommendPublisherList = piperRecommendPublisherService.seletByPubliserIds(publisherIds);
+		List<ReCommendPublisher> reCommendPublisherList = null;
+		if (publisherIds.size() > 0) {
+			reCommendPublisherList = piperRecommendPublisherService.seletByPubliserIds(publisherIds);
+		}
 		if (publisherList == null) {
 			throw new BusinessException("出版社列表为空");
 		}
@@ -166,17 +158,29 @@ public class PiperPublisherService {
 				}
 
 			}
-			pmVOList.add(pmVO);
+			if (StringUtils.isNullOrEmpty(hasRecommend)) {
+				pmVOList.add(pmVO);
+			} else {
+				if (pmVO.getHasRecommend().equals(hasRecommend)) {
+					pmVOList.add(pmVO);
+				}
+			}
 		}
 
 		PageInfo pageInfo = new PageInfo<>(publisherList);
-		pageInfo.setList(pmVOList);
+		pageInfo.setTotal(pmVOList.size());
+		pageInfo.setPages(1 + pmVOList.size() / pageSize);
+		pageInfo.setNextPage(pageInfo.getPages() > pageNo ? pageNo + 1 : pageNo);
+
+		if (pmVOList != null) {
+			pageInfo.setList(pmVOList);
+		}
 		return pageInfo;
 	}
 
 	//获取我创建的组织出版社
 	public List<Publisher> getMyOrgPublisherList(String keyword, String userId, int pageNo, int pageSize) {
-		Admin admin = adminService.getAdmin(userId);
+		Admin admin = adminService.getAdmin(userId, PublisherTypeEnums.organize);
 		if (admin == null || admin.getStatus() == 0) {
 			return new ArrayList<>();
 		}

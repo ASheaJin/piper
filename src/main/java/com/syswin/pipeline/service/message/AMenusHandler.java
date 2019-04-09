@@ -121,7 +121,7 @@ public class AMenusHandler implements EventHandler<MessageEvent> {
 	}
 
 	private List<Map<String, Object>> appList(String userId) {
-
+		//TODO 处理京交会
 		List<Map<String, Object>> appList = new ArrayList<>();
 
 		//既是组织管理者，又是个人出版社管理者

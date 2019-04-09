@@ -57,7 +57,7 @@ public class AdminController {
 		if (checkNotAdmin(mulCreateParam.getUserId())) {
 			return new ResponseEntity("500", "你无权操作");
 		}
-		Admin admin = adminService.getAdmin(mulCreateParam.getUserId());
+		Admin admin = adminService.getAdmin(mulCreateParam.getUserId(), PublisherTypeEnums.organize);
 		if (admin == null || admin.getStatus() == 0) {
 			return new ResponseEntity(" 你不是组织管理员，不能创建");
 		}
@@ -67,7 +67,7 @@ public class AdminController {
 			if (StringUtils.isNullOrEmpty(psClientService.getTemailPublicKey(u))) {
 				return new ResponseEntity("500", u + "邮箱不存在");
 			}
-			adminService.add(mulCreateParam.getUserId(), u, false);
+			adminService.add(mulCreateParam.getUserId(), u, PublisherTypeEnums.organize, false);
 
 			List<Publisher> publisherList = publisherService.getPubLisherByType(PublisherTypeEnums.organize);
 			try {
@@ -95,7 +95,7 @@ public class AdminController {
 		if (checkNotAdmin(adminParam.getUserId())) {
 			return new ResponseEntity("500", "你无权操作");
 		}
-		Admin admin = adminService.add(adminParam.getUserId(), adminParam.getTmail(), true);
+		Admin admin = adminService.add(adminParam.getUserId(), adminParam.getTmail(), PublisherTypeEnums.organize, true);
 
 		List<Publisher> publisherList = publisherService.getPubLisherByType(PublisherTypeEnums.organize);
 		for (Publisher publisher : publisherList) {
@@ -117,11 +117,11 @@ public class AdminController {
 		if (checkNotAdmin(adminParam.getUserId())) {
 			return new ResponseEntity("500", "你无权操作");
 		}
-		Admin admin = adminService.getAdmin(adminParam.getUserId());
+		Admin admin = adminService.getAdmin(adminParam.getUserId(), PublisherTypeEnums.organize);
 		if (admin == null || admin.getStatus() == 0) {
 			throw new SubException("删除失败，你不是管理员");
 		}
-		adminService.delete(adminParam.getUserId(), adminParam.getTmail());
+		adminService.delete(adminParam.getUserId(), adminParam.getTmail(), PublisherTypeEnums.organize);
 		sendMessegeService.sendTextmessage("你被" + adminParam.getUserId() + "取消了组织管理员", adminParam.getTmail());
 		sendMessegeService.sendTextmessage(adminParam.getTmail() + "被取消了组织管理员", adminParam.getUserId());
 
@@ -139,7 +139,7 @@ public class AdminController {
 		}
 		int pageno = StringUtils.getInteger(adminParam.getPageNo()) == 0 ? 1 : StringUtils.getInteger(adminParam.getPageNo());
 		int pagesize = StringUtils.getInteger(adminParam.getPageSize()) == 0 ? 20 : StringUtils.getInteger(adminParam.getPageSize());
-		List<Admin> sub = adminService.getAdmins(adminParam.getKeyword(), adminParam.getUserId(), pageno, pagesize);
+		List<Admin> sub = adminService.getAdmins(adminParam.getKeyword(), adminParam.getUserId(), PublisherTypeEnums.organize, pageno, pagesize);
 
 		return new ResponseEntity(sub);
 	}
