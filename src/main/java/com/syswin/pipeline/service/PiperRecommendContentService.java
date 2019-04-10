@@ -119,14 +119,14 @@ public class PiperRecommendContentService {
 		return reCommendContent;
 	}
 
-	public void delete(String userId, String id) {
-		if (StringUtils.isNullOrEmpty(userId) || StringUtils.isNullOrEmpty(id)) {
-			throw new BusinessException("用户或内容Id不能为空");
+	public void deleteByCid(String id) {
+		if (StringUtils.isNullOrEmpty(id)) {
+			throw new BusinessException("内容Id不能为空");
 		}
-		ReCommendContent reCommendContent = reCommendContentRepository.selectById(id);
+		ReCommendContent reCommendContent = reCommendContentRepository.selectByContentId(id);
 		if (reCommendContent == null) {
 			throw new BusinessException("该内容没有被推荐");
 		}
-		reCommendContentRepository.delete(id);
+		reCommendContentRepository.delete(reCommendContent.getId());
 	}
 }

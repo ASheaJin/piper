@@ -19,8 +19,6 @@ public class PublisherManageVO {
 	private String name;
 	//出版社类型
 	private String piperType;
-	// 已推荐社区Id
-	private String reid = "-1";
 	//是否推荐
 	private String hasRecommend = "0";
 	//创建时间
