@@ -19,16 +19,29 @@ public class VueController {
     @RequestMapping(value = {
             "/web/**"
     })
-    public String fowardRouter(HttpServletRequest req, HttpServletResponse resp)throws IOException{
+    public String web(HttpServletRequest req, HttpServletResponse resp)throws IOException{
         //如果匹配到了静态文件
         if (!parnStatic(req.getRequestURL().toString())) {
             resp.sendRedirect(req.getRequestURL().toString().replace("/web/", "/"));
             return null;
         }
 
-        return "forward:/index.html";
+        return "forward:/web.html";
     }
 
+
+    @RequestMapping(value = {
+            "/webmg/**"
+    })
+    public String webmg(HttpServletRequest req, HttpServletResponse resp)throws IOException{
+        //如果匹配到了静态文件
+        if (!parnStatic(req.getRequestURL().toString())) {
+            resp.sendRedirect(req.getRequestURL().toString().replace("/webmg/", "/"));
+            return null;
+        }
+
+        return "forward:/webmg.html";
+    }
 //    @RequestMapping(value={
 //            "/web/static/**"
 //    })
