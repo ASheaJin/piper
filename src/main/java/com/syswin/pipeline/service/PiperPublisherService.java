@@ -110,7 +110,7 @@ public class PiperPublisherService {
 	@Transactional
 	public void delete(String publisherId) {
 		subPublisherService.delete(publisherId);
-		piperRecommendPublisherService.deleteBypid(publisherId);
+		piperRecommendPublisherService.deleteByPid(publisherId);
 	}
 
 	/**
@@ -154,7 +154,6 @@ public class PiperPublisherService {
 				for (ReCommendPublisher rp : reCommendPublisherList) {
 					if (publisher.getPublisherId().equals(rp.getPublisherId())) {
 						pmVO.setHasRecommend("1");
-						pmVO.setReid(rp.getId());
 					}
 				}
 

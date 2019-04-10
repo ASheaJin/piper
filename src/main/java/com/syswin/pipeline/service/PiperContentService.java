@@ -54,7 +54,6 @@ public class PiperContentService {
 
 					if (rcd.getContentId().equals(contentOut.getContentId())) {
 						output.setHasRecommend("1");
-						output.setReid(rcd.getId());
 					}
 				}
 			}
