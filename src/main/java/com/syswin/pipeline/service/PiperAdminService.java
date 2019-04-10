@@ -6,9 +6,11 @@ import com.syswin.sub.api.AdminService;
 import com.syswin.sub.api.db.model.Admin;
 import com.syswin.sub.api.enums.PublisherTypeEnums;
 import com.syswin.sub.api.utils.BeanConvertUtil;
+import com.syswin.sub.api.utils.EnumsUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,7 +33,13 @@ public class PiperAdminService {
 	public PageInfo list(Integer pageNo, Integer pageSize, String keyword) {
 
 		List<Admin> adminList = adminService.list(keyword, PublisherTypeEnums.organize, pageNo, pageSize);
-		List<AdminManageVO> adminMangeVOList = BeanConvertUtil.mapList(adminList, AdminManageVO.class);
+//		List<AdminManageVO> adminMangeVOList = BeanConvertUtil.mapList(adminList, AdminManageVO.class);
+		List<AdminManageVO> adminMangeVOList = new ArrayList<>();
+		for (Admin ad : adminList) {
+			AdminManageVO avo = BeanConvertUtil.map(ad, AdminManageVO.class);
+			avo.setPtype(EnumsUtil.getPubliserTypeEnums(ad.getPtype().getCode()).getName());
+			adminMangeVOList.add(avo);
+		}
 
 		PageInfo pageInfo = new PageInfo<>(adminList);
 		pageInfo.setList(adminMangeVOList);

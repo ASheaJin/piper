@@ -82,7 +82,7 @@ public class PublisherInnerController {
 				map2.put("name", PublisherTypeEnums.organize.getName());
 				list.add(map2);
 			}
-			Admin admin1 = adminService.getAdmin(manageId, PublisherTypeEnums.organize);
+			Admin admin1 = adminService.getAdmin(manageId, PublisherTypeEnums.ciftis);
 			if (admin1 != null) {
 				Map<String, Object> map2 = new HashMap();
 				map2.put("code", PublisherTypeEnums.ciftis.getCode());

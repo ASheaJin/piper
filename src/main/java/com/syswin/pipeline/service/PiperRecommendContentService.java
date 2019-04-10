@@ -9,8 +9,10 @@ import com.syswin.pipeline.utils.StringUtils;
 import com.syswin.sub.api.ContentOutService;
 import com.syswin.sub.api.ContentService;
 import com.syswin.sub.api.PublisherService;
+import com.syswin.sub.api.db.model.Content;
 import com.syswin.sub.api.db.model.ContentOut;
 import com.syswin.sub.api.db.model.Publisher;
+import com.syswin.sub.api.enums.PublisherTypeEnums;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +37,9 @@ public class PiperRecommendContentService {
 
 	@Autowired
 	private ContentOutService contentOutService;
+
+	@Autowired
+	private com.syswin.sub.api.PublisherService subPublisherService;
 
 	public PageInfo list(String userId, Integer pageNo, Integer pageSize) {
 
@@ -86,9 +91,23 @@ public class PiperRecommendContentService {
 	}
 
 	public ReCommendContent add(String userId, String contentId) {
+
 		if (StringUtils.isNullOrEmpty(contentId)) {
 			throw new BusinessException("内容Id不能为空");
 		}
+		Content content = contentService.selectById(contentId);
+		if (content == null) {
+			throw new BusinessException("该消息不存在");
+		}
+		Publisher publisher = subPublisherService.getPubLisherById(content.getPublisherId());
+		if (publisher == null) {
+			throw new BusinessException("出版社不存在或已注销");
+		}
+		if (!publisher.getPtype().equals(PublisherTypeEnums.ciftis)) {
+			throw new BusinessException("目前只支持京交会推荐");
+		}
+
+
 		ReCommendContent reCommendContent = reCommendContentRepository.selectByContentId(contentId);
 		if (reCommendContent != null) {
 			throw new BusinessException("该内容已经在推荐中");

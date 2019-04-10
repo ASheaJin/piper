@@ -1,13 +1,16 @@
 package com.syswin.pipeline.service;
 
 import com.github.pagehelper.PageInfo;
+import com.syswin.pipeline.manage.dto.output.PulisherSubOutput;
 import com.syswin.pipeline.service.bussiness.impl.SendMessegeService;
 import com.syswin.pipeline.service.ps.PSClientService;
 import com.syswin.pipeline.service.psserver.impl.BusinessException;
 import com.syswin.pipeline.utils.PatternUtils;
 import com.syswin.pipeline.utils.StringUtils;
 import com.syswin.sub.api.AdminService;
+import com.syswin.sub.api.ContentService;
 import com.syswin.sub.api.db.model.Admin;
+import com.syswin.sub.api.db.model.Content;
 import com.syswin.sub.api.db.model.Publisher;
 import com.syswin.sub.api.db.model.Subscription;
 import com.syswin.sub.api.enums.PublisherTypeEnums;
@@ -34,6 +37,9 @@ public class PiperSubscriptionService {
 
 	@Autowired
 	private SendMessegeService sendMessegeService;
+
+	@Autowired
+	private ContentService contentService;
 
 
 	@Autowired
@@ -203,5 +209,35 @@ public class PiperSubscriptionService {
 		}
 
 		return subSubscriptionService.getSubscribersByKeyWord(keyword, userId, publisherId, organize, pageNo, pageSize);
+	}
+
+
+	/**
+	 * 获取订阅关系
+	 */
+	public PulisherSubOutput getsubscribeByUidCid(String userId, String contentId, PublisherTypeEnums piperType) {
+
+		if (StringUtils.isNullOrEmpty(contentId) || StringUtils.isNullOrEmpty(userId)) {
+			throw new BusinessException("内容Id 和 userId 不能为空");
+		}
+		Content content = contentService.selectById(contentId);
+		if (content == null) {
+			throw new BusinessException("该消息不存在");
+		}
+		Publisher publisher = subPublisherService.getPubLisherById(content.getPublisherId());
+		if (publisher == null) {
+			throw new BusinessException("出版社不存在或已注销");
+		}
+		if (!publisher.getPtype().equals(piperType)) {
+			throw new BusinessException("出版社类型不支持");
+		}
+		PulisherSubOutput ps = new PulisherSubOutput();
+		ps.setContentId(contentId);
+		ps.setPublisherId(publisher.getPublisherId());
+		ps.setPublisherName(publisher.getName());
+
+		Subscription sub = subSubscriptionService.getSub(userId, publisher.getPublisherId());
+		ps.setHasSub(sub == null ? "0" : "1");
+		return ps;
 	}
 }

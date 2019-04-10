@@ -16,6 +16,8 @@ public class AdminManageVO {
 	private String creater;
 	//状态（0,无效 1 有效）
 	private String status;
+	//状态（0,无效 1 有效）
+	private String ptype;;
 	//创建时间
 	private String creatTime;
 }
