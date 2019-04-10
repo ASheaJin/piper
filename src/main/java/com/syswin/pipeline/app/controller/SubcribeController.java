@@ -1,5 +1,6 @@
 package com.syswin.pipeline.app.controller;
 
+import com.syswin.pipeline.app.dto.CheckSubInput;
 import com.syswin.pipeline.app.dto.SubSearchParam;
 import com.syswin.pipeline.service.PiperPublisherService;
 import com.syswin.pipeline.service.PiperSubscriptionService;
@@ -43,7 +44,15 @@ public class SubcribeController {
 	@Autowired
 	PiperSubscriptionService subscriptionService;
 
-	@PostMapping("getmysubsion")
+
+	@PostMapping("/checkSub")
+	public ResponseEntity checkSub(@RequestBody CheckSubInput cis) {
+		//京交会根据内容判断是否订阅
+		return new ResponseEntity(subscriptionService.getsubscribeByUidCid(cis.getUserId(), cis.getPublisherId()));
+	}
+
+
+	@PostMapping("/getmysubsion")
 	public ResponseEntity getmysubsion(@RequestBody String userId) {
 		return new ResponseEntity(subscriptionService.getMySubscribtion(userId));
 	}

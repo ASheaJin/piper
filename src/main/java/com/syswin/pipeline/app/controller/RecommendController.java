@@ -6,12 +6,18 @@ import com.syswin.pipeline.db.model.ReCommendContent;
 import com.syswin.pipeline.db.model.ReCommendPublisher;
 import com.syswin.pipeline.service.PiperRecommendContentService;
 import com.syswin.pipeline.service.PiperRecommendPublisherService;
+import com.syswin.pipeline.service.content.entity.ContentEntity;
 import com.syswin.pipeline.service.psserver.bean.ResponseEntity;
+import com.syswin.pipeline.utils.JacksonJsonUtil;
 import com.syswin.pipeline.utils.StringUtils;
+import com.syswin.sub.api.db.model.ContentOut;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author:lhz
@@ -51,10 +57,8 @@ public class RecommendController {
 		Integer pageNo = StringUtils.isNullOrEmpty(ri.getPageNo()) ? 1 : Integer.parseInt(ri.getPageNo());
 		Integer pageSize = StringUtils.isNullOrEmpty(ri.getPageSize()) ? 20 : Integer.parseInt(ri.getPageSize());
 
-		//TODO 处理京交会
-		PageInfo<ReCommendPublisher> pageInfo = piperRecommendPublisherService.list(null, pageNo, pageSize);
-
-		return new ResponseEntity(pageInfo);
+		PageInfo contentOutPageInfo = piperRecommendContentService.listCIFTISAPI(pageNo, pageSize);
+		return new ResponseEntity(contentOutPageInfo);
 
 	}
 }

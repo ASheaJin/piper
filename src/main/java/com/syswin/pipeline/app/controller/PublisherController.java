@@ -88,10 +88,8 @@ public class PublisherController {
 	)
 	public ResponseEntity subscribe(@RequestBody SubParam sub) {
 
-
-		subscriptionService.subscribe(sub.getUserId(), sub.getPublishTemail(), PublisherTypeEnums.person);
+		subscriptionService.subscribeNOOrg(sub.getUserId(), sub.getPublishTemail());
 		return new ResponseEntity();
-
 	}
 
 

@@ -11,8 +11,6 @@ import lombok.Data;
 @Data
 public class PulisherSubOutput {
 
-	// contentId
-	private String contentId;
 	// PublisherId
 	private String publisherId;
 	// 出版社名称

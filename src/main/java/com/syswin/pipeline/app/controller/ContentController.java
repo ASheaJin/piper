@@ -61,7 +61,6 @@ public class ContentController {
         contentOutPageInfo.setList(contentEntities);
 
         return new ResponseEntity(contentOutPageInfo);
-
     }
 
     @GetMapping("/detail")

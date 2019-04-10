@@ -60,9 +60,6 @@ public class PiperSubscriptionService {
 		if (StringUtils.isNullOrEmpty(publishTemail) || StringUtils.isNullOrEmpty(userId)) {
 			throw new BusinessException("订阅邮箱不能为空");
 		}
-//		if (StringUtils.isNullOrEmpty(psClientService.getTemailPublicKey(publishTemail))) {
-//			throw new BusinessException("订阅邮箱不存在");
-//		}
 
 		Publisher publisher = subPublisherService.getPubLisherByPublishTmail(publishTemail, piperType);
 		if (publisher == null) {
@@ -215,29 +212,55 @@ public class PiperSubscriptionService {
 	/**
 	 * 获取订阅关系
 	 */
-	public PulisherSubOutput getsubscribeByUidCid(String userId, String contentId, PublisherTypeEnums piperType) {
+	public PulisherSubOutput getsubscribeByUidCid(String userId, String publisherId) {
 
-		if (StringUtils.isNullOrEmpty(contentId) || StringUtils.isNullOrEmpty(userId)) {
-			throw new BusinessException("内容Id 和 userId 不能为空");
+		if (StringUtils.isNullOrEmpty(publisherId)) {
+			throw new BusinessException("出版社Id不能为空");
 		}
-		Content content = contentService.selectById(contentId);
-		if (content == null) {
-			throw new BusinessException("该消息不存在");
-		}
-		Publisher publisher = subPublisherService.getPubLisherById(content.getPublisherId());
+
+		Publisher publisher = subPublisherService.getPubLisherById(publisherId);
 		if (publisher == null) {
 			throw new BusinessException("出版社不存在或已注销");
 		}
-		if (!publisher.getPtype().equals(piperType)) {
-			throw new BusinessException("出版社类型不支持");
-		}
+//		if (!publisher.getPtype().equals(piperType)) {
+//			throw new BusinessException("出版社类型不支持订阅");
+//		}
 		PulisherSubOutput ps = new PulisherSubOutput();
-		ps.setContentId(contentId);
 		ps.setPublisherId(publisher.getPublisherId());
 		ps.setPublisherName(publisher.getName());
 
 		Subscription sub = subSubscriptionService.getSub(userId, publisher.getPublisherId());
 		ps.setHasSub(sub == null ? "0" : "1");
 		return ps;
+	}
+
+	public Subscription subscribeNOOrg(String userId, String publishTemail) {
+		if (StringUtils.isNullOrEmpty(publishTemail) || StringUtils.isNullOrEmpty(userId)) {
+			throw new BusinessException("订阅邮箱不能为空");
+		}
+
+		Publisher publisher = subPublisherService.getPubLisherByPublishTmail(publishTemail, null);
+		if (publisher == null) {
+			publisher = subPublisherService.getPubLisherById(publishTemail);
+			if (publisher == null) {
+				throw new BusinessException("订阅失败，出版社不存在");
+			}
+		}
+		if (publisher.getPtype().equals(PublisherTypeEnums.organize)) {
+			throw new BusinessException("邮件组不能主动订阅");
+		}
+		Subscription subscription = subSubscriptionService.subscribe(userId, publisher.getPublisherId());
+
+		//判断是否自己订阅自己
+		if (userId.equals(publisher.getUserId())) {
+			sendMessegeService.sendCard(publisher.getPtemail(), userId, "* " + publisher.getName());
+		} else {
+			sendMessegeService.sendCard(publisher.getPtemail(), userId, publisher.getName());
+		}
+		psClientService.sendTextmessage(publisher.getName() + "<" + publisher.getPtemail() + "> 订阅成功，作者即将推送文章", userId, 0);
+		sendMessegeService.sendTextmessage("订阅成功，作者会在此为你发文章", userId, 0, publisher.getPtemail());
+
+		return subscription;
+
 	}
 }

@@ -4,7 +4,9 @@ import com.github.pagehelper.PageInfo;
 import com.syswin.pipeline.db.model.ReCommendContent;
 import com.syswin.pipeline.db.repository.ReCommendContentRepository;
 import com.syswin.pipeline.manage.dto.output.ContentOutput;
+import com.syswin.pipeline.service.content.entity.ContentEntity;
 import com.syswin.pipeline.service.psserver.impl.BusinessException;
+import com.syswin.pipeline.utils.JacksonJsonUtil;
 import com.syswin.pipeline.utils.StringUtils;
 import com.syswin.sub.api.ContentOutService;
 import com.syswin.sub.api.ContentService;
@@ -128,5 +130,21 @@ public class PiperRecommendContentService {
 			throw new BusinessException("该内容没有被推荐");
 		}
 		reCommendContentRepository.delete(reCommendContent.getId());
+	}
+
+	public PageInfo listCIFTISAPI(Integer pageNo, Integer pageSize) {
+		List<ReCommendContent> reCommendContents = reCommendContentRepository.select();
+		List<String> ids = reCommendContents.stream().map(r -> r.getContentId()).collect(Collectors.toList());
+
+		PageInfo contentOutPageInfo = contentOutService.listByContentIds(ids, pageNo, pageSize);
+		List<ContentOut> contents = contentOutPageInfo.getList();
+		List<ContentEntity> contentEntities = contents.stream().map((out) -> {
+			ContentEntity entity = JacksonJsonUtil.fromJson(out.getListdesc(), ContentEntity.class);
+			entity.setPublisherId(out.getPublisherId());
+			entity.setPublishTime(out.getCreateTime());
+			return entity;
+		}).collect(Collectors.toList());
+		contentOutPageInfo.setList(contentEntities);
+		return contentOutPageInfo;
 	}
 }
