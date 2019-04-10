@@ -154,6 +154,7 @@ public class PiperPublisherService {
 				for (ReCommendPublisher rp : reCommendPublisherList) {
 					if (publisher.getPublisherId().equals(rp.getPublisherId())) {
 						pmVO.setHasRecommend("1");
+						pmVO.setReid(rp.getId());
 					}
 				}
 
@@ -168,11 +169,11 @@ public class PiperPublisherService {
 		}
 
 		PageInfo pageInfo = new PageInfo(publisherList);
-		pageInfo.setTotal(pmVOList.size());
-		if (pageSize != 0) {
-			pageInfo.setPages(1 + pmVOList.size() / pageSize);
-		}
-		pageInfo.setNextPage(pageInfo.getPages() > pageNo ? pageNo + 1 : pageNo);
+//		pageInfo.setTotal(pmVOList.size());
+//		if (pageSize != 0) {
+//			pageInfo.setPages(1 + pmVOList.size() / pageSize);
+//		}
+//		pageInfo.setNextPage(pageInfo.getPages() > pageNo ? pageNo + 1 : pageNo);
 
 		if (pmVOList != null) {
 			pageInfo.setList(pmVOList);

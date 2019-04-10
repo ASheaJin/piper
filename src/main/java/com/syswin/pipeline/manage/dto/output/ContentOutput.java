@@ -19,6 +19,8 @@ public class ContentOutput {
 	private String publisherName;
 	// 是否推荐
 	private String hasRecommend = "0";
+	// 已推荐内容Id
+	private String reid = "-1";
 	// 时间
 	private String createTime;
 	// list

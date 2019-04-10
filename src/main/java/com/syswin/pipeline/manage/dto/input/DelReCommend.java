@@ -8,5 +8,5 @@ import lombok.Data;
  */
 @Data
 public class DelReCommend {
-	private String id;
+	private String reid;
 }

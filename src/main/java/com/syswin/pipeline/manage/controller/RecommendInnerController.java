@@ -66,7 +66,7 @@ public class RecommendInnerController {
 					value = "删除推荐出版社"
 	)
 	public ResponseEntity publisherDelete(@RequestBody DelReCommend dc, HttpServletRequest request) {
-		piperRecommendPublisherService.delete(dc.getId());
+		piperRecommendPublisherService.delete(dc.getReid());
 
 		return new ResponseEntity();
 	}
@@ -104,7 +104,7 @@ public class RecommendInnerController {
 	)
 	public ResponseEntity contentDelete(@RequestBody DelReCommend dc, HttpServletRequest request) {
 		String manageId = headerService.getUserId(request);
-		piperRecommendContentService.delete(manageId, dc.getId());
+		piperRecommendContentService.delete(manageId, dc.getReid());
 
 		return new ResponseEntity();
 	}

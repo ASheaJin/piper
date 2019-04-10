@@ -50,17 +50,23 @@ public class AdminInnerController {
 	@ApiOperation(
 					value = "获取出版社管理类型"
 	)
-	public ResponseEntity getPiperType() {
+	public ResponseEntity getPiperType(HttpServletRequest request) {
+
+		String manageId = headerService.getUserId(request);
+
 		List list = new ArrayList();
 		//目前支持两种 组织，京交会，其他的都可以创建
 		Map<String, Object> map = new HashMap();
 		map.put("code", PublisherTypeEnums.organize.getCode());
 		map.put("name", PublisherTypeEnums.organize.getName());
-		Map<String, Object> map1 = new HashMap();
-		map1.put("code", PublisherTypeEnums.ciftis.getCode());
-		map1.put("name", PublisherTypeEnums.ciftis.getName());
 		list.add(map);
-		list.add(map1);
+		//非超级管理员不能创京交会的
+		if (StringUtils.isNullOrEmpty(manageId)) {
+			Map<String, Object> map1 = new HashMap();
+			map1.put("code", PublisherTypeEnums.ciftis.getCode());
+			map1.put("name", PublisherTypeEnums.ciftis.getName());
+			list.add(map1);
+		}
 
 		return new ResponseEntity(list);
 	}
