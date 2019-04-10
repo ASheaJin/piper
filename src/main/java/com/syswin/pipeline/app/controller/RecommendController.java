@@ -1,6 +1,7 @@
 package com.syswin.pipeline.app.controller;
 
 import com.github.pagehelper.PageInfo;
+import com.syswin.pipeline.app.dto.RecomListParam;
 import com.syswin.pipeline.app.dto.RecommendInput;
 import com.syswin.pipeline.db.model.ReCommendContent;
 import com.syswin.pipeline.db.model.ReCommendPublisher;
@@ -39,12 +40,11 @@ public class RecommendController {
 	@ApiOperation(
 					value = "获取出版社列表"
 	)
-	public ResponseEntity publisherList(@RequestBody RecommendInput ri) {
+	public ResponseEntity publisherList(@RequestBody RecomListParam ri) {
 		Integer pageNo = StringUtils.isNullOrEmpty(ri.getPageNo()) ? 1 : Integer.parseInt(ri.getPageNo());
 		Integer pageSize = StringUtils.isNullOrEmpty(ri.getPageSize()) ? 20 : Integer.parseInt(ri.getPageSize());
 
-
-		PageInfo<ReCommendContent> pageInfo = piperRecommendContentService.list(null, pageNo, pageSize);
+		PageInfo<ReCommendContent> pageInfo = piperRecommendPublisherService.listApi(ri.getUserId(),pageNo, pageSize);
 		//TODO 处理京交会
 		return new ResponseEntity(pageInfo);
 	}

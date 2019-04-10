@@ -46,7 +46,7 @@ public class RecommendInnerController {
 		Integer pageSize = StringUtils.isNullOrEmpty(ri.getPageSize()) ? 20 : Integer.parseInt(ri.getPageSize());
 
 		String manageId = headerService.getUserId(request);
-		PageInfo<ReCommendPublisher> pageInfo = piperRecommendPublisherService.list(manageId, pageNo, pageSize);
+		PageInfo<ReCommendPublisher> pageInfo = piperRecommendPublisherService.listManage(manageId, pageNo, pageSize);
 
 		return new ResponseEntity(pageInfo);
 	}
