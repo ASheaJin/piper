@@ -2,6 +2,7 @@ package com.syswin.pipeline.service;
 
 import com.github.pagehelper.PageInfo;
 import com.syswin.pipeline.manage.dto.output.AdminManageVO;
+import com.syswin.pipeline.utils.StringUtils;
 import com.syswin.sub.api.AdminService;
 import com.syswin.sub.api.db.model.Admin;
 import com.syswin.sub.api.enums.PublisherTypeEnums;
@@ -30,9 +31,12 @@ public class PiperAdminService {
 		adminService.delete(adminUserId, userId, PublisherTypeEnums.organize);
 	}
 
-	public PageInfo list(Integer pageNo, Integer pageSize, String keyword) {
-
-		List<Admin> adminList = adminService.list(keyword, null, pageNo, pageSize);
+	public PageInfo list(String keyword, String piperType, Integer pageNo, Integer pageSize) {
+		PublisherTypeEnums pType = null;
+		if (!StringUtils.isNullOrEmpty(piperType) && !"0".equals(piperType)) {
+			pType = EnumsUtil.getPubliserTypeEnums(Integer.parseInt(piperType));
+		}
+		List<Admin> adminList = adminService.list(keyword, pType, pageNo, pageSize);
 //		List<AdminManageVO> adminMangeVOList = BeanConvertUtil.mapList(adminList, AdminManageVO.class);
 		List<AdminManageVO> adminMangeVOList = new ArrayList<>();
 		for (Admin ad : adminList) {

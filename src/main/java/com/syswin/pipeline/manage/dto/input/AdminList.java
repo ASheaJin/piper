@@ -8,7 +8,10 @@ import lombok.Data;
  */
 @Data
 public class AdminList {
+
 	private String keyword;
+	private String piperType;
 	private String pageNo;
 	private String pageSize;
+
 }

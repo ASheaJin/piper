@@ -43,7 +43,7 @@ public class AdminInnerController {
 		Integer pageNo = StringUtils.isNullOrEmpty(adminList.getPageNo()) ? 1 : Integer.parseInt(adminList.getPageNo());
 		Integer pageSize = StringUtils.isNullOrEmpty(adminList.getPageSize()) ? 20 : Integer.parseInt(adminList.getPageSize());
 
-		return new ResponseEntity(piperAdminService.list(pageNo, pageSize, adminList.getKeyword()));
+		return new ResponseEntity(piperAdminService.list(adminList.getKeyword(),adminList.getPiperType(),pageNo, pageSize ));
 	}
 
 	@PostMapping("/getPiperType")
