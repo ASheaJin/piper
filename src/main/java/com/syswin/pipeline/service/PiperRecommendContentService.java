@@ -125,7 +125,7 @@ public class PiperRecommendContentService {
 		}
 		ReCommendContent reCommendContent = reCommendContentRepository.selectById(id);
 		if (reCommendContent == null) {
-			throw new BusinessException("该内容不存在推荐");
+			throw new BusinessException("该内容没有被推荐");
 		}
 		reCommendContentRepository.delete(id);
 	}

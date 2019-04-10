@@ -68,11 +68,11 @@ public class PiperRecommendPublisherService {
 
 	public void delete(String id) {
 		if (StringUtils.isNullOrEmpty(id)) {
-			throw new BusinessException("用户或出版社Id不能为空");
+			throw new BusinessException("该推荐Id不能为空");
 		}
 		ReCommendPublisher reCommendPublisher = reCommendPublisherRepository.selectById(id);
 		if (reCommendPublisher == null) {
-			throw new BusinessException("该出版社不存在推荐");
+			throw new BusinessException("该出版社没有被推荐");
 		}
 
 		reCommendPublisherRepository.delete(id);
