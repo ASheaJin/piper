@@ -124,6 +124,7 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 		content.setStatus(1);
 		content.setContentId(String.valueOf(contentId));
 		content.setContent(txt);
+		content.setBodyType(body_type);
 		content.setPublisherId(publisher.getPublisherId());
 
 		subContentService.addContent(content);
