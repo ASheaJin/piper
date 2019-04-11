@@ -1,13 +1,11 @@
 package com.syswin.pipeline.utils;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
 /**
  * 用于附件上传时生成有时间限制的token，以及判断token是否有效的方法
@@ -19,7 +17,21 @@ public class LanguageChange {
 	@Autowired
 	private MessageSource messageSource;
 
-	public String getValue(String key, Locale locale) {
+
+	public String getValue(String key, @Nullable Object[] args, String lang) {
+		Locale locale = Locale.SIMPLIFIED_CHINESE;
+		if ("en".equals(lang)) {
+			locale = Locale.US;
+		}
+		String value = messageSource.getMessage(key, args, locale);//获取转换后的字符。需要在messages.properties,messages_enUS.properties,messages.properties 中配置。
+		return value;
+	}
+
+	public String getValue(String key, String lang) {
+		Locale locale = Locale.SIMPLIFIED_CHINESE;
+		if ("en".equals(lang)) {
+			locale = Locale.US;
+		}
 		String value = messageSource.getMessage(key, null, locale);//获取转换后的字符。需要在messages.properties,messages_enUS.properties,messages.properties 中配置。
 		return value;
 	}

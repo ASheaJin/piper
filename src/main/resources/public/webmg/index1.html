@@ -11,14 +11,16 @@
 <br/>
 接收人邮箱<input type="text" id='talkerTmail' / >
 <br/>
-<input type="button" onclick='submit()' value="提交1">
-<input type="button" onclick='submit1()' value="提交2">
-<script src="./toongine.js"></script>
+<input type="button" onclick='submit()' value="跳转">
+<!--<input type="button" onclick='submit1()' value="提交2">-->
+<!--<script src="static/toongine.js"></script>-->
+<script src="static/toongine1.0.8.js"></script>
 <script type="text/javascript">
 
     function submit() {
         let myTmailVal = 'luohongzhou1@syswin.com';
         let talkerTmaillVal = document.getElementById("talkerTmail").value;
+        // let talkerTmaillVal = document.getElementById("talkerTmail").value;
         alert("talkerTmail" + talkerTmaillVal)
 
         toongine.tcTemail.chat.createSession({ // eslint-disable-line
