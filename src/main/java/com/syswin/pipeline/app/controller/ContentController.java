@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -73,7 +74,36 @@ public class ContentController {
         ContentEntity contentEntity = JacksonJsonUtil.fromJson(contentOut.getAllcontent(), ContentEntity.class);
         contentEntity.setPublisherId(contentOut.getPublisherId());
         contentEntity.setPublishTime(contentOut.getCreateTime());
+
+        //出版社名字
+        Publisher publisher = publisherService.getPubLisherById(contentOut.getPublisherId());
+        if (publisher != null) {
+            contentEntity.setPublisherName(publisher.getName());
+        }
+
         return new ResponseEntity(contentEntity);
+    }
+
+
+    /**
+     * 按ContentId重新解析内容
+     *
+     * @param input
+     * @return
+     */
+    @PostMapping("/c")
+    @ApiOperation(hidden = true, value = "按ContentId重新解析内容")
+    public ResponseEntity c(@RequestBody ContentIdInput input) {
+        List<String> l = new ArrayList();
+        l.add(input.getContentId());
+        List<Content> contentList = contentService.getContentsByCids(l);
+        for (Content content : contentList) {
+            contentHandleJobManager.addJob(content.getPublisherId(), content.getContentId(), content.getBodyType(),
+                    content.getContent(),
+                    content.getCreateTime());
+        }
+
+        return new ResponseEntity();
     }
 
 
@@ -85,7 +115,7 @@ public class ContentController {
      */
     @PostMapping("/p")
     @ApiOperation(hidden = true, value = "按publisherId重新解析内容")
-    public ResponseEntity parseContent(@RequestBody ContentListParam input) {
+    public ResponseEntity p(@RequestBody ContentListParam input) {
 
         List<Content> contentList = contentService.getMyContentsbyPid(input.getPublisherId(), 1, 10000);
         for (Content content : contentList) {
@@ -97,14 +127,15 @@ public class ContentController {
         return new ResponseEntity();
     }
 
+
     /**
      * 重新解析所有内容
      *
      * @return
      */
     @PostMapping("/pa")
-    @ApiOperation(hidden = true, value = "按publisherId重新解析所有内容")
-    public ResponseEntity parseAllContent() {
+    @ApiOperation(hidden = true, value = "重新解析所有内容")
+    public ResponseEntity pa() {
         List<Publisher> publishers = publisherService.list(1, 10000, null, null, null);
         for (Publisher publisher : publishers) {
             List<Content> contentList = contentService.getMyContentsbyPid(publisher.getPublisherId(), 1, 10000);

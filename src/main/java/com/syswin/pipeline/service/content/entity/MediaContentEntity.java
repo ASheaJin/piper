@@ -39,6 +39,10 @@ public class MediaContentEntity {
     private String url;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ApiModelProperty(value = "视频的首帧图片url")
+    private String thumbnail;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     @ApiModelProperty(hidden = true)
     private String pwd;
 
