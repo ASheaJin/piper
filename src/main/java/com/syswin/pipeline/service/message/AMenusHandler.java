@@ -123,7 +123,7 @@ public class AMenusHandler implements EventHandler<MessageEvent> {
 	private List<Map<String, Object>> appList(String userId) {
 		//TODO 处理京交会
 		List<Map<String, Object>> appList = new ArrayList<>();
-
+		appList.add(createApp("", "测试邮箱跳转", URL_PIPER + "/webmg/index1"));
 		//既是组织管理者，又是个人出版社管理者
 		if (PermissionEnums.OrgPerson.name.equals(myRole)) {
 			appList.add(createApp("", "我的个人出版社", URL_PIPER + H5_PUBLISHER_MANAGE + "?userId=" + userId));

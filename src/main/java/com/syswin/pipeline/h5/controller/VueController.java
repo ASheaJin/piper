@@ -16,32 +16,37 @@ import java.util.regex.Pattern;
 @Controller
 public class VueController {
 
-    @RequestMapping(value = {
-            "/web/**"
-    })
-    public String web(HttpServletRequest req, HttpServletResponse resp)throws IOException{
-        //如果匹配到了静态文件
-        if (!parnStatic(req.getRequestURL().toString())) {
-            resp.sendRedirect(req.getRequestURL().toString().replace("/web/", "/"));
-            return null;
-        }
+	@RequestMapping(value = {
+					"/web/**"
+	})
+	public String web(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+		//如果匹配到了静态文件
+		if (!parnStatic(req.getRequestURL().toString())) {
+			resp.sendRedirect(req.getRequestURL().toString().replace("/web/", "/"));
+			return null;
+		}
 
-        return "forward:/web.html";
-    }
+		return "forward:/web.html";
+	}
 
 
-    @RequestMapping(value = {
-            "/webmg/**"
-    })
-    public String webmg(HttpServletRequest req, HttpServletResponse resp)throws IOException{
-        //如果匹配到了静态文件
-        if (!parnStatic(req.getRequestURL().toString())) {
-            resp.sendRedirect(req.getRequestURL().toString().replace("/webmg/", "/"));
-            return null;
-        }
+	@RequestMapping(value = {
+					"/webmg/**"
+	})
+	public String webmg(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+		//如果匹配到了静态文件
+		if (!parnStatic(req.getRequestURL().toString())) {
+			resp.sendRedirect(req.getRequestURL().toString().replace("/webmg/", "/"));
+			return null;
+		}
 
-        return "forward:/webmg.html";
-    }
+		if (req.getRequestURL().toString().contains("/webmg/index1")) {
+
+			return "forward:/index1.html";
+		}
+
+		return "forward:/webmg.html";
+	}
 //    @RequestMapping(value={
 //            "/web/static/**"
 //    })
@@ -49,12 +54,12 @@ public class VueController {
 //        resp.sendRedirect(req.getRequestURL().toString().replace("/web/", "/"));
 //    }
 
-    public boolean parnStatic(String url) {
-        String str = "https://application.t.email/bbs/web/home?userId=luohongzhou1@syswin.com";
-        String pattern = "^((?!/static/).)*$";
+	public boolean parnStatic(String url) {
+		String str = "https://application.t.email/bbs/web/home?userId=luohongzhou1@syswin.com";
+		String pattern = "^((?!/static/).)*$";
 
-        Pattern r = Pattern.compile(pattern);
-        Matcher m = r.matcher(url);
-        return m.matches();
-    }
+		Pattern r = Pattern.compile(pattern);
+		Matcher m = r.matcher(url);
+		return m.matches();
+	}
 }
