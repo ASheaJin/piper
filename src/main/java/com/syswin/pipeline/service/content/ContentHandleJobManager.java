@@ -95,7 +95,7 @@ public class ContentHandleJobManager {
                 if ((BodyTypeEnums.VOICE.getType().equals(media.getBodyType())
                     || BodyTypeEnums.PIC.getType().equals(media.getBodyType())
                     || BodyTypeEnums.VIDEO.getType().equals(media.getBodyType())
-                    )  && !StringUtils.isEmpty(url)) {
+                    )  && StringUtils.isEmpty(url)) {
                     url = media.getUrl();
                     mediaBodyType = media.getBodyType();
                     listContent.setUrl(url);
@@ -243,6 +243,26 @@ public class ContentHandleJobManager {
         }
 
         return null;
+    }
+
+    /**
+     * 处理媒体相关的内容：
+     * 1 amr转成mp3
+     * 2 mp4文件获取首帧
+     *
+     * @param content
+     */
+    protected void convertMedia(MediaContentEntity content, String filePath) {
+        if (content == null) {
+            return;
+        }
+        Integer bodyType = content.getBodyType();
+
+        if (BodyTypeEnums.VOICE.getType().equals(bodyType)) {
+            //amr
+
+        }
+
     }
 
     public FileManager getFileManager() {
