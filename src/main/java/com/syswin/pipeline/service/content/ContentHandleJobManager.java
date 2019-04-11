@@ -242,9 +242,11 @@ public class ContentHandleJobManager {
             return BodyTypeEnums.FILE.getType();
         } else if (jsonObject.get("time") != null && jsonObject.get("url") != null && jsonObject.get("w") == null){
             return BodyTypeEnums.VOICE.getType();
-        } else if (jsonObject.get("time") != null && jsonObject.get("url") != null && jsonObject.get("w") != null){
+        } else if (".mp4".equals(jsonObject.get("suffix")) ||
+                (jsonObject.get("time") != null && jsonObject.get("url") != null && jsonObject.get("w") != null)){
             return BodyTypeEnums.VIDEO.getType();
-        } else if (jsonObject.get("time") == null && jsonObject.get("url") != null && jsonObject.get("w") != null){
+        } else if (".png".equals(jsonObject.get("suffix")) || ".jpeg".equals(jsonObject.get("suffix"))  || ".jpg".equals(jsonObject.get("suffix")) ||
+                (jsonObject.get("time") == null && jsonObject.get("url") != null && jsonObject.get("w") != null)){
             return BodyTypeEnums.PIC.getType();
         }
 
