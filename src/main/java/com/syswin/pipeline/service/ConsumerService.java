@@ -47,7 +47,7 @@ public class ConsumerService {
 			consumer.setPtemail(header.getSender());
 			consumer.setUserId(header.getReceiver());
 			consumer.setRole(myRole);
-			consumerRepository.insert(consumer);
+			consumerRepository.insertSelective(consumer);
 		}
 
 		return String.valueOf(Integer.parseInt(version) + 1);
