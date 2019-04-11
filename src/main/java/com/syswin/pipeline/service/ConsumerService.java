@@ -63,7 +63,7 @@ public class ConsumerService {
 		ConsumerExample consumerExample = new ConsumerExample();
 		ConsumerExample.Criteria criteria = consumerExample.createCriteria();
 		criteria.andPtemailEqualTo(header.getSender()).andUserIdEqualTo(header.getReceiver());
-		consumerRepository.updateByExample(consumer, consumerExample);
+		consumerRepository.updateByExampleSelective(consumer, consumerExample);
 	}
 
 	/**
