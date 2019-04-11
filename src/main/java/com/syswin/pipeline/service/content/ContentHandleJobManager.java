@@ -74,6 +74,7 @@ public class ContentHandleJobManager {
             return null;
         }
         ContentEntity listContent = BeanConvertUtil.map(contentEntity, ContentEntity.class);
+        listContent.setTitle(limitIntro(listContent.getText()));
         if (BodyTypeEnums.TEXT.getType().equals(listContent.getBodyType()) ) {
             listContent.setText(limitIntro(listContent.getText()));
         }
