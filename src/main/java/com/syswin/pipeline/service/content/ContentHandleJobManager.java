@@ -74,6 +74,7 @@ public class ContentHandleJobManager {
             return null;
         }
         ContentEntity listContent = BeanConvertUtil.map(contentEntity, ContentEntity.class);
+        listContent.setTitle(limitIntro(listContent.getTitle(), 20));
         if (BodyTypeEnums.TEXT.getType().equals(listContent.getBodyType()) ) {
             listContent.setText(limitIntro(listContent.getText()));
         }
@@ -112,21 +113,25 @@ public class ContentHandleJobManager {
     }
 
     private String limitIntro(String intro) {
+        return limitIntro(intro, INTRO_MAX_LENGTH);
+    }
+
+    private String limitIntro(String intro, int limitLength) {
         if (StringUtils.isEmpty(intro)) {
             return null;
         }
 
         //截取摘要
-        if (INTRO_MAX_LENGTH >= intro.length()) {
+        if (limitLength >= intro.length()) {
             return intro;
         } else {
-            String introText = intro.substring(0, INTRO_MAX_LENGTH);
+            String introText = intro.substring(0, limitLength);
             int byteLen = introText.getBytes(StandardCharsets.UTF_8).length;
             //防止全英文字符 不够长
-            if (byteLen < (INTRO_MAX_LENGTH + INTRO_MAX_LENGTH / 4)) {
-                introText = intro.substring(0, INTRO_MAX_LENGTH + INTRO_MAX_LENGTH / 2);
-            } else if (byteLen < (INTRO_MAX_LENGTH + INTRO_MAX_LENGTH / 2)) {
-                introText = intro.substring(0, INTRO_MAX_LENGTH +INTRO_MAX_LENGTH / 4);
+            if (byteLen < (limitLength + limitLength / 4)) {
+                introText = intro.substring(0, limitLength + limitLength / 2);
+            } else if (byteLen < (limitLength + limitLength / 2)) {
+                introText = intro.substring(0, limitLength +limitLength / 4);
             }
             return introText;
         }

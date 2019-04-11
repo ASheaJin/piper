@@ -97,13 +97,17 @@ public class ContentController {
         List<String> l = new ArrayList();
         l.add(input.getContentId());
         List<Content> contentList = contentService.getContentsByCids(l);
+        addContentsJob(contentList);
+
+        return new ResponseEntity();
+    }
+
+    private void addContentsJob(List<Content> contentList) {
         for (Content content : contentList) {
             contentHandleJobManager.addJob(content.getPublisherId(), content.getContentId(), content.getBodyType(),
                     content.getContent(),
                     content.getCreateTime());
         }
-
-        return new ResponseEntity();
     }
 
 
@@ -118,11 +122,7 @@ public class ContentController {
     public ResponseEntity p(@RequestBody ContentListParam input) {
 
         List<Content> contentList = contentService.getMyContentsbyPid(input.getPublisherId(), 1, 10000);
-        for (Content content : contentList) {
-            contentHandleJobManager.addJob(content.getPublisherId(), content.getContentId(), content.getBodyType(),
-                    content.getContent(),
-                    content.getCreateTime());
-        }
+        addContentsJob(contentList);
 
         return new ResponseEntity();
     }
@@ -139,11 +139,7 @@ public class ContentController {
         List<Publisher> publishers = publisherService.list(1, 10000, null, null, null);
         for (Publisher publisher : publishers) {
             List<Content> contentList = contentService.getMyContentsbyPid(publisher.getPublisherId(), 1, 10000);
-            for (Content content : contentList) {
-                contentHandleJobManager.addJob(content.getPublisherId(), content.getContentId(), content.getBodyType(),
-                        content.getContent(),
-                        content.getCreateTime());
-            }
+            addContentsJob(contentList);
         }
 
         return new ResponseEntity();
