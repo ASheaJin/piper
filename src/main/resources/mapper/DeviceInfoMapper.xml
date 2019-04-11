@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.syswin.pipeline.db.repository.DeviceInfoRepository">
+    <resultMap id="BaseResultMap" type="com.syswin.pipeline.db.model.DeviceInfo">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="userId" jdbcType="VARCHAR" property="userid"/>
+        <result column="language" jdbcType="VARCHAR" property="language"/>
+        <result column="platform" jdbcType="VARCHAR" property="platform"/>
+        <result column="moduleVersion" jdbcType="VARCHAR" property="moduleversion"/>
+        <result column="version" jdbcType="VARCHAR" property="version"/>
+        <result column="os_version" jdbcType="VARCHAR" property="osVersion"/>
+        <result column="appversion" jdbcType="VARCHAR" property="appversion"/>
+        <result column="build" jdbcType="VARCHAR" property="build"/>
+    </resultMap>
+    <sql id="Example_Where_Clause">
+        <where>
+            <foreach collection="oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" prefixOverrides="and" suffix=")">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="("
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Update_By_Example_Where_Clause">
+        <where>
+            <foreach collection="example.oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" prefixOverrides="and" suffix=")">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="("
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Base_Column_List">
+    id, userId, language, platform, moduleVersion, version, os_version, appversion, build
+  </sql>
+    <select id="selectByExample" parameterType="com.syswin.pipeline.db.model.DeviceInfoExample"
+            resultMap="BaseResultMap">
+        select
+        <if test="distinct">
+            distinct
+        </if>
+        'true' as QUERYID,
+        <include refid="Base_Column_List"/>
+        from device_info
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+    </select>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from device_info
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from device_info
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+    <insert id="insert" parameterType="com.syswin.pipeline.db.model.DeviceInfo">
+    insert into device_info (id, userId, language, 
+      platform, moduleVersion, version, 
+      os_version, appversion, build
+      )
+    values (#{id,jdbcType=INTEGER}, #{userid,jdbcType=VARCHAR}, #{language,jdbcType=VARCHAR}, 
+      #{platform,jdbcType=VARCHAR}, #{moduleversion,jdbcType=VARCHAR}, #{version,jdbcType=VARCHAR}, 
+      #{osVersion,jdbcType=VARCHAR}, #{appversion,jdbcType=VARCHAR}, #{build,jdbcType=VARCHAR}
+      )
+  </insert>
+    <insert id="insertSelective" parameterType="com.syswin.pipeline.db.model.DeviceInfo">
+        insert into device_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="userid != null">
+                userId,
+            </if>
+            <if test="language != null">
+                language,
+            </if>
+            <if test="platform != null">
+                platform,
+            </if>
+            <if test="moduleversion != null">
+                moduleVersion,
+            </if>
+            <if test="version != null">
+                version,
+            </if>
+            <if test="osVersion != null">
+                os_version,
+            </if>
+            <if test="appversion != null">
+                appversion,
+            </if>
+            <if test="build != null">
+                build,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="userid != null">
+                #{userid,jdbcType=VARCHAR},
+            </if>
+            <if test="language != null">
+                #{language,jdbcType=VARCHAR},
+            </if>
+            <if test="platform != null">
+                #{platform,jdbcType=VARCHAR},
+            </if>
+            <if test="moduleversion != null">
+                #{moduleversion,jdbcType=VARCHAR},
+            </if>
+            <if test="version != null">
+                #{version,jdbcType=VARCHAR},
+            </if>
+            <if test="osVersion != null">
+                #{osVersion,jdbcType=VARCHAR},
+            </if>
+            <if test="appversion != null">
+                #{appversion,jdbcType=VARCHAR},
+            </if>
+            <if test="build != null">
+                #{build,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <select id="countByExample" parameterType="com.syswin.pipeline.db.model.DeviceInfoExample"
+            resultType="java.lang.Long">
+        select count(*) from device_info
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </select>
+    <update id="updateByExampleSelective" parameterType="map">
+        update device_info
+        <set>
+            <if test="record.id != null">
+                id = #{record.id,jdbcType=INTEGER},
+            </if>
+            <if test="record.userid != null">
+                userId = #{record.userid,jdbcType=VARCHAR},
+            </if>
+            <if test="record.language != null">
+                language = #{record.language,jdbcType=VARCHAR},
+            </if>
+            <if test="record.platform != null">
+                platform = #{record.platform,jdbcType=VARCHAR},
+            </if>
+            <if test="record.moduleversion != null">
+                moduleVersion = #{record.moduleversion,jdbcType=VARCHAR},
+            </if>
+            <if test="record.version != null">
+                version = #{record.version,jdbcType=VARCHAR},
+            </if>
+            <if test="record.osVersion != null">
+                os_version = #{record.osVersion,jdbcType=VARCHAR},
+            </if>
+            <if test="record.appversion != null">
+                appversion = #{record.appversion,jdbcType=VARCHAR},
+            </if>
+            <if test="record.build != null">
+                build = #{record.build,jdbcType=VARCHAR},
+            </if>
+        </set>
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByExample" parameterType="map">
+        update device_info
+        set id = #{record.id,jdbcType=INTEGER},
+        userId = #{record.userid,jdbcType=VARCHAR},
+        language = #{record.language,jdbcType=VARCHAR},
+        platform = #{record.platform,jdbcType=VARCHAR},
+        moduleVersion = #{record.moduleversion,jdbcType=VARCHAR},
+        version = #{record.version,jdbcType=VARCHAR},
+        os_version = #{record.osVersion,jdbcType=VARCHAR},
+        appversion = #{record.appversion,jdbcType=VARCHAR},
+        build = #{record.build,jdbcType=VARCHAR}
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByPrimaryKeySelective" parameterType="com.syswin.pipeline.db.model.DeviceInfo">
+        update device_info
+        <set>
+            <if test="userid != null">
+                userId = #{userid,jdbcType=VARCHAR},
+            </if>
+            <if test="language != null">
+                language = #{language,jdbcType=VARCHAR},
+            </if>
+            <if test="platform != null">
+                platform = #{platform,jdbcType=VARCHAR},
+            </if>
+            <if test="moduleversion != null">
+                moduleVersion = #{moduleversion,jdbcType=VARCHAR},
+            </if>
+            <if test="version != null">
+                version = #{version,jdbcType=VARCHAR},
+            </if>
+            <if test="osVersion != null">
+                os_version = #{osVersion,jdbcType=VARCHAR},
+            </if>
+            <if test="appversion != null">
+                appversion = #{appversion,jdbcType=VARCHAR},
+            </if>
+            <if test="build != null">
+                build = #{build,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.syswin.pipeline.db.model.DeviceInfo">
+    update device_info
+    set userId = #{userid,jdbcType=VARCHAR},
+      language = #{language,jdbcType=VARCHAR},
+      platform = #{platform,jdbcType=VARCHAR},
+      moduleVersion = #{moduleversion,jdbcType=VARCHAR},
+      version = #{version,jdbcType=VARCHAR},
+      os_version = #{osVersion,jdbcType=VARCHAR},
+      appversion = #{appversion,jdbcType=VARCHAR},
+      build = #{build,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

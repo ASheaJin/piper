@@ -1,28 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-	<title>Document</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
 </head>
 <body>
-	我的邮箱<input type="text" id='myTmail' / >
-	接收人邮箱<input type="text" id='talkerTmail' / >
-	<input type="button" onclick='submit()' value="提交">
-	<script src="./toongine.js"></script>
-	<script>
-		function submit() {
-			let myTmailVal = document.getElementById("myTmail").value;
-			let talkerTmaillVal = document.getElementById("talkerTmail").value;
-			toongine.tcTemail.chat.createSession({ // eslint-disable-line
-				params: {
-					sessionType: '0',
-					myTmail: myTmailVal,
-					talkerTmail: talkerTmaillVal
-				}
-			})
-		}
-	</script>
+<!--我的邮箱<input type="text" id='myTmail' / >-->
+<br/>
+接收人邮箱<input type="text" id='talkerTmail' / >
+<br/>
+<input type="button" onclick='submit()' value="提交1">
+<input type="button" onclick='submit1()' value="提交2">
+<script src="./toongine.js"></script>
+<script type="text/javascript">
+
+    function submit() {
+        let myTmailVal = 'luohongzhou1@syswin.com';
+        let talkerTmaillVal = document.getElementById("talkerTmail").value;
+        alert("talkerTmail" + talkerTmaillVal)
+
+        toongine.tcTemail.chat.createSession({ // eslint-disable-line
+            params: {
+                sessionType: '0',
+                myTmail: myTmailVal,
+                talkerTmail: talkerTmaillVal
+            },
+            callback: function (result) {
+                alert("ok")
+            }
+        })
+    }
+
+    function submit1() {
+        var myTmailVal = 'luohongzhou1@syswin.com';
+        var talkerTmaillVal = document.getElementById("talkerTmail").value;
+        let params = {
+            sessionType: '0',
+            myTmail: myTmailVal,
+            talkerTmail: talkerTmaillVal
+        }
+        window.location.href = 'temail://chat?params=' + JSON.stringify(params)
+    }
+</script>
 </body>
 </html>

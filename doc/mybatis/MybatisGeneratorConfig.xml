@@ -20,7 +20,7 @@
         <javaClientGenerator type="XMLMAPPER" targetPackage="com.syswin.pipeline.db.mapper"  targetProject="src">
             <property name="enableSubPackages" value="true" />
         </javaClientGenerator>
-        <table schema="pipeline" tableName="sys_role" domainObjectName="Role"
+        <table schema="pipeline" tableName="device_info" domainObjectName="DeviceInfo"
                enableCountByExample="true"
                enableDeleteByExample="false" enableSelectByExample="true"
                selectByExampleQueryId="true"></table>
