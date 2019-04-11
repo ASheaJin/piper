@@ -1,0 +1,7 @@
+登录到服务器
+1 创建目录
+    mkdir /opt/ffmpeg
+2 复制ffmpeg文件到 /opt/ffmpeg 目录下
+3 修改权限
+  cd /opt/ffmpeg
+  chmod 755 ffmpeg

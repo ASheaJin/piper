@@ -9,6 +9,8 @@ import com.syswin.pipeline.service.content.entity.MediaContentEntity;
 import com.syswin.pipeline.utils.JacksonJsonUtil;
 import com.syswin.sub.api.ContentOutService;
 import com.syswin.sub.api.utils.BeanConvertUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -27,6 +29,7 @@ import java.util.concurrent.Executors;
  */
 @Component
 public class ContentHandleJobManager {
+    private final static Logger logger = LoggerFactory.getLogger(ContentHandleJobManager.class);
 
     private static final int INTRO_MAX_LENGTH = 100;
 
@@ -99,6 +102,7 @@ public class ContentHandleJobManager {
                     url = media.getUrl();
                     mediaBodyType = media.getBodyType();
                     listContent.setUrl(url);
+                    listContent.setThumbnail(media.getThumbnail());
                     listContent.setMediaBodyType(mediaBodyType);
                     continue;
                 }
@@ -159,6 +163,7 @@ public class ContentHandleJobManager {
             }
             allContent.setUrl(downloadResult.getDownloadFile());
 //            allContent.setFilePath(downloadResult.getStoreFile());
+            convertMedia(allContent, downloadResult.getStoreFile());
         }
 
         if (BodyTypeEnums.MAIL.getType().equals(bodyType)) {
@@ -185,6 +190,7 @@ public class ContentHandleJobManager {
                         continue;
                     }
                     subContent.setUrl(downloadResult.getDownloadFile());
+                    convertMedia(subContent, downloadResult.getStoreFile());
                 }
                 subContent.setPwd(null);
                 allContent.getContentArray().add(subContent);
@@ -259,10 +265,24 @@ public class ContentHandleJobManager {
         Integer bodyType = content.getBodyType();
 
         if (BodyTypeEnums.VOICE.getType().equals(bodyType)) {
-            //amr
-
+            //amr to mp3
+            try {
+                String format = "mp3";
+                String mp3 = MediaUtil.amrToMp3(filePath, format);
+                content.setUrl(MediaUtil.targetPath(content.getUrl(), format));
+            } catch (Exception e) {
+                logger.error("mp3转换出错 " + filePath, e);
+            }
+        } else if (BodyTypeEnums.VIDEO.getType().equals(bodyType)) {
+            //mp4文件获取首帧
+            try {
+                String format = "png";
+                MediaUtil.thumbnail(filePath, format);
+                content.setThumbnail(MediaUtil.targetPath(content.getUrl(), format));
+            } catch (Exception e) {
+                logger.error("mp4获取首帧出错 " + filePath, e);
+            }
         }
-
     }
 
     public FileManager getFileManager() {

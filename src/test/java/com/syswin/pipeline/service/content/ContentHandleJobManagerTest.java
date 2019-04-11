@@ -5,6 +5,8 @@ import com.opencsv.CSVReaderBuilder;
 import com.opencsv.RFC4180Parser;
 import com.opencsv.RFC4180ParserBuilder;
 import com.syswin.pipeline.service.content.entity.ContentEntity;
+import com.syswin.sub.api.ContentService;
+import com.syswin.sub.api.db.model.Content;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,8 @@ import java.util.List;
 public class ContentHandleJobManagerTest {
 
     @Autowired
+    private ContentService contentService;
+    @Autowired
     private ContentHandleJobManager contentHandleJobManager;
 //    {
 //
@@ -35,6 +39,51 @@ public class ContentHandleJobManagerTest {
 //
 //        contentHandleJobManager.setFileManager(fileManager);
 //    }
+
+    @Test
+    public void addOneData() {
+        List<String> l = new ArrayList();
+        l.add("35164886651109376");
+//        l.add("35164882451824640");
+//        l.add("35364496455237632");
+        List<Content> contentList = contentService.getContentsByCids(l);
+
+        for (Content content : contentList) {
+            contentHandleJobManager.addJob(content.getPublisherId(), content.getContentId(), content.getBodyType(),
+                    content.getContent(),
+                    content.getCreateTime());
+        }
+
+        while(true) {
+            try {
+                Thread.sleep(10000);
+                System.out.println("...");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Test
+    public void addDataByPublisherId() {
+        String publisherId = "34890954153918464";
+
+        List<Content> contentList = contentService.getMyContentsbyPid(publisherId, 1, 10000);
+        for (Content content : contentList) {
+            contentHandleJobManager.addJob(content.getPublisherId(), content.getContentId(), content.getBodyType(),
+                    content.getContent(),
+                    content.getCreateTime());
+        }
+
+        while(true) {
+            try {
+                Thread.sleep(10000);
+                System.out.println("...");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     @Test
     public void addData() {
