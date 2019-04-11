@@ -82,6 +82,8 @@ public class PiperRecommendPublisherService {
 		List<String> pids = null;
 		PageHelper.startPage(pageNo, pageSize);
 		reList = reCommendPublisherRepository.select();
+		PageInfo pageInfo = new PageInfo(reList);
+
 		pids = reList.stream().map((p) -> p.getPublisherId()).collect(Collectors.toList());
 		List<Publisher> publisherList = null;
 		List<PublisherManageVO> pmVOList = new ArrayList<>();
@@ -106,7 +108,7 @@ public class PiperRecommendPublisherService {
 			}
 		}
 
-		PageInfo pageInfo = new PageInfo(reList);
+
 		pageInfo.setList(pmVOList);
 		return pageInfo;
 	}
