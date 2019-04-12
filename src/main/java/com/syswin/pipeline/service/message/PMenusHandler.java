@@ -4,11 +4,14 @@ import com.lmax.disruptor.EventHandler;
 import com.syswin.pipeline.db.repository.ConsumerRepository;
 import com.syswin.pipeline.enums.PermissionEnums;
 import com.syswin.pipeline.service.ConsumerService;
+import com.syswin.pipeline.service.DeviceInfoService;
 import com.syswin.pipeline.service.bussiness.impl.SendMessegeService;
 import com.syswin.pipeline.service.ps.ChatMsg;
+import com.syswin.pipeline.service.ps.Env;
 import com.syswin.pipeline.service.ps.PSClientService;
 import com.syswin.pipeline.service.ps.util.CollectionUtil;
 import com.syswin.pipeline.service.ps.util.FastJsonUtil;
+import com.syswin.pipeline.utils.JacksonJsonUtil;
 import com.syswin.sub.api.PublisherService;
 import com.syswin.sub.api.SubscriptionService;
 import com.syswin.sub.api.db.model.Publisher;
@@ -69,7 +72,8 @@ public class PMenusHandler implements EventHandler<MessageEvent> {
 	 * 输入板菜单的 bodyType
 	 */
 	public static final Integer GET_MESSAGE_INFO_FLAG = 999;
-
+	@Autowired
+	private DeviceInfoService deviceInfoService;
 
 	@Override
 	public void onEvent(MessageEvent event, long sequence, boolean endOfBatch) {
@@ -87,17 +91,27 @@ public class PMenusHandler implements EventHandler<MessageEvent> {
 			return;
 		}
 		String version = PermissionEnums.Guest.name;
+		Env appEnv = null;
 		try {
 			String content = event.getChatMsg().getContent();
 			version = FastJsonUtil.parseObject(content).getString("version");
-
+			String envValue = FastJsonUtil.parseObject(content).getString("env");
+			appEnv = JacksonJsonUtil.fromJson(envValue, Env.class);
 		} catch (Exception e) {
 			logger.info("处理消息中的version字段失败", e);
 		}
 
 		myRole = consumerService.getPiperMenuRole(header.getReceiver(), header.getSender());
 		String myVersion = consumerService.getUserVersion(header, version, myRole);
-		if (version.equals(myVersion)) {
+
+		String beforeLang = deviceInfoService.getLang(header.getReceiver());
+		String appValue = "zh";
+		//先更新数据库，在判断中英文是否一致
+		if (appEnv != null) {
+			appValue = deviceInfoService.insertOrupdate(header.getReceiver(), appEnv);
+		}
+		//判断版本是否一致 并且语言是否一致
+		if (version.equals(myVersion) && appValue.equals(beforeLang)) {
 			//版本号相同，不做加载
 			return;
 		}

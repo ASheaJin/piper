@@ -4,10 +4,7 @@ import com.syswin.pipeline.db.model.DeviceInfo;
 import com.syswin.pipeline.db.model.DeviceInfoExample;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
-import org.springframework.stereotype.Repository;
 
-
-@Repository
 public interface DeviceInfoRepository {
     long countByExample(DeviceInfoExample example);
 

@@ -2,6 +2,8 @@ package com.syswin.pipeline.manage.service;
 
 import com.syswin.pipeline.db.repository.MenuRepository;
 import com.syswin.pipeline.service.DeviceInfoService;
+import com.syswin.pipeline.service.ps.Env;
+import com.syswin.pipeline.utils.JacksonJsonUtil;
 import com.syswin.pipeline.utils.LanguageChange;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,7 +30,11 @@ public class UserServiceTest {
 	public void list() {
 //		menuRepository.selectParentIds();
 //		System.out.println(userService.list(1, 1));
-//		System.out.println(deviceInfoService.insertOrupdate("luo", "en", null, null, null));
+		String envValue = "{\"language\":\"zh\",\"platform\":\"android\",\"moduleVersion\":\"1.0.1\",\"os_version\":25,\"version\":\"1.2.0P\",\"build\":\"1904030921\"}";
+		Env appEnv = JacksonJsonUtil.fromJson(envValue, Env.class);
+
+
+		System.out.println(deviceInfoService.insertOrupdate("luo", appEnv));
 		System.out.println(deviceInfoService.getLang("luo"));
 
 		System.out.println(deviceInfoService.getLang("luo"));

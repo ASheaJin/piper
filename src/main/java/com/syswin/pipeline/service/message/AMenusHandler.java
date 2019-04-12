@@ -1,13 +1,18 @@
 package com.syswin.pipeline.service.message;
 
 import com.lmax.disruptor.EventHandler;
+import com.syswin.pipeline.db.model.DeviceInfo;
 import com.syswin.pipeline.enums.PermissionEnums;
 import com.syswin.pipeline.service.ConsumerService;
+import com.syswin.pipeline.service.DeviceInfoService;
 import com.syswin.pipeline.service.bussiness.impl.SendMessegeService;
 import com.syswin.pipeline.service.ps.ChatMsg;
+import com.syswin.pipeline.service.ps.Env;
 import com.syswin.pipeline.service.ps.PSClientService;
 import com.syswin.pipeline.service.ps.util.CollectionUtil;
 import com.syswin.pipeline.service.ps.util.FastJsonUtil;
+import com.syswin.pipeline.utils.JacksonJsonUtil;
+import com.syswin.pipeline.utils.LanguageChange;
 import com.syswin.temail.ps.client.Header;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,6 +47,11 @@ public class AMenusHandler implements EventHandler<MessageEvent> {
 	@Lazy
 	@Autowired
 	private PSClientService psClientService;
+
+	@Autowired
+	private DeviceInfoService deviceInfoService;
+	@Autowired
+	private LanguageChange languageChange;
 	/**
 	 * 菜单的版本判断。
 	 * 对999消息判断version，如果version与此值相等，则不处理。
@@ -69,16 +79,27 @@ public class AMenusHandler implements EventHandler<MessageEvent> {
 			return;
 		}
 		String version = PermissionEnums.Guest.name;
+		Env appEnv = null;
 		try {
 			String content = event.getChatMsg().getContent();
 			version = FastJsonUtil.parseObject(content).getString("version");
-
+			String envValue = FastJsonUtil.parseObject(content).getString("env");
+			appEnv = JacksonJsonUtil.fromJson(envValue, Env.class);
 		} catch (Exception e) {
 			logger.info("处理消息中的version字段失败", e);
 		}
+
 		myRole = consumerService.getAMenuRole(header.getReceiver());
 		String myVersion = consumerService.getUserVersion(header, version, myRole);
-		if (version.equals(myVersion)) {
+
+		String beforeLang = deviceInfoService.getLang(header.getReceiver());
+		String appValue = "zh";
+		//先更新数据库，在判断中英文是否一致
+		if (appEnv != null) {
+			appValue = deviceInfoService.insertOrupdate(header.getReceiver(), appEnv);
+		}
+		//判断版本是否一致 并且语言是否一致
+		if (version.equals(myVersion) && appValue.equals(beforeLang)) {
 			//版本号相同，不做加载
 			return;
 		}
@@ -90,7 +111,7 @@ public class AMenusHandler implements EventHandler<MessageEvent> {
 		valueList.add(0);
 
 		keyList.add("text");
-		valueList.add("请使用智能小助手");
+		valueList.add(languageChange.getValueByUserId("menu.a.tip", header.getReceiver()));
 
 //		keyList.add("features");
 //		//判断当前用户是读者还是作者
@@ -123,37 +144,32 @@ public class AMenusHandler implements EventHandler<MessageEvent> {
 	private List<Map<String, Object>> appList(String userId) {
 		//TODO 处理京交会
 		List<Map<String, Object>> appList = new ArrayList<>();
-		appList.add(createApp("", "测试邮箱跳转", URL_PIPER + "/webmg/index1"));
+//		appList.add(createApp("", "测试邮箱跳转", URL_PIPER + "/webmg/index1"));
 		//既是组织管理者，又是个人出版社管理者
 		if (PermissionEnums.OrgPerson.name.equals(myRole)) {
-			appList.add(createApp("", "我的个人出版社", URL_PIPER + H5_PUBLISHER_MANAGE + "?userId=" + userId));
-			appList.add(createApp("", "去订阅", URL_PIPER + H5_SUBSCRIBE_ADD + "?userId=" + userId));
-			appList.add(createApp("", "我的订阅列表", URL_PIPER + H5_SUBSCRIBE_LIST + "?userId=" + userId));
-			appList.add(createApp("", "管理邮件群发", URL_PIPER + "/web?userId=" + userId));
-			sendMessegeService.sendTextmessage("您的身份是 邮件组管理者 和 个人出版社管理者 您可以在a.piper小助手中管理个人出版社、订阅出版社、管理我的订阅、管理邮件组", userId);
+			appList.add(createApp("", languageChange.getValueByUserId("menu.a.mypublisher", userId), URL_PIPER + H5_PUBLISHER_MANAGE + "?userId=" + userId));
+			appList.add(createApp("", languageChange.getValueByUserId("menu.a.gosub", userId), URL_PIPER + H5_SUBSCRIBE_ADD + "?userId=" + userId));
+			appList.add(createApp("", languageChange.getValueByUserId("menu.a.mysublist", userId), URL_PIPER + H5_SUBSCRIBE_LIST + "?userId=" + userId));
+			appList.add(createApp("", languageChange.getValueByUserId("menu.a.group", userId), URL_PIPER + "/web?userId=" + userId));
 		}
 		if (PermissionEnums.OnlyOrg.name.equals(myRole)) {
-			appList.add(createApp("", "创建个人出版社", URL_PIPER + H5_PUBLISHER_CREATE + "?userId=" + userId));
-			appList.add(createApp("", "去订阅", URL_PIPER + H5_SUBSCRIBE_ADD + "?userId=" + userId));
-			appList.add(createApp("", "我的订阅列表", URL_PIPER + H5_SUBSCRIBE_LIST + "?userId=" + userId));
-			appList.add(createApp("", "管理邮件群发", URL_PIPER + "/web?userId=" + userId));
-			sendMessegeService.sendTextmessage("您的身份是 邮件组管理者 ， 您可以在a.piper小助手中创建个人出版社、订阅出版社、管理我的订阅、管理邮件组", userId);
+			appList.add(createApp("", languageChange.getValueByUserId("menu.a.createpublisher", userId), URL_PIPER + H5_PUBLISHER_CREATE + "?userId=" + userId));
+			appList.add(createApp("", languageChange.getValueByUserId("menu.a.gosub", userId), URL_PIPER + H5_SUBSCRIBE_ADD + "?userId=" + userId));
+			appList.add(createApp("", languageChange.getValueByUserId("menu.a.mysublist", userId), URL_PIPER + H5_SUBSCRIBE_LIST + "?userId=" + userId));
+			appList.add(createApp("", languageChange.getValueByUserId("menu.a.group", userId), URL_PIPER + "/web?userId=" + userId));
 		}
 		//个人管理者，订阅者
 		if (PermissionEnums.Person.name.equals(myRole)) {
-			appList.add(createApp("", "我的出版社", URL_PIPER + H5_PUBLISHER_MANAGE + "?userId=" + userId));
-			appList.add(createApp("", "去订阅", URL_PIPER + H5_SUBSCRIBE_ADD + "?userId=" + userId));
-			appList.add(createApp("", "我的订阅列表", URL_PIPER + H5_SUBSCRIBE_LIST + "?userId=" + userId));
-			sendMessegeService.sendTextmessage("您的身份是 个人出版社管理者 ， 您可以在a.piper小助手中管理个人出版社、订阅出版社、管理我的订阅", userId);
+			appList.add(createApp("", languageChange.getValueByUserId("menu.a.mypublisher", userId), URL_PIPER + H5_PUBLISHER_MANAGE + "?userId=" + userId));
+			appList.add(createApp("", languageChange.getValueByUserId("menu.a.gosub", userId), URL_PIPER + H5_SUBSCRIBE_ADD + "?userId=" + userId));
+			appList.add(createApp("", languageChange.getValueByUserId("menu.a.mysublist", userId), URL_PIPER + H5_SUBSCRIBE_LIST + "?userId=" + userId));
 
 		}
 		//游客，订阅者
 		if (PermissionEnums.Guest.name.equals(myRole)) {
-			appList.add(createApp("", "创建出版社", URL_PIPER + H5_PUBLISHER_CREATE + "?userId=" + userId));
-			appList.add(createApp("", "去订阅", URL_PIPER + H5_SUBSCRIBE_ADD + "?userId=" + userId));
-			appList.add(createApp("", "我的订阅列表", URL_PIPER + H5_SUBSCRIBE_LIST + "?userId=" + userId));
-			sendMessegeService.sendTextmessage("您的身份是 游客 ， 您可以在a.piper小助手中创建个人出版社、订阅出版社、管理我的订阅", userId);
-
+			appList.add(createApp("", languageChange.getValueByUserId("menu.a.createpublisher", userId), URL_PIPER + H5_PUBLISHER_CREATE + "?userId=" + userId));
+			appList.add(createApp("", languageChange.getValueByUserId("menu.a.gosub", userId), URL_PIPER + H5_SUBSCRIBE_ADD + "?userId=" + userId));
+			appList.add(createApp("", languageChange.getValueByUserId("menu.a.mysublist", userId), URL_PIPER + H5_SUBSCRIBE_LIST + "?userId=" + userId));
 		}
 		return appList;
 	}
@@ -172,5 +188,9 @@ public class AMenusHandler implements EventHandler<MessageEvent> {
 //		return CollectionUtil.fastMap(keys1, app11);
 //	}
 
-
+	public static void main(String[] args) {
+		String envValue = "{\"language\":\"zh\",\"platform\":\"android\",\"moduleVersion\":\"1.0.0\",\"os_version\":25,\"version\":\"1.2.0P\",\"build\":\"1904030921\"}";
+		Env appEnv = JacksonJsonUtil.fromJson(envValue, Env.class);
+		System.out.println(appEnv);
+	}
 }

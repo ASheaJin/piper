@@ -14,8 +14,6 @@ public class DeviceInfo {
 
     private String moduleversion;
 
-    private String version;
-
     private String osVersion;
 
     private String appversion;
