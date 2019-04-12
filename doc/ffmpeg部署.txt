@@ -5,3 +5,11 @@
 3 修改权限
   cd /opt/ffmpeg
   chmod 755 ffmpeg
+
+
+
+ps:
+转换amr的命令行
+ffmpeg -i a.amr -vn -acodec libmp3lame -f mp3 -y a.mp3
+视频截首帧
+ffmpeg -ss 0.0 -i b.mp4 -t 1.0 -an -f image2 -y b.png
