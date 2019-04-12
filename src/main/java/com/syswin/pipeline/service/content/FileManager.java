@@ -47,7 +47,7 @@ public class FileManager {
                 FileUtils.copyURLToFile(new URL(url), new File(tempPath), 10000, 10000);
 
             } catch (IOException e) {
-                logger.error("下载zip出错", e);
+                logger.error("下载zip出错 url=" + url, e);
                 return null;
             }
         }
@@ -56,7 +56,7 @@ public class FileManager {
         try {
             ZipUtil.unZip(tempPath, storePath, pwd);
         } catch (ZipException e) {
-            logger.error("解压zip出错 zip文件 " + tempPath, e);
+            logger.error("解压zip出错 zip文件 zip=" + tempPath, e);
             return null;
         }
         //删除zip
