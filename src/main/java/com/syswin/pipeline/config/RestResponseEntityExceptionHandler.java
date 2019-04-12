@@ -27,10 +27,10 @@ public class RestResponseEntityExceptionHandler
 					Exception ex, WebRequest request) {
 		ResponseEntity.BodyBuilder builder = ResponseEntity.status(HttpStatus.OK);
 		if (ex instanceof SubException || ex instanceof BusinessException) {
-			logger.info("SubException | BusinessException: 业务异常  " + ex.getMessage());
+			logger.info("SubException | BusinessException: 业务异常  " + ex.getMessage(), ex);
 			return builder.body(new com.syswin.pipeline.service.psserver.bean.ResponseEntity("500", ex.getMessage()));
 		} else {
-			logger.error("系统异常  " + ex.getMessage());
+			logger.error("系统异常  " + ex.getMessage(), ex);
 			return builder.body(new com.syswin.pipeline.service.psserver.bean.ResponseEntity("501", "系统异常请稍后再试"));
 		}
 	}
