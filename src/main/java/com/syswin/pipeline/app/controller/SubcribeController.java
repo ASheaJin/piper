@@ -2,6 +2,7 @@ package com.syswin.pipeline.app.controller;
 
 import com.syswin.pipeline.app.dto.CheckSubInput;
 import com.syswin.pipeline.app.dto.SubSearchParam;
+import com.syswin.pipeline.app.dto.UserIdParam;
 import com.syswin.pipeline.service.PiperPublisherService;
 import com.syswin.pipeline.service.PiperSubscriptionService;
 import com.syswin.pipeline.service.psserver.bean.ResponseEntity;
@@ -53,8 +54,8 @@ public class SubcribeController {
 
 
 	@PostMapping("/getmysubsion")
-	public ResponseEntity getmysubsion(@RequestBody String userId) {
-		return new ResponseEntity(subscriptionService.getMySubscribtion(userId));
+	public ResponseEntity getmysubsion(@RequestBody UserIdParam upm) {
+		return new ResponseEntity(subscriptionService.getMySubscribtion(upm.getUserId()));
 	}
 
 	@RequestMapping(value = "/getPubSubsions", method = RequestMethod.POST)

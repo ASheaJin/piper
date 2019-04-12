@@ -135,7 +135,7 @@ public class PiperRecommendPublisherService {
 		}
 		ReCommendPublisher reCommendPublisher = reCommendPublisherRepository.selectByPublisherId(publisherId);
 		if (reCommendPublisher == null) {
-			throw new BusinessException("该出版社没有被推荐");
+			return;
 		}
 
 		reCommendPublisherRepository.delete(reCommendPublisher.getId());
