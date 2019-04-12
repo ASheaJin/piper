@@ -12,6 +12,7 @@ import com.syswin.pipeline.service.ps.PSClientService;
 import com.syswin.pipeline.service.ps.util.CollectionUtil;
 import com.syswin.pipeline.service.ps.util.FastJsonUtil;
 import com.syswin.pipeline.utils.JacksonJsonUtil;
+import com.syswin.pipeline.utils.LanguageChange;
 import com.syswin.sub.api.PublisherService;
 import com.syswin.sub.api.SubscriptionService;
 import com.syswin.sub.api.db.model.Publisher;
@@ -75,6 +76,9 @@ public class PMenusHandler implements EventHandler<MessageEvent> {
 	@Autowired
 	private DeviceInfoService deviceInfoService;
 
+	@Autowired
+	private LanguageChange languageChange;
+
 	@Override
 	public void onEvent(MessageEvent event, long sequence, boolean endOfBatch) {
 
@@ -124,7 +128,7 @@ public class PMenusHandler implements EventHandler<MessageEvent> {
 		valueList.add(0);
 
 		keyList.add("text");
-		valueList.add("请使用智能小助手");
+		valueList.add(languageChange.getValueByUserId("menu.p.tip", header.getReceiver()));
 
 		keyList.add("features");
 		valueList.add(appFeaturesList());
@@ -175,7 +179,7 @@ public class PMenusHandler implements EventHandler<MessageEvent> {
 			} else {
 				Subscription subscription = subSubscriptionService.getSub(userId, publisher.getPublisherId());
 				if (subscription == null && !publisher.getUserId().equals(userId)) {
-					sendMessegeService.sendTextmessage("您尚未订阅该出版社 发送 （'订阅' 或 '1'） 订阅该出版社", userId, 0, publisher.getPtemail());
+					sendMessegeService.sendTextmessage(languageChange.getValueByUserId("msg.ordertip", userId), userId, 0, publisher.getPtemail());
 				}
 			}
 		}
@@ -187,8 +191,8 @@ public class PMenusHandler implements EventHandler<MessageEvent> {
 
 		//既是组织管理者
 		if (PublisherTypeEnums.organize.equals(ptype)) {
-			appList.add(createApp("", "管理订阅人", URL_PIPER + "/web/home?userId=" + userId + "&publisherId=" + publiserId));
-			appList.add(createApp("", "账号上传说明", URL_PIPER + "/h5/help/upload?userId=" + userId + "&publisherId=" + publiserId));
+			appList.add(createApp("", languageChange.getValueByUserId("menu.p.managesub", userId), languageChange.getUrl(URL_PIPER + "/web/home", userId)));
+			appList.add(createApp("", languageChange.getValueByUserId("menu.p.accountupload", userId), languageChange.getUrl(URL_PIPER + "/h5/help/upload", userId)));
 		}
 
 		return appList;

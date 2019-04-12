@@ -3,6 +3,7 @@ package com.syswin.pipeline.service;
 import com.syswin.pipeline.db.model.Consumer;
 import com.syswin.pipeline.db.model.ConsumerExample;
 import com.syswin.pipeline.db.repository.ConsumerRepository;
+import com.syswin.pipeline.service.bussiness.impl.SendMessegeService;
 import com.syswin.sub.api.AdminService;
 import com.syswin.sub.api.PublisherService;
 import com.syswin.sub.api.db.model.Admin;
@@ -25,7 +26,8 @@ public class ConsumerService {
 
 	@Autowired
 	private AdminService adminService;
-
+	@Autowired
+	private SendMessegeService sendMessegeService;
 	@Autowired
 	private PublisherService publisherService;
 
@@ -42,12 +44,14 @@ public class ConsumerService {
 			}
 
 		} else {
+			sendMessegeService.sendTextmessage("第一次进入发送操作说明", header.getReceiver());
 			consumer = new Consumer();
 			consumer.setCurversion(version);
 			consumer.setPtemail(header.getSender());
 			consumer.setUserId(header.getReceiver());
 			consumer.setRole(myRole);
 			consumerRepository.insertSelective(consumer);
+
 		}
 
 		return String.valueOf(Integer.parseInt(version) + 1);

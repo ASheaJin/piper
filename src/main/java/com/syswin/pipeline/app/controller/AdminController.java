@@ -7,15 +7,15 @@ import com.syswin.pipeline.service.PiperSubscriptionService;
 import com.syswin.pipeline.service.bussiness.impl.SendMessegeService;
 import com.syswin.pipeline.service.ps.PSClientService;
 import com.syswin.pipeline.service.psserver.bean.ResponseEntity;
+import com.syswin.pipeline.service.psserver.impl.BusinessException;
+import com.syswin.pipeline.utils.LanguageChange;
 import com.syswin.pipeline.utils.PatternUtils;
 import com.syswin.pipeline.utils.StringUtils;
 import com.syswin.sub.api.AdminService;
 import com.syswin.sub.api.PublisherService;
 import com.syswin.sub.api.db.model.Admin;
-import com.syswin.sub.api.db.model.Publisher;
 import com.syswin.sub.api.enums.PublisherTypeEnums;
 import com.syswin.sub.api.exceptions.SubException;
-import com.syswin.sub.api.response.SubResponseEntity;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -48,6 +48,8 @@ public class AdminController {
 	PublisherService publisherService;
 	@Autowired
 	SendMessegeService sendMessegeService;
+	@Autowired
+	LanguageChange languageChange;
 
 	@PostMapping("createAdminList")
 	@ApiOperation(
@@ -55,32 +57,27 @@ public class AdminController {
 	)
 	public ResponseEntity<Admin> createAdminList(@RequestBody MulCreateParam mulCreateParam) {
 		if (checkNotAdmin(mulCreateParam.getUserId())) {
-			return new ResponseEntity("500", "你无权操作");
+			throw new BusinessException("msg.nopermission");
 		}
 		Admin admin = adminService.getAdmin(mulCreateParam.getUserId(), PublisherTypeEnums.organize);
 		if (admin == null || admin.getStatus() == 0) {
-			return new ResponseEntity(" 你不是组织管理员，不能创建");
+			throw new BusinessException("ex.needorganizer");
 		}
 		List<String> userList = PatternUtils.tranStrstoList(mulCreateParam.getTmails());
 
 		for (String u : userList) {
 			if (StringUtils.isNullOrEmpty(psClientService.getTemailPublicKey(u))) {
-				return new ResponseEntity("500", u + "邮箱不存在");
+				throw new BusinessException("msg.noemail");
 			}
 			adminService.add(mulCreateParam.getUserId(), u, PublisherTypeEnums.organize, false);
 
-			List<Publisher> publisherList = publisherService.getPubLisherByType(PublisherTypeEnums.organize);
 			try {
-//					for (Publisher publisher : publisherList) {
-//						//创建成功了，给用户推名片
-//						sendMessegeService.sendCard(publisher.getPtemail(), u, "* " + publisher.getName());
-//						sendMessegeService.sendTextmessage("恭喜成为组织管理员", u, 0, publisher.getPtemail());
-//					}
-				sendMessegeService.sendTextmessage(u + "成为组织管理员", u);
-				sendMessegeService.sendTextmessage(u + "成为组织管理员", mulCreateParam.getUserId());
+
+				sendMessegeService.sendTextmessage(languageChange.getLangByUserId("msg.beoranger", new String[]{u}, u), u);
+				sendMessegeService.sendTextmessage(languageChange.getLangByUserId("msg.beoranger", new String[]{u}, u), mulCreateParam.getUserId());
 				//回执创建完成消息
 			} catch (Exception e) {
-				logger.error("发送消息失败");
+				logger.error("发送消息失败", e);
 			}
 		}
 		return new ResponseEntity(userList);
@@ -93,17 +90,11 @@ public class AdminController {
 	)
 	public ResponseEntity createFirstAdmin(@RequestBody AdminInputParam adminParam) {
 		if (checkNotAdmin(adminParam.getUserId())) {
-			return new ResponseEntity("500", "你无权操作");
+			throw new BusinessException("msg.nopermission");
 		}
 		Admin admin = adminService.add(adminParam.getUserId(), adminParam.getTmail(), PublisherTypeEnums.organize, true);
 
-		List<Publisher> publisherList = publisherService.getPubLisherByType(PublisherTypeEnums.organize);
-		for (Publisher publisher : publisherList) {
-			//创建成功了，给用户推名片
-			sendMessegeService.sendCard(publisher.getPtemail(), adminParam.getTmail(), "* " + publisher.getName());
-			sendMessegeService.sendTextmessage("成为组织管理员", adminParam.getTmail(), 0, publisher.getPtemail());
-		}
-		sendMessegeService.sendTextmessage(adminParam.getTmail() + "成为组织管理员", adminParam.getUserId());
+		sendMessegeService.sendTextmessage(languageChange.getLangByUserId("msg.beoranger", new String[]{adminParam.getTmail()}, adminParam.getTmail()), adminParam.getTmail());
 		//回执创建完成消息
 		return new ResponseEntity();
 
@@ -115,15 +106,15 @@ public class AdminController {
 	)
 	public ResponseEntity deleteAdmin(@RequestBody AdminInputParam adminParam) {
 		if (checkNotAdmin(adminParam.getUserId())) {
-			return new ResponseEntity("500", "你无权操作");
+			throw new BusinessException("msg.nopermission");
 		}
 		Admin admin = adminService.getAdmin(adminParam.getUserId(), PublisherTypeEnums.organize);
 		if (admin == null || admin.getStatus() == 0) {
-			throw new SubException("删除失败，你不是管理员");
+			throw new SubException("ex.needorganizer");
 		}
 		adminService.delete(adminParam.getUserId(), adminParam.getTmail(), PublisherTypeEnums.organize);
-		sendMessegeService.sendTextmessage("你被" + adminParam.getUserId() + "取消了组织管理员", adminParam.getTmail());
-		sendMessegeService.sendTextmessage(adminParam.getTmail() + "被取消了组织管理员", adminParam.getUserId());
+		sendMessegeService.sendTextmessage(languageChange.getLangByUserId("msg.canceladmin", new String[]{adminParam.getUserId()}, adminParam.getTmail()), adminParam.getTmail());
+		sendMessegeService.sendTextmessage(languageChange.getLangByUserId("msg.becanceled", new String[]{adminParam.getTmail()}, adminParam.getUserId()), adminParam.getUserId());
 
 		return new ResponseEntity();
 

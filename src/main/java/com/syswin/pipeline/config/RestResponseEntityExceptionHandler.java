@@ -1,9 +1,11 @@
 package com.syswin.pipeline.config;
 
 import com.syswin.pipeline.service.psserver.impl.BusinessException;
+import com.syswin.pipeline.utils.LanguageChange;
 import com.syswin.sub.api.exceptions.SubException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -21,17 +23,22 @@ public class RestResponseEntityExceptionHandler
 
 	private final static Logger logger = LoggerFactory.getLogger(RestResponseEntityExceptionHandler.class);
 
+	@Autowired
+	LanguageChange languageChange;
 
 	@ExceptionHandler(Exception.class)
 	protected ResponseEntity<com.syswin.pipeline.service.psserver.bean.ResponseEntity> handleExceptionInternal(
 					Exception ex, WebRequest request) {
 		ResponseEntity.BodyBuilder builder = ResponseEntity.status(HttpStatus.OK);
+		String lang = request.getHeader("lang");
 		if (ex instanceof SubException || ex instanceof BusinessException) {
-			logger.info("SubException | BusinessException: 业务异常  " + ex.getMessage());
-			return builder.body(new com.syswin.pipeline.service.psserver.bean.ResponseEntity("500", ex.getMessage()));
+			logger.info("SubException | BusinessException: 业务异常  " + ex.getMessage(), ex);
+			String msg = languageChange.getLangByStr(ex.getMessage(), lang);
+			return builder.body(new com.syswin.pipeline.service.psserver.bean.ResponseEntity("500", msg == null ? ex.getMessage() : msg));
 		} else {
-			logger.error("系统异常  " + ex.getMessage());
-			return builder.body(new com.syswin.pipeline.service.psserver.bean.ResponseEntity("501", "系统异常请稍后再试"));
+			logger.error("系统异常  " + ex.getMessage(), ex);
+			String msg = languageChange.getLangByStr("ex.system.err", lang);
+			return builder.body(new com.syswin.pipeline.service.psserver.bean.ResponseEntity("501", msg));
 		}
 	}
 }

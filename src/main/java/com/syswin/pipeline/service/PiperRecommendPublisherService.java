@@ -13,6 +13,7 @@ import com.syswin.sub.api.PublisherService;
 import com.syswin.sub.api.SubscriptionService;
 import com.syswin.sub.api.db.model.Publisher;
 import com.syswin.sub.api.db.model.Subscription;
+import com.syswin.sub.api.enums.PublisherTypeEnums;
 import com.syswin.sub.api.utils.PageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -115,11 +116,18 @@ public class PiperRecommendPublisherService {
 
 	public ReCommendPublisher add(String userId, String publisherId) {
 		if (StringUtils.isNullOrEmpty(publisherId)) {
-			throw new BusinessException("出版社Id不能为空");
+			throw new BusinessException("ex.publisherid.null");
 		}
 		ReCommendPublisher reCommendPublisher = reCommendPublisherRepository.selectByPublisherId(publisherId);
 		if (reCommendPublisher != null) {
-			throw new BusinessException("该出版社已经在推荐中");
+			throw new BusinessException("ex.hascommend=");
+		}
+		Publisher publisher = publisherService.getPubLisherById(publisherId);
+		if (publisher == null) {
+			throw new BusinessException("ex.publisher.null");
+		}
+		if (publisher.getPtype().equals(PublisherTypeEnums.organize)) {
+			throw new BusinessException("ex.nosupport");
 		}
 		reCommendPublisher = new ReCommendPublisher();
 		reCommendPublisher.setPublisherId(publisherId);
@@ -131,7 +139,7 @@ public class PiperRecommendPublisherService {
 
 	public void deleteByPid(String publisherId) {
 		if (StringUtils.isNullOrEmpty(publisherId)) {
-			throw new BusinessException("出版社Id");
+			throw new BusinessException("ex.publisherid.null");
 		}
 		ReCommendPublisher reCommendPublisher = reCommendPublisherRepository.selectByPublisherId(publisherId);
 		if (reCommendPublisher == null) {

@@ -95,24 +95,23 @@ public class PiperRecommendContentService {
 	public ReCommendContent add(String userId, String contentId) {
 
 		if (StringUtils.isNullOrEmpty(contentId)) {
-			throw new BusinessException("内容Id不能为空");
+			throw new BusinessException("ex.contentid.null");
 		}
 		Content content = contentService.selectById(contentId);
 		if (content == null) {
-			throw new BusinessException("该消息不存在");
+			throw new BusinessException("ex.content.null");
 		}
 		Publisher publisher = subPublisherService.getPubLisherById(content.getPublisherId());
 		if (publisher == null) {
-			throw new BusinessException("出版社不存在或已注销");
+			throw new BusinessException("ex.publisher.null");
 		}
 		if (!publisher.getPtype().equals(PublisherTypeEnums.ciftis)) {
-			throw new BusinessException("目前只支持京交会推荐");
+			throw new BusinessException("ex.nosupport");
 		}
-
 
 		ReCommendContent reCommendContent = reCommendContentRepository.selectByContentId(contentId);
 		if (reCommendContent != null) {
-			throw new BusinessException("该内容已经在推荐中");
+			throw new BusinessException("ex.hascommend");
 		}
 		reCommendContent = new ReCommendContent();
 		reCommendContent.setContentId(contentId);
@@ -123,11 +122,11 @@ public class PiperRecommendContentService {
 
 	public void deleteByCid(String id) {
 		if (StringUtils.isNullOrEmpty(id)) {
-			throw new BusinessException("内容Id不能为空");
+			throw new BusinessException("ex.contentid.null");
 		}
 		ReCommendContent reCommendContent = reCommendContentRepository.selectByContentId(id);
 		if (reCommendContent == null) {
-			throw new BusinessException("该内容没有被推荐");
+			throw new BusinessException("ex.nocommend");
 		}
 		reCommendContentRepository.delete(reCommendContent.getId());
 	}

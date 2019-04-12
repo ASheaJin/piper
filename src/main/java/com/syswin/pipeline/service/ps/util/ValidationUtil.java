@@ -424,23 +424,22 @@ public class ValidationUtil {
 
 	/**
 	 * 匹配是中文数字或字母
+	 *
 	 * @param str
 	 * @return
 	 */
 	public static boolean isChineseCharNum(String str) {
 		if (null == str || str.trim().length() <= 0)
 			return false;
-//		Pattern p = Pattern.compile("[\u4e00-\u9fa5]*[\\d|\\w]+[\u4e00-\u9fa5]*");
-		Pattern p = Pattern.compile("[\u4e00-\u9fa5]*[\\d|\\w]*[\u4e00-\u9fa5]*");
-//或者  Pattern p  = Pattern.compile("[\u4e00-\u9fa5]*[0-9|a-z|A-Z]+[\u4e00-\u9fa5]*");
+		Pattern p = Pattern.compile("^[\u4e00-\u9fa5_a-zA-Z0-9]{1,10}$");
 
 		Matcher M = p.matcher(str);
 		boolean f = M.matches();
 		return f;
 	}
 
-	public static void  main(String[] args){
-		System.out.println(isChineseCharNum("hsdjjdjhjhs"));
-		System.out.println(isChineseCharNum("张三（"));
+	public static void main(String[] args) {
+		System.out.println(isChineseCharNum("hsdjjdjh"));
+		System.out.println(isChineseCharNum("张d三1"));
 	}
 }

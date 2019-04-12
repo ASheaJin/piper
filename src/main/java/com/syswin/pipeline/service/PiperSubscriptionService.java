@@ -58,14 +58,14 @@ public class PiperSubscriptionService {
 	public Subscription subscribe(String userId, String publishTemail, PublisherTypeEnums piperType) {
 
 		if (StringUtils.isNullOrEmpty(publishTemail) || StringUtils.isNullOrEmpty(userId)) {
-			throw new BusinessException("订阅邮箱不能为空");
+			throw new BusinessException("ex.userid.null");
 		}
 
 		Publisher publisher = subPublisherService.getPubLisherByPublishTmail(publishTemail, piperType);
 		if (publisher == null) {
 			publisher = subPublisherService.getPubLisherById(publishTemail);
 			if (publisher == null) {
-				throw new BusinessException("订阅失败，出版社不存在");
+				throw new BusinessException("ex.publisher.null");
 			}
 		}
 		Subscription subscription = subSubscriptionService.subscribe(userId, publisher.getPublisherId());
@@ -76,8 +76,6 @@ public class PiperSubscriptionService {
 		} else {
 			sendMessegeService.sendCard(publisher.getPtemail(), userId, publisher.getName());
 		}
-		psClientService.sendTextmessage(publisher.getName() + "<" + publisher.getPtemail() + "> 订阅成功，作者即将推送文章", userId, 0);
-		sendMessegeService.sendTextmessage("订阅成功，作者会在此为你发文章", userId, 0, publisher.getPtemail());
 
 		return subscription;
 	}
@@ -90,7 +88,7 @@ public class PiperSubscriptionService {
 	 */
 	public void unsubscribe(String userId, String publishTemail, PublisherTypeEnums ptype) {
 		if (StringUtils.isNullOrEmpty(psClientService.getTemailPublicKey(publishTemail))) {
-			throw new SubException("订阅邮箱不存在");
+			throw new SubException("msg.noemail");
 		}
 		subSubscriptionService.unsubscribeByTemail(userId, publishTemail, ptype);
 	}
@@ -105,11 +103,11 @@ public class PiperSubscriptionService {
 //		List<String> stringB = Arrays.asList(stringArray);
 //		String [] arr = comBairuserIds.split("\\s+|\\,+|\\;+");
 		if (StringUtils.isNullOrEmpty(oweruserId) || StringUtils.isNullOrEmpty(comBairuserIds)) {
-			throw new BusinessException("userId或者邮箱列表为空");
+			throw new BusinessException("ex.userid.null");
 		}
 		Admin admin = adminService.getAdmin(oweruserId, PublisherTypeEnums.organize);
 		if (admin == null) {
-			throw new BusinessException("你不是组织管理者");
+			throw new BusinessException("ex.needorganizer");
 		}
 		List<String> userList = PatternUtils.tranStrstoList(comBairuserIds);
 		List<String> sendList = subSubscriptionService.subscribeList(userList, publiserId);
@@ -123,11 +121,11 @@ public class PiperSubscriptionService {
 
 	public List<String> subscribeList(List<String> userIds, String publiserId, String oweruserId) {
 		if (StringUtils.isNullOrEmpty(oweruserId)) {
-			throw new BusinessException("userId为空");
+			throw new BusinessException("ex.userid.null");
 		}
 		Admin admin = adminService.getAdmin(oweruserId, PublisherTypeEnums.organize);
 		if (admin == null) {
-			throw new BusinessException("你不是邮件组管理者");
+			throw new BusinessException("ex.needorganizer");
 		}
 		List<String> sendList = subSubscriptionService.subscribeList(userIds, publiserId);
 		Publisher publisher = subPublisherService.getPubLisherById(publiserId);
@@ -147,7 +145,7 @@ public class PiperSubscriptionService {
 	public void unsubscribe(String userId, String publisherId) {
 		Publisher publisher = subPublisherService.getPubLisherById(publisherId);
 		if (publisher == null) {
-			throw new BusinessException("出版社不能为空");
+			throw new BusinessException("ex.publisher.null");
 		}
 //		if (PublisherTypeEnums.organize.equals(publisher.getPtype())) {
 //			throw new BusinessException("组织出版社不能取消订阅");
@@ -158,10 +156,10 @@ public class PiperSubscriptionService {
 	public void unsubscribeByOwnerId(String userId, String ownerId, String publiserId, PublisherTypeEnums ptype) {
 		Publisher publisher = subPublisherService.getPubLisherById(publiserId);
 		if (publisher == null) {
-			throw new SubException("生产源不存在");
+			throw new SubException("ex.publisher.null");
 		}
 		if (!publisher.getPtype().equals(ptype) || !publisher.getUserId().equals(ownerId)) {
-			throw new SubException("您没权限操作该出版社");
+			throw new SubException("ex.needorganizer");
 		}
 		subSubscriptionService.unsubscribeByPubliserId(userId, publiserId);
 	}
@@ -215,12 +213,12 @@ public class PiperSubscriptionService {
 	public PulisherSubOutput getsubscribeByUidCid(String userId, String publisherId) {
 
 		if (StringUtils.isNullOrEmpty(publisherId)) {
-			throw new BusinessException("出版社Id不能为空");
+			throw new BusinessException("ex.publisherid.null");
 		}
 
 		Publisher publisher = subPublisherService.getPubLisherById(publisherId);
 		if (publisher == null) {
-			throw new BusinessException("出版社不存在或已注销");
+			throw new BusinessException("ex.publisher.null");
 		}
 //		if (!publisher.getPtype().equals(piperType)) {
 //			throw new BusinessException("出版社类型不支持订阅");
@@ -236,18 +234,18 @@ public class PiperSubscriptionService {
 
 	public Subscription subscribeNOOrg(String userId, String publishTemail) {
 		if (StringUtils.isNullOrEmpty(publishTemail) || StringUtils.isNullOrEmpty(userId)) {
-			throw new BusinessException("订阅邮箱不能为空");
+			throw new BusinessException("ex.userid.null");
 		}
 
 		Publisher publisher = subPublisherService.getPubLisherByPublishTmail(publishTemail, null);
 		if (publisher == null) {
 			publisher = subPublisherService.getPubLisherById(publishTemail);
 			if (publisher == null) {
-				throw new BusinessException("订阅失败，出版社不存在");
+				throw new BusinessException("ex.publisher.null");
 			}
 		}
 		if (publisher.getPtype().equals(PublisherTypeEnums.organize)) {
-			throw new BusinessException("邮件组不能主动订阅");
+			throw new BusinessException("msg.nopermission");
 		}
 		Subscription subscription = subSubscriptionService.subscribe(userId, publisher.getPublisherId());
 
@@ -257,8 +255,8 @@ public class PiperSubscriptionService {
 		} else {
 			sendMessegeService.sendCard(publisher.getPtemail(), userId, publisher.getName());
 		}
-		psClientService.sendTextmessage(publisher.getName() + "<" + publisher.getPtemail() + "> 订阅成功，作者即将推送文章", userId, 0);
-		sendMessegeService.sendTextmessage("订阅成功，作者会在此为你发文章", userId, 0, publisher.getPtemail());
+//		psClientService.sendTextmessage(publisher.getName() + "<" + publisher.getPtemail() + "> 订阅成功，作者即将推送文章", userId, 0);
+//		sendMessegeService.sendTextmessage("订阅成功，作者会在此为你发文章", userId, 0, publisher.getPtemail());
 
 		return subscription;
 

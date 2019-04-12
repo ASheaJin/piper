@@ -8,7 +8,7 @@ import com.syswin.pipeline.service.bussiness.impl.SendMessegeService;
 import com.syswin.pipeline.service.ps.PSClientService;
 import com.syswin.pipeline.service.ps.util.ValidationUtil;
 import com.syswin.pipeline.service.psserver.impl.BusinessException;
-import com.syswin.pipeline.utils.MessageUtil;
+import com.syswin.pipeline.utils.LanguageChange;
 import com.syswin.pipeline.utils.PatternUtils;
 import com.syswin.pipeline.utils.StringUtils;
 import com.syswin.sub.api.AdminService;
@@ -50,6 +50,9 @@ public class PiperPublisherService {
 	AdminService adminService;
 
 	@Autowired
+	LanguageChange languageChange;
+
+	@Autowired
 	private com.syswin.sub.api.PublisherService subPublisherService;
 
 	/**
@@ -61,10 +64,10 @@ public class PiperPublisherService {
 	public Publisher addPublisher(String userId, String name, String pmail, Integer ptype) {
 
 		if (StringUtils.isNullOrEmpty(name)) {
-			throw new BusinessException("名称不能为空");
+			throw new BusinessException("ex.name.null");
 		}
 		if (!ValidationUtil.isChineseCharNum(name)) {
-			throw new BusinessException("名称只能是中文、字母、数字及组合");
+			throw new BusinessException("ex.name.invalid");
 		}
 		// TODO: 2019/3/29 后期加入靓号处理
 		String ptemail = pmail;
@@ -84,16 +87,16 @@ public class PiperPublisherService {
 		Publisher publisher = subPublisherService.addPublisher(userId, name, ptemail, EnumsUtil.getPubliserTypeEnums(ptype));
 		psClientService.loginTemail(ptemail);
 		try {
-			psClientService.sendTextmessage(MessageUtil.sendCreatePublisher(ptemail, name), userId, 0);
-			psClientService.sendTextmessage(MessageUtil.shareNewTip(ptemail), userId, 200);
+			psClientService.sendTextmessage(languageChange.getLangByUserId("msg.publisherhascreate", new String[]{name}, userId), userId, 0);
+			psClientService.sendTextmessage(ptemail, userId, 200);
 
 			sendMessegeService.sendCard(ptemail, userId, "* " + name);
 			//注册了出版社后登陆下
 
-			sendMessegeService.sendTextmessage("<" + name + ">创建成功，您发的所有消息都会同步到订阅者", userId, 0, ptemail);
+			sendMessegeService.sendTextmessage(languageChange.getLangByUserId("msg.pcreatetip", new String[]{name}, userId), userId, 0, ptemail);
 
 		} catch (Exception e) {
-			throw new SubException("PS连接异常");
+			logger.error(e.getMessage()+"PS连接异常", ptemail, e);
 		}
 		return publisher;
 	}
@@ -139,7 +142,7 @@ public class PiperPublisherService {
 			reCommendPublisherList = piperRecommendPublisherService.seletByPubliserIds(publisherIds);
 		}
 		if (publisherList == null) {
-			throw new BusinessException("出版社列表为空");
+			throw new BusinessException("ex.publisher.null");
 		}
 		for (Publisher publisher : publisherList) {
 			PublisherManageVO pmVO = new PublisherManageVO();

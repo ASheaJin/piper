@@ -7,6 +7,7 @@ import com.syswin.pipeline.service.psserver.bean.ResponseEntity;
 import com.syswin.pipeline.service.psserver.impl.BusinessException;
 import com.syswin.pipeline.service.security.TokenGenerator;
 import com.syswin.pipeline.utils.ExcelUtil;
+import com.syswin.pipeline.utils.LanguageChange;
 import com.syswin.pipeline.utils.PatternUtils;
 import com.syswin.pipeline.utils.StringUtils;
 import com.syswin.sub.api.db.model.Publisher;
@@ -38,6 +39,8 @@ public class PublisherController {
 	@Autowired
 	PiperSubscriptionService subscriptionService;
 
+	@Autowired
+	LanguageChange languageChange;
 
 	@PostMapping("create")
 	@ApiOperation(
@@ -111,7 +114,7 @@ public class PublisherController {
 
 		String[] param = tokenGenerator.getIdsByToken(request.getParameter("t"));
 		if (param == null) {
-			throw new BusinessException("token已经失效");
+			throw new BusinessException("ex.tokenInvalid");
 		}
 		List<String> listString = ExcelUtil.getExcelData(file);
 		String error = "";
@@ -121,10 +124,10 @@ public class PublisherController {
 			}
 		}
 		if (!StringUtils.isNullOrEmpty(error)) {
-			throw new BusinessException("失败！非法邮箱号： " + error);
+			return new ResponseEntity("500", languageChange.getLangByStr("ex.email.invalid", request.getHeader("lang")));
 		}
 		if (listString.size() == 0) {
-			throw new BusinessException("名单导入为空");
+			throw new BusinessException("ex.userid.null");
 		}
 		List<String> sendList = subscriptionService.subscribeList(listString, param[0], param[1]);
 

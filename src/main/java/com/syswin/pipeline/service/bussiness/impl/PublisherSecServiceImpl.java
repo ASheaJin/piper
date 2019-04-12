@@ -7,7 +7,7 @@ import com.syswin.pipeline.service.PiperSubscriptionService;
 import com.syswin.pipeline.service.bussiness.PublisherSecService;
 import com.syswin.pipeline.service.content.ContentHandleJobManager;
 import com.syswin.pipeline.service.ps.ChatMsg;
-import com.syswin.pipeline.utils.MessageUtil;
+import com.syswin.pipeline.utils.LanguageChange;
 import com.syswin.pipeline.utils.StringUtils;
 import com.syswin.pipeline.utils.SwithUtil;
 import com.syswin.sub.api.AdminService;
@@ -66,6 +66,9 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 
 	@Autowired
 	private ContentHandleJobManager contentHandleJobManager;
+
+	@Autowired
+	private LanguageChange languageChange;
 
 	private final static Logger logger = LoggerFactory.getLogger(PublisherSecServiceImpl.class);
 	//过滤能用作发的
@@ -160,7 +163,7 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 			}
 
 		}
-		sendMessegeService.sendTextmessage(num + "人已发送", publisher.getUserId(), 1000, publisher.getPtemail());
+		sendMessegeService.sendTextmessage(num + languageChange.getValueByUserId("msg.hassend", publisher.getUserId()), publisher.getUserId(), 1000, publisher.getPtemail());
 		//推送记录
 		SendRecord sendRecord = new SendRecord();
 		sendRecord.setContentId(contentId);
@@ -190,15 +193,15 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 		if (subscription == null && !publisher.getUserId().equals(userId)) {
 			if (body_type == 1) {
 				String txt = StringUtils.filterStr(orgContent);
-				if (txt.equals("订阅") || txt.equals("1")) {
+				if (txt.equals("subscribe") || txt.equals("订阅") || txt.equals("1")) {
 					piperSubscriptionService.subscribe(userId, ptemail, publisher.getPtype());
 					return;
 				} else {
-					sendMessegeService.sendTextmessage("您尚未订阅该出版社 发送 （'订阅' 或 '1'） 订阅该出版社", userId, 0, publisher.getPtemail());
+					sendMessegeService.sendTextmessage(languageChange.getValueByUserId("msg.ordertip", userId), userId, 0, publisher.getPtemail());
 				}
 			}
 		} else {
-			sendMessegeService.sendTextmessage(MessageUtil.sendCreateHelpTip("回复功能暂不支持"), userId, 1000, ptemail);
+			sendMessegeService.sendTextmessage(languageChange.getValueByUserId("msg.noreply", userId), userId, 1000, ptemail);
 //			sendMessegeService.sendTextmessage("您已订阅该出版社 发送 《取消订阅》 取消订阅该出版社", userId, 0, publisher.getPtemail());
 		}
 		//判断出版社是否存在
@@ -239,7 +242,7 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 		if (userId.equals(publisher.getUserId())) {
 			dealpusharticle(publisher, body_type, orgContent, PublisherTypeEnums.organize);
 		} else {
-			sendMessegeService.sendTextmessage(MessageUtil.sendCreateHelpTip("只有创建者有权限操作"), userId, 1000, ptemail);
+			sendMessegeService.sendTextmessage(languageChange.getValueByUserId("msg.nopermission", userId), userId, 1000, ptemail);
 		}
 
 	}

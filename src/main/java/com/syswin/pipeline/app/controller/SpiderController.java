@@ -39,11 +39,11 @@ public class SpiderController {
 	)
 	public ResponseEntity send(@RequestBody SendParam msg) {
 		if (spiderTokenService.getSpiderToken(msg.getToken(), msg.getPiperTemail()) == null) {
-			throw new BusinessException("Token错误");
+			throw new BusinessException("ex.tokenInvalid");
 		}
 		Publisher publisher = publisherService.getPubLisherByPublishTmail(msg.getPiperTemail(), null);
 		if (publisher == null) {
-			throw new BusinessException("该出版社不存在");
+			throw new BusinessException("ex.publisher.null");
 		}
 		String txt = "{\"text\":\"" + msg.getContent() + "\"}";
 		Integer num = publisherSecService.dealpusharticle(publisher, 1, txt, publisher.getPtype());

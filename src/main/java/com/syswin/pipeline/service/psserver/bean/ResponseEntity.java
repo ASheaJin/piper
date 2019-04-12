@@ -17,13 +17,15 @@ public class ResponseEntity<T> {
 
 	//响应其他参数
 	private T data;
+
 	public ResponseEntity() {
 		this.code = "200";
-		this.msg = "操作成功";
+		this.msg = "success";
 	}
 
 	/**
 	 * 失败
+	 *
 	 * @param code
 	 * @param msg
 	 */
@@ -34,16 +36,18 @@ public class ResponseEntity<T> {
 
 	/**
 	 * 成功
+	 *
 	 * @param data
 	 */
-	public ResponseEntity( T data) {
+	public ResponseEntity(T data) {
 		this.code = "200";
-		this.msg = "操作成功";
+		this.msg = "success";
 		this.data = data;
 	}
 
 	/**
 	 * 失败
+	 *
 	 * @param code
 	 * @param msg
 	 */

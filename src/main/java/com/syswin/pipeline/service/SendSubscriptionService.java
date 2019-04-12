@@ -2,6 +2,7 @@ package com.syswin.pipeline.service;
 
 
 import com.syswin.pipeline.service.bussiness.impl.SendMessegeService;
+import com.syswin.pipeline.utils.LanguageChange;
 import com.syswin.sub.api.db.model.Publisher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -15,6 +16,8 @@ import org.springframework.stereotype.Service;
 public class SendSubscriptionService {
 	@Autowired
 	private SendMessegeService sendMessegeService;
+	@Autowired
+	private LanguageChange languageChange;
 
 	@Async("msgThreadPool")
 	public void sendSub(String userId, Publisher publisher) {
@@ -30,7 +33,7 @@ public class SendSubscriptionService {
 //			} else {
 //				sendMessegeService.sendCard(publisher.getPtemail(), userId, publisher.getName());
 //			}
-		sendMessegeService.sendTextmessage("管理员邀请您进入该邮件组，之后管理员会在这给您发文档或消息", userId, 0, publisher.getPtemail());
+		sendMessegeService.sendTextmessage(languageChange.getValueByUserId("msg.adminsendtip", userId), userId, 0, publisher.getPtemail());
 
 	}
 }

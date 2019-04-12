@@ -4,6 +4,7 @@ import com.syswin.pipeline.app.dto.TokenOutParam;
 import com.syswin.pipeline.db.model.Token;
 import com.syswin.pipeline.service.TokenService;
 import com.syswin.pipeline.utils.LanguageChange;
+import com.syswin.sub.api.exceptions.SubException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -42,6 +43,16 @@ public class TestController {
 
 		String value = messageSource.getMessage("name", new String[]{aa}, localeResolver.resolveLocale(request));//获取转换后的字符。需要在messages.properties,messages_enUS.properties,messages.properties 中配置。
 		return value;
+	}
+
+
+	@GetMapping("test")
+	@ApiOperation(
+					value = "获取Token"
+	)
+	public String test() {
+
+		throw new SubException("ex.userid.null");
 	}
 
 

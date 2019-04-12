@@ -27,7 +27,7 @@ public class LanguageChange {
 		return deviceInfoService.getLang(userId);
 	}
 
-	public String getValue(String key, @Nullable Object[] args, String userId) {
+	public String getLangByUserId(String key, @Nullable Object[] args, String userId) {
 		Locale locale = Locale.SIMPLIFIED_CHINESE;
 		if ("en".equals(deviceInfoService.getLang(userId))) {
 			locale = Locale.US;
@@ -47,8 +47,7 @@ public class LanguageChange {
 	}
 
 
-	@Deprecated
-	public String getValue(String key, String lang) {
+	public String getLangByStr(String key, String lang) {
 		Locale locale = Locale.SIMPLIFIED_CHINESE;
 		if ("en".equals(lang)) {
 			locale = Locale.US;
