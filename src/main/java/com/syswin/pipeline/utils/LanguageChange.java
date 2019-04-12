@@ -22,6 +22,11 @@ public class LanguageChange {
 	@Autowired
 	private DeviceInfoService deviceInfoService;
 
+
+	public String getLang(String userId) {
+		return deviceInfoService.getLang(userId);
+	}
+
 	public String getValue(String key, @Nullable Object[] args, String userId) {
 		Locale locale = Locale.SIMPLIFIED_CHINESE;
 		if ("en".equals(deviceInfoService.getLang(userId))) {
@@ -50,5 +55,9 @@ public class LanguageChange {
 		}
 		String value = messageSource.getMessage(key, null, locale);//获取转换后的字符。需要在messages.properties,messages_enUS.properties,messages.properties 中配置。
 		return value;
+	}
+
+	public String getUrl(String url, String userId) {
+		return url + "?userId=" + userId + "&lang=" + getLang(userId);
 	}
 }

@@ -147,29 +147,28 @@ public class AMenusHandler implements EventHandler<MessageEvent> {
 //		appList.add(createApp("", "测试邮箱跳转", URL_PIPER + "/webmg/index1"));
 		//既是组织管理者，又是个人出版社管理者
 		if (PermissionEnums.OrgPerson.name.equals(myRole)) {
-			appList.add(createApp("", languageChange.getValueByUserId("menu.a.mypublisher", userId), URL_PIPER + H5_PUBLISHER_MANAGE + "?userId=" + userId));
-			appList.add(createApp("", languageChange.getValueByUserId("menu.a.gosub", userId), URL_PIPER + H5_SUBSCRIBE_ADD + "?userId=" + userId));
-			appList.add(createApp("", languageChange.getValueByUserId("menu.a.mysublist", userId), URL_PIPER + H5_SUBSCRIBE_LIST + "?userId=" + userId));
-			appList.add(createApp("", languageChange.getValueByUserId("menu.a.group", userId), URL_PIPER + "/web?userId=" + userId));
+			appList.add(createApp("", languageChange.getValueByUserId("menu.a.mypublisher", userId), languageChange.getUrl(URL_PIPER + H5_PUBLISHER_MANAGE, userId)));
+			appList.add(createApp("", languageChange.getValueByUserId("menu.a.gosub", userId), languageChange.getUrl(URL_PIPER + H5_SUBSCRIBE_ADD, userId)));
+			appList.add(createApp("", languageChange.getValueByUserId("menu.a.mysublist", userId), languageChange.getUrl(URL_PIPER + H5_SUBSCRIBE_LIST, userId)));
+			appList.add(createApp("", languageChange.getValueByUserId("menu.a.group", userId), languageChange.getUrl(URL_PIPER + "/web", userId)));
 		}
 		if (PermissionEnums.OnlyOrg.name.equals(myRole)) {
-			appList.add(createApp("", languageChange.getValueByUserId("menu.a.createpublisher", userId), URL_PIPER + H5_PUBLISHER_CREATE + "?userId=" + userId));
-			appList.add(createApp("", languageChange.getValueByUserId("menu.a.gosub", userId), URL_PIPER + H5_SUBSCRIBE_ADD + "?userId=" + userId));
-			appList.add(createApp("", languageChange.getValueByUserId("menu.a.mysublist", userId), URL_PIPER + H5_SUBSCRIBE_LIST + "?userId=" + userId));
-			appList.add(createApp("", languageChange.getValueByUserId("menu.a.group", userId), URL_PIPER + "/web?userId=" + userId));
+			appList.add(createApp("", languageChange.getValueByUserId("menu.a.createpublisher", userId), languageChange.getUrl(URL_PIPER + H5_PUBLISHER_CREATE, userId)));
+			appList.add(createApp("", languageChange.getValueByUserId("menu.a.gosub", userId), languageChange.getUrl(URL_PIPER + H5_SUBSCRIBE_ADD, userId)));
+			appList.add(createApp("", languageChange.getValueByUserId("menu.a.mysublist", userId), languageChange.getUrl(URL_PIPER + H5_SUBSCRIBE_LIST, userId)));
+			appList.add(createApp("", languageChange.getValueByUserId("menu.a.group", userId), languageChange.getUrl(URL_PIPER + "/web", userId)));
 		}
 		//个人管理者，订阅者
 		if (PermissionEnums.Person.name.equals(myRole)) {
-			appList.add(createApp("", languageChange.getValueByUserId("menu.a.mypublisher", userId), URL_PIPER + H5_PUBLISHER_MANAGE + "?userId=" + userId));
-			appList.add(createApp("", languageChange.getValueByUserId("menu.a.gosub", userId), URL_PIPER + H5_SUBSCRIBE_ADD + "?userId=" + userId));
-			appList.add(createApp("", languageChange.getValueByUserId("menu.a.mysublist", userId), URL_PIPER + H5_SUBSCRIBE_LIST + "?userId=" + userId));
-
+			appList.add(createApp("", languageChange.getValueByUserId("menu.a.mypublisher", userId), languageChange.getUrl(URL_PIPER + H5_PUBLISHER_MANAGE, userId)));
+			appList.add(createApp("", languageChange.getValueByUserId("menu.a.gosub", userId), languageChange.getUrl(URL_PIPER + H5_SUBSCRIBE_ADD, userId)));
+			appList.add(createApp("", languageChange.getValueByUserId("menu.a.mysublist", userId), languageChange.getUrl(URL_PIPER + H5_SUBSCRIBE_LIST, userId)));
 		}
 		//游客，订阅者
 		if (PermissionEnums.Guest.name.equals(myRole)) {
-			appList.add(createApp("", languageChange.getValueByUserId("menu.a.createpublisher", userId), URL_PIPER + H5_PUBLISHER_CREATE + "?userId=" + userId));
-			appList.add(createApp("", languageChange.getValueByUserId("menu.a.gosub", userId), URL_PIPER + H5_SUBSCRIBE_ADD + "?userId=" + userId));
-			appList.add(createApp("", languageChange.getValueByUserId("menu.a.mysublist", userId), URL_PIPER + H5_SUBSCRIBE_LIST + "?userId=" + userId));
+			appList.add(createApp("", languageChange.getValueByUserId("menu.a.createpublisher", userId), languageChange.getUrl(URL_PIPER + H5_PUBLISHER_CREATE, userId)));
+			appList.add(createApp("", languageChange.getValueByUserId("menu.a.gosub", userId), languageChange.getUrl(URL_PIPER + H5_SUBSCRIBE_ADD, userId)));
+			appList.add(createApp("", languageChange.getValueByUserId("menu.a.mysublist", userId), languageChange.getUrl(URL_PIPER + H5_SUBSCRIBE_LIST, userId)));
 		}
 		return appList;
 	}
