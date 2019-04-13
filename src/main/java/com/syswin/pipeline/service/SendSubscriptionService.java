@@ -33,7 +33,10 @@ public class SendSubscriptionService {
 //			} else {
 //				sendMessegeService.sendCard(publisher.getPtemail(), userId, publisher.getName());
 //			}
-		sendMessegeService.sendTextmessage(languageChange.getValueByUserId("msg.adminsendtip", userId), userId, 0, publisher.getPtemail());
+		//给创建者发个消息
+		sendMessegeService.sendTextmessage(languageChange.getLangByUserId("msg.submotice", new String[]{userId}, publisher.getUserId()), publisher.getUserId(), publisher.getPtemail());
+
+		sendMessegeService.sendTextmessage(languageChange.getValueByUserId("msg.adminsendtip", userId), userId, publisher.getPtemail());
 
 	}
 }
