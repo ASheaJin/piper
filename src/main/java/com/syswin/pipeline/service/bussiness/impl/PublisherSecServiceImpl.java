@@ -143,7 +143,6 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 			// TODO: 2018/12/17 推送文章
 			try {
 				String fromTemail = publisher.getPtemail();
-				logger.info("Thread.currentThread().getName()--------" + Thread.currentThread().getName());
 //			fromTemail ="a_piper@systoontest.com";
 				//分别对不同类型的文章进行处理
 				if (body_type == 1) {
@@ -151,6 +150,7 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 					sendMessegeService.sendTextmessage(cont, orderUserId, fromTemail);
 				} else {
 					sendMessegeService.sendOthermessage(txt, body_type, orderUserId, fromTemail);
+					logger.info("Thread.currentThread().getName()--------" + Thread.currentThread().getName());
 
 				}
 				if (SwithUtil.ISLOG) {
