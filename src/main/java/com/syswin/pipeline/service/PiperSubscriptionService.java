@@ -259,6 +259,8 @@ public class PiperSubscriptionService {
 		}
 //		psClientService.sendTextmessage(publisher.getName() + "<" + publisher.getPtemail() + "> 订阅成功，作者即将推送文章", userId, 0);
 //		sendMessegeService.sendTextmessage("订阅成功，作者会在此为你发文章", userId, 0, publisher.getPtemail());
+		//给创建者发个消息
+		sendMessegeService.sendTextmessage(languageChange.getLangByUserId("msg.submotice", new String[]{userId}, publisher.getUserId()), publisher.getUserId(), publisher.getPtemail());
 
 		return subscription;
 

@@ -88,13 +88,13 @@ public class AMenusHandler implements EventHandler<MessageEvent> {
 		} catch (Exception e) {
 			logger.info("处理消息中的version字段失败", e);
 		}
-
-		myRole = consumerService.getAMenuRole(header.getReceiver());
-		String myVersion = consumerService.getUserVersion(header, version, myRole);
-		if (consumerService.getUserVersion(header)) {
+		if (!consumerService.getUserVersion(header)) {
 			String pdfInfo = "{\"format\":\"application/pdf\",\"url\":\"https://ucloud-file.t.email/%2F4c59630e22364c6eb303049d20bff8bf.zip\",\"pwd\":\"58184D47-DFD5-4BFA-A538-5BCA3F5FEB1C\",\"suffix\":\".pdf\",\"desc\":\"Piper操作手册.pdf\",\"size\":255784,\"percent\":100}";
 			sendMessegeService.sendOthermessage(pdfInfo, 14, header.getReceiver(), from);
 		}
+		myRole = consumerService.getAMenuRole(header.getReceiver());
+		String myVersion = consumerService.getUserVersion(header, version, myRole);
+
 		String beforeLang = deviceInfoService.getLang(header.getReceiver());
 		String appValue = "zh";
 		//先更新数据库，在判断中英文是否一致
