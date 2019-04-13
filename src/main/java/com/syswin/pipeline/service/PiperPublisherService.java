@@ -92,7 +92,6 @@ public class PiperPublisherService {
 
 			sendMessegeService.sendCard(ptemail, userId, "* " + name);
 			//注册了出版社后登陆下
-
 			sendMessegeService.sendTextmessage(languageChange.getLangByUserId("msg.pcreatetip", new String[]{name}, userId), userId, 0, ptemail);
 
 		} catch (Exception e) {

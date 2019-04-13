@@ -91,7 +91,9 @@ public class AMenusHandler implements EventHandler<MessageEvent> {
 
 		myRole = consumerService.getAMenuRole(header.getReceiver());
 		String myVersion = consumerService.getUserVersion(header, version, myRole);
-
+		if (consumerService.getUserVersion(header)) {
+			sendMessegeService.sendTextmessage("第一次进入发送操作说明", header.getReceiver());
+		}
 		String beforeLang = deviceInfoService.getLang(header.getReceiver());
 		String appValue = "zh";
 		//先更新数据库，在判断中英文是否一致

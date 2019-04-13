@@ -6,10 +6,8 @@ import com.syswin.pipeline.service.PiperSubscriptionService;
 import com.syswin.pipeline.service.psserver.bean.ResponseEntity;
 import com.syswin.pipeline.service.psserver.impl.BusinessException;
 import com.syswin.pipeline.service.security.TokenGenerator;
-import com.syswin.pipeline.utils.ExcelUtil;
-import com.syswin.pipeline.utils.LanguageChange;
-import com.syswin.pipeline.utils.PatternUtils;
-import com.syswin.pipeline.utils.StringUtils;
+import com.syswin.pipeline.utils.*;
+import com.syswin.sub.api.AdminService;
 import com.syswin.sub.api.db.model.Publisher;
 import com.syswin.sub.api.enums.PublisherTypeEnums;
 import io.swagger.annotations.Api;
@@ -34,6 +32,10 @@ public class PublisherController {
 
 	@Autowired
 	private TokenGenerator tokenGenerator;
+
+	@Autowired
+	AdminService adminService;
+
 	@Autowired
 	PiperPublisherService publisherService;
 	@Autowired
@@ -44,10 +46,19 @@ public class PublisherController {
 
 	@PostMapping("create")
 	@ApiOperation(
-					value = "创建出版社"
+					value = "创建个人/京交会出版社"
 	)
 	public ResponseEntity create(@RequestBody CreatePublisherParam createPublisher) {
 
+		String hasCreate = CacheUtil.get("create_" + createPublisher.getUserId());
+		if (StringUtils.isNullOrEmpty(hasCreate)) {
+			CacheUtil.put("create_" + createPublisher.getUserId(), "1");
+		} else {
+			throw new BusinessException("ex.publisher.creating");
+		}
+		if(PublisherTypeEnums.ciftis.equals(createPublisher.getPtype())){
+			adminService.add(null,createPublisher.getUserId(),PublisherTypeEnums.ciftis);
+		}
 
 		Publisher publisher = publisherService.addPublisher(createPublisher.getUserId(), createPublisher.getName(), null, createPublisher.getPtype() == null ? 0 : createPublisher.getPtype());
 		//回执创建完成消息
@@ -60,7 +71,7 @@ public class PublisherController {
 					value = "创建组织出版社"
 	)
 	public ResponseEntity createOrg(@RequestBody CreateOrgPublisher createPublisher) {
-
+		adminService.add(null,createPublisher.getUserId(),PublisherTypeEnums.organize);
 		Publisher publisher = publisherService.addPublisher(createPublisher.getUserId(), createPublisher.getName(), null, 2);
 		//回执创建完成消息
 		return new ResponseEntity(publisher);

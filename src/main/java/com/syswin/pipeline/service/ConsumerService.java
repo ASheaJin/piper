@@ -44,7 +44,7 @@ public class ConsumerService {
 			}
 
 		} else {
-			sendMessegeService.sendTextmessage("第一次进入发送操作说明", header.getReceiver());
+
 			consumer = new Consumer();
 			consumer.setCurversion(version);
 			consumer.setPtemail(header.getSender());
@@ -55,6 +55,15 @@ public class ConsumerService {
 		}
 
 		return String.valueOf(Integer.parseInt(version) + 1);
+	}
+
+	public boolean getUserVersion(Header header) {
+		ConsumerExample consumerExample = new ConsumerExample();
+		ConsumerExample.Criteria criteria = consumerExample.createCriteria();
+		criteria.andPtemailEqualTo(header.getSender()).andUserIdEqualTo((header.getReceiver()));
+		List<Consumer> consumerList = consumerRepository.selectByExample(consumerExample);
+
+		return consumerList.size() > 0;
 	}
 
 	public void updateUserVersion(Header header, String version, String myRole) {
