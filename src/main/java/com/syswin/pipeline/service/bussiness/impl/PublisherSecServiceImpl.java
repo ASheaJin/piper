@@ -200,8 +200,7 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 					sendMessegeService.sendTextmessage(languageChange.getValueByUserId("msg.ordertip", userId), userId, 0, publisher.getPtemail());
 				}
 			}
-		} else {
-			sendMessegeService.sendTextmessage(languageChange.getValueByUserId("msg.noreply", userId), userId, 1000, ptemail);
+				sendMessegeService.sendTextmessage(languageChange.getValueByUserId("msg.noreply", userId), userId, 1000, ptemail);
 //			sendMessegeService.sendTextmessage("您已订阅该出版社 发送 《取消订阅》 取消订阅该出版社", userId, 0, publisher.getPtemail());
 		}
 		//判断出版社是否存在
