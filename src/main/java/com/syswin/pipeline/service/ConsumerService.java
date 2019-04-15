@@ -3,7 +3,6 @@ package com.syswin.pipeline.service;
 import com.syswin.pipeline.db.model.Consumer;
 import com.syswin.pipeline.db.model.ConsumerExample;
 import com.syswin.pipeline.db.repository.ConsumerRepository;
-import com.syswin.pipeline.service.bussiness.impl.SendMessegeService;
 import com.syswin.sub.api.AdminService;
 import com.syswin.sub.api.PublisherService;
 import com.syswin.sub.api.db.model.Admin;
@@ -26,8 +25,6 @@ public class ConsumerService {
 
 	@Autowired
 	private AdminService adminService;
-	@Autowired
-	private SendMessegeService sendMessegeService;
 	@Autowired
 	private PublisherService publisherService;
 
