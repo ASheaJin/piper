@@ -32,13 +32,15 @@ public class RestResponseEntityExceptionHandler
 		ResponseEntity.BodyBuilder builder = ResponseEntity.status(HttpStatus.OK);
 		String lang = request.getHeader("lang");
 		if (ex instanceof SubException || ex instanceof BusinessException) {
-			logger.info("SubException | BusinessException: 业务异常  " + ex.getMessage(), ex);
 			String msg = languageChange.getLangByStr(ex.getMessage(), lang);
+			logger.info("SubException | BusinessException: 业务异常  " + msg == null ? ex.getMessage() : msg, ex);
+
 			return builder.body(new com.syswin.pipeline.service.psserver.bean.ResponseEntity("500", msg == null ? ex.getMessage() : msg));
 		} else {
-			logger.error("系统异常  " + ex.getMessage(), ex);
 			String msg = languageChange.getLangByStr("ex.system.err", lang);
-			return builder.body(new com.syswin.pipeline.service.psserver.bean.ResponseEntity("501", msg));
+			logger.error("系统异常  " + msg == null ? ex.getMessage() : msg, ex);
+
+			return builder.body(new com.syswin.pipeline.service.psserver.bean.ResponseEntity("501", msg == null ? ex.getMessage() : msg));
 		}
 	}
 }

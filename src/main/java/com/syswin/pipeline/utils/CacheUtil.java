@@ -22,6 +22,7 @@ public class CacheUtil {
 	private static Cache<String, String> myMap = CacheBuilder.newBuilder()
 					.expireAfterAccess(30L, TimeUnit.MINUTES)
 					.expireAfterWrite(30L, TimeUnit.MINUTES)
+
 					.concurrencyLevel(6)
 					.initialCapacity(1000)
 					.maximumSize(10000)

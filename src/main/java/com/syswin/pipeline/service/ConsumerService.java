@@ -66,6 +66,7 @@ public class ConsumerService {
 		return consumerList.size() > 0;
 	}
 
+
 	public void updateUserVersion(Header header, String version, String myRole) {
 		Consumer consumer = new Consumer();
 		consumer.setCurversion(version);

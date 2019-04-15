@@ -1,6 +1,7 @@
 package com.syswin.pipeline.service.message;
 
 import com.lmax.disruptor.EventHandler;
+import com.syswin.pipeline.db.model.DeviceInfo;
 import com.syswin.pipeline.db.repository.ConsumerRepository;
 import com.syswin.pipeline.enums.PermissionEnums;
 import com.syswin.pipeline.service.ConsumerService;
@@ -131,7 +132,7 @@ public class PMenusHandler implements EventHandler<MessageEvent> {
 		valueList.add(languageChange.getValueByUserId("menu.p.tip", header.getReceiver()));
 
 		keyList.add("features");
-		valueList.add(appFeaturesList());
+		valueList.add(appFeaturesList(header.getReceiver()));
 
 
 		Map<String, Object> replyMsgObject = null;
@@ -155,12 +156,27 @@ public class PMenusHandler implements EventHandler<MessageEvent> {
 	}
 
 	//加载默认按钮 http://wiki.syswin.com/pages/viewpage.action?pageId=33708676
-	private List<Map<String, Object>> appFeaturesList() {
+	private List<Map<String, Object>> appFeaturesList(String userId) {
 		List<Map<String, Object>> appList = new ArrayList<>();
-//		appList.add(createApp("", "#@" + 13, ""));
-		for (int i = 1; i < 10; i++) {
-			appList.add(createApp("", "#@" + i, ""));
+
+		appList.add(createApp("", "#@" + 1, ""));
+		appList.add(createApp("", "#@" + 2, ""));
+		appList.add(createApp("", "#@" + 5, ""));
+		appList.add(createApp("", "#@" + 6, ""));
+		appList.add(createApp("", "#@" + 8, ""));
+		appList.add(createApp("", "#@" + 10, ""));
+		//撰写,如果老版本不支持
+		DeviceInfo deviceInfo = deviceInfoService.getDeviceInfo(userId);
+		if (deviceInfo != null) {
+			if (Integer.parseInt(deviceInfo.getBuild()) > 1904005617) {
+				appList.add(createApp("", "#@" + 13, ""));
+			}
 		}
+
+//		appList.add(createApp("", "#@" + 13, ""));
+//		for (int i = 1; i < 10; i++) {
+//			appList.add(createApp("", "#@" + i, ""));
+//		}
 		return appList;
 	}
 
@@ -189,10 +205,11 @@ public class PMenusHandler implements EventHandler<MessageEvent> {
 
 		List<Map<String, Object>> appList = new ArrayList<>();
 
+		appList.add(createApp("", languageChange.getValueByUserId("menu.p.history", userId), languageChange.getUrl(URL_PIPER + "/web/history-list", userId) + "&publisherId=" + publiserId));
 		//既是组织管理者
 		if (PublisherTypeEnums.organize.equals(ptype)) {
-			appList.add(createApp("", languageChange.getValueByUserId("menu.p.managesub", userId), languageChange.getUrl(URL_PIPER + "/web/home", userId)));
-			appList.add(createApp("", languageChange.getValueByUserId("menu.p.accountupload", userId), languageChange.getUrl(URL_PIPER + "/h5/help/upload", userId)));
+			appList.add(createApp("", languageChange.getValueByUserId("menu.p.managesub", userId), languageChange.getUrl(URL_PIPER + "/web/home", userId) + "&publisherId=" + publiserId));
+			appList.add(createApp("", languageChange.getValueByUserId("menu.p.accountupload", userId), languageChange.getUrl(URL_PIPER + "/h5/help/upload", userId) + "&publisherId=" + publiserId));
 		}
 
 		return appList;

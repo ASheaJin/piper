@@ -160,7 +160,10 @@ public class PiperSubscriptionService {
 		if (publisher == null) {
 			throw new SubException("ex.publisher.null");
 		}
-		if (!publisher.getPtype().equals(ptype) || !publisher.getUserId().equals(ownerId)) {
+		if (!publisher.getPtype().equals(ptype) ) {
+			throw new SubException("ex.nosupport");
+		}
+		if (!publisher.getUserId().equals(ownerId)) {
 			throw new SubException("ex.needorganizer");
 		}
 		subSubscriptionService.unsubscribeByPubliserId(userId, publiserId);

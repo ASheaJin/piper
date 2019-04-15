@@ -91,4 +91,15 @@ public class DeviceInfoService {
 		return lang;
 	}
 
+
+	public DeviceInfo getDeviceInfo(String userId) {
+		DeviceInfoExample deviceInfoExample = new DeviceInfoExample();
+		DeviceInfoExample.Criteria criteria = deviceInfoExample.createCriteria();
+		criteria.andUseridEqualTo(userId);
+		List<DeviceInfo> deviceInfos = deviceInfoRepository.selectByExample(deviceInfoExample);
+		if(deviceInfos.size()>0){
+			return deviceInfos.get(0);
+		}
+		return null;
+	}
 }

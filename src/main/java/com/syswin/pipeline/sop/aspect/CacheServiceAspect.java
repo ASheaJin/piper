@@ -68,7 +68,7 @@ public class CacheServiceAspect {
 					throws Throwable {
 		String languageValue = LanguageCacheUtil.get(cacheKey);
 		if (LanguageCacheUtil.get(cacheKey) != null) {
-			log.info("{} enable cache service,has cacheKey:{} , return", point.getSignature(), cacheKey);
+			log.debug("{} enable cache service,has cacheKey:{} , return", point.getSignature(), cacheKey);
 			return languageValue;
 		} else {
 			Object result = null;
@@ -76,7 +76,7 @@ public class CacheServiceAspect {
 				return result = point.proceed();
 			} finally {
 				LanguageCacheUtil.put(cacheKey, String.valueOf(result));
-				log.info("after {} proceed,save result to cache,:{},save content:{}", point.getSignature(), cacheKey, result);
+				log.debug("after {} proceed,save result to cache,:{},save content:{}", point.getSignature(), cacheKey, result);
 			}
 		}
 	}
