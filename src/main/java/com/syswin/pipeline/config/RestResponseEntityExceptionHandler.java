@@ -33,7 +33,7 @@ public class RestResponseEntityExceptionHandler
 		String lang = request.getHeader("lang");
 		if (ex instanceof SubException || ex instanceof BusinessException) {
 			String msg = languageChange.getLangByStr(ex.getMessage(), lang);
-			logger.info("SubException | BusinessException: 业务异常  " + msg == null ? ex.getMessage() : msg == null ? ex.getMessage() : msg, ex);
+			logger.info("SubException | BusinessException: 业务异常  " + msg == null ? ex.getMessage() : msg == null ? ex.getMessage() : msg);
 
 			return builder.body(new com.syswin.pipeline.service.psserver.bean.ResponseEntity("500", msg == null ? ex.getMessage() : msg));
 		} else {
