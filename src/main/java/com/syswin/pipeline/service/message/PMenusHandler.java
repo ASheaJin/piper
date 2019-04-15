@@ -116,7 +116,7 @@ public class PMenusHandler implements EventHandler<MessageEvent> {
 			appValue = deviceInfoService.insertOrupdate(header.getReceiver(), appEnv);
 		}
 		//判断版本是否一致 并且语言是否一致
-		if (version.equals(myVersion)  && beforeLang.contains(appValue)) {
+		if (version.equals(myVersion) && beforeLang.contains(appValue)) {
 			//版本号相同，不做加载
 			return;
 		}
@@ -139,12 +139,9 @@ public class PMenusHandler implements EventHandler<MessageEvent> {
 		keyList.add("shortcuts");
 //判断当前用户是读者还是作者
 
-		if (header.getReceiver().equals(publisher.getUserId())) {
 
-			valueList.add(appList(publisher.getPtype(), publisher.getUserId(), publisher.getPublisherId()));
-		} else {
-			valueList.add(new ArrayList<>());
-		}
+		valueList.add(appList(publisher.getPtype(), publisher.getUserId(), publisher.getPublisherId()));
+
 		replyMsgObject = CollectionUtil.fastMap(keyList, valueList);
 		replyMsgObject.put("version", myVersion);
 		consumerService.updateUserVersion(header, myVersion, myRole);
