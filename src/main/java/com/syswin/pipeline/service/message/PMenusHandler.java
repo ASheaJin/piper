@@ -116,7 +116,7 @@ public class PMenusHandler implements EventHandler<MessageEvent> {
 			appValue = deviceInfoService.insertOrupdate(header.getReceiver(), appEnv);
 		}
 		//判断版本是否一致 并且语言是否一致
-		if (version.equals(myVersion) && appValue.equals(beforeLang)) {
+		if (version.equals(myVersion)  && beforeLang.contains(appValue)) {
 			//版本号相同，不做加载
 			return;
 		}
