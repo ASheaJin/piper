@@ -111,3 +111,33 @@ CREATE TABLE `sys_user_role` (
   PRIMARY KEY (`user_id`,`role_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户角色表';
 
+
+
+
+INSERT INTO `sys_menu` (`menu_id`,`parent_id`,`name`,`url`,`is_leaf`,`sort`,`status`,`create_time`) VALUES (1,-1,'系统设置','system',2,100,1,1);
+INSERT INTO `sys_menu` (`menu_id`,`parent_id`,`name`,`url`,`is_leaf`,`sort`,`status`,`create_time`) VALUES (2,1,'角色管理','role',1,10,1,1);
+INSERT INTO `sys_menu` (`menu_id`,`parent_id`,`name`,`url`,`is_leaf`,`sort`,`status`,`create_time`) VALUES (3,1,'菜单管理','menu',1,20,1,1);
+INSERT INTO `sys_menu` (`menu_id`,`parent_id`,`name`,`url`,`is_leaf`,`sort`,`status`,`create_time`) VALUES (4,1,'用户管理','user',1,30,1,1);
+INSERT INTO `sys_menu` (`menu_id`,`parent_id`,`name`,`url`,`is_leaf`,`sort`,`status`,`create_time`) VALUES (100,-1,'piper管理','mgr',2,200,1,1);
+INSERT INTO `sys_menu` (`menu_id`,`parent_id`,`name`,`url`,`is_leaf`,`sort`,`status`,`create_time`) VALUES (101,100,'邮件组管理员','group_mgr',1,10,1,1);
+INSERT INTO `sys_menu` (`menu_id`,`parent_id`,`name`,`url`,`is_leaf`,`sort`,`status`,`create_time`) VALUES (102,100,'出版社管理','publisher_mgr',1,20,1,1);
+INSERT INTO `sys_menu` (`menu_id`,`parent_id`,`name`,`url`,`is_leaf`,`sort`,`status`,`create_time`) VALUES (103,100,'出版社推荐','publisher_recommand',1,30,1,1);
+
+INSERT INTO `sys_role` (`role_id`,`role_name`,`remark`,`status`,`create_time`,`creator_id`,`role_type`) VALUES (1,'系统管理员','',1,1554348270,1,1);
+INSERT INTO `sys_role` (`role_id`,`role_name`,`remark`,`status`,`create_time`,`creator_id`,`role_type`) VALUES (2,'普通用户','',1,1,1,2);
+INSERT INTO `sys_role` (`role_id`,`role_name`,`remark`,`status`,`create_time`,`creator_id`,`role_type`) VALUES (3,'出版社管理','',1,1,1,2);
+
+INSERT INTO `sys_user` (`user_id`,`login_name`,`user_name`,`password`,`email`,`remark`,`status`,`create_time`,`creator_id`,`is_sys`,`salt`) VALUES (1,'admin','admin','28f57e49f0ae02b99665726ad3a7aa98','weihongyi@syswin.com','333',1,1554286347,1,1,'');
+
+INSERT INTO `sys_role_menu` (`role_id`,`menu_id`) VALUES (1,1);
+INSERT INTO `sys_role_menu` (`role_id`,`menu_id`) VALUES (1,2);
+INSERT INTO `sys_role_menu` (`role_id`,`menu_id`) VALUES (1,3);
+INSERT INTO `sys_role_menu` (`role_id`,`menu_id`) VALUES (1,4);
+INSERT INTO `sys_role_menu` (`role_id`,`menu_id`) VALUES (1,100);
+INSERT INTO `sys_role_menu` (`role_id`,`menu_id`) VALUES (1,101);
+INSERT INTO `sys_role_menu` (`role_id`,`menu_id`) VALUES (1,102);
+INSERT INTO `sys_role_menu` (`role_id`,`menu_id`) VALUES (1,103);
+INSERT INTO `sys_role_menu` (`role_id`,`menu_id`) VALUES (1,104);
+INSERT INTO `sys_role_menu` (`role_id`,`menu_id`) VALUES (1,152);
+
+insert into `sys_user_role` VALUES (1, 1);
