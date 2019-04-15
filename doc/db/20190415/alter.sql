@@ -121,7 +121,6 @@ INSERT INTO `sys_menu` (`menu_id`,`parent_id`,`name`,`url`,`is_leaf`,`sort`,`sta
 INSERT INTO `sys_menu` (`menu_id`,`parent_id`,`name`,`url`,`is_leaf`,`sort`,`status`,`create_time`) VALUES (100,-1,'piper管理','mgr',2,200,1,1);
 INSERT INTO `sys_menu` (`menu_id`,`parent_id`,`name`,`url`,`is_leaf`,`sort`,`status`,`create_time`) VALUES (101,100,'邮件组管理员','group_mgr',1,10,1,1);
 INSERT INTO `sys_menu` (`menu_id`,`parent_id`,`name`,`url`,`is_leaf`,`sort`,`status`,`create_time`) VALUES (102,100,'出版社管理','publisher_mgr',1,20,1,1);
-INSERT INTO `sys_menu` (`menu_id`,`parent_id`,`name`,`url`,`is_leaf`,`sort`,`status`,`create_time`) VALUES (103,100,'出版社推荐','publisher_recommand',1,30,1,1);
 
 INSERT INTO `sys_role` (`role_id`,`role_name`,`remark`,`status`,`create_time`,`creator_id`,`role_type`) VALUES (1,'系统管理员','',1,1554348270,1,1);
 INSERT INTO `sys_role` (`role_id`,`role_name`,`remark`,`status`,`create_time`,`creator_id`,`role_type`) VALUES (2,'普通用户','',1,1,1,2);
