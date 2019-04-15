@@ -11,6 +11,7 @@ import com.syswin.sub.api.db.model.Content;
 import com.syswin.sub.api.db.model.ContentOut;
 import com.syswin.sub.api.db.model.Publisher;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -23,6 +24,8 @@ import java.util.stream.Collectors;
 @Service
 public class PiperContentService {
 
+	@Value("${url.piper}")
+	private String URL_PIPER;
 	@Autowired
 	private ContentOutService contentOutService;
 	@Autowired
@@ -42,12 +45,14 @@ public class PiperContentService {
 			reCommendContents = reCommendContentRepository.selectByContentIds(cids);
 		}
 		for (ContentOut contentOut : contentOuts) {
+			String url = URL_PIPER + "/web/recommend-details?contentId=" + contentOut.getContentId() + "&publisherId=" + contentOut.getPublisherId() + "&userId=luohongzhou1@syswim.com";
+
 			ContentOutput output = new ContentOutput();
 			output.setContentId(contentOut.getContentId());
 			output.setCreateTime(String.valueOf(contentOut.getCreateTime()));
 			output.setListdesc(contentOut.getListdesc());
 			//Todo 此处要修改为H5 链接
-			output.setDecUrl("www.baidu.com/" + contentOut.getContentId());
+			output.setDecUrl(url);
 			output.setPublisherId(contentOut.getPublisherId());
 			if (reCommendContents != null) {
 				for (ReCommendContent rcd : reCommendContents) {
