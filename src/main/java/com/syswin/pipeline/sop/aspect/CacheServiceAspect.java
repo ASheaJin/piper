@@ -79,9 +79,17 @@ public class CacheServiceAspect {
 			log.debug("{} enable cache service,has cacheKey:{} , return", point.getSignature(), cacheKey);
 			return lang;
 		} else {
-			Object result = null;
+			Object  result = point.proceed();
+			String lang = "zh";
+			if (String.valueOf(result).contains("zh")) {
+				lang = "zh";
+			}
+
+			if (String.valueOf(result).contains("en")) {
+				lang = "en";
+			}
 			try {
-				return result = point.proceed();
+				return lang;
 			} finally {
 				LanguageCacheUtil.put(cacheKey, String.valueOf(result));
 				log.debug("after {} proceed,save result to cache,:{},save content:{}", point.getSignature(), cacheKey, result);
@@ -95,18 +103,19 @@ public class CacheServiceAspect {
 	private Object processUpdate(ProceedingJoinPoint point, String cacheKey)
 					throws Throwable {
 		//通常来讲,数据库update操作后,只需删除掉原来在缓存中的数据,下次查询时就会刷新
-		Object result = null;
-		try {
-			return result = point.proceed();
-		} finally {
-			String lang = "zh";
-			if (String.valueOf(result).contains("zh")) {
-				lang = "zh";
-			}
+		Object result = point.proceed();
+		String lang = "zh";
+		if (String.valueOf(result).contains("zh")) {
+			lang = "zh";
+		}
 
-			if (String.valueOf(result).contains("en")) {
-				lang = "en";
-			}
+		if (String.valueOf(result).contains("en")) {
+			lang = "en";
+		}
+		try {
+			return lang;
+		} finally {
+
 			String languageValue = LanguageCacheUtil.get(cacheKey);
 			if (result == null || !result.equals(languageValue)) {
 				LanguageCacheUtil.put(cacheKey, lang);
