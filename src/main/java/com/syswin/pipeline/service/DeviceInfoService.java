@@ -86,7 +86,13 @@ public class DeviceInfoService {
 		List<DeviceInfo> deviceInfos = deviceInfoRepository.selectByExample(deviceInfoExample);
 		String lang = "zh";
 		if (deviceInfos.size() > 0) {
-			lang = deviceInfos.get(0).getLanguage();
+			if(deviceInfos.get(0).getLanguage().contains("zh")){
+				lang = "zh";
+			}
+
+			if(deviceInfos.get(0).getLanguage().contains("en")){
+				lang = "en";
+			}
 		}
 		return lang;
 	}
