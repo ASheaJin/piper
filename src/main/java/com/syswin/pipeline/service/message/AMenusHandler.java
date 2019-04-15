@@ -35,7 +35,7 @@ public class AMenusHandler implements EventHandler<MessageEvent> {
 	private static final String MY_PUBLISHER = "/web/my-publish";
 	//切换为推荐广场
 	private static final String SUBSCRIBE_ADD = "/web/recommend-list";
-	private static final String SUBSCRIBE_LIST = "/web/subcribe-list";
+	private static final String SUBSCRIBE_LIST = "/web/subscribe-list";
 
 	@Value("${url.piper}")
 	private String URL_PIPER;

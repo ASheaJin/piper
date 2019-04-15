@@ -120,7 +120,7 @@ public class PiperRecommendPublisherService {
 		}
 		ReCommendPublisher reCommendPublisher = reCommendPublisherRepository.selectByPublisherId(publisherId);
 		if (reCommendPublisher != null) {
-			throw new BusinessException("ex.hascommend=");
+			throw new BusinessException("ex.hascommend");
 		}
 		Publisher publisher = publisherService.getPubLisherById(publisherId);
 		if (publisher == null) {
