@@ -16,6 +16,7 @@ import com.syswin.sub.api.db.model.ContentOut;
 import com.syswin.sub.api.db.model.Publisher;
 import com.syswin.sub.api.enums.PublisherTypeEnums;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -40,6 +41,9 @@ public class PiperRecommendContentService {
 	@Autowired
 	private ContentOutService contentOutService;
 
+	@Value("${url.piper}")
+	private String URL_PIPER;
+
 	@Autowired
 	private com.syswin.sub.api.PublisherService subPublisherService;
 
@@ -63,13 +67,13 @@ public class PiperRecommendContentService {
 			publisers = publisherService.selectListByIds(pids, 0, 0);
 		}
 		for (ContentOut contentOut : contentOuts) {
+			String url = URL_PIPER + "/web/recommend-details?contentId=" + contentOut.getContentId() + "&publisherId=" + contentOut.getPublisherId() + "&userId=" + userId;
 			ContentOutput output = new ContentOutput();
 			output.setContentId(contentOut.getContentId());
 			output.setCreateTime(String.valueOf(contentOut.getCreateTime()));
 			output.setListdesc(contentOut.getListdesc());
 			output.setHasRecommend("1");
-			//Todo 此处要修改为H5 链接
-			output.setDecUrl("www.baidu.com/" + contentOut.getContentId());
+			output.setDecUrl(url);
 			output.setPublisherId(contentOut.getPublisherId());
 			if (publisers != null) {
 				for (Publisher p : publisers) {
@@ -105,7 +109,7 @@ public class PiperRecommendContentService {
 		if (publisher == null) {
 			throw new BusinessException("ex.publisher.null");
 		}
-		if (!publisher.getPtype().equals(PublisherTypeEnums.ciftis)) {
+		if (publisher.getPtype().equals(PublisherTypeEnums.organize)) {
 			throw new BusinessException("ex.nosupport");
 		}
 
