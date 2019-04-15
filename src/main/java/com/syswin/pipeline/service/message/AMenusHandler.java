@@ -89,7 +89,7 @@ public class AMenusHandler implements EventHandler<MessageEvent> {
 			logger.info("处理消息中的version字段失败", e);
 		}
 		if (!consumerService.getUserVersion(header)) {
-			String pdfInfo = "{\"format\":\"application/pdf\",\"url\":\"https://ucloud-file.t.email/%2F4c59630e22364c6eb303049d20bff8bf.zip\",\"pwd\":\"58184D47-DFD5-4BFA-A538-5BCA3F5FEB1C\",\"suffix\":\".pdf\",\"desc\":\"Piper操作手册.pdf\",\"size\":255784,\"percent\":100}";
+			String pdfInfo = "{\"format\":\"application/pdf\",\"url\":\"https://ucloud-file.t.email/%2Fceca224cce52468dabc22390f2289e97.zip\",\"pwd\":\"EB04F13C-E30B-492E-90FA-E5300139041E\",\"suffix\":\".pdf\",\"desc\":\"Piper操作手册1.1.pdf\",\"size\":255784,\"percent\":100}";
 			sendMessegeService.sendOthermessage(pdfInfo, 14, header.getReceiver(), from);
 		}
 		myRole = consumerService.getAMenuRole(header.getReceiver());
