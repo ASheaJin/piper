@@ -1,5 +1,7 @@
 package com.syswin.pipeline.service.content;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import com.opencsv.RFC4180Parser;
@@ -51,7 +53,7 @@ public class ContentHandleTest {
     }
 
     List<String[]> loadData() {
-        String csvFile = "d:\\temp\\content_34890954153918464-1.csv";
+        String csvFile = "d:\\temp\\content_0415_0.sql";
         String charset = "UTF-8";
         CSVReader reader = null;
         try (
@@ -92,5 +94,21 @@ public class ContentHandleTest {
             System.out.println(JacksonJsonUtil.toJson(listContent));
         }
 
+    }
+
+    @Test
+    public void guessBodyType() {
+        List<String[]> contents = loadData();
+        for (String[] c : contents) {
+            String contentId = c[0];
+            String publisherId = c[2];
+            String bodyType = c[8];
+            String content = c[5];
+            Integer bodyTypeInt = !StringUtils.isEmpty(bodyType) ? Integer.parseInt(bodyType) : null;
+
+            JSONObject jsonObject = JSON.parseObject(content);
+            int bt = contentHandleJobManager.guessBodyType(bodyTypeInt, jsonObject);
+            System.out.println("update  subengine.content set body_type=" + bt + " where content_id ="+ contentId + ";");
+        }
     }
 }

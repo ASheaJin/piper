@@ -226,7 +226,7 @@ public class ContentHandleJobManager {
      * @param jsonObject
      * @return
      */
-    private Integer guessBodyType(Integer bodyType, JSONObject jsonObject) {
+    public Integer guessBodyType(Integer bodyType, JSONObject jsonObject) {
         if (bodyType != null && !bodyType.equals(0)) {
             return bodyType;
         }
