@@ -6,7 +6,7 @@
 
 	<groupId>com.syswin.pipeline</groupId>
 	<artifactId>piper</artifactId>
-	<version>1.44-SNAPSHOT</version>
+	<version>1.5.2-SNAPSHOT</version>
 
 	<name>${project.artifactId}</name>
 	<description>pipeline</description>
@@ -144,7 +144,7 @@
 		<dependency>
 			<groupId>com.syswin.sub</groupId>
 			<artifactId>SubEngine</artifactId>
-			<version>1.0.2-SNAPSHOT</version>
+			<version>1.0.3-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
