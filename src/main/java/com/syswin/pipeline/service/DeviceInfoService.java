@@ -44,7 +44,15 @@ public class DeviceInfoService {
 		} else {
 			deviceInfoRepository.insert(deviceInfo);
 		}
-		return appEnv.getLanguage();
+		String langValue = "zh";
+		if (appEnv.getLanguage().contains("zh")) {
+			langValue = "zh";
+		}
+
+		if (appEnv.getLanguage().contains("en")) {
+			langValue = "en";
+		}
+		return langValue;
 	}
 
 	@EnableCacheService(keyPrefix = "lang_",
@@ -61,7 +69,15 @@ public class DeviceInfoService {
 				deviceInfo.setLanguage(lang);
 				deviceInfoRepository.updateByExampleSelective(deviceInfo, deviceInfoExample);
 			}
-			return lang;
+			String langValue = "zh";
+			if (lang.contains("zh")) {
+				langValue = "zh";
+			}
+
+			if (lang.contains("en")) {
+				langValue = "en";
+			}
+			return langValue;
 		}
 		deviceInfo = new DeviceInfo();
 		deviceInfo.setLanguage(lang);
@@ -72,8 +88,15 @@ public class DeviceInfoService {
 		deviceInfo.setPlatform(platform);
 		deviceInfo.setModuleversion(moduleVersion);
 		deviceInfoRepository.insert(deviceInfo);
+		String langValue = "zh";
+		if (lang.contains("zh")) {
+			langValue = "zh";
+		}
 
-		return lang;
+		if (lang.contains("en")) {
+			langValue = "en";
+		}
+		return langValue;
 	}
 
 
