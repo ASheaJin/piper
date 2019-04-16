@@ -24,7 +24,21 @@ public class LanguageChange {
 
 
 	public String getLang(String userId) {
-		return deviceInfoService.getLang(userId);
+		String result = deviceInfoService.getLang(userId);
+		if (StringUtils.isNullOrEmpty(result)) {
+			return "zh";
+		}
+		;
+		String lang = "zh";
+		if (result.contains("zh")) {
+			lang = "zh";
+		}
+
+		if (result.contains("en")) {
+			lang = "en";
+		}
+
+		return lang;
 	}
 
 	public String getLangByUserId(String key, @Nullable Object[] args, String userId) {

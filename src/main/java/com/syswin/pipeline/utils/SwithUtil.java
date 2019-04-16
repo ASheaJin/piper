@@ -36,6 +36,20 @@ public class SwithUtil {
 		return true;
 	}
 
+	public static String changeCommonLang(String lan) {
+		String changeLang = "zh";
+		if (StringUtils.isEmpty(lan)) {
+			return changeLang;
+		}
+		if (lan.contains("zh")) {
+			return changeLang;
+		}
+		if (lan.contains("en")) {
+			return "en";
+		}
+		return changeLang;
+	}
+
 	public static void main(String[] args) {
 		System.out.println(isLessTenLength("张三李四王二麻子"));
 	}

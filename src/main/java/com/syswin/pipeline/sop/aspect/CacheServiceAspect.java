@@ -3,6 +3,7 @@ package com.syswin.pipeline.sop.aspect;
 import com.alibaba.druid.util.StringUtils;
 import com.syswin.pipeline.sop.EnableCacheService;
 import com.syswin.pipeline.utils.LanguageCacheUtil;
+import com.syswin.pipeline.utils.SwithUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -67,32 +68,18 @@ public class CacheServiceAspect {
 	private Object processQuery(ProceedingJoinPoint point, EnableCacheService cacheServiceAnnotation, String cacheKey)
 					throws Throwable {
 		String languageValue = LanguageCacheUtil.get(cacheKey);
-		if (LanguageCacheUtil.get(cacheKey) != null) {
-			String lang = "zh";
-			if (languageValue.contains("zh")) {
-				lang = "zh";
-			}
-
-			if (languageValue.contains("en")) {
-				lang = "en";
-			}
+		if (!StringUtils.isEmpty(languageValue)) {
+			String lang = SwithUtil.changeCommonLang(String.valueOf(languageValue));
 			log.debug("{} enable cache service,has cacheKey:{} , return", point.getSignature(), cacheKey);
 			return lang;
 		} else {
-			Object  result = point.proceed();
-			String lang = "zh";
-			if (String.valueOf(result).contains("zh")) {
-				lang = "zh";
-			}
-
-			if (String.valueOf(result).contains("en")) {
-				lang = "en";
-			}
+			Object result = point.proceed();
+			String lang = SwithUtil.changeCommonLang(String.valueOf(result));
 			try {
 				return lang;
 			} finally {
-				LanguageCacheUtil.put(cacheKey, String.valueOf(result));
-				log.debug("after {} proceed,save result to cache,:{},save content:{}", point.getSignature(), cacheKey, result);
+				LanguageCacheUtil.put(cacheKey, lang);
+				log.debug("after {} proceed,save result to cache,:{},save content:{}", point.getSignature(), cacheKey, lang);
 			}
 		}
 	}
@@ -104,20 +91,13 @@ public class CacheServiceAspect {
 					throws Throwable {
 		//通常来讲,数据库update操作后,只需删除掉原来在缓存中的数据,下次查询时就会刷新
 		Object result = point.proceed();
-		String lang = "zh";
-		if (String.valueOf(result).contains("zh")) {
-			lang = "zh";
-		}
-
-		if (String.valueOf(result).contains("en")) {
-			lang = "en";
-		}
+		String lang = SwithUtil.changeCommonLang(String.valueOf(result));
 		try {
 			return lang;
 		} finally {
 
 			String languageValue = LanguageCacheUtil.get(cacheKey);
-			if (result == null || !result.equals(languageValue)) {
+			if (result == null || !lang.equals(languageValue)) {
 				LanguageCacheUtil.put(cacheKey, lang);
 			}
 		}

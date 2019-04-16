@@ -127,10 +127,10 @@ public class StringUtils {
 		if (StringUtils.isNullOrEmpty(ret)) {
 			return ret;
 		}
-		ret= ret.replaceAll("\\[","").replaceAll("\\]","").
-						replaceAll("\\{","").replaceAll("\\}","").
-						replaceAll("\\(","").replaceAll("\\)","").
-						replaceAll("\\,","").replaceAll("\\，","").trim();
+		ret = ret.replaceAll("\\[", "").replaceAll("\\]", "").
+						replaceAll("\\{", "").replaceAll("\\}", "").
+						replaceAll("\\(", "").replaceAll("\\)", "").
+						replaceAll("\\,", "").replaceAll("\\，", "").trim();
 		return ret;
 	}
 
@@ -214,4 +214,6 @@ public class StringUtils {
 		String ss = filterStr("{\"text\":\"Yhh\"}");
 		System.out.println(ss);
 	}
+
+
 }

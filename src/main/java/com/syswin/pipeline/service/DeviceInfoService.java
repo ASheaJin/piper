@@ -44,15 +44,8 @@ public class DeviceInfoService {
 		} else {
 			deviceInfoRepository.insert(deviceInfo);
 		}
-		String langValue = "zh";
-		if (appEnv.getLanguage().contains("zh")) {
-			langValue = "zh";
-		}
 
-		if (appEnv.getLanguage().contains("en")) {
-			langValue = "en";
-		}
-		return langValue;
+		return appEnv.getLanguage();
 	}
 
 	@EnableCacheService(keyPrefix = "lang_",
@@ -69,15 +62,7 @@ public class DeviceInfoService {
 				deviceInfo.setLanguage(lang);
 				deviceInfoRepository.updateByExampleSelective(deviceInfo, deviceInfoExample);
 			}
-			String langValue = "zh";
-			if (lang.contains("zh")) {
-				langValue = "zh";
-			}
-
-			if (lang.contains("en")) {
-				langValue = "en";
-			}
-			return langValue;
+			return lang;
 		}
 		deviceInfo = new DeviceInfo();
 		deviceInfo.setLanguage(lang);
@@ -88,15 +73,7 @@ public class DeviceInfoService {
 		deviceInfo.setPlatform(platform);
 		deviceInfo.setModuleversion(moduleVersion);
 		deviceInfoRepository.insert(deviceInfo);
-		String langValue = "zh";
-		if (lang.contains("zh")) {
-			langValue = "zh";
-		}
-
-		if (lang.contains("en")) {
-			langValue = "en";
-		}
-		return langValue;
+		return lang;
 	}
 
 
@@ -107,17 +84,10 @@ public class DeviceInfoService {
 		DeviceInfoExample.Criteria criteria = deviceInfoExample.createCriteria();
 		criteria.andUseridEqualTo(userId);
 		List<DeviceInfo> deviceInfos = deviceInfoRepository.selectByExample(deviceInfoExample);
-		String lang = "zh";
 		if (deviceInfos.size() > 0) {
-			if(deviceInfos.get(0).getLanguage().contains("zh")){
-				lang = "zh";
-			}
-
-			if(deviceInfos.get(0).getLanguage().contains("en")){
-				lang = "en";
-			}
+			return deviceInfos.get(0).getLanguage();
 		}
-		return lang;
+		return "zh";
 	}
 
 
@@ -126,7 +96,7 @@ public class DeviceInfoService {
 		DeviceInfoExample.Criteria criteria = deviceInfoExample.createCriteria();
 		criteria.andUseridEqualTo(userId);
 		List<DeviceInfo> deviceInfos = deviceInfoRepository.selectByExample(deviceInfoExample);
-		if(deviceInfos.size()>0){
+		if (deviceInfos.size() > 0) {
 			return deviceInfos.get(0);
 		}
 		return null;
