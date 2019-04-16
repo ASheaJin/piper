@@ -161,7 +161,7 @@ public class PMenusHandler implements EventHandler<MessageEvent> {
 		appList.add(createApp("", "#@" + 5, ""));
 		appList.add(createApp("", "#@" + 6, ""));
 		appList.add(createApp("", "#@" + 8, ""));
-		appList.add(createApp("", "#@" + 10, ""));
+//		appList.add(createApp("", "#@" + 10, ""));
 		//撰写,如果老版本不支持
 		DeviceInfo deviceInfo = deviceInfoService.getDeviceInfo(userId);
 		if (deviceInfo != null) {
