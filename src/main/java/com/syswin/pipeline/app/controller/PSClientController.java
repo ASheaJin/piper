@@ -98,23 +98,25 @@ public class PSClientController {
 	)
 	public List createPublicKey() {
 
-		List<CreateUser> createUserList = new ArrayList<>();
-		CreateUser createUser = new CreateUser();
+		List<String> createUserList = new ArrayList<>();
 		String senderTemail = null;
 		senderTemail = ("a.piper@support2technical.me").trim();
 //			String pub = psClientService.getTemailPublicKey(senderTemail);
 		String pk = psClientService.registerPub(senderTemail);
-		createUser.mail = senderTemail;
-		createUser.pk = pk;
-		createUserList.add(createUser);
+		String sendertt = "INSERT INTO `user_temail` (temail, user_id, ALGORITHM, TYPE, domain, create_time, update_time) VALUES ('%s', '%s', 1, 4, 'support2technical.me', UNIX_TIMESTAMP(NOW())*1000, UNIX_TIMESTAMP(NOW())*1000);";
+//			String pub = psClientService.getTemailPublicKey(senderTemail);
+		String tt = String.format(sendertt, "a.piper@support2technical.me", pk);
+
+		createUserList.add(tt);
 		for (int i = 1; i < 301; i++) {
 //			senderTemail="p."+(10000000+i)+"@systoontest.com";
 			senderTemail = ("p." + (10000000 + i) + "@support2technical.me").trim();
 //			String pub = psClientService.getTemailPublicKey(senderTemail);
-			psClientService.registerPub(senderTemail);
-			createUser.mail = senderTemail;
-			createUser.pk = pk;
-			createUserList.add(createUser);
+			pk = psClientService.registerPub(senderTemail);
+			sendertt = "INSERT INTO `user_temail` (temail, user_id, ALGORITHM, TYPE, domain, create_time, update_time) VALUES ('%s', '%s', 1, 4, 'support2technical.me', UNIX_TIMESTAMP(NOW())*1000, UNIX_TIMESTAMP(NOW())*1000);";
+//			String pub = psClientService.getTemailPublicKey(senderTemail);
+			tt = String.format(sendertt, senderTemail, pk);
+			createUserList.add(tt);
 		}
 
 		return createUserList;
@@ -127,26 +129,21 @@ public class PSClientController {
 	)
 	public List createTest() {
 
-		List<CreateUser> createUserList = new ArrayList<>();
-		CreateUser createUser = new CreateUser();
-		String senderTemail = null;
-		senderTemail = ("a.piper@support2technical.me").trim();
+		List<String> createUserList = new ArrayList<>();
+		String sendertt = "INSERT INTO `user_temail` (temail, user_id, ALGORITHM, TYPE, domain, create_time, update_time) VALUES ('%s', '%s', 1, 4, \"support2technical.me\", UNIX_TIMESTAMP(NOW())*1000, UNIX_TIMESTAMP(NOW())*1000);";
 //			String pub = psClientService.getTemailPublicKey(senderTemail);
-		createUser.mail = senderTemail;
-		createUser.pk = "1234";
-		createUserList.add(createUser);
+		String tt = String.format(sendertt, "a.piper@support2technical.me", "111");
+		createUserList.add(tt);
 		for (int i = 1; i < 301; i++) {
 //			senderTemail="p."+(10000000+i)+"@systoontest.com";
-			senderTemail = ("p." + (10000000 + i) + "@support2technical.me").trim();
 //			String pub = psClientService.getTemailPublicKey(senderTemail);
-			psClientService.registerPub(senderTemail);
-			createUser.mail = senderTemail;
-			createUser.pk = "1234"+i;
-			createUserList.add(createUser);
+			tt = String.format(sendertt, ("p." + (10000000 + i) + "@support2technical.me").trim(), "111");
+			createUserList.add(tt);
 		}
 
 		return createUserList;
 	}
+
 	class CreateUser {
 		public String mail;
 		public String pk;
