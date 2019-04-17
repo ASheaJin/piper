@@ -10,12 +10,12 @@ import com.syswin.pipeline.service.ps.util.ValidationUtil;
 import com.syswin.pipeline.service.psserver.impl.BusinessException;
 import com.syswin.pipeline.utils.LanguageChange;
 import com.syswin.pipeline.utils.PatternUtils;
+import com.syswin.pipeline.utils.PromissionUtil;
 import com.syswin.pipeline.utils.StringUtils;
 import com.syswin.sub.api.AdminService;
 import com.syswin.sub.api.db.model.Admin;
 import com.syswin.sub.api.db.model.Publisher;
 import com.syswin.sub.api.enums.PublisherTypeEnums;
-import com.syswin.sub.api.exceptions.SubException;
 import com.syswin.sub.api.utils.EnumsUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,6 +55,9 @@ public class PiperPublisherService {
 	@Autowired
 	private com.syswin.sub.api.PublisherService subPublisherService;
 
+	@Value("${domain.promission}")
+	private String domain;
+
 	/**
 	 * 创建出版社
 	 *
@@ -68,6 +71,10 @@ public class PiperPublisherService {
 		}
 		if (!ValidationUtil.isChineseCharNum(name)) {
 			throw new BusinessException("ex.name.invalid");
+		}
+		//域过滤
+		if (!PromissionUtil.getdomains(domain, userId)) {
+			throw new BusinessException(languageChange.getLangByUserId("ex.demain.err", new String[]{userId, domain}, userId));
 		}
 		// TODO: 2019/3/29 后期加入靓号处理
 		String ptemail = pmail;
@@ -95,7 +102,7 @@ public class PiperPublisherService {
 			sendMessegeService.sendTextmessage(languageChange.getLangByUserId("msg.pcreatetip", new String[]{name}, userId), userId, 0, ptemail);
 
 		} catch (Exception e) {
-			logger.error(e.getMessage()+"PS连接异常", ptemail, e);
+			logger.error(e.getMessage() + "PS连接异常", ptemail, e);
 		}
 		return publisher;
 	}

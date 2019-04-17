@@ -7,6 +7,7 @@ import com.syswin.pipeline.manage.dto.input.PublisherListParam;
 import com.syswin.pipeline.manage.dto.input.AddPublisherParam;
 import com.syswin.pipeline.service.PiperPublisherService;
 import com.syswin.pipeline.service.psserver.bean.ResponseEntity;
+import com.syswin.pipeline.utils.PromissionUtil;
 import com.syswin.pipeline.utils.StringUtils;
 import com.syswin.sub.api.AdminService;
 import com.syswin.sub.api.db.model.Admin;
@@ -16,6 +17,7 @@ import com.syswin.sub.api.utils.EnumsUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -39,6 +41,9 @@ public class PublisherInnerController {
 	private HeaderService headerService;
 	@Autowired
 	private AdminService adminService;
+
+	@Value("${pipertype.promission}")
+	private String piperPro;
 
 	@PostMapping("/list")
 	@ApiOperation(
@@ -67,27 +72,35 @@ public class PublisherInnerController {
 			return new ResponseEntity(EnumsUtil.toList());
 		} else {
 			List list = new ArrayList();
-			Map<String, Object> map = new HashMap();
-			map.put("code", PublisherTypeEnums.person.getCode());
-			map.put("name", PublisherTypeEnums.person.getName());
-			Map<String, Object> map1 = new HashMap();
-			map1.put("code", PublisherTypeEnums.feedpublish.getCode());
-			map1.put("name", PublisherTypeEnums.feedpublish.getName());
-			list.add(map);
-			list.add(map1);
-			Admin admin = adminService.getAdmin(manageId, PublisherTypeEnums.organize);
-			if (admin != null) {
-				Map<String, Object> map2 = new HashMap();
-				map2.put("code", PublisherTypeEnums.organize.getCode());
-				map2.put("name", PublisherTypeEnums.organize.getName());
-				list.add(map2);
+			if (PromissionUtil.getPipterPromission(piperPro, "person")) {
+				Map<String, Object> map = new HashMap();
+				map.put("code", PublisherTypeEnums.person.getCode());
+				map.put("name", PublisherTypeEnums.person.getName());
+				list.add(map);
 			}
-			Admin admin1 = adminService.getAdmin(manageId, PublisherTypeEnums.ciftis);
-			if (admin1 != null) {
-				Map<String, Object> map2 = new HashMap();
-				map2.put("code", PublisherTypeEnums.ciftis.getCode());
-				map2.put("name", PublisherTypeEnums.ciftis.getName());
-				list.add(map2);
+			if (PromissionUtil.getPipterPromission(piperPro, "feedpublish")) {
+				Map<String, Object> map1 = new HashMap();
+				map1.put("code", PublisherTypeEnums.feedpublish.getCode());
+				map1.put("name", PublisherTypeEnums.feedpublish.getName());
+				list.add(map1);
+			}
+			if (PromissionUtil.getPipterPromission(piperPro, "organize")) {
+				Admin admin = adminService.getAdmin(manageId, PublisherTypeEnums.organize);
+				if (admin != null) {
+					Map<String, Object> map2 = new HashMap();
+					map2.put("code", PublisherTypeEnums.organize.getCode());
+					map2.put("name", PublisherTypeEnums.organize.getName());
+					list.add(map2);
+				}
+			}
+			if (PromissionUtil.getPipterPromission(piperPro, "ciftis")) {
+				Admin admin1 = adminService.getAdmin(manageId, PublisherTypeEnums.ciftis);
+				if (admin1 != null) {
+					Map<String, Object> map2 = new HashMap();
+					map2.put("code", PublisherTypeEnums.ciftis.getCode());
+					map2.put("name", PublisherTypeEnums.ciftis.getName());
+					list.add(map2);
+				}
 			}
 			return new ResponseEntity(list);
 		}

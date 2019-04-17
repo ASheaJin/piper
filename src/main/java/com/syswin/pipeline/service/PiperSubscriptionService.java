@@ -7,6 +7,7 @@ import com.syswin.pipeline.service.ps.PSClientService;
 import com.syswin.pipeline.service.psserver.impl.BusinessException;
 import com.syswin.pipeline.utils.LanguageChange;
 import com.syswin.pipeline.utils.PatternUtils;
+import com.syswin.pipeline.utils.PromissionUtil;
 import com.syswin.pipeline.utils.StringUtils;
 import com.syswin.sub.api.AdminService;
 import com.syswin.sub.api.ContentService;
@@ -18,6 +19,7 @@ import com.syswin.sub.api.enums.PublisherTypeEnums;
 import com.syswin.sub.api.exceptions.SubException;
 import com.syswin.sub.api.response.SubResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -53,6 +55,9 @@ public class PiperSubscriptionService {
 	@Autowired
 	SendSubscriptionService sendSubscriptionService;
 
+	@Value("${domain.promission}")
+	private String domain;
+
 	/**
 	 * 订阅
 	 */
@@ -61,7 +66,9 @@ public class PiperSubscriptionService {
 		if (StringUtils.isNullOrEmpty(publishTemail) || StringUtils.isNullOrEmpty(userId)) {
 			throw new BusinessException("ex.userid.null");
 		}
-
+		if (!PromissionUtil.getdomains(domain, userId)) {
+			throw new BusinessException(languageChange.getLangByUserId("ex.demain.err", new String[]{userId, domain}, userId));
+		}
 		Publisher publisher = subPublisherService.getPubLisherByPublishTmail(publishTemail, piperType);
 		if (publisher == null) {
 			publisher = subPublisherService.getPubLisherById(publishTemail);
@@ -112,6 +119,16 @@ public class PiperSubscriptionService {
 			throw new BusinessException("ex.needorganizer");
 		}
 		List<String> userList = PatternUtils.tranStrstoList(comBairuserIds);
+		String errorDomain = "";
+		for (String userId : userList) {
+			if (!PromissionUtil.getdomains(domain, userId)) {
+				errorDomain = errorDomain + userId;
+			}
+		}
+
+		if (!StringUtils.isNullOrEmpty(errorDomain)) {
+			throw new BusinessException(languageChange.getLangByUserId("ex.demain.err", new String[]{errorDomain, domain}, oweruserId));
+		}
 		List<String> sendList = subSubscriptionService.subscribeList(userList, publiserId);
 		Publisher publisher = subPublisherService.getPubLisherById(publiserId);
 		for (String userId : sendList) {
@@ -124,6 +141,17 @@ public class PiperSubscriptionService {
 	public List<String> subscribeList(List<String> userIds, String publiserId, String oweruserId) {
 		if (StringUtils.isNullOrEmpty(oweruserId)) {
 			throw new BusinessException("ex.userid.null");
+		}
+		//增加域判断
+		String errorDomain = "";
+		for (String userId : userIds) {
+			if (!PromissionUtil.getdomains(domain, userId)) {
+				errorDomain = errorDomain + userId;
+			}
+		}
+
+		if (!StringUtils.isNullOrEmpty(errorDomain)) {
+			throw new BusinessException(languageChange.getLangByUserId("ex.demain.err", new String[]{errorDomain, domain}, oweruserId));
 		}
 		Admin admin = adminService.getAdmin(oweruserId, PublisherTypeEnums.organize);
 		if (admin == null) {
@@ -160,7 +188,7 @@ public class PiperSubscriptionService {
 		if (publisher == null) {
 			throw new SubException("ex.publisher.null");
 		}
-		if (!publisher.getPtype().equals(ptype) ) {
+		if (!publisher.getPtype().equals(ptype)) {
 			throw new SubException("ex.nosupport");
 		}
 		if (!publisher.getUserId().equals(ownerId)) {

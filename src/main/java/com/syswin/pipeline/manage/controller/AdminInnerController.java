@@ -6,6 +6,7 @@ import com.syswin.pipeline.manage.dto.input.AddAdmin;
 import com.syswin.pipeline.manage.dto.input.AdminList;
 import com.syswin.pipeline.service.PiperAdminService;
 import com.syswin.pipeline.service.psserver.bean.ResponseEntity;
+import com.syswin.pipeline.utils.PromissionUtil;
 import com.syswin.pipeline.utils.StringUtils;
 import com.syswin.sub.api.db.model.Admin;
 import com.syswin.sub.api.enums.PublisherTypeEnums;
@@ -13,6 +14,7 @@ import com.syswin.sub.api.utils.EnumsUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -34,6 +36,8 @@ public class AdminInnerController {
 	private PiperAdminService piperAdminService;
 	@Autowired
 	private HeaderService headerService;
+	@Value("${pipertype.promission}")
+	private String piperPro;
 
 	@PostMapping("/list")
 	@ApiOperation(
@@ -43,7 +47,7 @@ public class AdminInnerController {
 		Integer pageNo = StringUtils.isNullOrEmpty(adminList.getPageNo()) ? 1 : Integer.parseInt(adminList.getPageNo());
 		Integer pageSize = StringUtils.isNullOrEmpty(adminList.getPageSize()) ? 20 : Integer.parseInt(adminList.getPageSize());
 
-		return new ResponseEntity(piperAdminService.list(adminList.getKeyword(),adminList.getPiperType(),pageNo, pageSize ));
+		return new ResponseEntity(piperAdminService.list(adminList.getKeyword(), adminList.getPiperType(), pageNo, pageSize));
 	}
 
 	@PostMapping("/getPiperType")
@@ -56,16 +60,20 @@ public class AdminInnerController {
 
 		List list = new ArrayList();
 		//目前支持两种 组织，京交会，其他的都可以创建
-		Map<String, Object> map = new HashMap();
-		map.put("code", PublisherTypeEnums.organize.getCode());
-		map.put("name", PublisherTypeEnums.organize.getName());
-		list.add(map);
-		//非超级管理员不能创京交会的
-		if (StringUtils.isNullOrEmpty(manageId)) {
-			Map<String, Object> map1 = new HashMap();
-			map1.put("code", PublisherTypeEnums.ciftis.getCode());
-			map1.put("name", PublisherTypeEnums.ciftis.getName());
-			list.add(map1);
+		if (PromissionUtil.getPipterPromission(piperPro, "organize")) {
+			Map<String, Object> map = new HashMap();
+			map.put("code", PublisherTypeEnums.organize.getCode());
+			map.put("name", PublisherTypeEnums.organize.getName());
+			list.add(map);
+		}
+		if (PromissionUtil.getPipterPromission(piperPro, "ciftis")) {
+			//非超级管理员不能创京交会的
+			if (StringUtils.isNullOrEmpty(manageId)) {
+				Map<String, Object> map1 = new HashMap();
+				map1.put("code", PublisherTypeEnums.ciftis.getCode());
+				map1.put("name", PublisherTypeEnums.ciftis.getName());
+				list.add(map1);
+			}
 		}
 
 		return new ResponseEntity(list);

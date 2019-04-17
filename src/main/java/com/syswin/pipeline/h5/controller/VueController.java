@@ -55,7 +55,7 @@ public class VueController {
 //    }
 
 	public boolean parnStatic(String url) {
-		String str = "https://application.t.email/bbs/web/home?userId=luohongzhou1@syswin.com";
+		String str = "https://application.t.emaide l/bbs/web/home?userId=luohongzhou1@syswin.com";
 		String pattern = "^((?!/static/).)*$";
 
 		Pattern r = Pattern.compile(pattern);

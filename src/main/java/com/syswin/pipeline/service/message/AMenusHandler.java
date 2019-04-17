@@ -12,6 +12,8 @@ import com.syswin.pipeline.service.ps.util.CollectionUtil;
 import com.syswin.pipeline.service.ps.util.FastJsonUtil;
 import com.syswin.pipeline.utils.JacksonJsonUtil;
 import com.syswin.pipeline.utils.LanguageChange;
+import com.syswin.pipeline.utils.PromissionUtil;
+import com.syswin.pipeline.utils.StringUtils;
 import com.syswin.temail.ps.client.Header;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,6 +63,10 @@ public class AMenusHandler implements EventHandler<MessageEvent> {
 
 	@Value("${app.pipeline.userId}")
 	private String from;
+
+	@Value("${a.piper.menu.promission}")
+	private String menu;
+
 	private final static Logger logger = LoggerFactory.getLogger(AMenusHandler.class);
 	/**
 	 * 输入板菜单的 bodyType
@@ -148,34 +154,55 @@ public class AMenusHandler implements EventHandler<MessageEvent> {
 		//TODO 处理京交会
 		List<Map<String, Object>> appList = new ArrayList<>();
 //		appList.add(createApp("", "测试邮箱跳转", URL_PIPER + "/webmg/index1"));
-		//既是组织管理者，又是个人出版社管理者
+		//既是组织管理者，又是个人出版社管理者  person,recommend,mysublist,group
+
 		if (PermissionEnums.OrgPerson.name.equals(myRole)) {
-			appList.add(createApp("", languageChange.getValueByUserId("menu.a.mypublisher", userId), languageChange.getUrl(URL_PIPER + MY_PUBLISHER, userId)));
-			appList.add(createApp("", languageChange.getValueByUserId("menu.a.gosub", userId), languageChange.getUrl(URL_PIPER + SUBSCRIBE_ADD, userId)));
-			appList.add(createApp("", languageChange.getValueByUserId("menu.a.mysublist", userId), languageChange.getUrl(URL_PIPER + SUBSCRIBE_LIST, userId)));
-			appList.add(createApp("", languageChange.getValueByUserId("menu.a.group", userId), languageChange.getUrl(URL_PIPER + "/web", userId)));
+			appList = getList(appList, userId, 2 + 4 + 8 + 16);
 		}
 		if (PermissionEnums.OnlyOrg.name.equals(myRole)) {
-			appList.add(createApp("", languageChange.getValueByUserId("menu.a.createpublisher", userId), languageChange.getUrl(URL_PIPER + PUBLISHER_CREATE, userId)));
-			appList.add(createApp("", languageChange.getValueByUserId("menu.a.gosub", userId), languageChange.getUrl(URL_PIPER + SUBSCRIBE_ADD, userId)));
-			appList.add(createApp("", languageChange.getValueByUserId("menu.a.mysublist", userId), languageChange.getUrl(URL_PIPER + SUBSCRIBE_LIST, userId)));
-			appList.add(createApp("", languageChange.getValueByUserId("menu.a.group", userId), languageChange.getUrl(URL_PIPER + "/web", userId)));
+			appList = getList(appList, userId, 1 + 4 + 8 + 16);
 		}
 		//个人管理者，订阅者
 		if (PermissionEnums.Person.name.equals(myRole)) {
-			appList.add(createApp("", languageChange.getValueByUserId("menu.a.mypublisher", userId), languageChange.getUrl(URL_PIPER + MY_PUBLISHER, userId)));
-			appList.add(createApp("", languageChange.getValueByUserId("menu.a.gosub", userId), languageChange.getUrl(URL_PIPER + SUBSCRIBE_ADD, userId)));
-			appList.add(createApp("", languageChange.getValueByUserId("menu.a.mysublist", userId), languageChange.getUrl(URL_PIPER + SUBSCRIBE_LIST, userId)));
+			appList = getList(appList, userId, 2 + 4 + 8);
 		}
 		//游客，订阅者
 		if (PermissionEnums.Guest.name.equals(myRole)) {
-			appList.add(createApp("", languageChange.getValueByUserId("menu.a.createpublisher", userId), languageChange.getUrl(URL_PIPER + PUBLISHER_CREATE, userId)));
-			appList.add(createApp("", languageChange.getValueByUserId("menu.a.gosub", userId), languageChange.getUrl(URL_PIPER + SUBSCRIBE_ADD, userId)));
-			appList.add(createApp("", languageChange.getValueByUserId("menu.a.mysublist", userId), languageChange.getUrl(URL_PIPER + SUBSCRIBE_LIST, userId)));
+			appList = getList(appList, userId, 1 + 4 + 8);
 		}
 		return appList;
 	}
 
+	private List getList(List appList, String userId, int permission) {
+		//person,recommend,mysublist,group
+		if (PromissionUtil.getMenuPromission(menu, "person")) {
+			if ((permission & 1) == 1) {
+
+				appList.add(createApp("", languageChange.getValueByUserId("menu.a.createpublisher", userId), languageChange.getUrl(URL_PIPER + PUBLISHER_CREATE, userId)));
+			}
+			if ((permission & 2) == 1) {
+				appList.add(createApp("", languageChange.getValueByUserId("menu.a.mypublisher", userId), languageChange.getUrl(URL_PIPER + MY_PUBLISHER, userId)));
+
+			}
+		}
+		if (PromissionUtil.getMenuPromission(menu, "recommend")) {
+			if ((permission & 4) == 1) {
+				appList.add(createApp("", languageChange.getValueByUserId("menu.a.gosub", userId), languageChange.getUrl(URL_PIPER + SUBSCRIBE_ADD, userId)));
+			}
+		}
+		if (PromissionUtil.getMenuPromission(menu, "mysublist")) {
+			if ((permission & 8) == 1) {
+				appList.add(createApp("", languageChange.getValueByUserId("menu.a.mysublist", userId), languageChange.getUrl(URL_PIPER + SUBSCRIBE_LIST, userId)));
+
+			}
+		}
+		if (PromissionUtil.getMenuPromission(menu, "group")) {
+			if ((permission & 16) == 1) {
+				appList.add(createApp("", languageChange.getValueByUserId("menu.a.group", userId), languageChange.getUrl(URL_PIPER + "/web", userId)));
+			}
+		}
+		return appList;
+	}
 
 	private Map<String, Object> createApp(String iconUrl, String appName, String path) {
 		List<String> keys1 = CollectionUtil.fastList("icon", "title", "url");
