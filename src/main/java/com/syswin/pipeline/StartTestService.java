@@ -13,15 +13,15 @@ import java.util.Date;
 @Component
 public class StartTestService implements ApplicationRunner {
 
-    private org.apache.logging.log4j.Logger logger = LogManager.getLogger(StartTestService.class);
+	private org.apache.logging.log4j.Logger logger = LogManager.getLogger(StartTestService.class);
 
-    @Autowired
-    private PSClientServiceImpl psclientService;
+	@Autowired
+	private PSClientServiceImpl psclientService;
 
-    @Override
-    public void run(ApplicationArguments args)  {
-        logger.info("start pipeline==={}",new Date());
+	@Override
+	public void run(ApplicationArguments args) {
+		logger.info("start pipeline==={}", new Date());
 
-        psclientService.init();
-    }
+		psclientService.init();
+	}
 }

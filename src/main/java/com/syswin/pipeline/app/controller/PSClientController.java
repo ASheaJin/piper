@@ -23,6 +23,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -95,18 +96,61 @@ public class PSClientController {
 	@ApiOperation(
 					value = "批量生成密机"
 	)
-	public String createPublicKey() {
+	public List createPublicKey() {
+
+		List<CreateUser> createUserList = new ArrayList<>();
+		CreateUser createUser = new CreateUser();
 		String senderTemail = null;
-		for (int i = 1; i < 201; i++) {
+		senderTemail = ("a.piper@support2technical.me").trim();
+//			String pub = psClientService.getTemailPublicKey(senderTemail);
+		String pk = psClientService.registerPub(senderTemail);
+		createUser.mail = senderTemail;
+		createUser.pk = pk;
+		createUserList.add(createUser);
+		for (int i = 1; i < 301; i++) {
 //			senderTemail="p."+(10000000+i)+"@systoontest.com";
-			senderTemail = ("p." + (20000000 + i) + "@msgseal.com").trim();
+			senderTemail = ("p." + (10000000 + i) + "@support2technical.me").trim();
 //			String pub = psClientService.getTemailPublicKey(senderTemail);
 			psClientService.registerPub(senderTemail);
+			createUser.mail = senderTemail;
+			createUser.pk = pk;
+			createUserList.add(createUser);
 		}
 
-		return "success";
+		return createUserList;
 	}
 
+
+	@GetMapping("/createTest")
+	@ApiOperation(
+					value = "批量生成密机测试"
+	)
+	public List createTest() {
+
+		List<CreateUser> createUserList = new ArrayList<>();
+		CreateUser createUser = new CreateUser();
+		String senderTemail = null;
+		senderTemail = ("a.piper@support2technical.me").trim();
+//			String pub = psClientService.getTemailPublicKey(senderTemail);
+		createUser.mail = senderTemail;
+		createUser.pk = "1234";
+		createUserList.add(createUser);
+		for (int i = 1; i < 301; i++) {
+//			senderTemail="p."+(10000000+i)+"@systoontest.com";
+			senderTemail = ("p." + (10000000 + i) + "@support2technical.me").trim();
+//			String pub = psClientService.getTemailPublicKey(senderTemail);
+			psClientService.registerPub(senderTemail);
+			createUser.mail = senderTemail;
+			createUser.pk = "1234"+i;
+			createUserList.add(createUser);
+		}
+
+		return createUserList;
+	}
+	class CreateUser {
+		public String mail;
+		public String pk;
+	}
 
 	@PostMapping("/sendOthermessage")
 	@ApiOperation(
