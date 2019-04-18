@@ -180,18 +180,18 @@ public class AMenusHandler implements EventHandler<MessageEvent> {
 
 				appList.add(createApp("", languageChange.getValueByUserId("menu.a.createpublisher", userId), languageChange.getUrl(URL_PIPER + PUBLISHER_CREATE, userId)));
 			}
-			if ((permission & 2) == 1) {
+			if ((permission & 2) == 2) {
 				appList.add(createApp("", languageChange.getValueByUserId("menu.a.mypublisher", userId), languageChange.getUrl(URL_PIPER + MY_PUBLISHER, userId)));
 
 			}
 		}
 		if (PromissionUtil.getMenuPromission(menu, "recommend")) {
-			if ((permission & 4) == 1) {
+			if ((permission & 4) == 4) {
 				appList.add(createApp("", languageChange.getValueByUserId("menu.a.gosub", userId), languageChange.getUrl(URL_PIPER + SUBSCRIBE_ADD, userId)));
 			}
 		}
 		if (PromissionUtil.getMenuPromission(menu, "mysublist")) {
-			if ((permission & 8) == 1) {
+			if ((permission & 8) == 8) {
 				appList.add(createApp("", languageChange.getValueByUserId("menu.a.mysublist", userId), languageChange.getUrl(URL_PIPER + SUBSCRIBE_LIST, userId)));
 
 			}
@@ -218,8 +218,6 @@ public class AMenusHandler implements EventHandler<MessageEvent> {
 //	}
 
 	public static void main(String[] args) {
-		String envValue = "{\"language\":\"zh\",\"platform\":\"android\",\"moduleVersion\":\"1.0.0\",\"os_version\":25,\"version\":\"1.2.0P\",\"build\":\"1904030921\"}";
-		Env appEnv = JacksonJsonUtil.fromJson(envValue, Env.class);
-		System.out.println(appEnv);
+		System.out.println(31 & 4);
 	}
 }
