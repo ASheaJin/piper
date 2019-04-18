@@ -4,7 +4,7 @@ import com.github.pagehelper.PageInfo;
 import com.syswin.pipeline.manage.dto.output.PulisherSubOutput;
 import com.syswin.pipeline.service.bussiness.impl.SendMessegeService;
 import com.syswin.pipeline.service.ps.PSClientService;
-import com.syswin.pipeline.service.psserver.impl.BusinessException;
+import com.syswin.pipeline.service.exception.BusinessException;
 import com.syswin.pipeline.utils.LanguageChange;
 import com.syswin.pipeline.utils.PatternUtils;
 import com.syswin.pipeline.utils.PermissionUtil;

@@ -8,7 +8,7 @@ import com.syswin.pipeline.service.org.OrgOut;
 import com.syswin.pipeline.service.ps.ChatMsg;
 import com.syswin.pipeline.service.ps.PSClientService;
 import com.syswin.pipeline.service.ps.PubKey;
-import com.syswin.pipeline.service.psserver.bean.ResponseEntity;
+import com.syswin.pipeline.app.dto.ResponseEntity;
 import com.syswin.sub.api.db.model.Publisher;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -130,7 +130,7 @@ public class PSClientController {
 	public List createTest() {
 
 		List<String> createUserList = new ArrayList<>();
-		String sendertt = "INSERT INTO `user_temail` (temail, user_id, ALGORITHM, TYPE, domain, create_time, update_time) VALUES ('%s', '%s', 1, 4, \"support2technical.me\", UNIX_TIMESTAMP(NOW())*1000, UNIX_TIMESTAMP(NOW())*1000);";
+		String sendertt = "INSERT INTO `user_temail` (temail, user_id, ALGORITHM, TYPE, domain, create_time, update_time) VALUES ('%s', '%s', 1, 4, 'support2technical.me', UNIX_TIMESTAMP(NOW())*1000, UNIX_TIMESTAMP(NOW())*1000);";
 //			String pub = psClientService.getTemailPublicKey(senderTemail);
 		String tt = String.format(sendertt, "a.piper@"+piperUserId.split("@")[1], "111");
 		createUserList.add(tt);

@@ -5,7 +5,7 @@ import com.syswin.pipeline.app.dto.SubSearchParam;
 import com.syswin.pipeline.app.dto.UserIdParam;
 import com.syswin.pipeline.service.PiperPublisherService;
 import com.syswin.pipeline.service.PiperSubscriptionService;
-import com.syswin.pipeline.service.psserver.bean.ResponseEntity;
+import com.syswin.pipeline.app.dto.ResponseEntity;
 import com.syswin.pipeline.utils.StringUtils;
 import com.syswin.sub.api.enums.PublisherTypeEnums;
 import io.swagger.annotations.Api;

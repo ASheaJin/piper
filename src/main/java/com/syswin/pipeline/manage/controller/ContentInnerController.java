@@ -4,7 +4,7 @@ import com.github.pagehelper.PageInfo;
 import com.syswin.pipeline.manage.dto.input.ContentDelnput;
 import com.syswin.pipeline.manage.dto.input.ContentListInput;
 import com.syswin.pipeline.service.PiperContentService;
-import com.syswin.pipeline.service.psserver.bean.ResponseEntity;
+import com.syswin.pipeline.app.dto.ResponseEntity;
 import com.syswin.pipeline.utils.StringUtils;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;

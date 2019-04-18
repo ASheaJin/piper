@@ -1,13 +1,12 @@
 package com.syswin.pipeline.service;
 
 import com.github.pagehelper.PageInfo;
-import com.syswin.pipeline.app.controller.PSSeverController;
 import com.syswin.pipeline.db.model.ReCommendPublisher;
 import com.syswin.pipeline.manage.dto.output.PublisherManageVO;
 import com.syswin.pipeline.service.bussiness.impl.SendMessegeService;
+import com.syswin.pipeline.service.exception.BusinessException;
 import com.syswin.pipeline.service.ps.PSClientService;
 import com.syswin.pipeline.service.ps.util.ValidationUtil;
-import com.syswin.pipeline.service.psserver.impl.BusinessException;
 import com.syswin.pipeline.utils.LanguageChange;
 import com.syswin.pipeline.utils.PatternUtils;
 import com.syswin.pipeline.utils.PermissionUtil;
@@ -35,7 +34,7 @@ import java.util.stream.Collectors;
 @Service
 public class PiperPublisherService {
 
-	private static final Logger logger = LoggerFactory.getLogger(PSSeverController.class);
+	private static final Logger logger = LoggerFactory.getLogger(PiperPublisherService.class);
 	@Value("${app.pipeline.userId}")
 	private String from;
 	@Autowired

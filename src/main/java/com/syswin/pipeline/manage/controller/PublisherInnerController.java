@@ -6,7 +6,7 @@ import com.syswin.pipeline.manage.dto.input.DelPublisherParam;
 import com.syswin.pipeline.manage.dto.input.PublisherListParam;
 import com.syswin.pipeline.manage.dto.input.AddPublisherParam;
 import com.syswin.pipeline.service.PiperPublisherService;
-import com.syswin.pipeline.service.psserver.bean.ResponseEntity;
+import com.syswin.pipeline.app.dto.ResponseEntity;
 import com.syswin.pipeline.utils.PermissionUtil;
 import com.syswin.pipeline.utils.StringUtils;
 import com.syswin.sub.api.AdminService;

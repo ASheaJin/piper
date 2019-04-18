@@ -1,6 +1,6 @@
 package com.syswin.pipeline.utils;
 
-import com.syswin.pipeline.service.psserver.impl.BusinessException;
+import com.syswin.pipeline.service.exception.BusinessException;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;

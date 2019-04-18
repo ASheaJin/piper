@@ -2,7 +2,7 @@ package com.syswin.pipeline.manage.controller;
 
 import com.syswin.pipeline.manage.dto.output.MenuOutput;
 import com.syswin.pipeline.manage.service.MenuService;
-import com.syswin.pipeline.service.psserver.bean.ResponseEntity;
+import com.syswin.pipeline.app.dto.ResponseEntity;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;

@@ -5,7 +5,7 @@ import com.syswin.pipeline.db.model.ReCommendContent;
 import com.syswin.pipeline.db.repository.ReCommendContentRepository;
 import com.syswin.pipeline.manage.dto.output.ContentOutput;
 import com.syswin.pipeline.service.content.entity.ContentEntity;
-import com.syswin.pipeline.service.psserver.impl.BusinessException;
+import com.syswin.pipeline.service.exception.BusinessException;
 import com.syswin.pipeline.utils.JacksonJsonUtil;
 import com.syswin.pipeline.utils.StringUtils;
 import com.syswin.sub.api.ContentOutService;

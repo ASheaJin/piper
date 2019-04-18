@@ -1,4 +1,4 @@
-package com.syswin.pipeline.service.psserver.impl;
+package com.syswin.pipeline.service.exception;
 
 import com.syswin.temail.ps.common.entity.CDTPPacket;
 

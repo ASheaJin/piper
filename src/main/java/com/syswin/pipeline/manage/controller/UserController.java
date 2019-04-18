@@ -6,7 +6,7 @@ import com.syswin.pipeline.manage.dto.input.*;
 import com.syswin.pipeline.manage.dto.output.MenuOutput;
 import com.syswin.pipeline.manage.dto.output.RoleOutput;
 import com.syswin.pipeline.manage.dto.output.UserOutput;
-import com.syswin.pipeline.service.psserver.bean.ResponseEntity;
+import com.syswin.pipeline.app.dto.ResponseEntity;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

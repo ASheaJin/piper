@@ -5,7 +5,7 @@ import com.syswin.pipeline.manage.service.HeaderService;
 import com.syswin.pipeline.manage.dto.input.AddAdmin;
 import com.syswin.pipeline.manage.dto.input.AdminList;
 import com.syswin.pipeline.service.PiperAdminService;
-import com.syswin.pipeline.service.psserver.bean.ResponseEntity;
+import com.syswin.pipeline.app.dto.ResponseEntity;
 import com.syswin.pipeline.utils.PermissionUtil;
 import com.syswin.pipeline.utils.StringUtils;
 import com.syswin.sub.api.db.model.Admin;

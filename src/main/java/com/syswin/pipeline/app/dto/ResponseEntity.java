@@ -1,4 +1,4 @@
-package com.syswin.pipeline.service.psserver.bean;
+package com.syswin.pipeline.app.dto;
 
 import lombok.Data;
 
