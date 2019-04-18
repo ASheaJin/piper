@@ -2,8 +2,6 @@ package com.syswin.pipeline.app.controller;
 
 import com.syswin.pipeline.app.dto.PsSubOrgListParam;
 import com.syswin.pipeline.app.dto.PublishMessageParam;
-import com.syswin.pipeline.app.dto.SubOrgListParam;
-import com.syswin.pipeline.service.PiperSubscriptionService;
 import com.syswin.pipeline.service.bussiness.impl.SendMessegeService;
 import com.syswin.pipeline.service.org.IOrgService;
 import com.syswin.pipeline.service.org.OrgOut;
@@ -11,14 +9,13 @@ import com.syswin.pipeline.service.ps.ChatMsg;
 import com.syswin.pipeline.service.ps.PSClientService;
 import com.syswin.pipeline.service.ps.PubKey;
 import com.syswin.pipeline.service.psserver.bean.ResponseEntity;
-import com.syswin.pipeline.utils.PatternUtils;
 import com.syswin.sub.api.db.model.Publisher;
-import com.syswin.sub.api.response.SubResponseEntity;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -50,6 +47,9 @@ public class PSClientController {
 
 	@Autowired
 	private com.syswin.sub.api.PublisherService subPublisherService;
+
+	@Value("${app.pipeline.userId}")
+	private String piperUserId;
 
 	@PostMapping("/sendMsg")
 	@ApiOperation(
@@ -105,12 +105,12 @@ public class PSClientController {
 		String pk = psClientService.registerPub(senderTemail);
 		String sendertt = "INSERT INTO `user_temail` (temail, user_id, ALGORITHM, TYPE, domain, create_time, update_time) VALUES ('%s', '%s', 1, 4, 'support2technical.me', UNIX_TIMESTAMP(NOW())*1000, UNIX_TIMESTAMP(NOW())*1000);";
 //			String pub = psClientService.getTemailPublicKey(senderTemail);
-		String tt = String.format(sendertt, "a.piper@support2technical.me", pk);
+		String tt = String.format(sendertt, "a.piper@"+piperUserId.split("@")[1], pk);
 
 		createUserList.add(tt);
 		for (int i = 1; i < 301; i++) {
 //			senderTemail="p."+(10000000+i)+"@systoontest.com";
-			senderTemail = ("p." + (10000000 + i) + "@support2technical.me").trim();
+			senderTemail = ("p." + (10000000 + i) + piperUserId.split("@")[1]).trim();
 //			String pub = psClientService.getTemailPublicKey(senderTemail);
 			pk = psClientService.registerPub(senderTemail);
 			sendertt = "INSERT INTO `user_temail` (temail, user_id, ALGORITHM, TYPE, domain, create_time, update_time) VALUES ('%s', '%s', 1, 4, 'support2technical.me', UNIX_TIMESTAMP(NOW())*1000, UNIX_TIMESTAMP(NOW())*1000);";
@@ -132,12 +132,12 @@ public class PSClientController {
 		List<String> createUserList = new ArrayList<>();
 		String sendertt = "INSERT INTO `user_temail` (temail, user_id, ALGORITHM, TYPE, domain, create_time, update_time) VALUES ('%s', '%s', 1, 4, \"support2technical.me\", UNIX_TIMESTAMP(NOW())*1000, UNIX_TIMESTAMP(NOW())*1000);";
 //			String pub = psClientService.getTemailPublicKey(senderTemail);
-		String tt = String.format(sendertt, "a.piper@support2technical.me", "111");
+		String tt = String.format(sendertt, "a.piper@"+piperUserId.split("@")[1], "111");
 		createUserList.add(tt);
 		for (int i = 1; i < 301; i++) {
 //			senderTemail="p."+(10000000+i)+"@systoontest.com";
 //			String pub = psClientService.getTemailPublicKey(senderTemail);
-			tt = String.format(sendertt, ("p." + (10000000 + i) + "@support2technical.me").trim(), "111");
+			tt = String.format(sendertt, ("p." + (10000000 + i) + piperUserId.split("@")[1].trim()), "111");
 			createUserList.add(tt);
 		}
 
