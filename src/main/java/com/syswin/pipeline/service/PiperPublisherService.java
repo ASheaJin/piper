@@ -10,7 +10,7 @@ import com.syswin.pipeline.service.ps.util.ValidationUtil;
 import com.syswin.pipeline.service.psserver.impl.BusinessException;
 import com.syswin.pipeline.utils.LanguageChange;
 import com.syswin.pipeline.utils.PatternUtils;
-import com.syswin.pipeline.utils.PromissionUtil;
+import com.syswin.pipeline.utils.PermissionUtil;
 import com.syswin.pipeline.utils.StringUtils;
 import com.syswin.sub.api.AdminService;
 import com.syswin.sub.api.db.model.Admin;
@@ -73,7 +73,7 @@ public class PiperPublisherService {
 			throw new BusinessException("ex.name.invalid");
 		}
 		//域过滤
-		if (!PromissionUtil.getdomains(domain, userId)) {
+		if (!PermissionUtil.getdomains(domain, userId)) {
 			throw new BusinessException(languageChange.getLangByUserId("ex.demain.err", new String[]{userId, domain}, userId));
 		}
 		// TODO: 2019/3/29 后期加入靓号处理

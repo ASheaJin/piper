@@ -1,10 +1,12 @@
 package com.syswin.pipeline.utils;
 
+import com.syswin.pipeline.enums.AppmuneEnum;
+
 /**
  * @author:lhz
  * @date:2019/4/17 10:27
  */
-public class PromissionUtil {
+public class PermissionUtil {
 
 
 	public static boolean getMenuPromission(String configs, String env) {
@@ -39,4 +41,12 @@ public class PromissionUtil {
 		}
 		return false;
 	}
+
+	public static boolean checkmenus(Integer allPermission, Integer menuInt) {
+		if (allPermission == null || menuInt == null) {
+			return false;
+		}
+		return (allPermission & menuInt) == menuInt;
+	}
+
 }

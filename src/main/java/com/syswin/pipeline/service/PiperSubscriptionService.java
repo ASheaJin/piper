@@ -7,24 +7,20 @@ import com.syswin.pipeline.service.ps.PSClientService;
 import com.syswin.pipeline.service.psserver.impl.BusinessException;
 import com.syswin.pipeline.utils.LanguageChange;
 import com.syswin.pipeline.utils.PatternUtils;
-import com.syswin.pipeline.utils.PromissionUtil;
+import com.syswin.pipeline.utils.PermissionUtil;
 import com.syswin.pipeline.utils.StringUtils;
 import com.syswin.sub.api.AdminService;
-import com.syswin.sub.api.ContentService;
 import com.syswin.sub.api.db.model.Admin;
-import com.syswin.sub.api.db.model.Content;
 import com.syswin.sub.api.db.model.Publisher;
 import com.syswin.sub.api.db.model.Subscription;
 import com.syswin.sub.api.enums.PublisherTypeEnums;
 import com.syswin.sub.api.exceptions.SubException;
-import com.syswin.sub.api.response.SubResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 订阅服务
@@ -66,7 +62,7 @@ public class PiperSubscriptionService {
 		if (StringUtils.isNullOrEmpty(publishTemail) || StringUtils.isNullOrEmpty(userId)) {
 			throw new BusinessException("ex.userid.null");
 		}
-		if (!PromissionUtil.getdomains(domain, userId)) {
+		if (!PermissionUtil.getdomains(domain, userId)) {
 			throw new BusinessException(languageChange.getLangByUserId("ex.demain.err", new String[]{userId, domain}, userId));
 		}
 		Publisher publisher = subPublisherService.getPubLisherByPublishTmail(publishTemail, piperType);
@@ -121,7 +117,7 @@ public class PiperSubscriptionService {
 		List<String> userList = PatternUtils.tranStrstoList(comBairuserIds);
 		String errorDomain = "";
 		for (String userId : userList) {
-			if (!PromissionUtil.getdomains(domain, userId)) {
+			if (!PermissionUtil.getdomains(domain, userId)) {
 				errorDomain = errorDomain + userId;
 			}
 		}
@@ -145,7 +141,7 @@ public class PiperSubscriptionService {
 		//增加域判断
 		String errorDomain = "";
 		for (String userId : userIds) {
-			if (!PromissionUtil.getdomains(domain, userId)) {
+			if (!PermissionUtil.getdomains(domain, userId)) {
 				errorDomain = errorDomain + userId;
 			}
 		}

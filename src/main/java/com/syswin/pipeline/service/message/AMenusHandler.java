@@ -1,6 +1,7 @@
 package com.syswin.pipeline.service.message;
 
 import com.lmax.disruptor.EventHandler;
+import com.syswin.pipeline.enums.AppmuneEnum;
 import com.syswin.pipeline.enums.PermissionEnums;
 import com.syswin.pipeline.service.ConsumerService;
 import com.syswin.pipeline.service.DeviceInfoService;
@@ -12,8 +13,7 @@ import com.syswin.pipeline.service.ps.util.CollectionUtil;
 import com.syswin.pipeline.service.ps.util.FastJsonUtil;
 import com.syswin.pipeline.utils.JacksonJsonUtil;
 import com.syswin.pipeline.utils.LanguageChange;
-import com.syswin.pipeline.utils.PromissionUtil;
-import com.syswin.pipeline.utils.StringUtils;
+import com.syswin.pipeline.utils.PermissionUtil;
 import com.syswin.temail.ps.client.Header;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -175,29 +175,29 @@ public class AMenusHandler implements EventHandler<MessageEvent> {
 
 	private List getList(List appList, String userId, int permission) {
 		//person,recommend,mysublist,group
-		if (PromissionUtil.getMenuPromission(menu, "person")) {
-			if ((permission & 1) == 1) {
+		if (PermissionUtil.getMenuPromission(menu, "person")) {
+			if (PermissionUtil.checkmenus(permission, AppmuneEnum.person.type)) {
 
 				appList.add(createApp("", languageChange.getValueByUserId("menu.a.createpublisher", userId), languageChange.getUrl(URL_PIPER + PUBLISHER_CREATE, userId)));
 			}
-			if ((permission & 2) == 2) {
+			if (PermissionUtil.checkmenus(permission, AppmuneEnum.mypublish.type)) {
 				appList.add(createApp("", languageChange.getValueByUserId("menu.a.mypublisher", userId), languageChange.getUrl(URL_PIPER + MY_PUBLISHER, userId)));
 
 			}
 		}
-		if (PromissionUtil.getMenuPromission(menu, "recommend")) {
-			if ((permission & 4) == 4) {
+		if (PermissionUtil.getMenuPromission(menu, "recommend")) {
+			if (PermissionUtil.checkmenus(permission, AppmuneEnum.recommend.type)) {
 				appList.add(createApp("", languageChange.getValueByUserId("menu.a.gosub", userId), languageChange.getUrl(URL_PIPER + SUBSCRIBE_ADD, userId)));
 			}
 		}
-		if (PromissionUtil.getMenuPromission(menu, "mysublist")) {
-			if ((permission & 8) == 8) {
+		if (PermissionUtil.getMenuPromission(menu, "mysublist")) {
+			if (PermissionUtil.checkmenus(permission, AppmuneEnum.mysublist.type)) {
 				appList.add(createApp("", languageChange.getValueByUserId("menu.a.mysublist", userId), languageChange.getUrl(URL_PIPER + SUBSCRIBE_LIST, userId)));
 
 			}
 		}
-		if (PromissionUtil.getMenuPromission(menu, "group")) {
-			if ((permission & 16) == 1) {
+		if (PermissionUtil.getMenuPromission(menu, "group")) {
+			if (PermissionUtil.checkmenus(permission, AppmuneEnum.group.type)) {
 				appList.add(createApp("", languageChange.getValueByUserId("menu.a.group", userId), languageChange.getUrl(URL_PIPER + "/web", userId)));
 			}
 		}

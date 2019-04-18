@@ -6,7 +6,7 @@ import com.syswin.pipeline.manage.dto.input.AddAdmin;
 import com.syswin.pipeline.manage.dto.input.AdminList;
 import com.syswin.pipeline.service.PiperAdminService;
 import com.syswin.pipeline.service.psserver.bean.ResponseEntity;
-import com.syswin.pipeline.utils.PromissionUtil;
+import com.syswin.pipeline.utils.PermissionUtil;
 import com.syswin.pipeline.utils.StringUtils;
 import com.syswin.sub.api.db.model.Admin;
 import com.syswin.sub.api.enums.PublisherTypeEnums;
@@ -60,13 +60,13 @@ public class AdminInnerController {
 
 		List list = new ArrayList();
 		//目前支持两种 组织，京交会，其他的都可以创建
-		if (PromissionUtil.getPipterPromission(piperPro, "organize")) {
+		if (PermissionUtil.getPipterPromission(piperPro, "organize")) {
 			Map<String, Object> map = new HashMap();
 			map.put("code", PublisherTypeEnums.organize.getCode());
 			map.put("name", PublisherTypeEnums.organize.getName());
 			list.add(map);
 		}
-		if (PromissionUtil.getPipterPromission(piperPro, "ciftis")) {
+		if (PermissionUtil.getPipterPromission(piperPro, "ciftis")) {
 			//非超级管理员不能创京交会的
 			if (StringUtils.isNullOrEmpty(manageId)) {
 				Map<String, Object> map1 = new HashMap();
