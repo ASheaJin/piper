@@ -110,7 +110,7 @@ public class PSClientController {
 		createUserList.add(tt);
 		for (int i = 1; i < 301; i++) {
 //			senderTemail="p."+(10000000+i)+"@systoontest.com";
-			senderTemail = ("p." + (10000000 + i) + piperUserId.split("@")[1]).trim();
+			senderTemail = ("p." + (10000000 + i) +"@"+  piperUserId.split("@")[1]).trim();
 //			String pub = psClientService.getTemailPublicKey(senderTemail);
 			pk = psClientService.registerPub(senderTemail);
 			sendertt = "INSERT INTO `user_temail` (temail, user_id, ALGORITHM, TYPE, domain, create_time, update_time) VALUES ('%s', '%s', 1, 4, 'support2technical.me', UNIX_TIMESTAMP(NOW())*1000, UNIX_TIMESTAMP(NOW())*1000);";
@@ -137,7 +137,7 @@ public class PSClientController {
 		for (int i = 1; i < 301; i++) {
 //			senderTemail="p."+(10000000+i)+"@systoontest.com";
 //			String pub = psClientService.getTemailPublicKey(senderTemail);
-			tt = String.format(sendertt, ("p." + (10000000 + i) + piperUserId.split("@")[1].trim()), "111");
+			tt = String.format(sendertt, ("p." + (10000000 + i) +"@"+ piperUserId.split("@")[1].trim()), "111");
 			createUserList.add(tt);
 		}
 

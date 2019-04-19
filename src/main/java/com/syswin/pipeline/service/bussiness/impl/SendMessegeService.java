@@ -153,7 +153,6 @@ public class SendMessegeService {
 	@Async("msgThreadPool")
 	public Boolean sendOthermessageTest(String content, int bodyType, String to, String from) {
 
-
 		//延时1秒钟发。
 		logger.info("Thread.currentThread().getName()1--------" + Thread.currentThread().getName());
 		ChatMsg chatMsg = new ChatMsg(content, bodyType, from, to, 1000);
