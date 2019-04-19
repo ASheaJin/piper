@@ -6,7 +6,10 @@
   cd /opt/ffmpeg
   chmod 755 ffmpeg
 
+mkdir /opt/file
+chown java:java /opt/file
 
+ffmpeg 文件，要从192.168.16.159的/opt/ffmpeg 获得
 
 ps:
 转换amr的命令行
