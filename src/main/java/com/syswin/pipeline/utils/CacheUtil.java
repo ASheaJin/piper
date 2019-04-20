@@ -20,8 +20,8 @@ import java.util.concurrent.TimeUnit;
 public class CacheUtil {
 
 	private static Cache<String, String> myMap = CacheBuilder.newBuilder()
-					.expireAfterAccess(30L, TimeUnit.DAYS)
-					.expireAfterWrite(30L, TimeUnit.DAYS)
+					.expireAfterAccess(Integer.MAX_VALUE, TimeUnit.DAYS)
+					.expireAfterWrite(Integer.MAX_VALUE, TimeUnit.DAYS)
 
 					.concurrencyLevel(6)
 					.initialCapacity(1000)
@@ -32,6 +32,7 @@ public class CacheUtil {
 	public static void put(String key, String value) {
 		myMap.put(key, value);
 	}
+
 	public static String get(String key) {
 		return myMap.getIfPresent(key);
 	}
