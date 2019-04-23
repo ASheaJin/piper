@@ -1,7 +1,6 @@
 package com.syswin.pipeline.service.message;
 
 import com.lmax.disruptor.EventHandler;
-import com.syswin.pipeline.db.model.DeviceInfo;
 import com.syswin.pipeline.db.repository.ConsumerRepository;
 import com.syswin.pipeline.enums.PermissionEnums;
 import com.syswin.pipeline.service.ConsumerService;
@@ -139,8 +138,13 @@ public class PMenusHandler implements EventHandler<MessageEvent> {
 		keyList.add("shortcuts");
 //判断当前用户是读者还是作者
 
+		valueList.add(appList(publisher.getUserId(), publisher));
 
-		valueList.add(appList(publisher.getPtype(), publisher.getUserId(), publisher.getPublisherId()));
+
+		keyList.add("helperConfig");
+//判断当前用户是读者还是作者
+
+		valueList.add(appNewList(publisher.getUserId(), publisher));
 
 		replyMsgObject = CollectionUtil.fastMap(keyList, valueList);
 		replyMsgObject.put("version", myVersion);
@@ -163,12 +167,12 @@ public class PMenusHandler implements EventHandler<MessageEvent> {
 		appList.add(createApp("", "#@" + 8, ""));
 //		appList.add(createApp("", "#@" + 10, ""));
 		//撰写,如果老版本不支持
-		DeviceInfo deviceInfo = deviceInfoService.getDeviceInfo(userId);
-		if (deviceInfo != null) {
-			if (Integer.parseInt(deviceInfo.getBuild()) > 1904005617) {
-				appList.add(createApp("", "#@" + 13, ""));
-			}
-		}
+//		DeviceInfo deviceInfo = deviceInfoService.getDeviceInfo(userId);
+//		if (deviceInfo != null) {
+//			if (Integer.parseInt(deviceInfo.getBuild()) > 1904005617) {
+//				appList.add(createApp("", "#@" + 13, ""));
+//			}
+//		}
 
 //		appList.add(createApp("", "#@" + 13, ""));
 //		for (int i = 1; i < 10; i++) {
@@ -198,15 +202,37 @@ public class PMenusHandler implements EventHandler<MessageEvent> {
 		}
 	}
 
-	private List<Map<String, Object>> appList(PublisherTypeEnums ptype, String userId, String publiserId) {
+
+	private List<Map<String, Object>> appNewList(String userId, Publisher publisher) {
+
+		List<Map<String, Object>> appList = new ArrayList<>();
+		appList.add(createNewApp("helper_write", "", ""));
+		appList.add(createNewApp("", languageChange.getValueByUserId("menu.p.history", userId), languageChange.getUrl(URL_PIPER + "/web/history-list", userId) + "&publisherId=" + publisher.getPublisherId()));
+		//既是组织管理者
+		if (userId.equals(publisher.getUserId())) {
+			appList.add(createNewApp("", languageChange.getValueByUserId("menu.p.managesub", userId), languageChange.getUrl(URL_PIPER + "/web/home", userId) + "&publisherId=" + publisher.getPublisherId()));
+			appList.add(createNewApp("", languageChange.getValueByUserId("menu.p.accountupload", userId), languageChange.getUrl(URL_PIPER + "/h5/help/upload", userId) + "&publisherId=" + publisher.getPublisherId()));
+		}
+
+		return appList;
+	}
+
+
+	private Map<String, Object> createNewApp(String key, String title, String url) {
+		List<String> keys1 = CollectionUtil.fastList("key", "title", "url");
+		List<Object> app11 = CollectionUtil.fastList(key, title, url);
+		return CollectionUtil.fastMap(keys1, app11);
+	}
+
+	private List<Map<String, Object>> appList(String userId, Publisher publisher) {
 
 		List<Map<String, Object>> appList = new ArrayList<>();
 
-		appList.add(createApp("", languageChange.getValueByUserId("menu.p.history", userId), languageChange.getUrl(URL_PIPER + "/web/history-list", userId) + "&publisherId=" + publiserId));
+		appList.add(createApp("", languageChange.getValueByUserId("menu.p.history", userId), languageChange.getUrl(URL_PIPER + "/web/history-list", userId) + "&publisherId=" + publisher.getPublisherId()));
 		//既是组织管理者
-		if (PublisherTypeEnums.organize.equals(ptype)) {
-			appList.add(createApp("", languageChange.getValueByUserId("menu.p.managesub", userId), languageChange.getUrl(URL_PIPER + "/web/home", userId) + "&publisherId=" + publiserId));
-			appList.add(createApp("", languageChange.getValueByUserId("menu.p.accountupload", userId), languageChange.getUrl(URL_PIPER + "/h5/help/upload", userId) + "&publisherId=" + publiserId));
+		if (userId.equals(publisher.getUserId())) {
+			appList.add(createApp("", languageChange.getValueByUserId("menu.p.managesub", userId), languageChange.getUrl(URL_PIPER + "/web/home", userId) + "&publisherId=" + publisher.getPublisherId()));
+			appList.add(createApp("", languageChange.getValueByUserId("menu.p.accountupload", userId), languageChange.getUrl(URL_PIPER + "/h5/help/upload", userId) + "&publisherId=" + publisher.getPublisherId()));
 		}
 
 		return appList;

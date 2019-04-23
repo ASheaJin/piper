@@ -131,6 +131,9 @@ public class AMenusHandler implements EventHandler<MessageEvent> {
 		Map<String, Object> replyMsgObject = null;
 		valueList.add(appList(header.getReceiver()));
 
+		keyList.add("helperConfig");
+		valueList.add(appNewList(header.getReceiver()));
+
 		replyMsgObject = CollectionUtil.fastMap(keyList, valueList);
 		replyMsgObject.put("version", myVersion);
 		consumerService.updateUserVersion(header, myVersion, myRole);
@@ -141,14 +144,75 @@ public class AMenusHandler implements EventHandler<MessageEvent> {
 		psClientService.sendChatMessage(msg, header.getReceiver(), header.getReceiverPK());
 	}
 
-	private List<Map<String, Object>> appFeaturesList() {
-		List<Map<String, Object>> appList = new ArrayList<>();
 
-		for (int i = 1; i < 10; i++) {
-			appList.add(createApp("", "#@" + i, ""));
+	private List<Map<String, Object>> appNewList(String userId) {
+		//TODO 处理京交会
+		List<Map<String, Object>> appList = new ArrayList<>();
+//		appList.add(createApp("", "测试邮箱跳转", URL_PIPER + "/webmg/index1"));
+		//既是组织管理者，又是个人出版社管理者  person,recommend,mysublist,group
+
+		if (PermissionEnums.OrgPerson.name.equals(myRole)) {
+			appList = getNewList(appList, userId, 2 + 4 + 8 + 16);
+		}
+		if (PermissionEnums.OnlyOrg.name.equals(myRole)) {
+			appList = getNewList(appList, userId, 1 + 4 + 8 + 16);
+		}
+		//个人管理者，订阅者
+		if (PermissionEnums.Person.name.equals(myRole)) {
+			appList = getNewList(appList, userId, 2 + 4 + 8);
+		}
+		//游客，订阅者
+		if (PermissionEnums.Guest.name.equals(myRole)) {
+			appList = getNewList(appList, userId, 1 + 4 + 8);
 		}
 		return appList;
 	}
+
+	private List getNewList(List appList, String userId, int permission) {
+		//person,recommend,mysublist,group
+		if (PermissionUtil.getMenuPromission(menu, "person")) {
+			if (PermissionUtil.checkmenus(permission, AppmuneEnum.person.type)) {
+
+				appList.add(createNewApp("", languageChange.getValueByUserId("menu.a.createpublisher", userId), languageChange.getUrl(URL_PIPER + PUBLISHER_CREATE, userId)));
+			}
+			if (PermissionUtil.checkmenus(permission, AppmuneEnum.mypublish.type)) {
+				appList.add(createNewApp("", languageChange.getValueByUserId("menu.a.mypublisher", userId), languageChange.getUrl(URL_PIPER + MY_PUBLISHER, userId)));
+
+			}
+		}
+		if (PermissionUtil.getMenuPromission(menu, "recommend")) {
+			if (PermissionUtil.checkmenus(permission, AppmuneEnum.recommend.type)) {
+				appList.add(createNewApp("", languageChange.getValueByUserId("menu.a.gosub", userId), languageChange.getUrl(URL_PIPER + SUBSCRIBE_ADD, userId)));
+			}
+		}
+		if (PermissionUtil.getMenuPromission(menu, "mysublist")) {
+			if (PermissionUtil.checkmenus(permission, AppmuneEnum.mysublist.type)) {
+				appList.add(createNewApp("", languageChange.getValueByUserId("menu.a.mysublist", userId), languageChange.getUrl(URL_PIPER + SUBSCRIBE_LIST, userId)));
+
+			}
+		}
+		if (PermissionUtil.getMenuPromission(menu, "group")) {
+			if (PermissionUtil.checkmenus(permission, AppmuneEnum.group.type)) {
+				appList.add(createNewApp("", languageChange.getValueByUserId("menu.a.group", userId), languageChange.getUrl(URL_PIPER + "/web", userId)));
+			}
+		}
+		return appList;
+	}
+
+	private Map<String, Object> createNewApp(String key, String title, String url) {
+		List<String> keys1 = CollectionUtil.fastList("key", "title", "url");
+		List<Object> app11 = CollectionUtil.fastList(key, title, url);
+		return CollectionUtil.fastMap(keys1, app11);
+	}
+
+
+	private Map<String, Object> createApp(String iconUrl, String appName, String path) {
+		List<String> keys1 = CollectionUtil.fastList("icon", "title", "url");
+		List<Object> app11 = CollectionUtil.fastList(iconUrl, appName, path);
+		return CollectionUtil.fastMap(keys1, app11);
+	}
+
+
 
 	private List<Map<String, Object>> appList(String userId) {
 		//TODO 处理京交会
@@ -204,20 +268,5 @@ public class AMenusHandler implements EventHandler<MessageEvent> {
 		return appList;
 	}
 
-	private Map<String, Object> createApp(String iconUrl, String appName, String path) {
-		List<String> keys1 = CollectionUtil.fastList("icon", "title", "url");
-		List<Object> app11 = CollectionUtil.fastList(iconUrl, appName, path);
-		return CollectionUtil.fastMap(keys1, app11);
-	}
 
-
-//	private Map<String, Object> createFileApp(String iconUrl, String appName, String helper) {
-//		List<String> keys1 = CollectionUtil.fastList("icon", "title", "helper", "url", "extInfo");
-//		List<Object> app11 = CollectionUtil.fastList(iconUrl, appName, helper, "", new HashMap());
-//		return CollectionUtil.fastMap(keys1, app11);
-//	}
-
-	public static void main(String[] args) {
-		System.out.println(31 & 4);
-	}
 }
