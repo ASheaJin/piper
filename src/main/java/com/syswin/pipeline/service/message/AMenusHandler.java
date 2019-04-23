@@ -126,13 +126,15 @@ public class AMenusHandler implements EventHandler<MessageEvent> {
 //		//判断当前用户是读者还是作者
 //		valueList.add(appFeaturesList());
 
+		keyList.add("helperConfig");
+		valueList.add(appNewList(header.getReceiver()));
+
 		keyList.add("shortcuts");
 		//判断当前用户是读者还是作者
 		Map<String, Object> replyMsgObject = null;
 		valueList.add(appList(header.getReceiver()));
 
-		keyList.add("helperConfig");
-		valueList.add(appNewList(header.getReceiver()));
+
 
 		replyMsgObject = CollectionUtil.fastMap(keyList, valueList);
 		replyMsgObject.put("version", myVersion);

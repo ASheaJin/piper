@@ -134,17 +134,17 @@ public class PMenusHandler implements EventHandler<MessageEvent> {
 		valueList.add(appFeaturesList(header.getReceiver()));
 
 
-		Map<String, Object> replyMsgObject = null;
-		keyList.add("shortcuts");
-//判断当前用户是读者还是作者
 
-		valueList.add(appList(publisher.getUserId(), publisher));
 
 
 		keyList.add("helperConfig");
 //判断当前用户是读者还是作者
 
-		valueList.add(appNewList(publisher.getUserId(), publisher));
+		valueList.add(appNewList(header.getReceiver(), publisher));
+
+		Map<String, Object> replyMsgObject = null;
+		keyList.add("shortcuts");
+		valueList.add(appList(header.getReceiver(), publisher));
 
 		replyMsgObject = CollectionUtil.fastMap(keyList, valueList);
 		replyMsgObject.put("version", myVersion);
