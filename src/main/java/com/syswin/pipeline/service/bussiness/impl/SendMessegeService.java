@@ -92,6 +92,9 @@ public class SendMessegeService {
 
 	public void sendCard(String from, String to, String name, String imgUrl) {
 		imgUrl = imgUrl == null ? url : imgUrl;
+		if (from.contains("p.")) {
+			imgUrl = null;
+		}
 		ChatMsg msg = new ChatMsg(from, to,
 						UUID.randomUUID().toString(), cardContent(from, name, imgUrl));
 

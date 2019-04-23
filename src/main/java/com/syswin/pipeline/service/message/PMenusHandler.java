@@ -130,22 +130,19 @@ public class PMenusHandler implements EventHandler<MessageEvent> {
 		keyList.add("text");
 		valueList.add(languageChange.getValueByUserId("menu.p.tip", header.getReceiver()));
 
+
+		//新版本菜单
+		keyList.add("helperConfig");
+		valueList.add(appNewList(header.getReceiver(), publisher));
+
+		//老版本菜单
 		keyList.add("features");
 		valueList.add(appFeaturesList(header.getReceiver()));
 
-
-
-
-
-		keyList.add("helperConfig");
-//判断当前用户是读者还是作者
-
-		valueList.add(appNewList(header.getReceiver(), publisher));
-
-		Map<String, Object> replyMsgObject = null;
 		keyList.add("shortcuts");
 		valueList.add(appList(header.getReceiver(), publisher));
 
+		Map<String, Object> replyMsgObject = null;
 		replyMsgObject = CollectionUtil.fastMap(keyList, valueList);
 		replyMsgObject.put("version", myVersion);
 		consumerService.updateUserVersion(header, myVersion, myRole);
