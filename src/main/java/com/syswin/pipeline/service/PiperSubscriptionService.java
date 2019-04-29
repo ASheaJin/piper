@@ -199,9 +199,9 @@ public class PiperSubscriptionService {
 	 * @param userId
 	 * @return
 	 */
-	public List<Publisher> getMySubscribtion(String userId) {
+	public List<Publisher> getMySubscribtion(String userId, int pageNo, int pageSize) {
 
-		return subSubscriptionService.getMySubscribtions(userId);
+		return subSubscriptionService.getMySubscribtionsAll(userId, (pageNo - 1) * pageSize, pageSize);
 	}
 
 
