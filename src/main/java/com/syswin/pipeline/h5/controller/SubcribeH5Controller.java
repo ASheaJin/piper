@@ -18,6 +18,7 @@ public class SubcribeH5Controller {
 
 	@Autowired
 	private PiperSubscriptionService subscriptionService;
+
 	@RequestMapping("/add")
 	public String add(Model model, HttpServletRequest request) {
 		String userId = StringUtils.getParam(request, "userId", null);
@@ -31,7 +32,7 @@ public class SubcribeH5Controller {
 		int pageSize = StringUtils.getParam(request, "pageSize", 10);
 		String userId = StringUtils.getParam(request, "userId", null);
 
-		model.addAttribute("data",subscriptionService.getMySubscribtion(userId));
+		model.addAttribute("data", subscriptionService.getMySubscribtion(userId, pageIndex, pageSize));
 		model.addAttribute("pageIndex", pageIndex);
 		model.addAttribute("pageSize", pageSize);
 		model.addAttribute("userId", userId);
