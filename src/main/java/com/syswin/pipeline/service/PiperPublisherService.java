@@ -197,4 +197,33 @@ public class PiperPublisherService {
 //		return subPublisherService.getOrgPublisherByuserId(keyword, userId);
 		return subPublisherService.getOrgPublisherByuserId(keyword, userId, pageNo, pageSize);
 	}
+
+	public Publisher changeOrgPublishUser(String publishId, String curUserId, String changeUserId) {
+
+		if (!ValidationUtil.isEmail(changeUserId)) {
+			throw new BusinessException("ex.email.invalid");
+		}
+		Publisher publisher = subPublisherService.getPubLisherById(publishId);
+		if (publisher == null) {
+			throw new BusinessException("ex.publisher.null");
+		}
+		if (!curUserId.equals(publisher.getUserId())) {
+			throw new BusinessException("msg.nopermission");
+		}
+		if (!curUserId.equals(publisher.getUserId())) {
+			throw new BusinessException("msg.nopermission");
+		}
+		publisher.setUserId(changeUserId);
+		int r = subPublisherService.update(publisher);
+		if (r == 1) {
+			sendMessegeService.sendCard(publisher.getPtemail(), curUserId, publisher.getName());
+			sendMessegeService.sendTextmessage(languageChange.getLangByUserId("msg.changetip", new String[]{changeUserId}, curUserId), curUserId, 0, publisher.getPtemail());
+
+			sendMessegeService.sendCard(publisher.getPtemail(), changeUserId, "* " + publisher.getName());
+			sendMessegeService.sendTextmessage(languageChange.getLangByUserId("msg.changetip", new String[]{changeUserId}, changeUserId), changeUserId, 0, publisher.getPtemail());
+		} else {
+			throw new BusinessException("ex.sql.err");
+		}
+		return publisher;
+	}
 }

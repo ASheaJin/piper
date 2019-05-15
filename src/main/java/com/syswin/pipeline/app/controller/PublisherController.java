@@ -54,7 +54,7 @@ public class PublisherController {
 	@Value("${server.tomcat.basedir}")
 	public String basedir;
 
-	@PostMapping("create")
+	@PostMapping("/create")
 	@ApiOperation(
 					value = "创建个人/京交会出版社"
 	)
@@ -76,7 +76,7 @@ public class PublisherController {
 
 	}
 
-	@PostMapping("createOrg")
+	@PostMapping("/createOrg")
 	@ApiOperation(
 					value = "创建组织出版社"
 	)
@@ -88,7 +88,7 @@ public class PublisherController {
 
 	}
 
-	@PostMapping("deleteOrg")
+	@PostMapping("/deleteOrg")
 	@ApiOperation(
 					value = "删除组织出版社"
 	)
@@ -106,7 +106,7 @@ public class PublisherController {
 	//1、获取该用户与该出版社的关系（已订阅、未订阅）
 	//2、处理订阅出版社的指令
 	//3、返回处理结果
-	@PostMapping("subscribe")
+	@PostMapping("/subscribe")
 	@ApiOperation(
 					value = "订阅提交"
 	)
@@ -117,7 +117,7 @@ public class PublisherController {
 	}
 
 
-	@PostMapping("subscribebyOrgList")
+	@PostMapping("/subscribebyOrgList")
 	@ApiOperation(
 					value = "批量组织名称订阅组织号"
 	)
@@ -127,7 +127,7 @@ public class PublisherController {
 
 	}
 
-	@PostMapping("uploadExcel")
+	@PostMapping("/uploadExcel")
 	@ApiOperation(
 					value = "Excel批量上传订阅组织出版社"
 	)
@@ -157,7 +157,7 @@ public class PublisherController {
 	}
 
 
-	@PostMapping("subscribeByList")
+	@PostMapping("/subscribeByList")
 	@ApiOperation(
 					value = "通过UserId订阅组织号"
 	)
@@ -172,7 +172,7 @@ public class PublisherController {
 	//1、获取该用户与该出版社的关系（已订阅、未订阅）
 	//2、处理取消订阅出版社的指令
 	//3、返回处理结果
-	@PostMapping("unsubscribe")
+	@PostMapping("/unsubscribe")
 	@ApiOperation(
 					value = "取消订阅"
 	)
@@ -182,7 +182,7 @@ public class PublisherController {
 		return new ResponseEntity();
 	}
 
-	@PostMapping("unOrgsubscribe")
+	@PostMapping("/unOrgsubscribe")
 	@ApiOperation(
 					value = "取消组织订阅"
 	)
@@ -192,7 +192,7 @@ public class PublisherController {
 
 	}
 
-	@PostMapping("getMyPublisher")
+	@PostMapping("/getMyPublisher")
 	@ApiOperation(
 					value = "获得我的个人出版社"
 	)
@@ -201,7 +201,16 @@ public class PublisherController {
 		return new ResponseEntity(publisher);
 	}
 
-	@PostMapping("getMyOrgPublisher")
+	@PostMapping("/changeOrgPublishUser")
+	@ApiOperation(
+					value = "获得我的个人出版社"
+	)
+	public ResponseEntity changeOrgPublishUser(@RequestBody ChangeParam cp) {
+		publisherService.changeOrgPublishUser(cp.getPublishId(), cp.getCurUserId(), cp.getChangeUserId());
+		return new ResponseEntity();
+	}
+
+	@PostMapping("/getMyOrgPublisher")
 	@ApiOperation(
 					value = "获得我的出版社"
 	)
