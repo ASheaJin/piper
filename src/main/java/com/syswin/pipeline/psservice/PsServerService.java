@@ -29,7 +29,7 @@ public class PsServerService {
 
 	@Value("${psserver.path}")
 	private String serverPath;
-	@Value("${psserver.client.tmail}")
+	@Value("${app.pipeline.userId}")
 	private String client;
 	@Value("${psserver.server.tmail}")
 	private String server;
