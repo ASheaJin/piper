@@ -52,11 +52,11 @@ public class SubcribeController {
 
 	@PostMapping("/getmysubsion")
 	public ResponseEntity getmysubsion(@RequestBody RecomListParam upm) {
-		Integer pageNo = StringUtils.isNullOrEmpty(upm.getPageNo()) ? 1 : Integer.parseInt(upm.getPageNo());
-		Integer pageSize = StringUtils.isNullOrEmpty(upm.getPageSize()) ? 20 : Integer.parseInt(upm.getPageSize());
+//		Integer pageNo = StringUtils.isNullOrEmpty(upm.getPageNo()) ? 1 : Integer.parseInt(upm.getPageNo());
+//		Integer pageSize = StringUtils.isNullOrEmpty(upm.getPageSize()) ? 20 : Integer.parseInt(upm.getPageSize());
 
 
-		return new ResponseEntity(subscriptionService.getMySubscribtion(upm.getUserId(),pageNo,pageSize));
+		return new ResponseEntity(subscriptionService.getMySubscribtion(upm.getUserId(),0,0));
 	}
 
 	@RequestMapping(value = "/getPubSubsions", method = RequestMethod.POST)
