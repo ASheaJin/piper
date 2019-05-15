@@ -1,16 +1,15 @@
 package com.syswin.pipeline.service;
 
 import com.github.pagehelper.PageInfo;
-import com.syswin.pipeline.app.controller.PSSeverController;
 import com.syswin.pipeline.db.model.ReCommendPublisher;
 import com.syswin.pipeline.manage.dto.output.PublisherManageVO;
 import com.syswin.pipeline.service.bussiness.impl.SendMessegeService;
+import com.syswin.pipeline.service.exception.BusinessException;
 import com.syswin.pipeline.service.ps.PSClientService;
 import com.syswin.pipeline.service.ps.util.ValidationUtil;
-import com.syswin.pipeline.service.psserver.impl.BusinessException;
 import com.syswin.pipeline.utils.LanguageChange;
 import com.syswin.pipeline.utils.PatternUtils;
-import com.syswin.pipeline.utils.PromissionUtil;
+import com.syswin.pipeline.utils.PermissionUtil;
 import com.syswin.pipeline.utils.StringUtils;
 import com.syswin.sub.api.AdminService;
 import com.syswin.sub.api.db.model.Admin;
@@ -35,7 +34,7 @@ import java.util.stream.Collectors;
 @Service
 public class PiperPublisherService {
 
-	private static final Logger logger = LoggerFactory.getLogger(PSSeverController.class);
+	private static final Logger logger = LoggerFactory.getLogger(PiperPublisherService.class);
 	@Value("${app.pipeline.userId}")
 	private String from;
 	@Autowired
@@ -73,7 +72,7 @@ public class PiperPublisherService {
 			throw new BusinessException("ex.name.invalid");
 		}
 		//域过滤
-		if (!PromissionUtil.getdomains(domain, userId)) {
+		if (!PermissionUtil.getdomains(domain, userId)) {
 			throw new BusinessException(languageChange.getLangByUserId("ex.demain.err", new String[]{userId, domain}, userId));
 		}
 		// TODO: 2019/3/29 后期加入靓号处理

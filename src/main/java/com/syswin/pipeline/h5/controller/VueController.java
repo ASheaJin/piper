@@ -40,10 +40,10 @@ public class VueController {
 			return null;
 		}
 
-		if (req.getRequestURL().toString().contains("/webmg/index1")) {
-
-			return "forward:/index1.html";
-		}
+//		if (req.getRequestURL().toString().contains("/webmg/index1")) {
+//
+//			return "forward:/index1.html";
+//		}
 
 		return "forward:/webmg.html";
 	}

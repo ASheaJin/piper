@@ -4,9 +4,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.syswin.pipeline.psservice.impl.CallBackRegister;
 import com.syswin.pipeline.psservice.response.ActiveResult;
 import com.syswin.pipeline.psservice.response.ResponeResultData;
+import com.syswin.pipeline.service.exception.BusinessException;
 import com.syswin.pipeline.service.ps.PSClientService;
 import com.syswin.pipeline.service.ps.util.StringUtil;
-import com.syswin.pipeline.service.psserver.impl.BusinessException;
 import com.syswin.pipeline.utils.HttpsUtil;
 import com.syswin.ps.sdk.common.CDTPResponse;
 import com.syswin.ps.sdk.common.CommonMsg;
@@ -29,9 +29,9 @@ public class PsServerService {
 
 	@Value("${psserver.path}")
 	private String serverPath;
-	@Value("${psserver.client}")
+	@Value("${psserver.client.tmail}")
 	private String client;
-	@Value("${psserver.server}")
+	@Value("${psserver.server.tmail}")
 	private String server;
 
 	@Autowired

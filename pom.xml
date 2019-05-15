@@ -6,7 +6,7 @@
 
 	<groupId>com.syswin.pipeline</groupId>
 	<artifactId>piper</artifactId>
-	<version>1.6.1-SNAPSHOT</version>
+	<version>1.5.32-SNAPSHOT</version>
 
 	<name>${project.artifactId}</name>
 	<description>pipeline</description>
@@ -118,16 +118,27 @@
 			<artifactId>spring-boot-starter-amqp</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>com.syswin.temail</groupId>
-			<artifactId>ps-all</artifactId>
-			<version>${syswin.temail.version}</version>
-		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>com.syswin.temail</groupId>-->
+			<!--<artifactId>ps-all</artifactId>-->
+			<!--<version>${syswin.temail.version}</version>-->
+		<!--</dependency>-->
 		<dependency>
 			<groupId>com.syswin.temail</groupId>
 			<artifactId>vault-keeper</artifactId>
 			<version>${syswin.vault.version}</version>
 		</dependency>
+
+		<dependency>
+			<groupId>com.syswin.ps.sdk</groupId>
+			<artifactId>ps-app-sdk-starter</artifactId>
+			<version>1.0.6</version>
+		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>com.syswin.ps.sdk.admin</groupId>-->
+			<!--<artifactId>ps-sdk-admin-starter</artifactId>-->
+			<!--<version>0.0.1</version>-->
+		<!--</dependency>-->
 		<!--<dependency>-->
 		<!--<groupId>org.mybatis.generator</groupId>-->
 		<!--<artifactId>mybatis-generator-core</artifactId>-->
@@ -243,6 +254,12 @@
 					<nonFilteredFileExtensions>
 						<nonFilteredFileExtension>xlsx</nonFilteredFileExtension>
 						<nonFilteredFileExtension>xls</nonFilteredFileExtension>
+						<nonFilteredFileExtension>woff</nonFilteredFileExtension>
+						<nonFilteredFileExtension>ttf</nonFilteredFileExtension>
+						<nonFilteredFileExtension>ico</nonFilteredFileExtension>
+						<nonFilteredFileExtension>eot</nonFilteredFileExtension>
+						<nonFilteredFileExtension>svg</nonFilteredFileExtension>
+						<nonFilteredFileExtension>woff2</nonFilteredFileExtension>
 					</nonFilteredFileExtensions>
 				</configuration>
 			</plugin>

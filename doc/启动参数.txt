@@ -1,0 +1,6 @@
+秘邮版本JAVA_OPS
+-server -Dspring.profiles.active=prod -Xms1024m -Xmx1024m -XX:+PrintGC -XX:+PrintGCDetails -XX:+PrintGCDateStamps -verbose:gc -XX:NewRatio=2 -XX:SurvivorRatio=4 -XX:+UseConcMarkSweepGC -XX:CMSInitiatingOccupancyFraction=70 -XX:+UseCMSInitiatingOccupancyOnly -XX:+ScavengeBeforeFullGC -XX:+CMSScavengeBeforeRemark -Xloggc:/opt/logs/gc.log -XX:+UseGCLogFileRotation -XX:NumberOfGCLogFiles=10 -XX:GCLogFileSize=50m -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/opt/logs
+
+七牛云版本 JAVA_OPS
+-server -Dspring.profiles.active=qiniu -Xms1024m -Xmx1024m -XX:+PrintGC -XX:+PrintGCDetails -XX:+PrintGCDateStamps -verbose:gc -XX:NewRatio=2 -XX:SurvivorRatio=4 -XX:+UseConcMarkSweepGC -XX:CMSInitiatingOccupancyFraction=70 -XX:+UseCMSInitiatingOccupancyOnly -XX:+ScavengeBeforeFullGC -XX:+CMSScavengeBeforeRemark -Xloggc:/opt/logs/gc.log -XX:+UseGCLogFileRotation -XX:NumberOfGCLogFiles=10 -XX:GCLogFileSize=50m -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/opt/logs
+-Dspring.profiles.active=qiniu

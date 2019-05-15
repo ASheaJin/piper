@@ -5,7 +5,7 @@ import com.syswin.pipeline.manage.dto.input.LoginInput;
 import com.syswin.pipeline.manage.service.UserService;
 import com.syswin.pipeline.manage.shiro.StatelessToken;
 import com.syswin.pipeline.manage.shiro.TokenManager;
-import com.syswin.pipeline.service.psserver.bean.ResponseEntity;
+import com.syswin.pipeline.app.dto.ResponseEntity;
 import io.swagger.annotations.Api;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;

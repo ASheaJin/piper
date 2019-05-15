@@ -6,8 +6,8 @@ import com.syswin.pipeline.manage.dto.input.DelPublisherParam;
 import com.syswin.pipeline.manage.dto.input.PublisherListParam;
 import com.syswin.pipeline.manage.dto.input.AddPublisherParam;
 import com.syswin.pipeline.service.PiperPublisherService;
-import com.syswin.pipeline.service.psserver.bean.ResponseEntity;
-import com.syswin.pipeline.utils.PromissionUtil;
+import com.syswin.pipeline.app.dto.ResponseEntity;
+import com.syswin.pipeline.utils.PermissionUtil;
 import com.syswin.pipeline.utils.StringUtils;
 import com.syswin.sub.api.AdminService;
 import com.syswin.sub.api.db.model.Admin;
@@ -72,19 +72,19 @@ public class PublisherInnerController {
 			return new ResponseEntity(EnumsUtil.toList());
 		} else {
 			List list = new ArrayList();
-			if (PromissionUtil.getPipterPromission(piperPro, "person")) {
+			if (PermissionUtil.getPipterPromission(piperPro, "person")) {
 				Map<String, Object> map = new HashMap();
 				map.put("code", PublisherTypeEnums.person.getCode());
 				map.put("name", PublisherTypeEnums.person.getName());
 				list.add(map);
 			}
-			if (PromissionUtil.getPipterPromission(piperPro, "feedpublish")) {
+			if (PermissionUtil.getPipterPromission(piperPro, "feedpublish")) {
 				Map<String, Object> map1 = new HashMap();
 				map1.put("code", PublisherTypeEnums.feedpublish.getCode());
 				map1.put("name", PublisherTypeEnums.feedpublish.getName());
 				list.add(map1);
 			}
-			if (PromissionUtil.getPipterPromission(piperPro, "organize")) {
+			if (PermissionUtil.getPipterPromission(piperPro, "organize")) {
 				Admin admin = adminService.getAdmin(manageId, PublisherTypeEnums.organize);
 				if (admin != null) {
 					Map<String, Object> map2 = new HashMap();
@@ -93,7 +93,7 @@ public class PublisherInnerController {
 					list.add(map2);
 				}
 			}
-			if (PromissionUtil.getPipterPromission(piperPro, "ciftis")) {
+			if (PermissionUtil.getPipterPromission(piperPro, "ciftis")) {
 				Admin admin1 = adminService.getAdmin(manageId, PublisherTypeEnums.ciftis);
 				if (admin1 != null) {
 					Map<String, Object> map2 = new HashMap();

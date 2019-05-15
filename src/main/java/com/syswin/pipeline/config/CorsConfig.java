@@ -32,4 +32,6 @@ public class CorsConfig {
 		source.registerCorsConfiguration("/**", buildConfig());
 		return new CorsFilter(source);
 	}
+
+
 }

@@ -5,7 +5,7 @@ import com.syswin.pipeline.manage.dto.input.DelSubParam;
 import com.syswin.pipeline.manage.dto.input.SubcriptionAddParam;
 import com.syswin.pipeline.manage.dto.input.SubcriptionListParam;
 import com.syswin.pipeline.service.PiperSubscriptionService;
-import com.syswin.pipeline.service.psserver.bean.ResponseEntity;
+import com.syswin.pipeline.app.dto.ResponseEntity;
 import com.syswin.pipeline.utils.StringUtils;
 import com.syswin.sub.api.db.model.Subscription;
 import io.swagger.annotations.Api;

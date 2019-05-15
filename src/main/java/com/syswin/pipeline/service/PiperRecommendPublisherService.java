@@ -7,7 +7,7 @@ import com.syswin.pipeline.db.model.ReCommendPublisher;
 import com.syswin.pipeline.db.repository.ReCommendPublisherRepository;
 import com.syswin.pipeline.manage.dto.output.PublisherManageVO;
 import com.syswin.pipeline.service.ps.util.StringUtil;
-import com.syswin.pipeline.service.psserver.impl.BusinessException;
+import com.syswin.pipeline.service.exception.BusinessException;
 import com.syswin.pipeline.utils.StringUtils;
 import com.syswin.sub.api.PublisherService;
 import com.syswin.sub.api.SubscriptionService;

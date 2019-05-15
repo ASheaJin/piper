@@ -239,6 +239,24 @@ public class PSClientServiceImpl implements PSClientService {
 		return pubKey;
 	}
 
+	//通过 kms获取公钥
+	private String getPubKey(String temail) {
+		String pubKey = null;
+		keyAwareVault = VaultKeeper.keyAwareVault(kmsServer, tenantId);
+		this.cipher = keyAwareVault.asymmetricCipher(CipherAlgorithm.ECDSA);
+		this.publicKeyCipher = VaultKeeper.vault().publicKeyCipher(CipherAlgorithm.ECDSA);
+		Optional<String> recordKey = null;
+		try {
+			recordKey = cipher.publicKey(temail);
+		} catch (Exception e) {
+			logger.info("生成公钥失败", e);
+		}
+
+		if (recordKey.isPresent()) {
+			pubKey = recordKey.get();
+		}
+		return pubKey;
+	}
 
 	private Message sendMessageProxy(Message msg) {
 		LogUtil.logCdtpMsgIn(msg, s -> logger.debug(s));
@@ -387,6 +405,12 @@ public class PSClientServiceImpl implements PSClientService {
 		String publicKey = CacheUtil.get(temail);
 		//去缓存
 		if (StringUtil.isNotEmpty(publicKey)) {
+			return publicKey;
+		}
+		//从kms中拉取
+		publicKey=getPubKey(temail);
+		if (StringUtil.isNotEmpty(publicKey)) {
+			CacheUtil.put(temail, publicKey);
 			return publicKey;
 		}
 		CloseableHttpClient httpclient = HttpClients.createDefault();

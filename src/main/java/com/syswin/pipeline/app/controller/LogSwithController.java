@@ -1,6 +1,6 @@
 package com.syswin.pipeline.app.controller;
 
-import com.syswin.pipeline.service.psserver.bean.ResponseEntity;
+import com.syswin.pipeline.app.dto.ResponseEntity;
 import com.syswin.pipeline.utils.SwithUtil;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;

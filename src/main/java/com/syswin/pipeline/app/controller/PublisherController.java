@@ -3,8 +3,8 @@ package com.syswin.pipeline.app.controller;
 import com.syswin.pipeline.app.dto.*;
 import com.syswin.pipeline.service.PiperPublisherService;
 import com.syswin.pipeline.service.PiperSubscriptionService;
-import com.syswin.pipeline.service.psserver.bean.ResponseEntity;
-import com.syswin.pipeline.service.psserver.impl.BusinessException;
+import com.syswin.pipeline.app.dto.ResponseEntity;
+import com.syswin.pipeline.service.exception.BusinessException;
 import com.syswin.pipeline.service.security.TokenGenerator;
 import com.syswin.pipeline.utils.*;
 import com.syswin.sub.api.AdminService;
@@ -12,12 +12,17 @@ import com.syswin.sub.api.db.model.Publisher;
 import com.syswin.sub.api.enums.PublisherTypeEnums;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -29,6 +34,8 @@ import java.util.List;
 @RequestMapping("/publish")
 @Api(value = "publish", tags = "publish")
 public class PublisherController {
+
+	private static final Logger logger = LoggerFactory.getLogger(PublisherController.class);
 
 	@Autowired
 	private TokenGenerator tokenGenerator;
@@ -44,6 +51,9 @@ public class PublisherController {
 	@Autowired
 	LanguageChange languageChange;
 
+	@Value("${server.tomcat.basedir}")
+	public String basedir;
+
 	@PostMapping("create")
 	@ApiOperation(
 					value = "创建个人/京交会出版社"
@@ -56,8 +66,8 @@ public class PublisherController {
 		} else {
 			throw new BusinessException("ex.publisher.creating");
 		}
-		if(PublisherTypeEnums.ciftis.equals(createPublisher.getPtype())){
-			adminService.add(null,createPublisher.getUserId(),PublisherTypeEnums.ciftis);
+		if (PublisherTypeEnums.ciftis.equals(createPublisher.getPtype())) {
+			adminService.add(null, createPublisher.getUserId(), PublisherTypeEnums.ciftis);
 		}
 
 		Publisher publisher = publisherService.addPublisher(createPublisher.getUserId(), createPublisher.getName(), null, createPublisher.getPtype() == null ? 0 : createPublisher.getPtype());
@@ -71,7 +81,7 @@ public class PublisherController {
 					value = "创建组织出版社"
 	)
 	public ResponseEntity createOrg(@RequestBody CreateOrgPublisher createPublisher) {
-		adminService.add(null,createPublisher.getUserId(),PublisherTypeEnums.organize);
+		adminService.add(null, createPublisher.getUserId(), PublisherTypeEnums.organize);
 		Publisher publisher = publisherService.addPublisher(createPublisher.getUserId(), createPublisher.getName(), null, 2);
 		//回执创建完成消息
 		return new ResponseEntity(publisher);
@@ -121,13 +131,13 @@ public class PublisherController {
 	@ApiOperation(
 					value = "Excel批量上传订阅组织出版社"
 	)
-	public ResponseEntity uploadExcel(HttpServletRequest request, HttpServletResponse response, @RequestParam MultipartFile file) {
+	public ResponseEntity uploadExcel(HttpServletRequest request, @RequestParam MultipartFile file) {
 
 		String[] param = tokenGenerator.getIdsByToken(request.getParameter("t"));
 		if (param == null) {
 			throw new BusinessException("ex.tokenInvalid");
 		}
-		List<String> listString = ExcelUtil.getExcelData(file);
+		List<String> listString = ExcelUtil.getExcelData(file, param[0], basedir);
 		String error = "";
 		for (String tmail : listString) {
 			if (!PatternUtils.orEmail(tmail)) {
@@ -141,6 +151,7 @@ public class PublisherController {
 			throw new BusinessException("ex.userid.null");
 		}
 		List<String> sendList = subscriptionService.subscribeList(listString, param[0], param[1]);
+
 
 		return new ResponseEntity(sendList);
 	}

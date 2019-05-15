@@ -20,6 +20,15 @@ public class StringUtils {
 	public static boolean isNullOrEmpty(String str) {
 		return str == null || str.length() <= 0 || str.equalsIgnoreCase("null");
 	}
+	public static int getPageNoInteger(Integer i) {
+		return (i == null || i == 0) ? 0 : i - 1;
+	}
+
+
+	public static int getPageSizeInteger(Integer i) {
+		return (i == null) ? 20 : i;
+	}
+
 
 	public static int getInteger(String str) {
 		return (isNullOrEmpty(str)) ? 0 : Integer.parseInt(str);

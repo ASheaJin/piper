@@ -1,7 +1,7 @@
 package com.syswin.pipeline.h5.controller;
 
 import com.syswin.pipeline.service.PiperPublisherService;
-import com.syswin.pipeline.service.psserver.impl.BusinessException;
+import com.syswin.pipeline.service.exception.BusinessException;
 import com.syswin.pipeline.service.security.TokenGenerator;
 import com.syswin.pipeline.utils.StringUtils;
 import com.syswin.sub.api.db.model.Publisher;

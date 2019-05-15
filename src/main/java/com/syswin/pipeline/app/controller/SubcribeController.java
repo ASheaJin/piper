@@ -1,11 +1,8 @@
 package com.syswin.pipeline.app.controller;
 
-import com.syswin.pipeline.app.dto.CheckSubInput;
-import com.syswin.pipeline.app.dto.SubSearchParam;
-import com.syswin.pipeline.app.dto.UserIdParam;
+import com.syswin.pipeline.app.dto.*;
 import com.syswin.pipeline.service.PiperPublisherService;
 import com.syswin.pipeline.service.PiperSubscriptionService;
-import com.syswin.pipeline.service.psserver.bean.ResponseEntity;
 import com.syswin.pipeline.utils.StringUtils;
 import com.syswin.sub.api.enums.PublisherTypeEnums;
 import io.swagger.annotations.Api;
@@ -54,8 +51,12 @@ public class SubcribeController {
 
 
 	@PostMapping("/getmysubsion")
-	public ResponseEntity getmysubsion(@RequestBody UserIdParam upm) {
-		return new ResponseEntity(subscriptionService.getMySubscribtion(upm.getUserId()));
+	public ResponseEntity getmysubsion(@RequestBody RecomListParam upm) {
+		Integer pageNo = StringUtils.isNullOrEmpty(upm.getPageNo()) ? 1 : Integer.parseInt(upm.getPageNo());
+		Integer pageSize = StringUtils.isNullOrEmpty(upm.getPageSize()) ? 20 : Integer.parseInt(upm.getPageSize());
+
+
+		return new ResponseEntity(subscriptionService.getMySubscribtion(upm.getUserId(),pageNo,pageSize));
 	}
 
 	@RequestMapping(value = "/getPubSubsions", method = RequestMethod.POST)

@@ -10,7 +10,7 @@ import com.syswin.pipeline.manage.dto.input.DelReCommend;
 import com.syswin.pipeline.manage.service.HeaderService;
 import com.syswin.pipeline.service.PiperRecommendContentService;
 import com.syswin.pipeline.service.PiperRecommendPublisherService;
-import com.syswin.pipeline.service.psserver.bean.ResponseEntity;
+import com.syswin.pipeline.app.dto.ResponseEntity;
 import com.syswin.pipeline.utils.StringUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

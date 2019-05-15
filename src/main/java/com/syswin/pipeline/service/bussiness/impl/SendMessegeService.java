@@ -91,7 +91,13 @@ public class SendMessegeService {
 	}
 
 	public void sendCard(String from, String to, String name, String imgUrl) {
-		imgUrl = imgUrl == null ? url : imgUrl;
+
+		if (from.contains("p.")) {
+			imgUrl = imgUrl == null ? purl : imgUrl;
+		}
+		if (from.contains("a.piper")) {
+			imgUrl = imgUrl == null ? url : imgUrl;
+		}
 		ChatMsg msg = new ChatMsg(from, to,
 						UUID.randomUUID().toString(), cardContent(from, name, imgUrl));
 
@@ -104,6 +110,9 @@ public class SendMessegeService {
 	//名片消息
 	@Value("${app.pipeline.imgUrl}")
 	private String url;
+	@Value("${p.pipeline.imgUrl}")
+	private String purl;
+
 
 	public static final String VCARD_TEMPLATE = "BEGIN:VCARD\r\nPHOTO:%s\r\nVERSION:3.0\r\nN:%s\r\nEMAIL:%s\r\nEND:VCARD";
 
@@ -152,7 +161,6 @@ public class SendMessegeService {
 	@Deprecated
 	@Async("msgThreadPool")
 	public Boolean sendOthermessageTest(String content, int bodyType, String to, String from) {
-
 
 		//延时1秒钟发。
 		logger.info("Thread.currentThread().getName()1--------" + Thread.currentThread().getName());
