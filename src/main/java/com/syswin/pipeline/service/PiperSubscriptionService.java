@@ -205,7 +205,7 @@ public class PiperSubscriptionService {
 	 */
 	public List<Publisher> getMySubscribtion(String userId) {
 
-		return subSubscriptionService.getMySubscribtions(userId);
+		return subSubscriptionService.getMySubscribtions(userId, 0, 0);
 	}
 
 

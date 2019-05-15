@@ -3,6 +3,8 @@ package com.syswin.pipeline.app.controller;
 import com.syswin.pipeline.app.dto.PsSubOrgListParam;
 import com.syswin.pipeline.app.dto.PublishMessageParam;
 import com.syswin.pipeline.app.dto.SubOrgListParam;
+import com.syswin.pipeline.psservice.PsServerService;
+import com.syswin.pipeline.psservice.response.ResponeResultData;
 import com.syswin.pipeline.service.PiperSubscriptionService;
 import com.syswin.pipeline.service.bussiness.impl.SendMessegeService;
 import com.syswin.pipeline.service.org.IOrgService;
@@ -50,6 +52,9 @@ public class PSClientController {
 
 	@Autowired
 	private com.syswin.sub.api.PublisherService subPublisherService;
+
+	@Autowired
+	private PsServerService psServerService;
 
 	@PostMapping("/sendMsg")
 	@ApiOperation(
@@ -223,5 +228,15 @@ public class PSClientController {
 	public OrgOut getOrg(HttpServletRequest request, String temail) {
 		OrgOut orgOut = orgService.getOrgByVersion(temail, 0);
 		return orgOut;
+	}
+
+
+	@GetMapping("/registerAccount")
+	@ApiOperation(
+					value = "注册账号"
+	)
+	public ResponseEntity registerAccount(String temail) {
+		ResponeResultData rt = psServerService.registerAccount(temail);
+		return new ResponseEntity(rt);
 	}
 }
