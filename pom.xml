@@ -80,6 +80,12 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>io.micrometer</groupId>
+					<artifactId>micrometer-core</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<!-- swagger-ui所需依赖包 -->
 		<dependency>
@@ -217,6 +223,18 @@
 			<groupId>com.github.dadiyang</groupId>
 			<artifactId>jave</artifactId>
 			<version>1.0.6-SIMPLE</version>
+		</dependency>
+
+
+		<dependency>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-registry-prometheus</artifactId>
+			<version>1.0.10</version>
+		</dependency>
+		<dependency>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-core</artifactId>
+			<version>1.0.10</version>
 		</dependency>
 	</dependencies>
 
