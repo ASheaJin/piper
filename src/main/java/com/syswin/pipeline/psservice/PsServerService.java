@@ -45,6 +45,13 @@ public class PsServerService {
 	@Autowired
 	private PSClientService clientService;
 
+	/**
+	 * 注册秘邮号：
+	 * a.piper给 a.dm 发消息 监听回调消息 获取激活码
+	 * 找孟祥超 20190516
+	 * @param temail
+	 * @return
+	 */
 	public ResponeResultData registerAccount(String temail) {
 		Map<String, String> attendanceData = new HashMap<>();
 		attendanceData.put("temail", temail);
@@ -62,7 +69,13 @@ public class PsServerService {
 		return JSONObject.parseObject(result.getData(), ResponeResultData.class);
 	}
 
-
+	/**
+	 * 激活邮箱
+	 * 找郭梦男 20190516
+	 * @param temail
+	 * @param code
+	 * @return
+	 */
 	public boolean activeAccout(String temail, String code) {
 		Map<String, String> header = new HashMap();
 		header.put("Content-Type", "application/x-www-form-urlencoded");
