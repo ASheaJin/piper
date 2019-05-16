@@ -34,6 +34,9 @@ public class PsServerService {
 	@Value("${psserver.server.tmail}")
 	private String server;
 
+	@Value("${url.temail-auth.server}")
+	private String actUrl;
+
 	@Autowired
 	PsClientService psClientService;
 
@@ -84,7 +87,7 @@ public class PsServerService {
 		entity.put("PUBLIC_KEY", clientService.getTemailPublicKey(temail));
 		entity.put("TeMail", temail);
 		entity.put("ACTIVATION_CODE", code);
-		String result = HttpsUtil.sendHttpsPost("http://msgseal.t.email/publish/activate", header, entity);
+		String result = HttpsUtil.sendHttpsPost(actUrl+"/publish/activate", header, entity);
 		ActiveResult ar = JSONObject.parseObject(result, ActiveResult.class);
 		return "200".equals(ar.getCode());
 	}
