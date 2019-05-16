@@ -1,7 +1,7 @@
 #!/bin/sh
 
 #先从git上拉代码
-git fecth
+git fetch
 git pull 
 
 #删除并拷贝文件
