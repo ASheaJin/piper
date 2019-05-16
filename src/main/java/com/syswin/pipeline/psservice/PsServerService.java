@@ -104,5 +104,5 @@ public class PsServerService {
 		log.info("commonMsg:" + commonMsg.toString());
 		return commonMsg;
 	}
-	
+
 }
