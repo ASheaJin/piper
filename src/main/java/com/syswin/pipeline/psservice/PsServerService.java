@@ -57,21 +57,21 @@ public class PsServerService {
 	 * @param temail
 	 * @return
 	 */
-	public ResponeResultData registerAccount(String temail) {
+	public void registerAccount(String temail) {
 		Map<String, String> attendanceData = new HashMap<>();
 		attendanceData.put("temail", temail);
 		String requestId = UUID.randomUUID().toString();
 		callBackRegister.register(requestId);
 		log.info("开始获取参数,temail={}", temail);
 		msgSender.sendMsg(commonMsg(client, server, serverPath, attendanceData, requestId));
-		CDTPResponse<String> cdtpResponse = new CDTPResponse<>();
-		CDTPResponse<String> result = callBackRegister.getResponse(requestId, cdtpResponse.getClass());
-		log.info("获取结果,temail={},result={}", temail, result);
-
-		if (StringUtil.isEmpty(result.getData())) {
-			throw new BusinessException("调用registerAccount返回数据为null");
-		}
-		return JSONObject.parseObject(result.getData(), ResponeResultData.class);
+//		CDTPResponse<String> cdtpResponse = new CDTPResponse<>();
+//		CDTPResponse<String> result = callBackRegister.getResponse(requestId, cdtpResponse.getClass());
+//		log.info("获取结果,temail={},result={}", temail, result);
+//
+//		if (StringUtil.isEmpty(result.getData())) {
+//			throw new BusinessException("调用registerAccount返回数据为null");
+//		}
+//		return JSONObject.parseObject(result.getData(), ResponeResultData.class);
 	}
 
 	/**

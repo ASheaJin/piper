@@ -29,6 +29,9 @@ public class ChatMessageHandler {
 	@Autowired
 	private BusinessHandler businessHandler;
 
+	@Autowired
+	private RegisterHandler registerHandler;
+
 	int bufferSize = 1024;
 	Disruptor<MessageEvent> disruptor = new Disruptor<>(MessageEvent::new, bufferSize, DaemonThreadFactory.INSTANCE);
 
@@ -53,6 +56,14 @@ public class ChatMessageHandler {
 		event.setChatMsg(chatMsg);
 		event.setOriginHeader(header);
 
+		//调用注册的接口
+		if (800 == chatMsg.getBody_type() || 801 == chatMsg.getBody_type()) {
+
+				registerHandler.onEvent(event, 0L, true);
+
+
+
+		}
 		try {
 			aMenusHandler.onEvent(event, 0L, true);
 		} catch (Exception e) {
