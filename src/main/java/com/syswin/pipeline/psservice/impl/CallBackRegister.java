@@ -35,7 +35,7 @@ public class CallBackRegister implements ICallBackRegister {
                         cdtpResponse.setCode("-1");
                         cdtpResponse.setMsg("wait time out");
                         callBack.get(requestId).put(FastJsonUtil.toJson(cdtpResponse));
-                        log.error("上传日志失败={}",requestId);
+                        log.error("注册账号失败={}",requestId);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
