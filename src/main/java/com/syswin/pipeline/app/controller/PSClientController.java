@@ -235,8 +235,8 @@ public class PSClientController {
 					value = "注册账号"
 	)
 	public ResponseEntity registerAccount(String temail) {
-		ResponeResultData rt = psServerService.registerAccount(temail);
-		return new ResponseEntity(rt);
+		psServerService.registerAccount(temail);
+		return new ResponseEntity();
 	}
 
 	@PostMapping("/activeAccount")
