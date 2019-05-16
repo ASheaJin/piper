@@ -100,6 +100,7 @@ public class PsServerService {
 		Header header = psClientService.header(from, to, msgId);
 		HandlerParam handlerParam = new HandlerParam(requestId, path, null, new HashMap<>(), null, null, params);
 		CommonMsg commonMsg = new CommonMsg(header, 801, handlerParam);
+		System.out.println("commonMsg:" + commonMsg.toString());
 		return commonMsg;
 	}
 
