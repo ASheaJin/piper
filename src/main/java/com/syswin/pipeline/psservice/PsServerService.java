@@ -52,6 +52,7 @@ public class PsServerService {
 	 * 注册秘邮号：
 	 * a.piper给 a.dm 发消息 监听回调消息 获取激活码
 	 * 找孟祥超 20190516
+	 *
 	 * @param temail
 	 * @return
 	 */
@@ -75,6 +76,7 @@ public class PsServerService {
 	/**
 	 * 激活邮箱
 	 * 找郭梦男 20190516
+	 *
 	 * @param temail
 	 * @param code
 	 * @return
@@ -87,8 +89,9 @@ public class PsServerService {
 		entity.put("PUBLIC_KEY", clientService.getTemailPublicKey(temail));
 		entity.put("TeMail", temail);
 		entity.put("ACTIVATION_CODE", code);
-		String result = HttpsUtil.sendHttpsPost(actUrl+"/publish/activate", header, entity);
+		String result = HttpsUtil.sendHttpsPost(actUrl + "/publish/activate", header, entity);
 		ActiveResult ar = JSONObject.parseObject(result, ActiveResult.class);
+		log.info("ActiveResult:" + ar.toString());
 		return "200".equals(ar.getCode());
 	}
 
