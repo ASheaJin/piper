@@ -5,8 +5,8 @@ git fecth
 git pull 
 
 #删除并拷贝文件
-rm -rf 
-cp web1 web
+rm -rf web 
+cp -a  web1 web
 
 #git提交
 git add .
