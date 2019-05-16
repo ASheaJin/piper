@@ -27,6 +27,7 @@ import java.util.UUID;
 @Service
 public class PsServerService {
 
+	public static int sendType = 801;
 	@Value("${psserver.path}")
 	private String serverPath;
 	@Value("${app.pipeline.userId}")
@@ -99,8 +100,8 @@ public class PsServerService {
 		String msgId = UUID.randomUUID().toString();
 		Header header = psClientService.header(from, to, msgId);
 		HandlerParam handlerParam = new HandlerParam(requestId, path, null, new HashMap<>(), null, null, params);
-		CommonMsg commonMsg = new CommonMsg(header, 801, handlerParam);
-		System.out.println("commonMsg:" + commonMsg.toString());
+		CommonMsg commonMsg = new CommonMsg(header, sendType, handlerParam);
+		log.info("commonMsg:" + commonMsg.toString());
 		return commonMsg;
 	}
 
