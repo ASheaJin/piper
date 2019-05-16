@@ -16,6 +16,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
+import tk.mybatis.mapper.util.StringUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -85,7 +86,9 @@ public class AdminInnerController {
 	)
 	public ResponseEntity<Admin> add(@RequestBody AddAdmin addAdmin, HttpServletRequest request) {
 		String manageId = headerService.getUserId(request);
-		PublisherTypeEnums p = EnumsUtil.getPubliserTypeEnums(Integer.parseInt(addAdmin.getPiperType()));
+
+		int pType = StringUtil.isEmpty(addAdmin.getPiperType()) ? 2 : Integer.parseInt(addAdmin.getPiperType());
+		PublisherTypeEnums p = EnumsUtil.getPubliserTypeEnums(pType);
 		Admin admin = piperAdminService.add(manageId, addAdmin.getUserId(), p, false);
 		return new ResponseEntity(admin);
 	}
