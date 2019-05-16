@@ -9,6 +9,6 @@ rm -rf src/main/resources/public/web
 cp -a  web src/main/resources/public/web
 
 #git提交
-git add .
+git add -A
 git commit -m "修改前端web"
 git push
