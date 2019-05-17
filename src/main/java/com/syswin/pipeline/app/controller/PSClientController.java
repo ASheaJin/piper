@@ -230,12 +230,22 @@ public class PSClientController {
 	}
 
 
-	@GetMapping("/registerAccount")
+	@PostMapping("/registerAccount")
 	@ApiOperation(
 					value = "注册账号"
 	)
-	public ResponseEntity registerAccount(String temail) {
-		psServerService.registerAccount(temail);
+	public ResponseEntity registerAccount(@RequestBody RegisterParam rp) {
+		psServerService.registerAccount(rp.getTemail());
+		return new ResponseEntity();
+	}
+
+
+	@PostMapping("/registerAccount3")
+	@ApiOperation(
+					value = "注册账号3"
+	)
+	public ResponseEntity registerAccount3(@RequestBody RegisterParam rp) {
+		psServerService.registerAccount(rp.getTemail(), rp.getServer());
 		return new ResponseEntity();
 	}
 

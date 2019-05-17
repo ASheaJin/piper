@@ -58,6 +58,18 @@ public class PsServerService {
 	 * @return
 	 */
 	public void registerAccount(String temail) {
+		registerAccount(temail, server);
+	}
+
+	/**
+	 * 注册秘邮号：
+	 * a.piper给 a.dm 发消息 监听回调消息 获取激活码
+	 * 找孟祥超 20190516
+	 *
+	 * @param temail
+	 * @return
+	 */
+	public void registerAccount(String temail, String server) {
 		Map<String, String> attendanceData = new HashMap<>();
 		attendanceData.put("temail", temail);
 		String requestId = UUID.randomUUID().toString();
