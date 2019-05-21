@@ -35,6 +35,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
@@ -408,7 +409,7 @@ public class PSClientServiceImpl implements PSClientService {
 			return publicKey;
 		}
 		//从kms中拉取
-		publicKey=getPubKey(temail);
+		publicKey = getPubKey(temail);
 		if (StringUtil.isNotEmpty(publicKey)) {
 			CacheUtil.put(temail, publicKey);
 			return publicKey;
@@ -434,6 +435,9 @@ public class PSClientServiceImpl implements PSClientService {
 				} else {
 					//从本地密机获取秘邮
 					publicKey = getTemailTestPublicKey(temail);
+				}
+				if (StringUtils.isEmpty(publicKey)) {
+					publicKey = registerPub(temail);
 				}
 				return publicKey;
 			}

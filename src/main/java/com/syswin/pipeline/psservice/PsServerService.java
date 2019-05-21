@@ -105,8 +105,8 @@ public class PsServerService {
 		entity.put("TeMail", temail);
 		entity.put("ACTIVATION_CODE", code);
 		log.info("pk:" + pk);
-		log.info("pk:" + temail);
-		log.info("pk:" + code);
+		log.info("TeMail:" + temail);
+		log.info("ACTIVATION_CODE:" + code);
 		String result = HttpsUtil.sendHttpsPost(actUrl + "/publish/activate", header, entity);
 		ActiveResult ar = JSONObject.parseObject(result, ActiveResult.class);
 		log.info("ActiveResult:" + ar.toString());
