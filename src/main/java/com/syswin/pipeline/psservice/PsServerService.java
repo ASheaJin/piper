@@ -100,9 +100,13 @@ public class PsServerService {
 		header.put("Content-Type", "application/x-www-form-urlencoded");
 
 		Map<String, String> entity = new HashMap();
-		entity.put("PUBLIC_KEY", clientService.getTemailPublicKey(temail));
+		String pk = clientService.getTemailPublicKey(temail);
+		entity.put("PUBLIC_KEY", pk);
 		entity.put("TeMail", temail);
 		entity.put("ACTIVATION_CODE", code);
+		log.info("pk:" + pk);
+		log.info("pk:" + temail);
+		log.info("pk:" + code);
 		String result = HttpsUtil.sendHttpsPost(actUrl + "/publish/activate", header, entity);
 		ActiveResult ar = JSONObject.parseObject(result, ActiveResult.class);
 		log.info("ActiveResult:" + ar.toString());
