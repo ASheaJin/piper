@@ -436,17 +436,15 @@ public class PSClientServiceImpl implements PSClientService {
 					//从本地密机获取秘邮
 					publicKey = getTemailTestPublicKey(temail);
 				}
-				if (StringUtils.isEmpty(publicKey)) {
-					publicKey = registerPub(temail);
-				}
-				return publicKey;
 			}
-			return null;
 		} catch (Exception e) {
 			logger.error("获取公钥发生异常", e);
-			return null;
 		} finally {
 			closeHttpClient(httpclient, response);
+			if (StringUtils.isEmpty(publicKey)) {
+				publicKey = registerPub(temail);
+			}
+			return publicKey;
 		}
 	}
 
