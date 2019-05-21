@@ -116,6 +116,7 @@ public class PsServerService {
 	public <T> CommonMsg commonMsg(String from, String to, String path, T params, String requestId) {
 		String msgId = UUID.randomUUID().toString();
 		Header header = psClientService.header(from, to, msgId);
+		log.info("header:" + header.toString());
 		HandlerParam handlerParam = new HandlerParam(requestId, path, null, new HashMap<>(), null, null, params);
 		CommonMsg commonMsg = new CommonMsg(header, sendType, handlerParam);
 		log.info("commonMsg:" + commonMsg.toString());
