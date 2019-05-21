@@ -13,6 +13,7 @@ import com.syswin.pipeline.service.ps.util.CollectionUtil;
 import com.syswin.pipeline.service.ps.util.FastJsonUtil;
 import com.syswin.pipeline.utils.JacksonJsonUtil;
 import com.syswin.pipeline.utils.LanguageChange;
+import com.syswin.pipeline.utils.SwithUtil;
 import com.syswin.sub.api.PublisherService;
 import com.syswin.sub.api.SubscriptionService;
 import com.syswin.sub.api.db.model.Publisher;
@@ -54,18 +55,6 @@ public class PMenusHandler implements EventHandler<MessageEvent> {
 	@Autowired
 	private PSClientService psClientService;
 
-	@Autowired
-	ConsumerRepository consumerRepository;
-
-	@Autowired
-	SubscriptionService subSubscriptionService;
-	/**
-	 * 菜单的版本判断。
-	 * 对999消息判断version，如果version与此值相等，则不处理。
-	 * 如果不等，说明是999的第一次，则返回数据中version字段设为此值
-	 */
-	public String myRole = PermissionEnums.Guest.name;
-
 	@Value("${app.pipeline.userId}")
 	private String from;
 	private final static Logger logger = LoggerFactory.getLogger(PMenusHandler.class);
@@ -73,11 +62,6 @@ public class PMenusHandler implements EventHandler<MessageEvent> {
 	 * 输入板菜单的 bodyType
 	 */
 	public static final Integer GET_MESSAGE_INFO_FLAG = 999;
-	@Autowired
-	private DeviceInfoService deviceInfoService;
-
-	@Autowired
-	private LanguageChange languageChange;
 
 	@Override
 	public void onEvent(MessageEvent event, long sequence, boolean endOfBatch) {
@@ -89,38 +73,16 @@ public class PMenusHandler implements EventHandler<MessageEvent> {
 		if (from.equals(header.getSender())) {
 			return;
 		}
-		Publisher publisher = publisherService.getPubLisherByPublishTmail(header.getSender(), null);
-		//如果不是出版社
-		if (publisher == null) {
-			return;
-		}
-		String version = PermissionEnums.Guest.name;
+		int version = 0;
 		Env appEnv = null;
 		try {
 			String content = event.getChatMsg().getContent();
-			version = FastJsonUtil.parseObject(content).getString("version");
+			version = Integer.parseInt(FastJsonUtil.parseObject(content).getString("version"));
 			String envValue = FastJsonUtil.parseObject(content).getString("env");
 			appEnv = JacksonJsonUtil.fromJson(envValue, Env.class);
 		} catch (Exception e) {
 			logger.info("处理消息中的version字段失败", e);
 		}
-
-		myRole = consumerService.getPiperMenuRole(header.getReceiver(), header.getSender());
-		String myVersion = consumerService.getUserVersion(header, version, myRole);
-
-		String beforeLang = deviceInfoService.getLang(header.getReceiver());
-		String appValue = "zh";
-		//先更新数据库，在判断中英文是否一致
-		if (appEnv != null) {
-			appValue = deviceInfoService.insertOrupdate(header.getReceiver(), appEnv);
-		}
-		//判断版本是否一致 并且语言是否一致
-		if (version.equals(myVersion) && beforeLang.contains(appValue)) {
-			//版本号相同，不做加载
-			return;
-		}
-		sendTipsMessage(publisher, header.getReceiver());
-
 		List keyList = new ArrayList();
 		List valueList = new ArrayList();
 
@@ -128,24 +90,26 @@ public class PMenusHandler implements EventHandler<MessageEvent> {
 		valueList.add(0);
 
 		keyList.add("text");
-		valueList.add(languageChange.getValueByUserId("menu.p.tip", header.getReceiver()));
+		valueList.add("菜单测试");
 
 
 		//新版本菜单
-		keyList.add("helperConfig");
-		valueList.add(appNewList(header.getReceiver(), publisher));
-
-		//老版本菜单
-		keyList.add("features");
-		valueList.add(appFeaturesList(header.getReceiver()));
-
-		keyList.add("shortcuts");
-		valueList.add(appList(header.getReceiver(), publisher));
-
+		if ((SwithUtil.tt & 1) == 1) {
+			keyList.add("helperConfig");
+			valueList.add(helperConfig());
+		}
+		//新版本菜单
+		if ((SwithUtil.tt & 2) == 2) {
+			keyList.add("inputConfig");
+			valueList.add(inputConfig());
+		}
+		if ((SwithUtil.tt & 4) == 4) {
+			keyList.add("menuConfig");
+			valueList.add(menuConfig());
+		}
 		Map<String, Object> replyMsgObject = null;
 		replyMsgObject = CollectionUtil.fastMap(keyList, valueList);
-		replyMsgObject.put("version", myVersion);
-		consumerService.updateUserVersion(header, myVersion, myRole);
+		replyMsgObject.put("version", version + 1);
 		ChatMsg msg = new ChatMsg(header.getSender(), header.getReceiver(),
 						UUID.randomUUID().toString(), replyMsgObject);
 		msg.setBody_type(GET_MESSAGE_INFO_FLAG);
@@ -153,92 +117,53 @@ public class PMenusHandler implements EventHandler<MessageEvent> {
 		psClientService.sendChatMessage(msg, header.getReceiver(), header.getReceiverPK(), header.getSender(), header.getSenderPK());
 	}
 
-	//加载默认按钮 http://wiki.syswin.com/pages/viewpage.action?pageId=33708676
-	private List<Map<String, Object>> appFeaturesList(String userId) {
-		List<Map<String, Object>> appList = new ArrayList<>();
-
-		appList.add(createApp("", "#@" + 1, ""));
-		appList.add(createApp("", "#@" + 2, ""));
-		appList.add(createApp("", "#@" + 5, ""));
-		appList.add(createApp("", "#@" + 6, ""));
-		appList.add(createApp("", "#@" + 8, ""));
-//		appList.add(createApp("", "#@" + 10, ""));
-		//撰写,如果老版本不支持
-//		DeviceInfo deviceInfo = deviceInfoService.getDeviceInfo(userId);
-//		if (deviceInfo != null) {
-//			if (Integer.parseInt(deviceInfo.getBuild()) > 1904005617) {
-//				appList.add(createApp("", "#@" + 13, ""));
-//			}
-//		}
-
-//		appList.add(createApp("", "#@" + 13, ""));
-//		for (int i = 1; i < 10; i++) {
-//			appList.add(createApp("", "#@" + i, ""));
-//		}
-		return appList;
-	}
-
-//	private List<Map<String, Object>> appHelp() {
-//
-//		List<Map<String, Object>> appList = new ArrayList<>();
-//
-//		appList.add(createApp(ICON_ACCOUNT_INFO, "帮助", URL_PIPER + H5_HELP_INFO));
-//
-//		return appList;
-//	}
-
-	void sendTipsMessage(Publisher publisher, String userId) {
-		if (publisher.getPtype().equals(PublisherTypeEnums.person)) {
-			if (userId.equals(publisher.getUserId())) {
-			} else {
-				Subscription subscription = subSubscriptionService.getSub(userId, publisher.getPublisherId());
-				if (subscription == null && !publisher.getUserId().equals(userId)) {
-					sendMessegeService.sendTextmessage(languageChange.getValueByUserId("msg.ordertip", userId), userId, 0, publisher.getPtemail());
-				}
-			}
-		}
-	}
-
-
-	private List<Map<String, Object>> appNewList(String userId, Publisher publisher) {
+	private List<Map<String, Object>> helperConfig() {
 
 		List<Map<String, Object>> appList = new ArrayList<>();
-		appList.add(createNewApp("helper_write", "", ""));
-		appList.add(createNewApp("", languageChange.getValueByUserId("menu.p.history", userId), languageChange.getUrl(URL_PIPER + "/web/history-list", userId) + "&publisherId=" + publisher.getPublisherId()));
-		//既是组织管理者
-		if (userId.equals(publisher.getUserId())) {
-			appList.add(createNewApp("", languageChange.getValueByUserId("menu.p.managesub", userId), languageChange.getUrl(URL_PIPER + "/web/home", userId) + "&publisherId=" + publisher.getPublisherId()));
-			appList.add(createNewApp("", languageChange.getValueByUserId("menu.p.accountupload", userId), languageChange.getUrl(URL_PIPER + "/h5/help/upload", userId) + "&publisherId=" + publisher.getPublisherId()));
-		}
+		appList.add(createHelperConfig("input_write", "", "", ""));
+		appList.add(createHelperConfig("input_at", "", "", ""));
+		appList.add(createHelperConfig("", "", "", "http://www.baidu.com"));
 
 		return appList;
 	}
 
-
-	private Map<String, Object> createNewApp(String key, String title, String url) {
-		List<String> keys1 = CollectionUtil.fastList("key", "title", "url");
-		List<Object> app11 = CollectionUtil.fastList(key, title, url);
+	private Map<String, Object> createHelperConfig(String key, String iconUrl, String appName, String path) {
+		List<String> keys1 = CollectionUtil.fastList("key", "icon", "title", "url");
+		List<Object> app11 = CollectionUtil.fastList(key, iconUrl, appName, path);
 		return CollectionUtil.fastMap(keys1, app11);
 	}
 
-	private List<Map<String, Object>> appList(String userId, Publisher publisher) {
+
+	private List<Map<String, Object>> inputConfig() {
 
 		List<Map<String, Object>> appList = new ArrayList<>();
-
-		appList.add(createApp("", languageChange.getValueByUserId("menu.p.history", userId), languageChange.getUrl(URL_PIPER + "/web/history-list", userId) + "&publisherId=" + publisher.getPublisherId()));
-		//既是组织管理者
-		if (userId.equals(publisher.getUserId())) {
-			appList.add(createApp("", languageChange.getValueByUserId("menu.p.managesub", userId), languageChange.getUrl(URL_PIPER + "/web/home", userId) + "&publisherId=" + publisher.getPublisherId()));
-			appList.add(createApp("", languageChange.getValueByUserId("menu.p.accountupload", userId), languageChange.getUrl(URL_PIPER + "/h5/help/upload", userId) + "&publisherId=" + publisher.getPublisherId()));
-		}
+		appList.add(createHelperConfig("input_text&emoji", "", "", ""));
+		appList.add(createHelperConfig("input_photo", "", "", ""));
 
 		return appList;
 	}
 
+	private List<Map<String, Object>> menuConfig() {
+		List<Map<String, Object>> appList = new ArrayList<>();
+		appList.add(createMenuConfig("用户论坛", "", new ArrayList(), "1"));
+		List<Map<String, Object>> subList = new ArrayList<>();
+		subList.add(getSubMenu("热门文章", "http://www.bing.com", ""));
+		subList.add(getSubMenu("历史消息", "http://www.zhihu.com", ""));
+		appList.add(createMenuConfig("职场干货", "", subList, ""));
 
-	private Map<String, Object> createApp(String iconUrl, String appName, String path) {
-		List<String> keys1 = CollectionUtil.fastList("icon", "title", "url");
-		List<Object> app11 = CollectionUtil.fastList(iconUrl, appName, path);
+		appList.add(createMenuConfig("历史消息", "http://www.bing.com", new ArrayList(), ""));
+		return appList;
+	}
+
+	private Map<String, Object> createMenuConfig(String title, String url, List subMenu, String mainPage) {
+		List<String> keys1 = CollectionUtil.fastList("title", "url", "subMenu", "mainPage");
+		List<Object> app11 = CollectionUtil.fastList(title, url, subMenu, mainPage);
+		return CollectionUtil.fastMap(keys1, app11);
+	}
+
+	private Map<String, Object> getSubMenu(String title, String url, String mainPage) {
+		List<String> keys1 = CollectionUtil.fastList("title", "url", "mainPage");
+		List<Object> app11 = CollectionUtil.fastList(title, url, mainPage);
 		return CollectionUtil.fastMap(keys1, app11);
 	}
 

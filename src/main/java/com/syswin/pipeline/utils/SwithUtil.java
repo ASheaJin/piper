@@ -12,6 +12,8 @@ public class SwithUtil {
 
 	//出版社申请前缀
 
+	public static int tt = 1;
+
 	public static String TURNPS = "no";
 	public static boolean ISLOG = false;
 	public static String MD5 = "8812C36AA5AE336C2A77BF63211D899A";

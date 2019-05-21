@@ -10,6 +10,7 @@ import com.syswin.pipeline.service.org.OrgOut;
 import com.syswin.pipeline.service.ps.ChatMsg;
 import com.syswin.pipeline.service.ps.PSClientService;
 import com.syswin.pipeline.service.ps.PubKey;
+import com.syswin.pipeline.utils.SwithUtil;
 import com.syswin.sub.api.db.model.Publisher;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -125,7 +126,16 @@ public class PSClientController {
 
 		return createUserList;
 	}
+	@GetMapping("/config")
+	@ApiOperation(
+					value = "config"
+	)
+	public String config(String config) {
 
+		SwithUtil.tt = Integer.parseInt(config);
+
+		return "suc";
+	}
 
 	@GetMapping("/createTest")
 	@ApiOperation(
