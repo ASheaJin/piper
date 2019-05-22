@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 /**
  * Created by 115477 on 2018/11/27.
  */
-@SpringBootApplication(scanBasePackages = {"com.syswin","com.syswin.ps.sdk"})
+@SpringBootApplication(scanBasePackages = {"com.syswin"})
 @Configuration
 @EnableTransactionManagement(proxyTargetClass = true)
 public class PiperApplication {
