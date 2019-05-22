@@ -231,6 +231,8 @@ public class PMenusHandler implements EventHandler<MessageEvent> {
 		if (userId.equals(publisher.getUserId())) {
 			appList.add(createApp("", languageChange.getValueByUserId("menu.p.managesub", userId), languageChange.getUrl(URL_PIPER + "/web/home", userId) + "&publisherId=" + publisher.getPublisherId()));
 			appList.add(createApp("", languageChange.getValueByUserId("menu.p.accountupload", userId), languageChange.getUrl(URL_PIPER + "/h5/help/upload", userId) + "&publisherId=" + publisher.getPublisherId()));
+			appList.add(createNewApp("", languageChange.getValueByUserId("menu.p.changeuserid", userId), languageChange.getUrl(URL_PIPER + "/web/edit-email-admin", userId) + "&publisherId=" + publisher.getPublisherId()));
+
 		}
 
 		return appList;
