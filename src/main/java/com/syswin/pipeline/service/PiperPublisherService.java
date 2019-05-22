@@ -203,6 +203,10 @@ public class PiperPublisherService {
 		if (!ValidationUtil.isEmail(changeUserId)) {
 			throw new BusinessException("ex.email.invalid");
 		}
+		Admin admin = adminService.getAdmin(changeUserId, PublisherTypeEnums.organize);
+		if (admin == null) {
+			adminService.add(curUserId, changeUserId, PublisherTypeEnums.organize);
+		}
 		Publisher publisher = subPublisherService.getPubLisherById(publishId);
 		if (publisher == null) {
 			throw new BusinessException("ex.publisher.null");
