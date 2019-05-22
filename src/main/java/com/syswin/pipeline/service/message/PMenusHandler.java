@@ -3,8 +3,8 @@ package com.syswin.pipeline.service.message;
 import com.lmax.disruptor.EventHandler;
 import com.syswin.pipeline.db.repository.ConsumerRepository;
 import com.syswin.pipeline.enums.PermissionEnums;
-import com.syswin.pipeline.service.ConsumerService;
-import com.syswin.pipeline.service.DeviceInfoService;
+import com.syswin.pipeline.service.PiperConsumerService;
+import com.syswin.pipeline.service.PiperDeviceInfoService;
 import com.syswin.pipeline.service.bussiness.impl.SendMessegeService;
 import com.syswin.pipeline.service.ps.ChatMsg;
 import com.syswin.pipeline.service.ps.Env;
@@ -41,7 +41,7 @@ public class PMenusHandler implements EventHandler<MessageEvent> {
 	private String URL_PIPER;
 
 	@Autowired
-	ConsumerService consumerService;
+	PiperConsumerService consumerService;
 
 	@Autowired
 	private PublisherService publisherService;
@@ -74,7 +74,7 @@ public class PMenusHandler implements EventHandler<MessageEvent> {
 	 */
 	public static final Integer GET_MESSAGE_INFO_FLAG = 999;
 	@Autowired
-	private DeviceInfoService deviceInfoService;
+	private PiperDeviceInfoService deviceInfoService;
 
 	@Autowired
 	private LanguageChange languageChange;

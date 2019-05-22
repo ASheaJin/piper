@@ -1,6 +1,6 @@
 package com.syswin.pipeline.manage.shiro;
 
-import com.syswin.pipeline.manage.service.UserService;
+import com.syswin.pipeline.manage.service.PiperUserService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.mgt.DefaultSessionStorageEvaluator;
 import org.apache.shiro.mgt.SecurityManager;
@@ -26,7 +26,7 @@ import java.util.Map;
 public class ShiroConfig {
     private static final Logger logger = LoggerFactory.getLogger(ShiroConfig.class);
     @Bean
-    public SecurityManager securityManager(TokenManager tokenManager, UserService userService){
+    public SecurityManager securityManager(TokenManager tokenManager, PiperUserService userService){
         // 配置SecurityManager，并注入shiroRealm
         DefaultWebSecurityManager securityManager =  new DefaultWebSecurityManager();
 
@@ -49,7 +49,7 @@ public class ShiroConfig {
     }
 
     @Bean
-    public AuthorizingRealm authorizingRealm(TokenManager tokenManager, UserService userService){
+    public AuthorizingRealm authorizingRealm(TokenManager tokenManager, PiperUserService userService){
         StatelessRealm realm = new StatelessRealm();
         realm.setTokenManager(tokenManager);
         realm.setUserService(userService);

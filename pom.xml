@@ -17,10 +17,6 @@
 		<version>2.0.0.RELEASE</version>
 	</parent>
 
-	<properties>
-		<syswin.temail.version>1.2.3</syswin.temail.version>
-		<syswin.vault.version>1.0.8</syswin.vault.version>
-	</properties>
 
 	<dependencies>
 		<dependency>
@@ -124,27 +120,25 @@
 			<artifactId>spring-boot-starter-amqp</artifactId>
 		</dependency>
 
-		<!--<dependency>-->
-			<!--<groupId>com.syswin.temail</groupId>-->
-			<!--<artifactId>ps-all</artifactId>-->
-			<!--<version>${syswin.temail.version}</version>-->
-		<!--</dependency>-->
-		<dependency>
-			<groupId>com.syswin.temail</groupId>
-			<artifactId>vault-keeper</artifactId>
-			<version>${syswin.vault.version}</version>
-		</dependency>
-
 		<dependency>
 			<groupId>com.syswin.ps.sdk</groupId>
 			<artifactId>ps-app-sdk-starter</artifactId>
-			<version>1.0.6</version>
+			<version>1.0.9</version>
 		</dependency>
-		<!--<dependency>-->
-			<!--<groupId>com.syswin.ps.sdk.admin</groupId>-->
-			<!--<artifactId>ps-sdk-admin-starter</artifactId>-->
-			<!--<version>0.0.1</version>-->
-		<!--</dependency>-->
+
+		<dependency>
+			<groupId>com.syswin.temail</groupId>
+			<artifactId>vault-keeper</artifactId>
+			<version>1.1.1-SNAPSHOT</version>
+			<!--<version>1.1.0</version>-->
+		</dependency>
+
+		<dependency>
+			<groupId>com.syswin.ps.sdk.admin</groupId>
+			<artifactId>ps-sdk-admin-starter</artifactId>
+			<version>0.0.2</version>
+		</dependency>
+
 		<!--<dependency>-->
 		<!--<groupId>org.mybatis.generator</groupId>-->
 		<!--<artifactId>mybatis-generator-core</artifactId>-->

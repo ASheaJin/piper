@@ -1,17 +1,14 @@
 package com.syswin.pipeline.manage.service;
 
 import com.syswin.pipeline.db.repository.MenuRepository;
-import com.syswin.pipeline.service.DeviceInfoService;
+import com.syswin.pipeline.service.PiperDeviceInfoService;
 import com.syswin.pipeline.service.ps.Env;
 import com.syswin.pipeline.utils.JacksonJsonUtil;
-import com.syswin.pipeline.utils.LanguageChange;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import static org.junit.Assert.*;
 
 /**
  * Created by 115477 on 2019/3/29.
@@ -20,11 +17,11 @@ import static org.junit.Assert.*;
 @SpringBootTest
 public class UserServiceTest {
 	@Autowired
-	DeviceInfoService deviceInfoService;
+	PiperDeviceInfoService deviceInfoService;
 	@Autowired
 	private MenuRepository menuRepository;
 	@Autowired
-	private UserService userService;
+	private PiperUserService userService;
 
 	@Test
 	public void list() {

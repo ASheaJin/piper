@@ -1,7 +1,7 @@
 package com.syswin.pipeline.manage.shiro;
 
 import com.syswin.pipeline.db.model.User;
-import com.syswin.pipeline.manage.service.UserService;
+import com.syswin.pipeline.manage.service.PiperUserService;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
@@ -9,7 +9,6 @@ import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,7 +21,7 @@ public class StatelessRealm extends AuthorizingRealm {
 
     private TokenManager tokenManager;
 
-    private UserService userService;
+    private PiperUserService userService;
 
     @Override
     public boolean supports(AuthenticationToken token) {
@@ -67,11 +66,11 @@ public class StatelessRealm extends AuthorizingRealm {
     }
 
 
-    public UserService getUserService() {
+    public PiperUserService getUserService() {
         return userService;
     }
 
-    public void setUserService(UserService userService) {
+    public void setUserService(PiperUserService userService) {
         this.userService = userService;
     }
 }

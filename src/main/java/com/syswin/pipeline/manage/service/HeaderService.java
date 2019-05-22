@@ -20,7 +20,7 @@ public class HeaderService {
 	private TokenManager tokenManager;
 
 	@Autowired
-	private UserService userService;
+	private PiperUserService userService;
 
 
 	public String getUserId(HttpServletRequest request) {

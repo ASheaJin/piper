@@ -1,7 +1,7 @@
 package com.syswin.pipeline.manage.controller;
 
 import com.syswin.pipeline.manage.dto.output.MenuOutput;
-import com.syswin.pipeline.manage.service.MenuService;
+import com.syswin.pipeline.manage.service.PiperMenuService;
 import com.syswin.pipeline.app.dto.ResponseEntity;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ import java.util.List;
 public class MenuController {
 
     @Autowired
-    private MenuService menuService;
+    private PiperMenuService menuService;
 
     @GetMapping("list")
     public ResponseEntity<List<MenuOutput>> list() {

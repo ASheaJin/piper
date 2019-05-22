@@ -49,7 +49,7 @@ public class PiperSubscriptionService {
 	private com.syswin.sub.api.SubscriptionService subSubscriptionService;
 
 	@Autowired
-	SendSubscriptionService sendSubscriptionService;
+	PiperSendSubscriptionService sendSubscriptionService;
 
 	@Value("${domain.promission}")
 	private String domain;

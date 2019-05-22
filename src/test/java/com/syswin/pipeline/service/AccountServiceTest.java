@@ -20,8 +20,6 @@ public class AccountServiceTest {
     @Autowired
     private AccountRepository accountRepository;
 
-    @Autowired
-    private AccountService accountService;
     @Test
     public void insert() {
         Account account = new Account();

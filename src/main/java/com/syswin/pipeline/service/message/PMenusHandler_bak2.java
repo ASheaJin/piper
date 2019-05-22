@@ -1,10 +1,7 @@
 package com.syswin.pipeline.service.message;
 
 import com.lmax.disruptor.EventHandler;
-import com.syswin.pipeline.db.repository.ConsumerRepository;
-import com.syswin.pipeline.enums.PermissionEnums;
-import com.syswin.pipeline.service.ConsumerService;
-import com.syswin.pipeline.service.DeviceInfoService;
+import com.syswin.pipeline.service.PiperConsumerService;
 import com.syswin.pipeline.service.bussiness.impl.SendMessegeService;
 import com.syswin.pipeline.service.ps.ChatMsg;
 import com.syswin.pipeline.service.ps.Env;
@@ -12,13 +9,8 @@ import com.syswin.pipeline.service.ps.PSClientService;
 import com.syswin.pipeline.service.ps.util.CollectionUtil;
 import com.syswin.pipeline.service.ps.util.FastJsonUtil;
 import com.syswin.pipeline.utils.JacksonJsonUtil;
-import com.syswin.pipeline.utils.LanguageChange;
 import com.syswin.pipeline.utils.SwithUtil;
 import com.syswin.sub.api.PublisherService;
-import com.syswin.sub.api.SubscriptionService;
-import com.syswin.sub.api.db.model.Publisher;
-import com.syswin.sub.api.db.model.Subscription;
-import com.syswin.sub.api.enums.PublisherTypeEnums;
 import com.syswin.temail.ps.client.Header;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +34,7 @@ public class PMenusHandler_bak2 implements EventHandler<MessageEvent> {
 	private String URL_PIPER;
 
 	@Autowired
-	ConsumerService consumerService;
+	PiperConsumerService consumerService;
 
 	@Autowired
 	private PublisherService publisherService;
