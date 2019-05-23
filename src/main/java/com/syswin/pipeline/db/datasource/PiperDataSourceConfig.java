@@ -1,7 +1,6 @@
 package com.syswin.pipeline.db.datasource;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import com.sun.xml.internal.bind.v2.model.core.Ref;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
@@ -21,8 +20,6 @@ import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Stream;
 
 /**
  * Created by 115477 on 2018/11/27.
