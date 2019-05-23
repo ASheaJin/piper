@@ -59,8 +59,7 @@ public class ChatMessageHandler {
 		//调用注册的接口
 		if (800 == chatMsg.getBody_type() || 801 == chatMsg.getBody_type()) {
 
-				registerHandler.onEvent(event, 0L, true);
-
+			registerHandler.onEvent(event, 0L, true);
 
 
 		}

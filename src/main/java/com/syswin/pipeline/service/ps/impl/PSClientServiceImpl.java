@@ -128,13 +128,13 @@ public class PSClientServiceImpl implements PSClientService {
 		appTemailAndPKList.addAll(getAppTemailAndPKList());
 
 		try {
-			for (String[] appTemailAndPK : appTemailAndPKList) {
-				String thisAppTemail = appTemailAndPK[0];
-				String thisAppPK = appTemailAndPK[1];
-
-
-				clientLogin(thisAppTemail, thisAppPK);
-			}
+//			for (String[] appTemailAndPK : appTemailAndPKList) {
+//				String thisAppTemail = appTemailAndPK[0];
+//				String thisAppPK = appTemailAndPK[1];
+//
+//
+//				clientLogin(thisAppTemail, thisAppPK);
+//			}
 		} catch (Exception e) {
 			logger.error("psClient 执行 login 发生错误 ", e);
 		}
