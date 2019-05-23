@@ -18,8 +18,9 @@ public class MenuConfigService implements IMenuConfigService {
 
 	public List<String> getKey(String accountNo) {
 		MsgHeader msgHeader = PsClientKeeper.msgHeader();
+		logger.info("msgHeader" + msgHeader.toString());
 		//根据访问者的权限配置菜单 msgHeader 里面有用户的 信息
-		List<String> aas = Arrays.asList(accountNo + "1");
+		List<String> aas = Arrays.asList(accountNo);
 		logger.info("aas" + aas.toString());
 		return aas;
 
