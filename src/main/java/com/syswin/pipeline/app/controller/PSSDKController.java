@@ -89,7 +89,7 @@ public class PSSDKController {
 	)
 	public void login(String userId) {
 		psClientService.login(m -> {
-			logger.info("login: ", userId, m.toString());
+			logger.info("login: " + userId + m.toString());
 		}, userId);
 	}
 
