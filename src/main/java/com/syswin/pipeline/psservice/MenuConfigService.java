@@ -20,7 +20,7 @@ public class MenuConfigService implements IMenuConfigService {
 		MsgHeader msgHeader = PsClientKeeper.msgHeader();
 		logger.info("msgHeader" + msgHeader.toString());
 		//根据访问者的权限配置菜单 msgHeader 里面有用户的 信息
-		List<String> aas = Arrays.asList(accountNo+1,accountNo+2);
+		List<String> aas = Arrays.asList(getKey(accountNo+1,"1"),getKey(accountNo+2,"2"));
 		logger.info("aas" + aas.toString());
 		return aas;
 
@@ -28,6 +28,8 @@ public class MenuConfigService implements IMenuConfigService {
 
 	@Override
 	public String getKey(String accountNo, String roleType) {
+
+
 		return accountNo + roleType;
 	}
 
