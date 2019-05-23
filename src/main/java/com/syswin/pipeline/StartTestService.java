@@ -20,8 +20,8 @@ public class StartTestService implements ApplicationRunner {
 
 	@Override
 	public void run(ApplicationArguments args) {
-		logger.info("start pipeline==={}", new Date());
-
-		psclientService.init();
+//		logger.info("start pipeline==={}", new Date());
+//
+//		psclientService.init();
 	}
 }
