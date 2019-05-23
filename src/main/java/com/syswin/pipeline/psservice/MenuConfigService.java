@@ -1,8 +1,11 @@
 package com.syswin.pipeline.psservice;
 
+import com.syswin.pipeline.PiperApplication;
 import com.syswin.ps.sdk.admin.config.IMenuConfigService;
 import com.syswin.ps.sdk.common.MsgHeader;
 import com.syswin.ps.sdk.handler.PsClientKeeper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -10,18 +13,21 @@ import java.util.List;
 
 @Service
 public class MenuConfigService implements IMenuConfigService {
-    @Override
-    public List<String> getKey(String accountNo) {
-        MsgHeader msgHeader=PsClientKeeper.msgHeader();
-        //根据访问者的权限配置菜单 msgHeader 里面有用户的 信息
 
-        return Arrays.asList(accountNo+"1");
+	private final static Logger logger = LoggerFactory.getLogger(MenuConfigService.class);
 
-    }
+	public List<String> getKey(String accountNo) {
+		MsgHeader msgHeader = PsClientKeeper.msgHeader();
+		//根据访问者的权限配置菜单 msgHeader 里面有用户的 信息
+		List<String> aas = Arrays.asList(accountNo + "1");
+		logger.info("aas" + aas.toString());
+		return aas;
 
-    @Override
-    public String getKey(String accountNo, String roleType) {
-        return accountNo+roleType;
-    }
+	}
+
+	@Override
+	public String getKey(String accountNo, String roleType) {
+		return accountNo + roleType;
+	}
 
 }
