@@ -1,10 +1,12 @@
 package com.syswin.pipeline.db.datasource;
 
 import com.alibaba.druid.pool.DruidDataSource;
+import org.apache.ibatis.io.VFS;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
 import org.mybatis.spring.boot.autoconfigure.MybatisProperties;
+import org.mybatis.spring.boot.autoconfigure.SpringBootVFS;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -64,6 +66,7 @@ public class PiperDataSourceConfig {
 		PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
 		sqlSessionFactoryBean.setConfigLocation(resolver.getResource(mybitsConfig));
 		Resource[] resources1 = resolver.getResources(linjuMapperLocations);
+		VFS.addImplClass(SpringBootVFS.class);
 		List<Resource> resourceList = new ArrayList<>();
 		resourceList.addAll(Arrays.asList(resources1));
 
