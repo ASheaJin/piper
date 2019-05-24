@@ -62,7 +62,8 @@ public class PSSDKController {
 	)
 	public boolean add(@RequestBody AccountIn accountIn) {
 		logger.info("accountIn" + accountIn);
-		return appPublisherService.addAccount(accountIn);
+//		return appPublisherService.addAccount();
+		return true;
 	}
 
 	@PostMapping("/sendMsg")
