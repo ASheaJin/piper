@@ -8,6 +8,7 @@ import com.syswin.pipeline.service.exception.BusinessException;
 import com.syswin.pipeline.service.ps.PSClientService;
 import com.syswin.pipeline.service.ps.util.StringUtil;
 import com.syswin.pipeline.utils.HttpsUtil;
+import com.syswin.ps.sdk.admin.service.impl.PSAccountService;
 import com.syswin.ps.sdk.common.CDTPResponse;
 import com.syswin.ps.sdk.common.CommonMsg;
 import com.syswin.ps.sdk.common.HandlerParam;
@@ -46,8 +47,9 @@ public class PsServerService {
 	@Autowired
 	SingleChatService msgSender;
 
+
 	@Autowired
-	private PSClientService clientService;
+	PSAccountService psAccountService;
 
 	/**
 	 * 注册秘邮号：
@@ -96,21 +98,26 @@ public class PsServerService {
 	 * @return
 	 */
 	public boolean activeAccout(String temail, String code) {
-		Map<String, String> header = new HashMap();
-		header.put("Content-Type", "application/x-www-form-urlencoded");
+//
+//		Map<String, String> header = new HashMap();
+//		header.put("Content-Type", "application/x-www-form-urlencoded");
+//
+//		Map<String, String> entity = new HashMap();
+//		String pk = clientService.getTemailPublicKey(temail);
+//		entity.put("PUBLIC_KEY", pk);
+//		entity.put("TeMail", temail);
+//		entity.put("ACTIVATION_CODE", code);
+//		log.info("pk:" + pk);
+//		log.info("TeMail:" + temail);
+//		log.info("ACTIVATION_CODE:" + code);
+//		String result = HttpsUtil.sendHttpsPost(actUrl + "/publish/activate", header, entity);
+//		ActiveResult ar = JSONObject.parseObject(result, ActiveResult.class);
+//		log.info("ActiveResult:" + ar.toString());
+//		return "200".equals(ar.getCode());
 
-		Map<String, String> entity = new HashMap();
-		String pk = clientService.getTemailPublicKey(temail);
-		entity.put("PUBLIC_KEY", pk);
-		entity.put("TeMail", temail);
-		entity.put("ACTIVATION_CODE", code);
-		log.info("pk:" + pk);
-		log.info("TeMail:" + temail);
-		log.info("ACTIVATION_CODE:" + code);
-		String result = HttpsUtil.sendHttpsPost(actUrl + "/publish/activate", header, entity);
-		ActiveResult ar = JSONObject.parseObject(result, ActiveResult.class);
-		log.info("ActiveResult:" + ar.toString());
-		return "200".equals(ar.getCode());
+
+//		this.kmsService.publishKey(new String[]{userId}).get(userId)
+		return psAccountService.active(temail, code);
 	}
 
 	public <T> CommonMsg commonMsg(String from, String to, String path, T params, String requestId) {

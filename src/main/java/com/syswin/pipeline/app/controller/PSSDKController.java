@@ -15,6 +15,7 @@ import com.syswin.ps.sdk.admin.constant.FastJsonUtil;
 import com.syswin.ps.sdk.admin.constant.ResponseResult;
 import com.syswin.ps.sdk.admin.controller.in.AccountIn;
 import com.syswin.ps.sdk.admin.platform.entity.AccountInfo;
+import com.syswin.ps.sdk.admin.service.impl.PSAccountService;
 import com.syswin.ps.sdk.admin.valid.ParamValid;
 import com.syswin.ps.sdk.common.ActionItem;
 import com.syswin.ps.sdk.common.MsgHeader;
@@ -53,13 +54,14 @@ public class PSSDKController {
 	APPPublisherService appPublisherService;
 
 	@Autowired
-	PsClientService psClientService;
+	PSAccountService psAccountService;
 
 	@PostMapping({"/add"})
 	@ApiOperation(
 					value = "添加账户"
 	)
-	public boolean add(@RequestBody @ParamValid AccountIn accountIn) {
+	public boolean add(@RequestBody AccountIn accountIn) {
+		logger.info("accountIn" + accountIn);
 		return appPublisherService.addAccount(accountIn);
 	}
 
@@ -88,9 +90,7 @@ public class PSSDKController {
 					value = "登录"
 	)
 	public void login(String userId) {
-		psClientService.login(m -> {
-			logger.info("login: " + userId + m.toString());
-		}, userId);
+		psAccountService.login(userId);
 	}
 
 
