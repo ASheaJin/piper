@@ -123,7 +123,7 @@
 		<dependency>
 			<groupId>com.syswin.ps.sdk</groupId>
 			<artifactId>ps-app-sdk-starter</artifactId>
-			<version>1.0.9</version>
+			<version>1.1.0</version>
 		</dependency>
 
 		<dependency>
@@ -136,7 +136,7 @@
 		<dependency>
 			<groupId>com.syswin.ps.sdk.admin</groupId>
 			<artifactId>ps-sdk-admin-starter</artifactId>
-			<version>0.0.2</version>
+			<version>0.0.3</version>
 		</dependency>
 
 		<!--<dependency>-->
