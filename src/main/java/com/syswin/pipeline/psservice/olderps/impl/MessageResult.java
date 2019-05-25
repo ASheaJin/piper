@@ -1,4 +1,4 @@
-package com.syswin.pipeline.service.ps.impl;
+package com.syswin.pipeline.psservice.olderps.impl;
 
 import lombok.Data;
 

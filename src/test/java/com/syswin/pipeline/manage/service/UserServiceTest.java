@@ -2,7 +2,7 @@ package com.syswin.pipeline.manage.service;
 
 import com.syswin.pipeline.db.repository.MenuRepository;
 import com.syswin.pipeline.service.PiperDeviceInfoService;
-import com.syswin.pipeline.service.ps.Env;
+import com.syswin.pipeline.psservice.olderps.Env;
 import com.syswin.pipeline.utils.JacksonJsonUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;

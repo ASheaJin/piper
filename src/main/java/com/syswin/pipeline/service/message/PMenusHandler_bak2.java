@@ -2,12 +2,12 @@ package com.syswin.pipeline.service.message;
 
 import com.lmax.disruptor.EventHandler;
 import com.syswin.pipeline.service.PiperConsumerService;
-import com.syswin.pipeline.service.bussiness.impl.SendMessegeService;
-import com.syswin.pipeline.service.ps.ChatMsg;
-import com.syswin.pipeline.service.ps.Env;
-import com.syswin.pipeline.service.ps.PSClientService;
-import com.syswin.pipeline.service.ps.util.CollectionUtil;
-import com.syswin.pipeline.service.ps.util.FastJsonUtil;
+import com.syswin.pipeline.psservice.SendMessegeService;
+import com.syswin.pipeline.psservice.olderps.ChatMsg;
+import com.syswin.pipeline.psservice.olderps.Env;
+import com.syswin.pipeline.psservice.olderps.PSClientService;
+import com.syswin.pipeline.utils.CollectionUtil;
+import com.syswin.pipeline.utils.FastJsonUtil;
 import com.syswin.pipeline.utils.JacksonJsonUtil;
 import com.syswin.pipeline.utils.SwithUtil;
 import com.syswin.sub.api.PublisherService;

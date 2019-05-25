@@ -1,6 +1,6 @@
-package com.syswin.pipeline.service.bussiness;
+package com.syswin.pipeline.psservice.bussiness;
 
-import com.syswin.pipeline.service.ps.ChatMsg;
+import com.syswin.pipeline.psservice.olderps.ChatMsg;
 import com.syswin.sub.api.db.model.Publisher;
 import com.syswin.sub.api.enums.PublisherTypeEnums;
 

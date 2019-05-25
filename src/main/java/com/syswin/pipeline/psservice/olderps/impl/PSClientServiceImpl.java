@@ -1,15 +1,14 @@
-package com.syswin.pipeline.service.ps.impl;
+package com.syswin.pipeline.psservice.olderps.impl;
 
 import com.alibaba.fastjson.TypeReference;
 import com.google.gson.Gson;
 import com.syswin.pipeline.service.message.ChatMessageHandler;
-import com.syswin.pipeline.service.ps.ChatMsg;
-import com.syswin.pipeline.service.ps.ChatMsgPacket;
-import com.syswin.pipeline.service.ps.PSClientService;
-import com.syswin.pipeline.service.ps.util.CollectionUtil;
-import com.syswin.pipeline.service.ps.util.FastJsonUtil;
-import com.syswin.pipeline.service.ps.util.LogUtil;
-import com.syswin.pipeline.service.ps.util.StringUtil;
+import com.syswin.pipeline.psservice.olderps.ChatMsg;
+import com.syswin.pipeline.psservice.olderps.PSClientService;
+import com.syswin.pipeline.utils.CollectionUtil;
+import com.syswin.pipeline.utils.FastJsonUtil;
+import com.syswin.pipeline.utils.LogUtil;
+import com.syswin.pipeline.utils.StringUtil;
 import com.syswin.pipeline.utils.CacheUtil;
 import com.syswin.sub.api.db.model.Publisher;
 import com.syswin.temail.kms.vault.*;
@@ -42,7 +41,7 @@ import java.nio.charset.Charset;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.syswin.pipeline.service.ps.impl.AppConstant.*;
+import static com.syswin.pipeline.psservice.olderps.impl.AppConstant.*;
 
 /**
  * 参考文档：
@@ -315,90 +314,6 @@ public class PSClientServiceImpl implements PSClientService {
 		return message;
 	}
 
-
-//	/**
-//	 * @param payload 解析保存数据
-//	 * @return
-//	 */
-//	private Map<String, MessageResult> getMsgInfoParam(String payload) {
-//		final Map<String, MessageResult> msgMap = new HashMap<>();
-//		List<FromSeq> newFromSquece = new ArrayList<>();
-//		List<MsgListOut> msgList = FastJsonUtil.parseArray(payload, MsgListOut.class);
-//
-//		//遍历解析数据
-//		msgList.forEach(msg -> {
-//			MessageResult result = msg.getLastMsg();
-//			if (!MessageResult.isNull(result)) {
-//				newFromSquece.add(new FromSeq(result.getFrom(), result.getSeqId()));
-//				//设置默认取全部
-//				result.setPageSize(result.getSeqId());
-//				msgMap.put(result.getFrom(), result);
-//			}
-//		});
-//		if (msgMap.isEmpty()) {
-//			return msgMap;
-//		}
-//		//获取数据库的记录
-//		List<FromSeq> fromSqeuces = fromSeqRepository.getMaxSeqId(new ArrayList<>(msgMap.keySet()));
-////        List<FromSeq> fromSqeuces = new ArrayList<>();
-//		fromSqeuces.forEach(fromSqeuce -> {
-//			if (fromSqeuce == null) {
-//				return;
-//			}
-//			String from = fromSqeuce.getFromTemail();
-//			MessageResult getMsg = msgMap.get(from);
-//
-//			Long pageSize = getMsg.getSeqId() - fromSqeuce.getSeqId();
-//			if (0 != pageSize) {
-//				getMsg.setPageSize(pageSize);
-//			} else {
-//				msgMap.remove(from);
-//			}
-//		});
-//		//保存新的seqId到数据库
-//		fromSeqRepository.saveFromSeq(newFromSquece);
-//		return msgMap;
-//	}
-
-	/**
-	 * 获取消息详情（1，3）
-	 *
-	 * @param payload
-	 * @param chatMsgPacket
-	 * @return
-	 */
-	private void getMsgDetail(String payload, ChatMsgPacket chatMsgPacket) {
-		List<ChatMsg> infoList = new ArrayList<>();
-		chatMsgPacket.setChatMsgs(infoList);
-
-		List<MessageResult> resultList = FastJsonUtil.parseArray(payload, MessageResult.class);
-		resultList.forEach(msgResult -> {
-			//2.unpack
-			Message cdtpMsg = psClient.unpack(msgResult.getMessage());
-			//3.解密数据
-			Header chatHeader = cdtpMsg.getHeader();
-			String realMsg = StringUtil.byte2Str(cdtpMsg.getPayload());
-			chatMsgPacket.setSender(chatHeader.getSender());
-			chatMsgPacket.setSenderPK(chatHeader.getSenderPK());
-			chatMsgPacket.setReceiver(chatHeader.getReceiver());
-			chatMsgPacket.setReceiverPK(chatHeader.getReceiverPK());
-
-			//流程处理
-			if (chatHeader.getDataEncryptionMethod() == 4) {
-				try {
-					realMsg = cipher.decrypt(appTemail, realMsg);
-
-					ChatMsg chatMsgDetail = FastJsonUtil.parseObject(realMsg, ChatMsg.class);
-					infoList.add(chatMsgDetail);
-				} catch (Exception e) {
-					logger.info("decrypt fail", e);
-					return;
-				}
-			} else {
-
-			}
-		});
-	}
 
 
 	@Override

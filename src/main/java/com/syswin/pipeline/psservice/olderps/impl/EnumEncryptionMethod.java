@@ -1,4 +1,4 @@
-package com.syswin.pipeline.service.ps.impl;
+package com.syswin.pipeline.psservice.olderps.impl;
 
 public enum EnumEncryptionMethod {
     NO(0, "不加密"),RRSA(1,"RSA公钥加密(receiver)"),

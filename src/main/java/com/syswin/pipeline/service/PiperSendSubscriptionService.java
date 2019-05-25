@@ -1,7 +1,7 @@
 package com.syswin.pipeline.service;
 
 
-import com.syswin.pipeline.service.bussiness.impl.SendMessegeService;
+import com.syswin.pipeline.psservice.SendMessegeService;
 import com.syswin.pipeline.utils.LanguageChange;
 import com.syswin.sub.api.db.model.Publisher;
 import org.springframework.beans.factory.annotation.Autowired;

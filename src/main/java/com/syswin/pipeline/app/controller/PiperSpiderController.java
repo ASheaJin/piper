@@ -2,7 +2,7 @@ package com.syswin.pipeline.app.controller;
 
 import com.syswin.pipeline.app.dto.SendParam;
 import com.syswin.pipeline.service.PiperSpiderTokenService;
-import com.syswin.pipeline.service.bussiness.PublisherSecService;
+import com.syswin.pipeline.psservice.bussiness.PublisherSecService;
 import com.syswin.pipeline.app.dto.ResponseEntity;
 import com.syswin.pipeline.service.exception.BusinessException;
 import com.syswin.sub.api.PublisherService;

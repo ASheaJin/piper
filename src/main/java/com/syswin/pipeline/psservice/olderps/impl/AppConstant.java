@@ -1,4 +1,4 @@
-package com.syswin.pipeline.service.ps.impl;
+package com.syswin.pipeline.psservice.olderps.impl;
 
 /**
  * @author by Administrator on 2018/4/9.

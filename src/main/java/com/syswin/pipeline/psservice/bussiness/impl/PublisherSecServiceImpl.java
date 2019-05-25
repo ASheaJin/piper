@@ -1,12 +1,13 @@
-package com.syswin.pipeline.service.bussiness.impl;
+package com.syswin.pipeline.psservice.bussiness.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.syswin.pipeline.enums.PeriodEnums;
+import com.syswin.pipeline.psservice.SendMessegeService;
 import com.syswin.pipeline.service.PiperSubscriptionService;
-import com.syswin.pipeline.service.bussiness.PublisherSecService;
+import com.syswin.pipeline.psservice.bussiness.PublisherSecService;
 import com.syswin.pipeline.service.content.ContentHandleJobManager;
-import com.syswin.pipeline.service.ps.ChatMsg;
+import com.syswin.pipeline.psservice.olderps.ChatMsg;
 import com.syswin.pipeline.utils.LanguageChange;
 import com.syswin.pipeline.utils.StringUtils;
 import com.syswin.pipeline.utils.SwithUtil;

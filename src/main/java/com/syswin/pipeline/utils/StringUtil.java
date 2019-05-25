@@ -1,4 +1,4 @@
-package com.syswin.pipeline.service.ps.util;
+package com.syswin.pipeline.utils;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.ParameterizedType;

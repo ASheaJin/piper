@@ -5,7 +5,7 @@ import com.lmax.disruptor.EventHandler;
 import com.syswin.pipeline.psservice.PsServerService;
 import com.syswin.pipeline.psservice.response.ResponeResultData;
 import com.syswin.pipeline.service.exception.BusinessException;
-import com.syswin.pipeline.service.ps.util.StringUtil;
+import com.syswin.pipeline.utils.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;

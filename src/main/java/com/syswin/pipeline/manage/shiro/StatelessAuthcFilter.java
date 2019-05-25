@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.syswin.pipeline.app.dto.ResponseEntity;
-import com.syswin.pipeline.service.ps.util.FastJsonUtil;
+import com.syswin.pipeline.utils.FastJsonUtil;
 import org.apache.shiro.web.filter.AccessControlFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

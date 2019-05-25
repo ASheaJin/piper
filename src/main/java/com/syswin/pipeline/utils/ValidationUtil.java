@@ -1,4 +1,4 @@
-package com.syswin.pipeline.service.ps.util;
+package com.syswin.pipeline.utils;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

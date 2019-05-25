@@ -2,7 +2,7 @@ package com.syswin.pipeline.manage.controller;
 
 
 import com.syswin.pipeline.manage.service.ManageService;
-import com.syswin.pipeline.service.ps.util.SpringContextUtils;
+import com.syswin.pipeline.utils.SpringContextUtils;
 import com.syswin.pipeline.utils.StringUtils;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;

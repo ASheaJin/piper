@@ -1,9 +1,9 @@
-package com.syswin.pipeline.service.bussiness.impl;
+package com.syswin.pipeline.psservice;
 
 import com.google.gson.Gson;
-import com.syswin.pipeline.service.ps.Card;
-import com.syswin.pipeline.service.ps.ChatMsg;
-import com.syswin.pipeline.service.ps.PSClientService;
+import com.syswin.pipeline.psservice.olderps.Card;
+import com.syswin.pipeline.psservice.olderps.ChatMsg;
+import com.syswin.pipeline.psservice.olderps.PSClientService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

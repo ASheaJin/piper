@@ -1,6 +1,6 @@
 package com.syswin.pipeline.service.message;
 
-import com.syswin.pipeline.service.ps.ChatMsg;
+import com.syswin.pipeline.psservice.olderps.ChatMsg;
 import com.syswin.temail.ps.client.Header;
 import lombok.Data;
 

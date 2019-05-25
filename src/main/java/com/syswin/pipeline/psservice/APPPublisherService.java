@@ -1,18 +1,22 @@
 package com.syswin.pipeline.psservice;
 
-import com.syswin.ps.sdk.admin.constant.FastJsonUtil;
-import com.syswin.ps.sdk.admin.controller.in.AccountIn;
-import com.syswin.ps.sdk.admin.controller.inout.BaseVCardInfo;
+import com.syswin.pipeline.service.exception.BusinessException;
+import com.syswin.ps.sdk.admin.constant.AdminException;
 import com.syswin.ps.sdk.admin.platform.entity.AccountInfo;
 import com.syswin.ps.sdk.admin.platform.entity.FunctionItem;
 import com.syswin.ps.sdk.admin.platform.entity.VCardInfo;
 import com.syswin.ps.sdk.admin.service.AccountService;
 import com.syswin.ps.sdk.admin.service.FunctionItemService;
+import com.syswin.ps.sdk.admin.service.VCardInfoService;
+import com.syswin.ps.sdk.admin.service.impl.PSAccountService;
+import com.syswin.ps.sdk.service.NickNameService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author:lhz
@@ -24,18 +28,82 @@ public class APPPublisherService {
 	private static final Logger logger = LoggerFactory.getLogger(APPPublisherService.class);
 
 	@Autowired
-	public AccountService accountService;
+	private AccountService accountService;
 
 	@Autowired
-	FunctionItemService functionItemService;
+	private PSAccountService psAccountService;
+
+	@Autowired
+	private FunctionItemService functionItemService;
+
+	@Autowired
+	private VCardInfoService vCardInfoService;
+	@Autowired
+	private NickNameService nickNameService;
+
+	@Autowired
+	private PsServerService psServerService;
 
 
-	public boolean addPiperAcount(String accountNo) {
+	@Value("${app.pipeline.userId}")
+	private String from;
+
+
+	@Transactional
+	public boolean RegisterAndLoginPiperAcount(String accountNo) {
+
+//		accountService.findAccount(accountNo)
+		psServerService.registerAccount(accountNo);
+		//添加并激活账号
 		addAccount(accountNo, "1234", "欢迎使用");
-//		addCard(accountNo,);
-		addMenuIte(accountNo, "test", "http://www.baidu.com", 2, 1, 1, "1", "2222");
-		addMenuIte(accountNo, "test22", "http://www.baidu.com", 2, 3, 1, "1", "2222");
+		//添加名片
+		addCard(accountNo);
+		//添加角色菜单
+		addRoleMenu(accountNo);
+		//登录账号
+		psAccountService.login(accountNo);
 		return true;
+	}
+
+	@Transactional
+	public boolean addAcount() {
+
+		//添加并激活账号
+		addAccount(from, "1234", "欢迎使用");
+		//添加名片
+		addCard(from);
+		//添加角色菜单
+		addPiperRoleMenu(from);
+		//登录账号
+		psAccountService.login(from);
+		return true;
+	}
+
+	private void addPiperRoleMenu(String accountNo) {
+		addMenuIte(accountNo, "test", "http://www.baidu.com", 1, "1");
+		addMenuIte(accountNo, "test22", "http://www.baidu.com", 3, "1");
+
+	}
+
+
+	@Transactional
+	public boolean addPiperAcount(String accountNo) {
+
+		//添加并激活账号
+		addAccount(accountNo, "1234", "欢迎使用");
+		//添加名片
+		addCard(accountNo);
+		//添加角色菜单
+		addRoleMenu(accountNo);
+		//登录账号
+		psAccountService.login(accountNo);
+		return true;
+	}
+
+	private void addRoleMenu(String accountNo) {
+		addMenuIte(accountNo, "test", "http://www.baidu.com", 1, "1");
+		addMenuIte(accountNo, "test22", "http://www.baidu.com", 3, "1");
+
 	}
 
 	//添加激活账号
@@ -50,19 +118,20 @@ public class APPPublisherService {
 			result = this.accountService.addAccount(accountInfo);
 			accountService.startAccount(result.getAccountId(), result.getAccountNo());
 
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (AdminException e) {
 			logger.error(" APPPublisherService addAccount", e);
+			throw new BusinessException("账号已经注册过了");
+
 		}
 		return result != null;
 	}
 
 
 	public boolean addMenuIte(String accountNo, String itemName, String url, int displayOrder, String roleType) {
-		return addMenuIte(accountNo, itemName, url, 2, displayOrder, 1, roleType, "");
+		return addMenuIte(accountNo, itemName, url, 2, displayOrder, 1, roleType, "121212", "http://pic34.nipic.com/20131026/9422601_213844930000_2.jpg");
 	}
 
-	public boolean addMenuIte(String accountNo, String itemName, String url, int itemType, int displayOrder, int useStatus, String roleType, String roleDesc) {
+	public boolean addMenuIte(String accountNo, String itemName, String url, int itemType, int displayOrder, int useStatus, String roleType, String roleDesc, String imgUrl) {
 		FunctionItem functionItem = new FunctionItem();
 		functionItem.setAccountNo(accountNo);
 		functionItem.setFunctionName(itemName);
@@ -70,18 +139,29 @@ public class APPPublisherService {
 		functionItem.setItemType(itemType);
 		functionItem.setDisplayOrder(displayOrder);
 		functionItem.setUseStatus(useStatus);
+		functionItem.setFunctionImage(imgUrl);
 		functionItem.setRoleType(roleType);
 		functionItem.setRoleDesc(roleDesc);
+		functionItem.setFunctionKey("input_write");
+		functionItem.setTaipHost("1");
+		functionItem.setTaipPort("1");
+		functionItem.setTaipCommand(1);
+		functionItem.setTaipCommandSpace(1);
+//		functionItem.set
 		FunctionItem r = functionItemService.addItem(functionItem);
 		return r != null;
 	}
 
-//	public boolean addCard() {
-//		BaseVCardInfo
-//		VCardInfo vCardInfo = (VCardInfo) FastJsonUtil.convertObj(vCardInfoIn, VCardInfo.class);
-//		VCardInfo result = this.vCardInfoService.addVCardInfo(vCardInfo);
-//		if (StringUtils.isNotEmpty(vCardInfoIn.getNickname())) {
-//			this.nickNameService.resetNickName(vCardInfoIn.getAccountNo(), vCardInfoIn.getNickname());
-//		}
-//	}
+	public boolean addCard(String accountNo) {
+		VCardInfo vi = new VCardInfo();
+		vi.setAccountNo(accountNo);
+		vi.setAccountDesc("名片测试下");
+		vi.setNickname("我的名片");
+		vi.setAccountImage("http://pic34.nipic.com/20131026/9422601_213844930000_2.jpg");
+		VCardInfo result = this.vCardInfoService.addVCardInfo(vi);
+		if (StringUtils.isNotEmpty(vi.getNickname())) {
+			this.nickNameService.resetNickName(vi.getAccountNo(), vi.getNickname());
+		}
+		return result != null;
+	}
 }

@@ -2,7 +2,7 @@ package com.syswin.pipeline.service.message;
 
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.util.DaemonThreadFactory;
-import com.syswin.pipeline.service.ps.ChatMsg;
+import com.syswin.pipeline.psservice.olderps.ChatMsg;
 import com.syswin.temail.ps.client.Header;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

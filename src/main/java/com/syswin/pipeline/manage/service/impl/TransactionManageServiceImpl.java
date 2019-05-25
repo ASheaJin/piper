@@ -4,7 +4,7 @@ import com.syswin.pipeline.db.model.Account;
 import com.syswin.pipeline.db.model.Transaction;
 import com.syswin.pipeline.db.repository.TransactionRepository;
 import com.syswin.pipeline.manage.service.ManageService;
-import com.syswin.pipeline.service.ps.util.StringUtil;
+import com.syswin.pipeline.utils.StringUtil;
 import com.syswin.pipeline.utils.DateUtil;
 import com.syswin.pipeline.utils.StringUtils;
 import org.slf4j.Logger;

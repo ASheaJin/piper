@@ -1,6 +1,6 @@
-package com.syswin.pipeline.service.ps;
+package com.syswin.pipeline.psservice.olderps;
 
-import com.syswin.pipeline.service.ps.util.FastJsonUtil;
+import com.syswin.pipeline.utils.FastJsonUtil;
 import lombok.Data;
 
 import java.util.UUID;

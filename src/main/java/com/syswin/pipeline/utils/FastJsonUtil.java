@@ -1,4 +1,4 @@
-package com.syswin.pipeline.service.ps.util;
+package com.syswin.pipeline.utils;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;

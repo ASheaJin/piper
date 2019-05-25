@@ -1,5 +1,6 @@
 package com.syswin.pipeline.service.ps;
 
+import com.syswin.pipeline.psservice.olderps.PSClientService;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

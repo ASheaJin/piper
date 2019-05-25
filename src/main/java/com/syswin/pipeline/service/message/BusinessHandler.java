@@ -1,7 +1,7 @@
 package com.syswin.pipeline.service.message;
 
 import com.lmax.disruptor.EventHandler;
-import com.syswin.pipeline.service.bussiness.PublisherSecService;
+import com.syswin.pipeline.psservice.bussiness.PublisherSecService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;

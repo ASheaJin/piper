@@ -2,12 +2,10 @@ package com.syswin.pipeline.psservice;
 
 import com.alibaba.fastjson.JSONObject;
 import com.syswin.pipeline.psservice.impl.CallBackRegister;
-import com.syswin.pipeline.psservice.response.ActiveResult;
 import com.syswin.pipeline.psservice.response.ResponeResultData;
 import com.syswin.pipeline.service.exception.BusinessException;
-import com.syswin.pipeline.service.ps.PSClientService;
-import com.syswin.pipeline.service.ps.util.StringUtil;
-import com.syswin.pipeline.utils.HttpsUtil;
+import com.syswin.pipeline.service.message.MessageEvent;
+import com.syswin.pipeline.utils.StringUtil;
 import com.syswin.ps.sdk.admin.service.impl.PSAccountService;
 import com.syswin.ps.sdk.common.CDTPResponse;
 import com.syswin.ps.sdk.common.CommonMsg;
@@ -59,8 +57,8 @@ public class PsServerService {
 	 * @param temail
 	 * @return
 	 */
-	public void registerAccount(String temail) {
-		registerAccount(temail, server);
+	public String registerAccount(String temail) {
+		return registerAccount(temail, server);
 	}
 
 	/**
@@ -71,7 +69,7 @@ public class PsServerService {
 	 * @param temail
 	 * @return
 	 */
-	public void registerAccount(String temail, String server) {
+	public String registerAccount(String temail, String server) {
 		Map<String, String> attendanceData = new HashMap<>();
 		attendanceData.put("temail", temail);
 		String requestId = UUID.randomUUID().toString();
@@ -87,6 +85,7 @@ public class PsServerService {
 		if (StringUtil.isEmpty(result.getData())) {
 			throw new BusinessException("调用registerAccount返回数据为null");
 		}
+		return null;
 	}
 
 	/**
@@ -98,27 +97,33 @@ public class PsServerService {
 	 * @return
 	 */
 	public boolean activeAccout(String temail, String code) {
-//
-//		Map<String, String> header = new HashMap();
-//		header.put("Content-Type", "application/x-www-form-urlencoded");
-//
-//		Map<String, String> entity = new HashMap();
-//		String pk = clientService.getTemailPublicKey(temail);
-//		entity.put("PUBLIC_KEY", pk);
-//		entity.put("TeMail", temail);
-//		entity.put("ACTIVATION_CODE", code);
-//		log.info("pk:" + pk);
-//		log.info("TeMail:" + temail);
-//		log.info("ACTIVATION_CODE:" + code);
-//		String result = HttpsUtil.sendHttpsPost(actUrl + "/publish/activate", header, entity);
-//		ActiveResult ar = JSONObject.parseObject(result, ActiveResult.class);
-//		log.info("ActiveResult:" + ar.toString());
-//		return "200".equals(ar.getCode());
 
-
-//		this.kmsService.publishKey(new String[]{userId}).get(userId)
 		return psAccountService.active(temail, code);
 	}
+
+	public void onEvent(MessageEvent event, long sequence, boolean endOfBatch) {
+
+
+		String contentStr = event.getChatMsg().getContent();
+		if (StringUtil.isEmpty(contentStr)) {
+			throw new BusinessException("event.getChatMsg().getContent() is null");
+		}
+		ResponeResultData r = parse(contentStr);
+		activeAccout(r.getTemail(), r.getActiveCode());
+	}
+
+	ResponeResultData parse(String content) {
+		JSONObject con = JSONObject.parseObject(content);
+		String code = JSONObject.parseObject(con.getString("data")).getString("code");
+		ResponeResultData data = null;
+		if ("200".equals(code)) {
+			data = JSONObject.parseObject(JSONObject.parseObject(con.getString("data")).getString("data"), ResponeResultData.class);
+		} else {
+			throw new BusinessException("parse err code" + code);
+		}
+		return data;
+	}
+
 
 	public <T> CommonMsg commonMsg(String from, String to, String path, T params, String requestId) {
 		String msgId = UUID.randomUUID().toString();

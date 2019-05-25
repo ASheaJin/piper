@@ -2,14 +2,12 @@ package com.syswin.pipeline.app.controller;
 
 import com.syswin.pipeline.app.dto.*;
 import com.syswin.pipeline.psservice.PsServerService;
-import com.syswin.pipeline.psservice.response.ResponeResultData;
-import com.syswin.pipeline.service.PiperSubscriptionService;
-import com.syswin.pipeline.service.bussiness.impl.SendMessegeService;
+import com.syswin.pipeline.psservice.SendMessegeService;
 import com.syswin.pipeline.service.org.IOrgService;
 import com.syswin.pipeline.service.org.OrgOut;
-import com.syswin.pipeline.service.ps.ChatMsg;
-import com.syswin.pipeline.service.ps.PSClientService;
-import com.syswin.pipeline.service.ps.PubKey;
+import com.syswin.pipeline.psservice.olderps.ChatMsg;
+import com.syswin.pipeline.psservice.olderps.PSClientService;
+import com.syswin.pipeline.psservice.olderps.PubKey;
 import com.syswin.pipeline.utils.SwithUtil;
 import com.syswin.sub.api.db.model.Publisher;
 import io.swagger.annotations.Api;

@@ -1,4 +1,4 @@
-package com.syswin.pipeline.service.ps.util;
+package com.syswin.pipeline.utils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;

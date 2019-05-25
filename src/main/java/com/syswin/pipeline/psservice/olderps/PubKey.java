@@ -1,4 +1,4 @@
-package com.syswin.pipeline.service.ps;
+package com.syswin.pipeline.psservice.olderps;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

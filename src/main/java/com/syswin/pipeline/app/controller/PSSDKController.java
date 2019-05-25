@@ -1,39 +1,21 @@
 package com.syswin.pipeline.app.controller;
 
-import com.syswin.pipeline.app.dto.*;
 import com.syswin.pipeline.psservice.APPPublisherService;
-import com.syswin.pipeline.psservice.PsServerService;
-import com.syswin.pipeline.service.bussiness.impl.SendMessegeService;
-import com.syswin.pipeline.service.org.IOrgService;
-import com.syswin.pipeline.service.org.OrgOut;
-import com.syswin.pipeline.service.ps.ChatMsg;
-import com.syswin.pipeline.service.ps.PSClientService;
-import com.syswin.pipeline.service.ps.PubKey;
-import com.syswin.pipeline.utils.SwithUtil;
-import com.syswin.ps.sdk.admin.constant.AdminException;
-import com.syswin.ps.sdk.admin.constant.FastJsonUtil;
-import com.syswin.ps.sdk.admin.constant.ResponseResult;
+import com.syswin.pipeline.psservice.MessegerSenderService;
 import com.syswin.ps.sdk.admin.controller.in.AccountIn;
-import com.syswin.ps.sdk.admin.platform.entity.AccountInfo;
 import com.syswin.ps.sdk.admin.service.impl.PSAccountService;
-import com.syswin.ps.sdk.admin.valid.ParamValid;
 import com.syswin.ps.sdk.common.ActionItem;
-import com.syswin.ps.sdk.common.MsgHeader;
 import com.syswin.ps.sdk.handler.PsClientKeeper;
-import com.syswin.ps.sdk.service.PsClientService;
+import com.syswin.ps.sdk.sender.AbstractMsgSender;
 import com.syswin.ps.sdk.showType.TextShow;
-import com.syswin.sub.api.db.model.Publisher;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,14 +38,16 @@ public class PSSDKController {
 	@Autowired
 	PSAccountService psAccountService;
 
+	@Autowired
+	MessegerSenderService messegerSenderService;
+
 	@PostMapping({"/add"})
 	@ApiOperation(
 					value = "添加账户"
 	)
 	public boolean add(@RequestBody AccountIn accountIn) {
 		logger.info("accountIn" + accountIn);
-//		return appPublisherService.addAccount();
-		return true;
+		return appPublisherService.addPiperAcount(accountIn.getAccountNo());
 	}
 
 	@PostMapping("/sendMsg")
@@ -73,16 +57,11 @@ public class PSSDKController {
 	public String sendMsg(@RequestParam String from,
 	                      @RequestParam String to) {
 //		MsgHeader msgHeader= PsClientKeeper.msgHeader();
-		Map<String, Object> map = new HashMap<>();
-		map.put("title", "文章标题");
-		map.put("imageUrl", "https://www.baidu.com/img/bd_logo1.png");
-//		map.put("text", "hello");
-
-		List<ActionItem> infoList = Stream.of(new ActionItem("简要描述", "http://www.baidu.com")
-		).collect(Collectors.toList());
-
-		TextShow show = new TextShow(1, map, infoList);
-		PsClientKeeper.newInstance().sendMsg(from, to, show);
+		String title = "《有效提升你的谈判能力》";
+		String url = null;
+		String infoTitle = "价格类谈判：怎样谈出好价格";
+		String infoUrl = "http://t.cn/E9BjssG";
+		messegerSenderService.sendSpiderMsg(from, to, title, url, infoTitle, infoUrl);
 		return "success";
 	}
 
@@ -92,6 +71,25 @@ public class PSSDKController {
 	)
 	public void login(String userId) {
 		psAccountService.login(userId);
+	}
+
+
+	@PostMapping({"/sendText"})
+	@ApiOperation(
+					value = "发送文本"
+	)
+	public void sendText(String from, String to, String txt) throws IOException {
+
+		messegerSenderService.sendText(from, to, txt);
+	}
+
+	@PostMapping({"/sendImage"})
+	@ApiOperation(
+					value = "发送图片"
+	)
+	public void sendImage(String from, String to, String url, String fileName) throws IOException {
+
+		messegerSenderService.sendImage(from, to, url, fileName);
 	}
 
 

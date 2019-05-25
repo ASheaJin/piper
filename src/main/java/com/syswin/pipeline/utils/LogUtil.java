@@ -1,4 +1,4 @@
-package com.syswin.pipeline.service.ps.util;
+package com.syswin.pipeline.utils;
 
 import com.syswin.temail.ps.client.Header;
 import com.syswin.temail.ps.client.Message;

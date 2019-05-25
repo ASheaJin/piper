@@ -1,6 +1,6 @@
 package com.syswin.pipeline;
 
-import com.syswin.pipeline.service.ps.impl.PSClientServiceImpl;
+import com.syswin.pipeline.psservice.olderps.impl.PSClientServiceImpl;
 import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;

@@ -3,7 +3,7 @@ package com.syswin.pipeline.manage.controller;
 import com.syswin.pipeline.db.model.DataAnalysis;
 import com.syswin.pipeline.db.repository.DataAnalysisRepository;
 import com.syswin.pipeline.enums.UrlEnums;
-import com.syswin.pipeline.service.ps.util.StringUtil;
+import com.syswin.pipeline.utils.StringUtil;
 import com.syswin.pipeline.utils.DateUtil;
 import com.syswin.pipeline.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;

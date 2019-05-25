@@ -3,7 +3,7 @@ package com.syswin.pipeline.service;
 import com.syswin.pipeline.db.model.DeviceInfo;
 import com.syswin.pipeline.db.model.DeviceInfoExample;
 import com.syswin.pipeline.db.repository.DeviceInfoRepository;
-import com.syswin.pipeline.service.ps.Env;
+import com.syswin.pipeline.psservice.olderps.Env;
 import com.syswin.pipeline.sop.EnableCacheService;
 import com.syswin.pipeline.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
