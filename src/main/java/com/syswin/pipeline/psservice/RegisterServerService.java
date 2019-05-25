@@ -24,7 +24,7 @@ import java.util.UUID;
 
 @Log4j2
 @Service
-public class PsServerService {
+public class RegisterServerService {
 
 	public static int sendType = 801;
 	@Value("${psserver.path}")

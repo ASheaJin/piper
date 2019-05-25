@@ -1,7 +1,7 @@
 package com.syswin.pipeline.app.controller;
 
 import com.syswin.pipeline.app.dto.*;
-import com.syswin.pipeline.psservice.PsServerService;
+import com.syswin.pipeline.psservice.RegisterServerService;
 import com.syswin.pipeline.psservice.SendMessegeService;
 import com.syswin.pipeline.service.org.IOrgService;
 import com.syswin.pipeline.service.org.OrgOut;
@@ -52,7 +52,7 @@ public class PSClientController {
 	private String piperUserId;
 
 	@Autowired
-	private PsServerService psServerService;
+	private RegisterServerService psServerService;
 
 	@PostMapping("/sendMsg")
 	@ApiOperation(
@@ -205,26 +205,6 @@ public class PSClientController {
 		}
 		return new ResponseEntity();
 
-	}
-
-	@GetMapping("/loginuser")
-	@ApiOperation(
-					value = "登陆出版社监控"
-	)
-	public ResponseEntity loginuser(String temail) {
-		psClientService.loginTemail(temail);
-		return new ResponseEntity();
-	}
-
-	@GetMapping("/login")
-	@ApiOperation(
-					value = "登陆出版社监控"
-	)
-	public ResponseEntity login(HttpServletRequest request) {
-		for (int i = 10; i < 100; i++) {
-			psClientService.loginTemail("p.100000" + i + "@systoontest.com");
-		}
-		return new ResponseEntity();
 	}
 
 

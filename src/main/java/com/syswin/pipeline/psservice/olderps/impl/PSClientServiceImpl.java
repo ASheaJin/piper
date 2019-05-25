@@ -144,7 +144,6 @@ public class PSClientServiceImpl implements PSClientService {
 	 *
 	 * @param temail
 	 */
-	@Override
 	public void loginTemail(String temail) {
 		String pk = initPubKey(temail);
 		clientLogin(temail, pk);
@@ -288,16 +287,6 @@ public class PSClientServiceImpl implements PSClientService {
 		return header;
 	}
 
-	//单聊会话列表和详情的消息体
-	private <T> Message initQueryMessage(Header header, T payload) {
-		Map<String, Object> lastParam = CollectionUtil.fastMap("query", payload);
-		Message message = new Message();
-		message.setHeader(header);
-		byte[] data = FastJsonUtil.toJson(lastParam).getBytes(Charset.forName("UTF-8"));
-		message.setPayload(data);
-
-		return message;
-	}
 
 	//单聊的消息体
 	private <T> Message initChatMessage(Header header, T payload) {
@@ -313,7 +302,6 @@ public class PSClientServiceImpl implements PSClientService {
 		message.setPayload(data);
 		return message;
 	}
-
 
 
 	@Override

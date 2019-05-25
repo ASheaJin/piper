@@ -2,7 +2,7 @@ package com.syswin.pipeline.service.message;
 
 import com.alibaba.fastjson.JSONObject;
 import com.lmax.disruptor.EventHandler;
-import com.syswin.pipeline.psservice.PsServerService;
+import com.syswin.pipeline.psservice.RegisterServerService;
 import com.syswin.pipeline.psservice.response.ResponeResultData;
 import com.syswin.pipeline.service.exception.BusinessException;
 import com.syswin.pipeline.utils.StringUtil;
@@ -18,7 +18,7 @@ public class RegisterHandler implements EventHandler<MessageEvent> {
 
 	@Lazy
 	@Autowired
-	private PsServerService psServerService;
+	private RegisterServerService psServerService;
 
 	@Override
 	public void onEvent(MessageEvent event, long sequence, boolean endOfBatch) {

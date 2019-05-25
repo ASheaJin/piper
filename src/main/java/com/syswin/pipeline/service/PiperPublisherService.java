@@ -3,6 +3,7 @@ package com.syswin.pipeline.service;
 import com.github.pagehelper.PageInfo;
 import com.syswin.pipeline.db.model.ReCommendPublisher;
 import com.syswin.pipeline.manage.dto.output.PublisherManageVO;
+import com.syswin.pipeline.psservice.APPPublisherService;
 import com.syswin.pipeline.psservice.SendMessegeService;
 import com.syswin.pipeline.service.exception.BusinessException;
 import com.syswin.pipeline.psservice.olderps.PSClientService;
@@ -38,18 +39,20 @@ public class PiperPublisherService {
 	@Value("${app.pipeline.userId}")
 	private String from;
 	@Autowired
-	PSClientService psClientService;
+	private PSClientService psClientService;
 	@Autowired
-	SendMessegeService sendMessegeService;
+	private APPPublisherService appPublisherService;
+	@Autowired
+	private SendMessegeService sendMessegeService;
 
 	@Autowired
-	PiperRecommendPublisherService piperRecommendPublisherService;
+	private PiperRecommendPublisherService piperRecommendPublisherService;
 
 	@Autowired
-	AdminService adminService;
+	private AdminService adminService;
 
 	@Autowired
-	LanguageChange languageChange;
+	private LanguageChange languageChange;
 
 	@Autowired
 	private com.syswin.sub.api.PublisherService subPublisherService;
@@ -91,7 +94,9 @@ public class PiperPublisherService {
 		//获取中间的数字
 
 		Publisher publisher = subPublisherService.addPublisher(userId, name, ptemail, EnumsUtil.getPubliserTypeEnums(ptype));
-		psClientService.loginTemail(ptemail);
+	//调用新的登录
+		appPublisherService.addPiperAcount(ptemail);
+		//		psClientService.loginTemail(ptemail);
 		try {
 			psClientService.sendTextmessage(languageChange.getLangByUserId("msg.publisherhascreate", new String[]{name}, userId), userId, 0);
 			psClientService.sendTextmessage(ptemail, userId, 200);

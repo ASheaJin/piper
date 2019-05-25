@@ -42,7 +42,7 @@ public class APPPublisherService {
 	private NickNameService nickNameService;
 
 	@Autowired
-	private PsServerService psServerService;
+	private RegisterServerService psServerService;
 
 
 	@Value("${app.pipeline.userId}")

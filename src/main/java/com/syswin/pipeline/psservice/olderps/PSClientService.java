@@ -12,7 +12,7 @@ public interface PSClientService {
      * 注册temail会话的处理逻辑
      * @param temail
      */
-    void loginTemail(String temail);
+//    void loginTemail(String temail);
     public String getTemailTestPublicKey(String temail);
     /**
      * 发送消息
