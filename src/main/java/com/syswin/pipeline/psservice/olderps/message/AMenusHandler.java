@@ -38,7 +38,7 @@ public class AMenusHandler implements EventHandler<MessageEvent> {
 	@Value("${url.piper}")
 	private String URL_PIPER;
 	@Autowired
-	PiperConsumerService consumerService;
+	private PiperConsumerService consumerService;
 	@Lazy
 	@Autowired
 	private SendMessegeService sendMessegeService;

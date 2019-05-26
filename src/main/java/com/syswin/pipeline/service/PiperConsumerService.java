@@ -29,9 +29,13 @@ public class PiperConsumerService {
 	private PublisherService publisherService;
 
 	public String getUserVersion(Header header, String version, String myRole) {
+		return getUserVersion(header.getSender(), header.getReceiver(), version, myRole);
+	}
+
+	public String getUserVersion(String sender, String receiver, String version, String myRole) {
 		ConsumerExample consumerExample = new ConsumerExample();
 		ConsumerExample.Criteria criteria = consumerExample.createCriteria();
-		criteria.andPtemailEqualTo(header.getSender()).andUserIdEqualTo((header.getReceiver()));
+		criteria.andPtemailEqualTo(sender).andUserIdEqualTo((receiver));
 		List<Consumer> consumerList = consumerRepository.selectByExample(consumerExample);
 		Consumer consumer = null;
 		if (consumerList.size() > 0) {
@@ -44,8 +48,8 @@ public class PiperConsumerService {
 
 			consumer = new Consumer();
 			consumer.setCurversion(version);
-			consumer.setPtemail(header.getSender());
-			consumer.setUserId(header.getReceiver());
+			consumer.setPtemail(sender);
+			consumer.setUserId(receiver);
 			consumer.setRole(myRole);
 			consumerRepository.insertSelective(consumer);
 
@@ -58,6 +62,15 @@ public class PiperConsumerService {
 		ConsumerExample consumerExample = new ConsumerExample();
 		ConsumerExample.Criteria criteria = consumerExample.createCriteria();
 		criteria.andPtemailEqualTo(header.getSender()).andUserIdEqualTo((header.getReceiver()));
+		List<Consumer> consumerList = consumerRepository.selectByExample(consumerExample);
+
+		return consumerList.size() > 0;
+	}
+
+	public boolean getUserVersion(String sender, String receiver) {
+		ConsumerExample consumerExample = new ConsumerExample();
+		ConsumerExample.Criteria criteria = consumerExample.createCriteria();
+		criteria.andPtemailEqualTo(sender).andUserIdEqualTo((receiver));
 		List<Consumer> consumerList = consumerRepository.selectByExample(consumerExample);
 
 		return consumerList.size() > 0;
@@ -123,10 +136,10 @@ public class PiperConsumerService {
 			return String.valueOf(role);
 		}
 		if (PublisherTypeEnums.person.equals(publisher.getPtype())) {
-			role = publisher.getUserId().equals(userId) ? 2 : 1;
+			role = publisher.getUserId().equals(userId) ? 1 : 0;
 		}
 		if (PublisherTypeEnums.organize.equals(publisher.getPtype())) {
-			role = publisher.getUserId().equals(userId) ? 4 : 3;
+			role = publisher.getUserId().equals(userId) ? 2 : 0;
 		}
 		return String.valueOf(role);
 	}

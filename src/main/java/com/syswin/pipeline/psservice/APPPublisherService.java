@@ -50,7 +50,7 @@ public class APPPublisherService {
 
 
 	@Transactional
-	public boolean RegisterAndLoginPiperAcount(String accountNo) {
+	public boolean registerAndLoginPiperAcount(String accountNo) {
 
 //		accountService.findAccount(accountNo)
 		psServerService.registerAccount(accountNo);
@@ -69,7 +69,7 @@ public class APPPublisherService {
 	public boolean addAcount() {
 
 		//添加并激活账号
-		addAccount(from, "1234", "欢迎使用");
+		addAccount(from, "1234", "请使用小助手");
 		//添加名片
 		addCard(from);
 		//添加角色菜单
@@ -77,12 +77,6 @@ public class APPPublisherService {
 		//登录账号
 		psAccountService.login(from);
 		return true;
-	}
-
-	private void addPiperRoleMenu(String accountNo) {
-		addMenuIte(accountNo, "test", "http://www.baidu.com", 1, "1");
-		addMenuIte(accountNo, "test22", "http://www.baidu.com", 3, "1");
-
 	}
 
 
@@ -100,9 +94,21 @@ public class APPPublisherService {
 		return true;
 	}
 
-	private void addRoleMenu(String accountNo) {
+	private void addPiperRoleMenu(String accountNo) {
+		//添加中文菜单
 		addMenuIte(accountNo, "test", "http://www.baidu.com", 1, "1");
 		addMenuIte(accountNo, "test22", "http://www.baidu.com", 3, "1");
+		//添加英文菜单
+	}
+
+
+
+	private void addRoleMenu(String accountNo) {
+		//添加中文菜单
+		addMenuIte(accountNo, "test", "http://www.baidu.com", 1, "1");
+		addMenuIte(accountNo, "test22", "http://www.baidu.com", 3, "1");
+		//添加英文菜单
+
 
 	}
 

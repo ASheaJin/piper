@@ -1,16 +1,26 @@
 package com.syswin.pipeline.psservice;
 
 import com.syswin.pipeline.PiperApplication;
+import com.syswin.pipeline.enums.PermissionEnums;
+import com.syswin.pipeline.service.PiperConsumerService;
+import com.syswin.pipeline.utils.StringUtil;
 import com.syswin.ps.sdk.admin.config.IMenuConfigService;
 import com.syswin.ps.sdk.common.MsgHeader;
 import com.syswin.ps.sdk.handler.PsClientKeeper;
+import com.syswin.sub.api.AdminService;
+import com.syswin.sub.api.db.model.Admin;
+import com.syswin.sub.api.db.model.Publisher;
+import com.syswin.sub.api.enums.PublisherTypeEnums;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class MenuConfigService implements IMenuConfigService {
@@ -19,6 +29,20 @@ public class MenuConfigService implements IMenuConfigService {
 
 	@Value("${app.pipeline.userId}")
 	private String apiper;
+	@Autowired
+	private PiperConsumerService consumerService;
+	private String myRole = PermissionEnums.Guest.name;
+
+	@Autowired
+	private SendMessegeService sendMessegeService;
+
+	private static String common = "common";
+	private static String person = "person";
+	private static String guest = "guest";
+	private static String org = "org";
+
+
+	private static String nomenu = "nomenu";
 
 	public List<String> getKey(String accountNo) {
 		MsgHeader msgHeader = PsClientKeeper.msgHeader();
@@ -37,23 +61,79 @@ public class MenuConfigService implements IMenuConfigService {
 			menus = menuP(msgHeader, accountNo);
 		}
 		if (menus == null) {
-			menus = Arrays.asList(getKey(accountNo, "nomenu"));
+			menus = Arrays.asList(getKey(accountNo, nomenu));
 
 		}
 		return menus;
 	}
 
-	private List<String> menuP(MsgHeader msgHeader, String accountNo) {
-		if(apiper.equals(msgHeader.getReceiver())) {
-			List<String> aas = Arrays.asList(getKey(accountNo, "1"), getKey(accountNo, "2"));
+	/**
+	 * 拉取a.piper的菜单
+	 *
+	 * @param header
+	 * @param accountNo
+	 * @return
+	 */
+	private List<String> menuA(MsgHeader header, String accountNo) {
+		if (!apiper.equals(accountNo)) {
+			return null;
 		}
-		return null;
+		String userId = header.getReceiver();
+		myRole = consumerService.getAMenuRole(userId);
+		//初始时创建
+		if (!consumerService.getUserVersion(header.getSender(), header.getReceiver())) {
+			String pdfInfo = "{\"format\":\"application/pdf\",\"url\":\"https://ucloud-file.t.email/%2Fceca224cce52468dabc22390f2289e97.zip\",\"pwd\":\"EB04F13C-E30B-492E-90FA-E5300139041E\",\"suffix\":\".pdf\",\"desc\":\"Piper操作手册1.1.pdf\",\"size\":255784,\"percent\":100}";
+			sendMessegeService.sendOthermessage(pdfInfo, 14, header.getReceiver(), apiper);
+
+		}
+		//保持角色，用于判断是否发pdf引导
+		consumerService.getUserVersion(header.getSender(), header.getReceiver(), "1", myRole);
+		String lang = header.getPlatformInfo().getLanguage();
+
+		List menus = new ArrayList();
+		menus.add(getKey(accountNo, getLang(lang, common)));
+		if (PermissionEnums.OrgPerson.name.equals(myRole)) {
+			menus.add(getKey(accountNo, getLang(lang, org)));
+			menus.add(getKey(accountNo, getLang(lang, person)));
+		}
+		if (PermissionEnums.OnlyOrg.name.equals(myRole)) {
+			menus.add(getKey(accountNo, getLang(lang, org)));
+		}
+		//个人管理者，订阅者
+		if (PermissionEnums.Person.name.equals(myRole)) {
+			menus.add(getKey(accountNo, getLang(lang, person)));
+		}
+		//游客，订阅者
+		if (PermissionEnums.Guest.name.equals(myRole)) {
+			menus.add(getKey(accountNo, getLang(lang, guest)));
+		}
+
+		return menus;
 	}
 
-	private List<String> menuA(MsgHeader msgHeader, String accountNo) {
 
-		List<String> aas = Arrays.asList(getKey(accountNo, "1"), getKey(accountNo, "2"));
-		return null;
+	private List<String> menuP(MsgHeader header, String accountNo) {
+		if (apiper.equals(header.getSender())) {
+			return null;
+		}
+		String lang = header.getPlatformInfo().getLanguage();
+		myRole = consumerService.getPiperMenuRole(header.getReceiver(), header.getSender());
+
+		List menus = new ArrayList();
+
+		menus.add(getKey(accountNo, getLang(lang, common)));
+
+		//判断是否是组织出版社
+		if (PermissionEnums.OnlyOrg.name.equals(myRole)) {
+			menus.add(getKey(accountNo, getLang(lang, org)));
+		}
+
+		return menus;
+	}
+
+
+	private String getLang(String lang, String org) {
+		return (!StringUtil.isEmpty(lang) && lang.contains("en")) ? org + "-en" : org;
 	}
 
 	@Override
@@ -61,5 +141,6 @@ public class MenuConfigService implements IMenuConfigService {
 
 		return accountNo + roleType;
 	}
+
 
 }
