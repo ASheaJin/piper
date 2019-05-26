@@ -12,7 +12,7 @@ import java.util.UUID;
 public class ChatMsg {
 	private String atTemails;
 	private Integer body_type;
-	private Integer chat_type;
+	private Integer chatType;
 	private String content;
 	private String from;
 	private String msg_id;
@@ -38,7 +38,7 @@ public class ChatMsg {
 		this.session_id = from + ":" + to;
 		this.status = 3;
 		this.time_stamp = System.currentTimeMillis();
-		this.chat_type = 0;
+		this.chatType = 0;
 		this.content = content;
 		this.body_type = body_type;
 	}
@@ -57,7 +57,7 @@ public class ChatMsg {
 		this.session_id = from + ":" + to;
 		this.status = 3;
 		this.time_stamp = System.currentTimeMillis()+ delay;
-		this.chat_type = 0;
+		this.chatType = 0;
 		this.content = content;
 		this.body_type = body_type;
 	}
@@ -68,7 +68,7 @@ public class ChatMsg {
 		this.msg_id = msgId;
 		this.session_id = from + ":" + to;
 		this.content = FastJsonUtil.toJson(common_replay_message);
-		this.chat_type = 0;
+		this.chatType = 0;
 		this.status = 3;
 		this.time_stamp = System.currentTimeMillis();
 //		this.body_type = body_type;
@@ -90,12 +90,12 @@ public class ChatMsg {
 		this.body_type = body_type;
 	}
 
-	public Integer getChat_type() {
-		return chat_type;
+	public Integer getChatType() {
+		return chatType;
 	}
 
-	public void setChat_type(Integer chat_type) {
-		this.chat_type = chat_type;
+	public void setChatType(Integer chatType) {
+		this.chatType = chatType;
 	}
 
 	public String getContent() {

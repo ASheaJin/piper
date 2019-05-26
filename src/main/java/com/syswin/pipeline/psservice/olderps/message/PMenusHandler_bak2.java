@@ -1,4 +1,4 @@
-package com.syswin.pipeline.service.message;
+package com.syswin.pipeline.psservice.olderps.message;
 
 import com.lmax.disruptor.EventHandler;
 import com.syswin.pipeline.service.PiperConsumerService;

@@ -1,4 +1,4 @@
-package com.syswin.pipeline.service.message;
+package com.syswin.pipeline.psservice.olderps.message;
 
 import com.lmax.disruptor.EventHandler;
 import com.syswin.pipeline.psservice.bussiness.PublisherSecService;
@@ -18,7 +18,7 @@ public class BusinessHandler implements EventHandler<MessageEvent> {
 	@Override
 	public void onEvent(MessageEvent event, long sequence, boolean endOfBatch) throws Exception {
 		//会话式应用处理
-		publisherSecService.monitor(event.getOriginHeader().getReceiver(), event.getOriginHeader().getSender(), event.getChatMsg());
+//		publisherSecService.monitor(event.getOriginHeader().getReceiver(), event.getOriginHeader().getSender(), event.getChatMsg().getBody_type(), event.getChatMsg().getContent());
 
 	}
 

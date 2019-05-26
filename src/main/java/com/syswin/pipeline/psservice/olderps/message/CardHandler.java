@@ -1,11 +1,11 @@
-package com.syswin.pipeline.service.message;
+package com.syswin.pipeline.psservice.olderps.message;
 
 import com.lmax.disruptor.EventHandler;
 import com.syswin.pipeline.psservice.SendMessegeService;
 import com.syswin.pipeline.psservice.olderps.Card;
+import com.syswin.pipeline.utils.CacheUtil;
 import com.syswin.pipeline.utils.FastJsonUtil;
 import com.syswin.pipeline.utils.StringUtil;
-import com.syswin.pipeline.utils.CacheUtil;
 import com.syswin.temail.ps.client.Header;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

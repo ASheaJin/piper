@@ -9,7 +9,7 @@ public final class AppConstant {
 
     public static final String DEFAULT_PORT = "url.temail-gateway.port";
 
-    public static final String KMS_SERVER = "url.temail-kms-cmi.service";
+    public static final String KMS_SERVER = "app.ps-app-sdk.kms-server";
 
     public static final String AUTH_SERVER = "url.temail-auth.server";
     public static final String REGISTER_SERVER = "url.temail-auth.register";

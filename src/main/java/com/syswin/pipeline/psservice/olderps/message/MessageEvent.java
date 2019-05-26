@@ -1,4 +1,4 @@
-package com.syswin.pipeline.service.message;
+package com.syswin.pipeline.psservice.olderps.message;
 
 import com.syswin.pipeline.psservice.olderps.ChatMsg;
 import com.syswin.temail.ps.client.Header;

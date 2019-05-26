@@ -1,19 +1,15 @@
-package com.syswin.pipeline.service.message;
+package com.syswin.pipeline.psservice.olderps.message;
 
 import com.lmax.disruptor.EventHandler;
 import com.syswin.pipeline.enums.AppmuneEnum;
 import com.syswin.pipeline.enums.PermissionEnums;
-import com.syswin.pipeline.service.PiperConsumerService;
-import com.syswin.pipeline.service.PiperDeviceInfoService;
 import com.syswin.pipeline.psservice.SendMessegeService;
 import com.syswin.pipeline.psservice.olderps.ChatMsg;
 import com.syswin.pipeline.psservice.olderps.Env;
 import com.syswin.pipeline.psservice.olderps.PSClientService;
-import com.syswin.pipeline.utils.CollectionUtil;
-import com.syswin.pipeline.utils.FastJsonUtil;
-import com.syswin.pipeline.utils.JacksonJsonUtil;
-import com.syswin.pipeline.utils.LanguageChange;
-import com.syswin.pipeline.utils.PermissionUtil;
+import com.syswin.pipeline.service.PiperConsumerService;
+import com.syswin.pipeline.service.PiperDeviceInfoService;
+import com.syswin.pipeline.utils.*;
 import com.syswin.temail.ps.client.Header;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -213,7 +209,6 @@ public class AMenusHandler implements EventHandler<MessageEvent> {
 		List<Object> app11 = CollectionUtil.fastList(iconUrl, appName, path);
 		return CollectionUtil.fastMap(keys1, app11);
 	}
-
 
 
 	private List<Map<String, Object>> appList(String userId) {

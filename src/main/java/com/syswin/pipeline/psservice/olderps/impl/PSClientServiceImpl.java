@@ -2,10 +2,9 @@ package com.syswin.pipeline.psservice.olderps.impl;
 
 import com.alibaba.fastjson.TypeReference;
 import com.google.gson.Gson;
-import com.syswin.pipeline.service.message.ChatMessageHandler;
+import com.syswin.pipeline.psservice.olderps.message.ChatMessageHandler;
 import com.syswin.pipeline.psservice.olderps.ChatMsg;
 import com.syswin.pipeline.psservice.olderps.PSClientService;
-import com.syswin.pipeline.utils.CollectionUtil;
 import com.syswin.pipeline.utils.FastJsonUtil;
 import com.syswin.pipeline.utils.LogUtil;
 import com.syswin.pipeline.utils.StringUtil;
@@ -120,13 +119,10 @@ public class PSClientServiceImpl implements PSClientService {
 						.signer(new KeyAwarePacketSigner(VaultKeeper.keyAwareVault(this.kmsServer, tenantId)))
 						.build();
 //        Boolean result = registerPubKey();
-
-		List<String[]> appTemailAndPKList = new ArrayList<>();
-		//初始化a.piper
-		appTemailAndPKList.add(new String[]{appTemail, appPK});
-		appTemailAndPKList.addAll(getAppTemailAndPKList());
-
-		try {
+//		List<String[]> appTemailAndPKList = new ArrayList<>();
+//		appTemailAndPKList.add(new String[]{appTemail, appPK});
+//		appTemailAndPKList.addAll(getAppTemailAndPKList());
+//		try {
 //			for (String[] appTemailAndPK : appTemailAndPKList) {
 //				String thisAppTemail = appTemailAndPK[0];
 //				String thisAppPK = appTemailAndPK[1];
@@ -134,9 +130,9 @@ public class PSClientServiceImpl implements PSClientService {
 //
 //				clientLogin(thisAppTemail, thisAppPK);
 //			}
-		} catch (Exception e) {
-			logger.error("psClient 执行 login 发生错误 ", e);
-		}
+//		} catch (Exception e) {
+//			logger.error("psClient 执行 login 发生错误 ", e);
+//		}
 	}
 
 	/**

@@ -8,9 +8,13 @@ import com.syswin.pipeline.service.PiperSubscriptionService;
 import com.syswin.pipeline.psservice.bussiness.PublisherSecService;
 import com.syswin.pipeline.service.content.ContentHandleJobManager;
 import com.syswin.pipeline.psservice.olderps.ChatMsg;
+import com.syswin.pipeline.service.exception.BusinessException;
 import com.syswin.pipeline.utils.LanguageChange;
+import com.syswin.pipeline.utils.StringUtil;
 import com.syswin.pipeline.utils.StringUtils;
 import com.syswin.pipeline.utils.SwithUtil;
+import com.syswin.ps.sdk.handler.PsClientKeeper;
+import com.syswin.ps.sdk.showType.TextShow;
 import com.syswin.sub.api.AdminService;
 import com.syswin.sub.api.SendRecordService;
 import com.syswin.sub.api.SubscriptionService;
@@ -117,17 +121,25 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 	 *
 	 * @param publisher
 	 * @param body_type
-	 * @param txt
+	 * @param show
 	 * @param publisherTypeEnums
 	 */
 	@Override
-	public Integer dealpusharticle(Publisher publisher, int body_type, String txt, PublisherTypeEnums publisherTypeEnums) {
+	public Integer dealpusharticle(Publisher publisher, int body_type, Object show, PublisherTypeEnums publisherTypeEnums) {
+		if (StringUtil.isEmpty(show)) {
+			throw new BusinessException("消息不能为空");
+		}
+
 		//生成文章Id
 		String contentId = String.valueOf(SnowflakeIdWorker.getInstance().nextId());
 		Content content = new Content();
 		content.setStatus(1);
-		content.setContentId(String.valueOf(contentId));
-		content.setContent(txt);
+		content.setContentId(contentId);
+		if (show instanceof TextShow) {
+			content.setContent(JSONObject.toJSONString(show));
+		} else {
+			content.setContent(show.toString());
+		}
 		content.setBodyType(body_type);
 		content.setPublisherId(publisher.getPublisherId());
 
@@ -136,7 +148,7 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 		List<String> userIds = subscriptionService.getSubscribers(publisher.getPtemail(), publisherTypeEnums);
 
 		//内容处理
-		contentHandleJobManager.addJob(publisher.getPublisherId(), contentId, body_type, txt, content.getCreateTime());
+		contentHandleJobManager.addJob(publisher.getPublisherId(), contentId, body_type, show.toString(), content.getCreateTime());
 
 		int num = 0;
 		//3、逐个发文章
@@ -147,10 +159,13 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 //			fromTemail ="a_piper@systoontest.com";
 				//分别对不同类型的文章进行处理
 				if (body_type == 1) {
-					String cont = JSON.parseObject(txt).getString("text");
+					String cont = JSON.parseObject(show.toString()).getString("text");
 					sendMessegeService.sendTextmessage(cont, orderUserId, fromTemail);
+
+				} else if (body_type == 801) {
+					PsClientKeeper.newInstance().sendMsg(fromTemail, orderUserId, show);
 				} else {
-					sendMessegeService.sendOthermessage(txt, body_type, orderUserId, fromTemail);
+					sendMessegeService.sendOthermessage(show.toString(), body_type, orderUserId, fromTemail);
 					logger.info("Thread.currentThread().getName()--------" + Thread.currentThread().getName());
 
 				}
@@ -174,14 +189,12 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 		return num;
 	}
 
-	public void monitorP(String userId, String ptemail, ChatMsg chatMsg) {
+	public void monitorP(String userId, String ptemail, int bodyType, Object show) {
 
 //		Publisher publisher = subPublisherService.getPubLisherByuserId(userId, PublisherTypeEnums.person);
 		// 为测试二用
 //		Publisher publisher = publisherRepository.selectByPtemail(ptemail);
 //		ptemail = publisher.getPtemail();
-		int body_type = chatMsg.getBody_type();
-		String orgContent = chatMsg.getContent();
 		Publisher publisher = subPublisherService.getPubLisherByPublishTmail(ptemail, PublisherTypeEnums.person);
 		if (publisher == null) {
 			return;
@@ -192,8 +205,8 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 
 		Subscription subscription = subscriptionService.getSub(userId, publisher.getPublisherId());
 		if (subscription == null && !publisher.getUserId().equals(userId)) {
-			if (body_type == 1) {
-				String txt = StringUtils.filterStr(orgContent);
+			if (bodyType == 1) {
+				String txt = StringUtils.filterStr(show.toString());
 				if (txt.equals("subscribe") || txt.equals("订阅") || txt.equals("1")) {
 					piperSubscriptionService.subscribe(userId, ptemail, publisher.getPtype());
 					return;
@@ -201,7 +214,7 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 					sendMessegeService.sendTextmessage(languageChange.getValueByUserId("msg.ordertip", userId), userId, 0, publisher.getPtemail());
 				}
 			}
-				sendMessegeService.sendTextmessage(languageChange.getValueByUserId("msg.noreply", userId), userId, 1000, ptemail);
+			sendMessegeService.sendTextmessage(languageChange.getValueByUserId("msg.noreply", userId), userId, 1000, ptemail);
 //			sendMessegeService.sendTextmessage("您已订阅该出版社 发送 《取消订阅》 取消订阅该出版社", userId, 0, publisher.getPtemail());
 		}
 		//判断出版社是否存在
@@ -210,21 +223,22 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 //				sendMessegeService.sendTextmessage(MessageUtil.sendCreateHelpTip("请发送文件、语音、图片、视频"), userId, 1000, ptemail);
 //				return;
 //			}
-			dealpusharticle(publisher, body_type, orgContent, PublisherTypeEnums.person);
+			dealpusharticle(publisher, bodyType, show, PublisherTypeEnums.person);
 		}
 
 
 	}
 
 	//处理组织消息
-	public void monitor(String userId, String ptemail, ChatMsg chatMsg) {
-		String orgContent = chatMsg.getContent();
-		int body_type = chatMsg.getBody_type();
+	public void monitor(String userId, String ptemail, int bodyType, Object show) {
 
+		if (StringUtil.isEmpty(show)) {
+			throw new BusinessException("消息体不能为空");
+		}
 		//判断发送格式
-		insertLog(userId, ptemail, body_type, body_type > 30 ? "非业务指令" : JSONObject.toJSONString(chatMsg));
+		insertLog(userId, ptemail, bodyType, bodyType > 30 ? "非业务指令" : show.toString());
 
-		if (body_type > 90) {
+		if (bodyType > 90) {
 			return;
 		}
 		if (ptemail.equals(from)) {
@@ -235,12 +249,12 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 
 		//判断该出版社是组织出版社还是个人出版社
 		if (publisher == null) {
-			monitorP(userId, ptemail, chatMsg);
+			monitorP(userId, ptemail, bodyType, show);
 			return;
 		}
 
 		if (userId.equals(publisher.getUserId())) {
-			dealpusharticle(publisher, body_type, orgContent, PublisherTypeEnums.organize);
+			dealpusharticle(publisher, bodyType, show, PublisherTypeEnums.organize);
 		} else {
 			sendMessegeService.sendTextmessage(languageChange.getValueByUserId("msg.nopermission", userId), userId, 1000, ptemail);
 		}

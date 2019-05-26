@@ -1,16 +1,26 @@
 package com.syswin.pipeline.app.controller;
 
+import com.syswin.pipeline.app.dto.SendComplexInfoParam;
 import com.syswin.pipeline.app.dto.SendParam;
 import com.syswin.pipeline.service.PiperSpiderTokenService;
 import com.syswin.pipeline.psservice.bussiness.PublisherSecService;
 import com.syswin.pipeline.app.dto.ResponseEntity;
 import com.syswin.pipeline.service.exception.BusinessException;
+import com.syswin.pipeline.utils.StringUtil;
+import com.syswin.ps.sdk.common.ActionItem;
+import com.syswin.ps.sdk.showType.TextShow;
 import com.syswin.sub.api.PublisherService;
 import com.syswin.sub.api.db.model.Publisher;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Created by 115477 on 2018/12/18.
@@ -33,6 +43,9 @@ public class PiperSpiderController {
 					value = "发送消息"
 	)
 	public ResponseEntity send(@RequestBody SendParam msg) {
+		/**
+		 * 爬虫发文本
+		 */
 		if (spiderTokenService.getSpiderToken(msg.getToken(), msg.getPiperTemail()) == null) {
 			throw new BusinessException("ex.tokenInvalid");
 		}
@@ -45,4 +58,38 @@ public class PiperSpiderController {
 		return new ResponseEntity(num);
 	}
 
+
+	@PostMapping("/sendComplexInfo")
+	@ApiOperation(
+					value = "爬虫发复杂的消息体"
+	)
+	public ResponseEntity sendComplexInfo(@RequestBody SendComplexInfoParam msg) {
+		/**
+		 * 爬虫发文本
+		 */
+		if (spiderTokenService.getSpiderToken(msg.getToken(), msg.getPiperTemail()) == null) {
+			throw new BusinessException("ex.tokenInvalid");
+		}
+		Publisher publisher = publisherService.getPubLisherByPublishTmail(msg.getPiperTemail(), null);
+		if (publisher == null) {
+			throw new BusinessException("ex.publisher.null");
+		}
+
+		Map<String, Object> map = new HashMap<>();
+		if (!StringUtil.isEmpty(msg.getTitle())) {
+			map.put("title", msg.getTitle());
+		}
+		if (!StringUtil.isEmpty(msg.getImgUrl())) {
+			map.put("imageUrl", msg.getImgUrl());
+		}
+//		map.put("text", "hello");
+
+		List<ActionItem> infoList = Stream.of(new ActionItem(msg.getTxt(), msg.getUrl())
+		).collect(Collectors.toList());
+
+		TextShow show = new TextShow(1, map, infoList);
+
+		Integer num = publisherSecService.dealpusharticle(publisher, 801, show, publisher.getPtype());
+		return new ResponseEntity(num);
+	}
 }

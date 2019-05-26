@@ -1,14 +1,14 @@
-package com.syswin.pipeline.service.message;
+package com.syswin.pipeline.psservice.olderps.message;
 
 import com.lmax.disruptor.EventHandler;
 import com.syswin.pipeline.db.repository.ConsumerRepository;
 import com.syswin.pipeline.enums.PermissionEnums;
-import com.syswin.pipeline.service.PiperConsumerService;
-import com.syswin.pipeline.service.PiperDeviceInfoService;
 import com.syswin.pipeline.psservice.SendMessegeService;
 import com.syswin.pipeline.psservice.olderps.ChatMsg;
 import com.syswin.pipeline.psservice.olderps.Env;
 import com.syswin.pipeline.psservice.olderps.PSClientService;
+import com.syswin.pipeline.service.PiperConsumerService;
+import com.syswin.pipeline.service.PiperDeviceInfoService;
 import com.syswin.pipeline.utils.CollectionUtil;
 import com.syswin.pipeline.utils.FastJsonUtil;
 import com.syswin.pipeline.utils.JacksonJsonUtil;

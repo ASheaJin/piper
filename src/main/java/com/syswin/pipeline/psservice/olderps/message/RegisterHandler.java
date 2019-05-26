@@ -1,4 +1,4 @@
-package com.syswin.pipeline.service.message;
+package com.syswin.pipeline.psservice.olderps.message;
 
 import com.alibaba.fastjson.JSONObject;
 import com.lmax.disruptor.EventHandler;

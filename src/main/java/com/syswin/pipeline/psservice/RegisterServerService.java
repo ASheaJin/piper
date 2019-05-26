@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.syswin.pipeline.psservice.impl.CallBackRegister;
 import com.syswin.pipeline.psservice.response.ResponeResultData;
 import com.syswin.pipeline.service.exception.BusinessException;
-import com.syswin.pipeline.service.message.MessageEvent;
+import com.syswin.pipeline.psservice.olderps.message.MessageEvent;
 import com.syswin.pipeline.utils.StringUtil;
 import com.syswin.ps.sdk.admin.service.impl.PSAccountService;
 import com.syswin.ps.sdk.common.CDTPResponse;

@@ -1,6 +1,5 @@
 package com.syswin.pipeline.psservice.bussiness;
 
-import com.syswin.pipeline.psservice.olderps.ChatMsg;
 import com.syswin.sub.api.db.model.Publisher;
 import com.syswin.sub.api.enums.PublisherTypeEnums;
 
@@ -10,7 +9,12 @@ import com.syswin.sub.api.enums.PublisherTypeEnums;
 public interface PublisherSecService {
 
 	//处理组织的消息
-	void monitor(String userId, String ptemail, ChatMsg chatMsg);
+//	void monitor(String userId, String ptemail, ChatMsg chatMsg);
+//	Integer dealpusharticle(Publisher publisher, int body_type, String txt, PublisherTypeEnums publisherTypeEnums);
+//处理组织的消息
+	void monitor(String userId, String ptemail, int bodyType, Object show);
 
-	Integer dealpusharticle(Publisher publisher, int body_type, String txt, PublisherTypeEnums publisherTypeEnums);
+	Integer dealpusharticle(Publisher publisher, int bodyType, Object show, PublisherTypeEnums publisherTypeEnums);
+
+
 }
