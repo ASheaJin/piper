@@ -216,12 +216,10 @@ public class PiperPublisherService {
 		if (publisher == null) {
 			throw new BusinessException("ex.publisher.null");
 		}
-		if (!curUserId.equals(publisher.getUserId())) {
-			throw new BusinessException("msg.nopermission");
-		}
-		if (!curUserId.equals(publisher.getUserId())) {
-			throw new BusinessException("msg.nopermission");
-		}
+//		if (!curUserId.equals(publisher.getUserId())) {
+//			throw new BusinessException("msg.nopermission");
+//		}
+
 		publisher.setUserId(changeUserId);
 		int r = subPublisherService.update(publisher);
 		if (r == 1) {

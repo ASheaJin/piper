@@ -1,5 +1,6 @@
 package com.syswin.pipeline.psservice;
 
+import com.syswin.pipeline.app.controller.PiperTokenController;
 import com.syswin.pipeline.utils.StringUtil;
 import com.syswin.ps.sdk.common.ActionItem;
 import com.syswin.ps.sdk.common.CommonMsg;
@@ -9,6 +10,8 @@ import com.syswin.ps.sdk.sender.AbstractMsgSender;
 import com.syswin.ps.sdk.service.SingleChatService;
 import com.syswin.ps.sdk.showType.TextShow;
 import com.syswin.temail.ps.client.Header;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +31,7 @@ import java.util.stream.Stream;
  */
 @Service
 public class MessegerSenderService extends AbstractMsgSender {
-
+	private static final Logger logger = LoggerFactory.getLogger(MessegerSenderService.class);
 	@Autowired
 	SingleChatService singleChatService;
 
@@ -93,6 +96,7 @@ public class MessegerSenderService extends AbstractMsgSender {
 		).collect(Collectors.toList());
 
 		TextShow show = new TextShow(1, map, infoList);
+		logger.info("fromTemail, orderUserId, show" + from + to + show);
 		PsClientKeeper.newInstance().sendMsg(from, to, show);
 	}
 }

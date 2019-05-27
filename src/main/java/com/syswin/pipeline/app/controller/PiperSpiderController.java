@@ -2,12 +2,14 @@ package com.syswin.pipeline.app.controller;
 
 import com.syswin.pipeline.app.dto.SendComplexInfoParam;
 import com.syswin.pipeline.app.dto.SendParam;
+import com.syswin.pipeline.psservice.bean.SaveText;
 import com.syswin.pipeline.service.PiperSpiderTokenService;
 import com.syswin.pipeline.psservice.bussiness.PublisherSecService;
 import com.syswin.pipeline.app.dto.ResponseEntity;
 import com.syswin.pipeline.service.exception.BusinessException;
 import com.syswin.pipeline.utils.StringUtil;
 import com.syswin.ps.sdk.common.ActionItem;
+import com.syswin.ps.sdk.handler.PsClientKeeper;
 import com.syswin.ps.sdk.showType.TextShow;
 import com.syswin.sub.api.PublisherService;
 import com.syswin.sub.api.db.model.Publisher;
@@ -88,8 +90,12 @@ public class PiperSpiderController {
 		).collect(Collectors.toList());
 
 		TextShow show = new TextShow(1, map, infoList);
-
-		Integer num = publisherSecService.dealpusharticle(publisher, 801, show, publisher.getPtype());
+		SaveText saveText = new SaveText();
+		saveText.setActions(infoList);
+		saveText.setShowType(1);
+		saveText.setShowContent(map);
+//		PsClientKeeper.newInstance().sendMsg(msg.getPiperTemail(), "luohongzhou1@syswin.com", show);
+		Integer num = publisherSecService.dealpusharticle(publisher, 801, show,saveText, publisher.getPtype());
 		return new ResponseEntity(num);
 	}
 }

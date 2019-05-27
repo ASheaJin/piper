@@ -41,14 +41,23 @@ public class PSSDKController {
 	@Autowired
 	MessegerSenderService messegerSenderService;
 
-	@PostMapping({"/add"})
+	@PostMapping({"/addPubliser"})
 	@ApiOperation(
-					value = "添加账户"
+					value = "添加出版社账户"
 	)
-	public boolean add(@RequestBody AccountIn accountIn) {
+	public boolean addPubliser(@RequestBody AccountIn accountIn) {
 		logger.info("accountIn" + accountIn);
 		return appPublisherService.addPiperAcount(accountIn.getAccountNo());
 	}
+
+	@PostMapping({"/addPiper"})
+	@ApiOperation(
+					value = "添加Piper"
+	)
+	public boolean addPiper() {
+		return appPublisherService.addAcount();
+	}
+
 
 	@PostMapping("/sendMsg")
 	@ApiOperation(
@@ -61,6 +70,7 @@ public class PSSDKController {
 		String url = null;
 		String infoTitle = "价格类谈判：怎样谈出好价格";
 		String infoUrl = "http://t.cn/E9BjssG";
+
 		messegerSenderService.sendSpiderMsg(from, to, title, url, infoTitle, infoUrl);
 		return "success";
 	}

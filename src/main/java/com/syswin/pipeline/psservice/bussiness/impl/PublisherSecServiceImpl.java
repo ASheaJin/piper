@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.syswin.pipeline.enums.PeriodEnums;
 import com.syswin.pipeline.psservice.SendMessegeService;
+import com.syswin.pipeline.psservice.bean.SaveText;
 import com.syswin.pipeline.service.PiperSubscriptionService;
 import com.syswin.pipeline.psservice.bussiness.PublisherSecService;
 import com.syswin.pipeline.service.content.ContentHandleJobManager;
@@ -14,6 +15,7 @@ import com.syswin.pipeline.utils.StringUtil;
 import com.syswin.pipeline.utils.StringUtils;
 import com.syswin.pipeline.utils.SwithUtil;
 import com.syswin.ps.sdk.handler.PsClientKeeper;
+import com.syswin.ps.sdk.showType.BaseShow;
 import com.syswin.ps.sdk.showType.TextShow;
 import com.syswin.sub.api.AdminService;
 import com.syswin.sub.api.SendRecordService;
@@ -116,6 +118,10 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 		subLogService.addlog(log);
 	}
 
+	public Integer dealpusharticle(Publisher publisher, int body_type, Object show, PublisherTypeEnums publisherTypeEnums) {
+		return dealpusharticle(publisher, body_type, show, null, publisherTypeEnums);
+	}
+
 	/**
 	 * 推送文章
 	 *
@@ -125,7 +131,7 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 	 * @param publisherTypeEnums
 	 */
 	@Override
-	public Integer dealpusharticle(Publisher publisher, int body_type, Object show, PublisherTypeEnums publisherTypeEnums) {
+	public Integer dealpusharticle(Publisher publisher, int body_type, Object show, SaveText saveShow, PublisherTypeEnums publisherTypeEnums) {
 		if (StringUtil.isEmpty(show)) {
 			throw new BusinessException("消息不能为空");
 		}
@@ -133,22 +139,27 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 		//生成文章Id
 		String contentId = String.valueOf(SnowflakeIdWorker.getInstance().nextId());
 		Content content = new Content();
-		content.setStatus(1);
-		content.setContentId(contentId);
-		if (show instanceof TextShow) {
-			content.setContent(JSONObject.toJSONString(show));
-		} else {
-			content.setContent(show.toString());
-		}
-		content.setBodyType(body_type);
-		content.setPublisherId(publisher.getPublisherId());
+		try {
 
-		subContentService.addContent(content);
+			content.setStatus(1);
+			content.setContentId(contentId);
+			if (saveShow != null) {
+				content.setContent(JSONObject.toJSONString(saveShow));
+			} else {
+				content.setContent(show.toString());
+			}
+			content.setBodyType(body_type);
+			content.setPublisherId(publisher.getPublisherId());
+
+			subContentService.addContent(content);
+		} catch (Exception e) {
+			logger.error(content + " 添加失败", e);
+		}
 		//2、获取订阅该用户的读者列表
 		List<String> userIds = subscriptionService.getSubscribers(publisher.getPtemail(), publisherTypeEnums);
 
 		//内容处理
-		contentHandleJobManager.addJob(publisher.getPublisherId(), contentId, body_type, show.toString(), content.getCreateTime());
+		contentHandleJobManager.addJob(publisher.getPublisherId(), contentId, body_type, content.getContent(), content.getCreateTime());
 
 		int num = 0;
 		//3、逐个发文章
@@ -163,7 +174,8 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 					sendMessegeService.sendTextmessage(cont, orderUserId, fromTemail);
 
 				} else if (body_type == 801) {
-					PsClientKeeper.newInstance().sendMsg(fromTemail, orderUserId, show);
+					logger.info("fromTemail, orderUserId, show" + fromTemail + orderUserId + show);
+					PsClientKeeper.newInstance().sendMsg(fromTemail, orderUserId, (BaseShow) show);
 				} else {
 					sendMessegeService.sendOthermessage(show.toString(), body_type, orderUserId, fromTemail);
 					logger.info("Thread.currentThread().getName()--------" + Thread.currentThread().getName());
@@ -175,7 +187,7 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 				num++;
 
 			} catch (Exception ex) {
-				logger.error(publisher.getPtemail() + " send to " + orderUserId + "error----   contentId：" + contentId);
+				logger.error(publisher.getPtemail() + " send to " + orderUserId + "error----   contentId：" + contentId, ex);
 			}
 
 		}

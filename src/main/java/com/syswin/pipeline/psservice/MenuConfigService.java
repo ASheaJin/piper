@@ -27,6 +27,7 @@ public class MenuConfigService implements IMenuConfigService {
 
 	private final static Logger logger = LoggerFactory.getLogger(MenuConfigService.class);
 
+
 	@Value("${app.pipeline.userId}")
 	private String apiper;
 	@Autowired
@@ -40,7 +41,6 @@ public class MenuConfigService implements IMenuConfigService {
 	private static String person = "person";
 	private static String guest = "guest";
 	private static String org = "org";
-
 
 	private static String nomenu = "nomenu";
 
@@ -62,7 +62,6 @@ public class MenuConfigService implements IMenuConfigService {
 		}
 		if (menus == null) {
 			menus = Arrays.asList(getKey(accountNo, nomenu));
-
 		}
 		return menus;
 	}
@@ -78,7 +77,8 @@ public class MenuConfigService implements IMenuConfigService {
 		if (!apiper.equals(accountNo)) {
 			return null;
 		}
-		String userId = header.getReceiver();
+		String userId = header.getSender();
+		logger.info("userId---" + userId);
 		myRole = consumerService.getAMenuRole(userId);
 		//初始时创建
 		if (!consumerService.getUserVersion(header.getSender(), header.getReceiver())) {
@@ -91,10 +91,12 @@ public class MenuConfigService implements IMenuConfigService {
 		String lang = header.getPlatformInfo().getLanguage();
 
 		List menus = new ArrayList();
+		logger.info(myRole);
 		menus.add(getKey(accountNo, getLang(lang, common)));
 		if (PermissionEnums.OrgPerson.name.equals(myRole)) {
 			menus.add(getKey(accountNo, getLang(lang, org)));
 			menus.add(getKey(accountNo, getLang(lang, person)));
+
 		}
 		if (PermissionEnums.OnlyOrg.name.equals(myRole)) {
 			menus.add(getKey(accountNo, getLang(lang, org)));
@@ -117,7 +119,8 @@ public class MenuConfigService implements IMenuConfigService {
 			return null;
 		}
 		String lang = header.getPlatformInfo().getLanguage();
-		myRole = consumerService.getPiperMenuRole(header.getReceiver(), header.getSender());
+		String userId = header.getSender();
+		myRole = consumerService.getPiperMenuRole(userId, accountNo);
 
 		List menus = new ArrayList();
 
@@ -141,6 +144,5 @@ public class MenuConfigService implements IMenuConfigService {
 
 		return accountNo + roleType;
 	}
-
 
 }
