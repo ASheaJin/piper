@@ -23,11 +23,12 @@ public class PiperAdminService {
 	AdminService adminService;
 
 	public Admin add(String adminUserId, String userId, PublisherTypeEnums ptype, boolean isFirst) {
-
+		//TODO 此处需要更新 A.Piper的菜单
 		return adminService.add(adminUserId, userId, ptype, isFirst);
 	}
 
 	public void delete(String adminUserId, String userId) {
+		//TODO 此处需要更新 A.Piper的菜单
 		adminService.delete(adminUserId, userId, PublisherTypeEnums.organize);
 	}
 
@@ -48,6 +49,14 @@ public class PiperAdminService {
 		PageInfo pageInfo = new PageInfo<>(adminList);
 		pageInfo.setList(adminMangeVOList);
 		return pageInfo;
+	}
+
+	public Admin getAdmin(String userId, PublisherTypeEnums organize) {
+		return adminService.getAdmin(userId, organize);
+	}
+
+	public List<Admin> getAdmins(String keyword, String userId, PublisherTypeEnums organize, int pageno, int pagesize) {
+		return getAdmins(keyword, userId, organize, pageno, pagesize);
 	}
 }
 

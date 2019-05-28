@@ -3,6 +3,7 @@ package com.syswin.pipeline.app.controller;
 import com.syswin.pipeline.app.dto.AdminInputParam;
 import com.syswin.pipeline.app.dto.MulCreateParam;
 import com.syswin.pipeline.app.dto.SearchParam;
+import com.syswin.pipeline.service.PiperAdminService;
 import com.syswin.pipeline.service.PiperSubscriptionService;
 import com.syswin.pipeline.psservice.SendMessegeService;
 import com.syswin.pipeline.psservice.olderps.PSClientService;
@@ -37,7 +38,7 @@ import java.util.List;
 public class PiperAdminController {
 	private static final Logger logger = LoggerFactory.getLogger(PiperAdminController.class);
 	@Autowired
-	AdminService adminService;
+	PiperAdminService piperAdminService;
 	@Autowired
 	PiperSubscriptionService subscriptionService;
 
@@ -59,7 +60,7 @@ public class PiperAdminController {
 		if (checkNotAdmin(mulCreateParam.getUserId())) {
 			throw new BusinessException("msg.nopermission");
 		}
-		Admin admin = adminService.getAdmin(mulCreateParam.getUserId(), PublisherTypeEnums.organize);
+		Admin admin = piperAdminService.getAdmin(mulCreateParam.getUserId(), PublisherTypeEnums.organize);
 		if (admin == null || admin.getStatus() == 0) {
 			throw new BusinessException("ex.needorganizer");
 		}
@@ -69,7 +70,7 @@ public class PiperAdminController {
 			if (StringUtils.isNullOrEmpty(psClientService.getTemailPublicKey(u))) {
 				throw new BusinessException("msg.noemail");
 			}
-			adminService.add(mulCreateParam.getUserId(), u, PublisherTypeEnums.organize, false);
+			piperAdminService.add(mulCreateParam.getUserId(), u, PublisherTypeEnums.organize, false);
 
 			try {
 
@@ -92,7 +93,7 @@ public class PiperAdminController {
 		if (checkNotAdmin(adminParam.getUserId())) {
 			throw new BusinessException("msg.nopermission");
 		}
-		Admin admin = adminService.add(adminParam.getUserId(), adminParam.getTmail(), PublisherTypeEnums.organize, true);
+		Admin admin = piperAdminService.add(adminParam.getUserId(), adminParam.getTmail(), PublisherTypeEnums.organize, true);
 
 		sendMessegeService.sendTextmessage(languageChange.getLangByUserId("msg.beoranger", new String[]{adminParam.getTmail()}, adminParam.getTmail()), adminParam.getTmail());
 		//回执创建完成消息
@@ -108,11 +109,11 @@ public class PiperAdminController {
 		if (checkNotAdmin(adminParam.getUserId())) {
 			throw new BusinessException("msg.nopermission");
 		}
-		Admin admin = adminService.getAdmin(adminParam.getUserId(), PublisherTypeEnums.organize);
+		Admin admin = piperAdminService.getAdmin(adminParam.getUserId(), PublisherTypeEnums.organize);
 		if (admin == null || admin.getStatus() == 0) {
 			throw new SubException("ex.needorganizer");
 		}
-		adminService.delete(adminParam.getUserId(), adminParam.getTmail(), PublisherTypeEnums.organize);
+		piperAdminService.delete(adminParam.getUserId(), adminParam.getTmail());
 		sendMessegeService.sendTextmessage(languageChange.getLangByUserId("msg.canceladmin", new String[]{adminParam.getUserId()}, adminParam.getTmail()), adminParam.getTmail());
 		sendMessegeService.sendTextmessage(languageChange.getLangByUserId("msg.becanceled", new String[]{adminParam.getTmail()}, adminParam.getUserId()), adminParam.getUserId());
 
@@ -130,7 +131,7 @@ public class PiperAdminController {
 		}
 		int pageno = StringUtils.getInteger(adminParam.getPageNo()) == 0 ? 1 : StringUtils.getInteger(adminParam.getPageNo());
 		int pagesize = StringUtils.getInteger(adminParam.getPageSize()) == 0 ? 20 : StringUtils.getInteger(adminParam.getPageSize());
-		List<Admin> sub = adminService.getAdmins(adminParam.getKeyword(), adminParam.getUserId(), PublisherTypeEnums.organize, pageno, pagesize);
+		List<Admin> sub = piperAdminService.getAdmins(adminParam.getKeyword(), adminParam.getUserId(), PublisherTypeEnums.organize, pageno, pagesize);
 
 		return new ResponseEntity(sub);
 	}

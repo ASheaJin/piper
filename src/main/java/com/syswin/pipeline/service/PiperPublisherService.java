@@ -94,7 +94,7 @@ public class PiperPublisherService {
 		//获取中间的数字
 
 		Publisher publisher = subPublisherService.addPublisher(userId, name, ptemail, EnumsUtil.getPubliserTypeEnums(ptype));
-	//调用新的登录
+		//调用新的登录
 		appPublisherService.addPiperAcount(ptemail);
 		//		psClientService.loginTemail(ptemail);
 		try {
@@ -216,9 +216,11 @@ public class PiperPublisherService {
 		if (publisher == null) {
 			throw new BusinessException("ex.publisher.null");
 		}
+		curUserId = publisher.getUserId();
 //		if (!curUserId.equals(publisher.getUserId())) {
 //			throw new BusinessException("msg.nopermission");
 //		}
+		//// TODO: 2019/5/28 此处需要清理该账号缓存
 
 		publisher.setUserId(changeUserId);
 		int r = subPublisherService.update(publisher);

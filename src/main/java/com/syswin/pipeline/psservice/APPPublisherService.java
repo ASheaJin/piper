@@ -102,7 +102,7 @@ public class APPPublisherService {
 		//添加并激活账号
 		addAccount(from, "1234", "请使用小助手");
 		//添加名片
-		addCard(from);
+//		addCard(from);
 		//添加角色菜单
 		addRoleMenu(from);
 		//登录账号
@@ -121,7 +121,7 @@ public class APPPublisherService {
 		//添加并激活账号
 		addAccount(accountNo, "1234", "请使用小助手");
 		//添加名片
-		addCard(accountNo, p.getName());
+//		addCard(accountNo, p.getName());
 		//添加角色菜单
 		addPiperRoleMenu(accountNo, p);
 		//登录账号
