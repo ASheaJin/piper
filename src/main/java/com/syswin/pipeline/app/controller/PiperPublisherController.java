@@ -200,7 +200,7 @@ public class PiperPublisherController {
 
 	@PostMapping("/changeOrgPublishUser")
 	@ApiOperation(
-					value = "获得我的个人出版社"
+					value = "出版社管理员"
 	)
 	public ResponseEntity changeOrgPublishUser(@RequestBody ChangeParam cp) {
 		publisherService.changeOrgPublishUser(cp.getPublishId(), cp.getCurUserId(), cp.getChangeUserId());

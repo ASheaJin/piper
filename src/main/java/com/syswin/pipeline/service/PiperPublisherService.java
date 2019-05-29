@@ -209,14 +209,15 @@ public class PiperPublisherService {
 			throw new BusinessException("ex.email.invalid");
 		}
 		Admin admin = adminService.getAdmin(changeUserId, PublisherTypeEnums.organize);
-		if (admin == null) {
-			adminService.add(curUserId, changeUserId, PublisherTypeEnums.organize);
-		}
+
 		Publisher publisher = subPublisherService.getPubLisherById(publishId);
 		if (publisher == null) {
 			throw new BusinessException("ex.publisher.null");
 		}
 		curUserId = publisher.getUserId();
+		if (admin == null) {
+			adminService.add(curUserId, changeUserId, PublisherTypeEnums.organize);
+		}
 //		if (!curUserId.equals(publisher.getUserId())) {
 //			throw new BusinessException("msg.nopermission");
 //		}
