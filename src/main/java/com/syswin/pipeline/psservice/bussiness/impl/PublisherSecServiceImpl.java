@@ -118,6 +118,7 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 		subLogService.addlog(log);
 	}
 
+	@Override
 	public Integer dealpusharticle(Publisher publisher, int body_type, Object show, PublisherTypeEnums publisherTypeEnums) {
 		return dealpusharticle(publisher, body_type, show, null, publisherTypeEnums);
 	}
@@ -219,7 +220,7 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 		if (subscription == null && !publisher.getUserId().equals(userId)) {
 			if (bodyType == 1) {
 				String txt = StringUtils.filterStr(show.toString());
-				if (txt.equals("subscribe") || txt.equals("订阅") || txt.equals("1")) {
+				if ("subscribe".equals(txt) || "订阅".equals(txt) || "1".equals(txt)) {
 					piperSubscriptionService.subscribe(userId, ptemail, publisher.getPtype());
 					return;
 				} else {
@@ -242,6 +243,7 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 	}
 
 	//处理组织消息
+	@Override
 	public void monitor(String userId, String ptemail, int bodyType, Object show) {
 
 		if (StringUtil.isEmpty(show)) {

@@ -41,7 +41,6 @@ public class APPPublisherService {
 	//邮件组管理
 	private static final String a_group = "web";
 
-
 	//历史消息
 	private static final String p_history = "web/history-list";
 	//订阅管理
@@ -79,20 +78,21 @@ public class APPPublisherService {
 	@Value("${app.pipeline.imgUrl}")
 	private String iconUrl;
 
-	@Transactional
+	@Transactional(rollbackFor = Exception.class)
 	public boolean registerAndLoginPiperAcount(String accountNo) {
 
 //		accountService.findAccount(accountNo)
-		psServerService.registerAccount(accountNo);
-		//添加并激活账号
-		addAccount(accountNo, "1234", "欢迎使用Piper");
-		//添加名片
-		addCard(accountNo);
+			psServerService.registerAccount(accountNo);
+			//添加并激活账号
+			addAccount(accountNo, "1234", "欢迎使用Piper");
+			//添加名片
+			addCard(accountNo);
 
-		//添加角色菜单
-		addRoleMenu(accountNo);
-		//登录账号
-		psAccountService.login(accountNo);
+			//添加角色菜单
+			addRoleMenu(accountNo);
+			//登录账号
+			psAccountService.login(accountNo);
+
 		return true;
 	}
 

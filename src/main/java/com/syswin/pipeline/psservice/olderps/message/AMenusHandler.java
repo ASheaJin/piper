@@ -118,10 +118,6 @@ public class AMenusHandler implements EventHandler<MessageEvent> {
 		keyList.add("text");
 		valueList.add(languageChange.getValueByUserId("menu.a.tip", header.getReceiver()));
 
-//		keyList.add("features");
-//		//判断当前用户是读者还是作者
-//		valueList.add(appFeaturesList());
-
 		//新版菜单
 		keyList.add("helperConfig");
 		valueList.add(appNewList(header.getReceiver()));
@@ -146,8 +142,6 @@ public class AMenusHandler implements EventHandler<MessageEvent> {
 	private List<Map<String, Object>> appNewList(String userId) {
 		//TODO 处理京交会
 		List<Map<String, Object>> appList = new ArrayList<>();
-//		appList.add(createApp("", "测试邮箱跳转", URL_PIPER + "/webmg/index1"));
-		//既是组织管理者，又是个人出版社管理者  person,recommend,mysublist,group
 
 		if (PermissionEnums.OrgPerson.name.equals(myRole)) {
 			appList = getNewList(appList, userId, 2 + 4 + 8 + 16);
@@ -214,8 +208,6 @@ public class AMenusHandler implements EventHandler<MessageEvent> {
 	private List<Map<String, Object>> appList(String userId) {
 		//TODO 处理京交会
 		List<Map<String, Object>> appList = new ArrayList<>();
-//		appList.add(createApp("", "测试邮箱跳转", URL_PIPER + "/webmg/index1"));
-		//既是组织管理者，又是个人出版社管理者  person,recommend,mysublist,group
 
 		if (PermissionEnums.OrgPerson.name.equals(myRole)) {
 			appList = getList(appList, userId, 2 + 4 + 8 + 16);

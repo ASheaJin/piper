@@ -14,6 +14,10 @@ public enum AppmuneEnum {
 
 	public Integer type;
 
+	/**
+	 *
+	 * @param type 菜单类型
+	 */
 	AppmuneEnum(Integer type) {
 		this.type = type;
 	}

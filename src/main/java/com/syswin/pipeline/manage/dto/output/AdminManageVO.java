@@ -9,7 +9,7 @@ import lombok.Data;
 @Data
 public class AdminManageVO {
 	//管理员Id
-	private int id;
+	private Integer id;
 	//用户秘邮号
 	private String userId;
 	//创建者秘邮号

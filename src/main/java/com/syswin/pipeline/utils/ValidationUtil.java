@@ -327,7 +327,7 @@ public class ValidationUtil {
 	 * @return boolean
 	 */
 	public static boolean isIdCard(String str) {
-		if (StrisNull(str)) return false;
+		if (StrisNull(str)) {return false;}
 		if (str.trim().length() == 15 || str.trim().length() == 18) {
 			return Regular(str, IDCARD);
 		} else {

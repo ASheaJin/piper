@@ -4,14 +4,13 @@ import com.syswin.ps.sdk.common.CDTPResponse;
 import com.syswin.ps.sdk.message.ICallBackRegister;
 import com.syswin.ps.sdk.utils.FastJsonUtil;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.*;
 
 @Log4j2
 @Service
@@ -22,8 +21,30 @@ public class CallBackRegister implements ICallBackRegister {
     @Override
     public void register(String requestId) {
         callBack.putIfAbsent(requestId, new ArrayBlockingQueue<>(1));
-        Timer timer=new Timer();
-        timer.schedule(new TimerTask() {
+//        Timer timer=new Timer();
+//        timer.schedule(new TimerTask() {
+//            @Override
+//            public void run() {
+//                if(callBack.get(requestId)==null){
+//                    return;
+//                }
+//                if(callBack.get(requestId).isEmpty()){
+//                    try {
+//                        CDTPResponse cdtpResponse =new  CDTPResponse();
+//                        cdtpResponse.setCode("-1");
+//                        cdtpResponse.setMsg("wait time out");
+//                        callBack.get(requestId).put(FastJsonUtil.toJson(cdtpResponse));
+//                        log.error("注册账号失败={}",requestId);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }
+//        },6*1000);
+
+        ScheduledExecutorService executorService = new ScheduledThreadPoolExecutor(1,
+                new BasicThreadFactory.Builder().namingPattern("callback-schedule-pool-%d").daemon(true).build());
+        executorService.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
                 if(callBack.get(requestId)==null){
@@ -41,7 +62,7 @@ public class CallBackRegister implements ICallBackRegister {
                     }
                 }
             }
-        },6*1000);
+        },0,6*1000, TimeUnit.SECONDS);
 
     }
 

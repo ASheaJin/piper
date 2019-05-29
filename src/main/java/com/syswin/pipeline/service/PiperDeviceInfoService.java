@@ -25,7 +25,9 @@ public class PiperDeviceInfoService {
 					fieldKey = "#userId", cacheOperation = EnableCacheService.CacheOperation.UPDATE)
 	public String insertOrupdate(String userId, Env appEnv) {
 
-		if (appEnv == null || StringUtils.isNullOrEmpty(appEnv.getLanguage())) return "zh";
+		if (appEnv == null || StringUtils.isNullOrEmpty(appEnv.getLanguage())) {
+			return "zh";
+		}
 
 		DeviceInfoExample deviceInfoExample = new DeviceInfoExample();
 		DeviceInfoExample.Criteria criteria = deviceInfoExample.createCriteria();

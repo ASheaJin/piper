@@ -89,10 +89,13 @@ public class PatternUtils {
 	}
 
 	public static boolean orEmail(String email) {
-		if (email == null || "".equals(email)) return false;
+		if (email == null || "".equals(email)) {
+			return false;
+		}
 		String regex = "\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*";
 		return email.matches(regex);
 	}
+
 	/**
 	 *  测试
 	 *  @param args

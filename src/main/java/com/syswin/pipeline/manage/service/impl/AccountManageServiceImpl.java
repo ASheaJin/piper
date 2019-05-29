@@ -28,6 +28,7 @@ public class AccountManageServiceImpl implements ManageService<Account> {
 	@Autowired
 	AccountRepository accountRepository;
 
+	@Override
 	public Map<String, Object> list(HttpServletRequest request, Model model) {
 
 		String userId = StringUtils.getParam(request, "userId", "");
