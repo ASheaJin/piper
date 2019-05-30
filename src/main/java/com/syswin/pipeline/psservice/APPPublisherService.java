@@ -31,18 +31,18 @@ public class APPPublisherService {
 
 	private static final Logger logger = LoggerFactory.getLogger(APPPublisherService.class);
 	//创建出版社
-	private static final String a_createp = "web/create-publish";
+	private static final String a_createp = "/web/create-publish";
 	//我的出版社
-	private static final String a_publish = "web/my-publish";
+	private static final String a_publish = "/web/my-publish";
 	//推荐广场
-	private static final String a_recommend = "web/recommend-list";
+	private static final String a_recommend = "/web/recommend-list";
 	//我的订阅列表
-	private static final String a_subcrib_list = "web/subscribe-list";
+	private static final String a_subcrib_list = "/web/subscribe-list";
 	//邮件组管理
-	private static final String a_group = "web";
+	private static final String a_group = "/web";
 
 	//历史消息
-	private static final String p_history = "web/history-list";
+	private static final String p_history = "/web/history-list";
 	//订阅管理
 	private static final String p_goup = "web/home";
 	//Excel上传
