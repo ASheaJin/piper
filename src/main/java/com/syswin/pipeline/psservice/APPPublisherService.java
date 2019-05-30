@@ -44,11 +44,11 @@ public class APPPublisherService {
 	//历史消息
 	private static final String p_history = "/web/history-list";
 	//订阅管理
-	private static final String p_goup = "web/home";
+	private static final String p_goup = "/web/home";
 	//Excel上传
-	private static final String p_upload = "h5/help/upload";
+	private static final String p_upload = "/h5/help/upload";
 	//更换管理员
-	private static final String p_change = "web/edit-email-admin";
+	private static final String p_change = "/web/edit-email-admin";
 
 	@Value("${url.piper}")
 	private String defaultUrl;
