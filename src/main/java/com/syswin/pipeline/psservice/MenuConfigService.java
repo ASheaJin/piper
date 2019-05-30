@@ -83,7 +83,7 @@ public class MenuConfigService implements IMenuConfigService {
 		//初始时创建
 		if (!consumerService.getUserVersion(header.getSender(), header.getReceiver())) {
 			String pdfInfo = "{\"format\":\"application/pdf\",\"url\":\"https://ucloud-file.t.email/%2Fceca224cce52468dabc22390f2289e97.zip\",\"pwd\":\"EB04F13C-E30B-492E-90FA-E5300139041E\",\"suffix\":\".pdf\",\"desc\":\"Piper操作手册1.1.pdf\",\"size\":255784,\"percent\":100}";
-			sendMessegeService.sendOthermessage(pdfInfo, 14, header.getReceiver(), apiper);
+			sendMessegeService.sendOthermessage(pdfInfo, 14, userId, apiper);
 
 		}
 		//保持角色，用于判断是否发pdf引导
@@ -92,22 +92,29 @@ public class MenuConfigService implements IMenuConfigService {
 
 		List menus = new ArrayList();
 		logger.info(myRole);
-		menus.add(getKey(accountNo, getLang(lang, common)));
+
 		if (PermissionEnums.OrgPerson.name.equals(myRole)) {
-			menus.add(getKey(accountNo, getLang(lang, org)));
 			menus.add(getKey(accountNo, getLang(lang, person)));
+			menus.add(getKey(accountNo, getLang(lang, common)));
+			menus.add(getKey(accountNo, getLang(lang, org)));
+
 
 		}
 		if (PermissionEnums.OnlyOrg.name.equals(myRole)) {
+			menus.add(getKey(accountNo, getLang(lang, guest)));
+			menus.add(getKey(accountNo, getLang(lang, common)));
 			menus.add(getKey(accountNo, getLang(lang, org)));
+
 		}
 		//个人管理者，订阅者
 		if (PermissionEnums.Person.name.equals(myRole)) {
 			menus.add(getKey(accountNo, getLang(lang, person)));
+			menus.add(getKey(accountNo, getLang(lang, common)));
 		}
 		//游客，订阅者
 		if (PermissionEnums.Guest.name.equals(myRole)) {
 			menus.add(getKey(accountNo, getLang(lang, guest)));
+			menus.add(getKey(accountNo, getLang(lang, common)));
 		}
 
 		return menus;

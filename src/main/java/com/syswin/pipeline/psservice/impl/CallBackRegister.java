@@ -21,30 +21,8 @@ public class CallBackRegister implements ICallBackRegister {
     @Override
     public void register(String requestId) {
         callBack.putIfAbsent(requestId, new ArrayBlockingQueue<>(1));
-//        Timer timer=new Timer();
-//        timer.schedule(new TimerTask() {
-//            @Override
-//            public void run() {
-//                if(callBack.get(requestId)==null){
-//                    return;
-//                }
-//                if(callBack.get(requestId).isEmpty()){
-//                    try {
-//                        CDTPResponse cdtpResponse =new  CDTPResponse();
-//                        cdtpResponse.setCode("-1");
-//                        cdtpResponse.setMsg("wait time out");
-//                        callBack.get(requestId).put(FastJsonUtil.toJson(cdtpResponse));
-//                        log.error("注册账号失败={}",requestId);
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            }
-//        },6*1000);
-
-        ScheduledExecutorService executorService = new ScheduledThreadPoolExecutor(1,
-                new BasicThreadFactory.Builder().namingPattern("callback-schedule-pool-%d").daemon(true).build());
-        executorService.scheduleAtFixedRate(new Runnable() {
+        Timer timer=new Timer();
+        timer.schedule(new TimerTask() {
             @Override
             public void run() {
                 if(callBack.get(requestId)==null){
@@ -62,7 +40,29 @@ public class CallBackRegister implements ICallBackRegister {
                     }
                 }
             }
-        },0,6*1000, TimeUnit.SECONDS);
+        },6*1000);
+
+//        ScheduledExecutorService executorService = new ScheduledThreadPoolExecutor(1,
+//                new BasicThreadFactory.Builder().namingPattern("callback-schedule-pool-%d").daemon(true).build());
+//        executorService.scheduleAtFixedRate(new Runnable() {
+//            @Override
+//            public void run() {
+//                if(callBack.get(requestId)==null){
+//                    return;
+//                }
+//                if(callBack.get(requestId).isEmpty()){
+//                    try {
+//                        CDTPResponse cdtpResponse =new  CDTPResponse();
+//                        cdtpResponse.setCode("-1");
+//                        cdtpResponse.setMsg("wait time out");
+//                        callBack.get(requestId).put(FastJsonUtil.toJson(cdtpResponse));
+//                        log.error("注册账号失败={}",requestId);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }
+//        },0,6*1000, TimeUnit.SECONDS);
 
     }
 

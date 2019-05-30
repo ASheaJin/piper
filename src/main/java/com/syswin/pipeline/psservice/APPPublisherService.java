@@ -78,21 +78,25 @@ public class APPPublisherService {
 	@Value("${app.pipeline.imgUrl}")
 	private String iconUrl;
 
+	@Autowired
+	private UpdateMenuService updateMenuService;
+
 	@Transactional(rollbackFor = Exception.class)
 	public boolean registerAndLoginPiperAcount(String accountNo) {
 
 //		accountService.findAccount(accountNo)
-			psServerService.registerAccount(accountNo);
-			//添加并激活账号
-			addAccount(accountNo, "1234", "欢迎使用Piper");
-			//添加名片
-			addCard(accountNo);
+		psServerService.registerAccount(accountNo);
+		//添加并激活账号
+		addAccount(accountNo, "1234", "欢迎使用Piper");
+		//添加名片
+		addCard(accountNo);
 
-			//添加角色菜单
-			addRoleMenu(accountNo);
-			//登录账号
-			psAccountService.login(accountNo);
-
+		//添加角色菜单
+		addRoleMenu(accountNo);
+		//登录账号
+		psAccountService.login(accountNo);
+//更新菜单时间
+		updateMenuService.updateMenu(accountNo);
 		return true;
 	}
 
@@ -102,11 +106,14 @@ public class APPPublisherService {
 		//添加并激活账号
 		addAccount(from, "1234", "请使用小助手");
 		//添加名片
-//		addCard(from);
+		addCard(from);
 		//添加角色菜单
 		addRoleMenu(from);
 		//登录账号
 		psAccountService.login(from);
+
+		//更新菜单时间
+		updateMenuService.updateMenu(from);
 		return true;
 	}
 
@@ -121,46 +128,53 @@ public class APPPublisherService {
 		//添加并激活账号
 		addAccount(accountNo, "1234", "请使用小助手");
 		//添加名片
-//		addCard(accountNo, p.getName());
+		addCard(accountNo, p.getName());
 		//添加角色菜单
 		addPiperRoleMenu(accountNo, p);
 		//登录账号
 		psAccountService.login(accountNo);
+		//更新菜单时间
+		updateMenuService.updateMenu(accountNo);
+
 		return true;
 	}
 
 	private void addRoleMenu(String accountNo) {
 		//添加中文菜单
-		addMenuIte(accountNo, "创建个人出版社", getUrl(a_createp), 4, 1, "guest", "游客", iconUrl);
-		addMenuIte(accountNo, "我的出版社", getUrl(a_publish), 4, 1, "person", "个人出版社", iconUrl);
-		addMenuIte(accountNo, "我的订阅列表", getUrl(a_subcrib_list), 4, 2, "common", "公用", iconUrl);
-		addMenuIte(accountNo, "推荐广场", getUrl(a_recommend), 4, 3, "common", "公用", iconUrl);
-		addMenuIte(accountNo, "邮件组管理", getUrl(a_group), 4, 4, "org", "公用", iconUrl);
+		addMenuIte(accountNo, "创建个人出版社", getUrl(a_createp), 1, "guest");
+		addMenuIte(accountNo, "我的个人出版社", getUrl(a_publish), 1, "person");
+		addMenuIte(accountNo, "我的订阅列表", getUrl(a_subcrib_list), 2, "common");
+		addMenuIte(accountNo, "订阅推荐广场", getUrl(a_recommend), 3, "common");
+		addMenuIte(accountNo, "管理邮件群发", getUrl(a_group), 4, "org");
 
 		//添加英文菜单
 		addMenuIte(accountNo, "Create Publisher", getUrl(a_createp, null, "en"), 1, "guest-en");
 		addMenuIte(accountNo, "My Publisher", getUrl(a_publish, null, "en"), 1, "person-en");
 		addMenuIte(accountNo, "My Subscritions", getUrl(a_subcrib_list, null, "en"), 2, "common-en");
-		addMenuIte(accountNo, "Recommend areas", getUrl(a_recommend, null, "en"), 3, "common-en");
+		addMenuIte(accountNo, "Recommend Areas", getUrl(a_recommend, null, "en"), 3, "common-en");
 		addMenuIte(accountNo, "Manage Group", getUrl(a_group, null, "en"), 4, "org-en");
 	}
 
 	private void addPiperRoleMenu(String accountNo, Publisher p) {
-		//添加中文菜单
-		addMenuIte(accountNo, "撰写", "--", 5, 1, "common", "公用", iconUrl);
-		addMenuIte(accountNo, "撰写", "--", 4, 1, "common", "个人出版社", iconUrl);
-		addMenuIte(accountNo, "历史消息", getUrl(p_history, p.getPublisherId()), 4, 2, "common", "公用", iconUrl);
-		addMenuIte(accountNo, "订阅管理", getUrl(p_goup, p.getPublisherId()), 4, 3, "org", "公用", iconUrl);
-		addMenuIte(accountNo, "Excel上传", getUrl(p_upload, p.getPublisherId()), 4, 4, "org", "公用", iconUrl);
-		addMenuIte(accountNo, "更换组织成员", getUrl(p_change, p.getPublisherId()), 4, 5, "org", "公用", iconUrl);
+		//TODO 待置空Write_url
+		addMenuIte(accountNo, "write", "--", 4, 1, "common", "公用", iconUrl,"helper_write");
+		addMenuIte(accountNo, "text", "--", 5, 7, "common", "个人出版社", iconUrl,"input_text");
+		addMenuIte(accountNo, "file", "--", 5, 8, "common", "个人出版社", iconUrl,"input_file");
+		addMenuIte(accountNo, "photo", "--", 5, 9, "common", "个人出版社", iconUrl,"input_photo");
+		addMenuIte(accountNo, "历史消息", getUrl(p_history, p.getPublisherId()),  2, "common");
+		addMenuIte(accountNo, "管理订阅人", getUrl(p_goup, p.getPublisherId()), 3, "org");
+		addMenuIte(accountNo, "Excel上传", getUrl(p_upload, p.getPublisherId()),  4, "org");
+		addMenuIte(accountNo, "更换管理员", getUrl(p_change, p.getPublisherId()),  5, "org");
 
 		//添加英文菜单
-		addMenuIte(accountNo, "write", "--", 5, 1, "common-en", "公用", iconUrl);
-		addMenuIte(accountNo, "write", "--", 4, 1, "common-en", "个人出版社", iconUrl);
-		addMenuIte(accountNo, "History", getUrl(p_history, p.getPublisherId(), "en"), 4, 2, "common-en", "公用", iconUrl);
-		addMenuIte(accountNo, "Group Manage", getUrl(p_goup, p.getPublisherId()), 4, 3, "org-en", "公用", iconUrl);
-		addMenuIte(accountNo, "Excel Upload", getUrl(p_upload, p.getPublisherId(), "en"), 4, 4, "org-en", "公用", iconUrl);
-		addMenuIte(accountNo, "Change Owner", getUrl(p_change, p.getPublisherId(), "en"), 4, 5, "org-en", "公用", iconUrl);
+		addMenuIte(accountNo, "write", "--", 4, 1, "common-en", "公用", iconUrl,"helper_write");
+		addMenuIte(accountNo, "text", "--", 5, 7, "common-en", "个人出版社", iconUrl,"input_text");
+		addMenuIte(accountNo, "file", "--", 5, 8, "common-en", "个人出版社", iconUrl,"input_file");
+		addMenuIte(accountNo, "photo", "--", 5, 9, "common-en", "个人出版社", iconUrl,"input_photo");
+		addMenuIte(accountNo, "History", getUrl(p_history, p.getPublisherId(),"en"),  2, "common-en");
+		addMenuIte(accountNo, "Managing Subscribers", getUrl(p_goup, p.getPublisherId(),"en"), 3, "org-en");
+		addMenuIte(accountNo, "Excel Upload", getUrl(p_upload, p.getPublisherId(),"en"),  4, "org-en");
+		addMenuIte(accountNo, "Change Manager", getUrl(p_change, p.getPublisherId(),"en"),  5, "org-en");
 
 	}
 
@@ -187,10 +201,10 @@ public class APPPublisherService {
 
 
 	public boolean addMenuIte(String accountNo, String itemName, String url, int displayOrder, String roleType) {
-		return addMenuIte(accountNo, itemName, url, 4, displayOrder, roleType, "--", iconUrl);
+		return addMenuIte(accountNo, itemName, url, 4, displayOrder, roleType, "--", iconUrl, "");
 	}
 
-	public boolean addMenuIte(String accountNo, String itemName, String url, int itemType, int displayOrder, String roleType, String roleDesc, String imgUrl) {
+	public boolean addMenuIte(String accountNo, String itemName, String url, int itemType, int displayOrder, String roleType, String roleDesc, String imgUrl, String keyInput) {
 		FunctionItem functionItem = new FunctionItem();
 		functionItem.setAccountNo(accountNo);
 		functionItem.setFunctionName(itemName);
@@ -201,7 +215,7 @@ public class APPPublisherService {
 		functionItem.setFunctionImage(imgUrl);
 		functionItem.setRoleType(roleType);
 		functionItem.setRoleDesc(roleDesc);
-		functionItem.setFunctionKey("input_write");
+		functionItem.setFunctionKey(keyInput);
 		functionItem.setTaipHost("1");
 		functionItem.setTaipPort("1");
 		functionItem.setTaipCommand(1);

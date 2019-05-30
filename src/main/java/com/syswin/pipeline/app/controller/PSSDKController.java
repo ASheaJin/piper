@@ -4,10 +4,13 @@ import com.syswin.pipeline.psservice.APPPublisherService;
 import com.syswin.pipeline.psservice.MessegerSenderService;
 import com.syswin.ps.sdk.admin.controller.in.AccountIn;
 import com.syswin.ps.sdk.admin.service.impl.PSAccountService;
+import com.syswin.ps.sdk.admin.service.impl.PSConfigService;
 import com.syswin.ps.sdk.common.ActionItem;
 import com.syswin.ps.sdk.handler.PsClientKeeper;
 import com.syswin.ps.sdk.sender.AbstractMsgSender;
 import com.syswin.ps.sdk.showType.TextShow;
+import com.syswin.sub.api.PublisherService;
+import com.syswin.sub.api.db.model.Publisher;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -37,9 +40,13 @@ public class PSSDKController {
 
 	@Autowired
 	PSAccountService psAccountService;
-
+	@Autowired
+	PublisherService publisherService;
 	@Autowired
 	MessegerSenderService messegerSenderService;
+
+	@Autowired
+	PSConfigService psConfigService;
 
 	@PostMapping({"/addPubliser"})
 	@ApiOperation(
@@ -102,5 +109,17 @@ public class PSSDKController {
 		messegerSenderService.sendImage(from, to, url, fileName);
 	}
 
-
+	@PostMapping({"/mutCreateMenu"})
+	@ApiOperation(
+					value = "批量创建菜单"
+	)
+	public void mutCreateMenu() {
+		for (Publisher p : publisherService.select()) {
+			try {
+				appPublisherService.addPiperAcount(p.getPtemail());
+			} catch (Exception e) {
+				logger.error("publisher" + p.getPtemail() + "菜单创建失败", e);
+			}
+		}
+	}
 }

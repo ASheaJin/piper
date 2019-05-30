@@ -65,6 +65,7 @@ public class PiperDataSourceConfig {
 		sqlSessionFactoryBean.setDataSource(dataSource);
 		PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
 		sqlSessionFactoryBean.setConfigLocation(resolver.getResource(mybitsConfig));
+
 		Resource[] resources1 = resolver.getResources(linjuMapperLocations);
 		VFS.addImplClass(SpringBootVFS.class);
 		List<Resource> resourceList = new ArrayList<>();

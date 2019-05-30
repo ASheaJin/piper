@@ -2,13 +2,16 @@ package com.syswin.pipeline.service;
 
 import com.github.pagehelper.PageInfo;
 import com.syswin.pipeline.manage.dto.output.AdminManageVO;
+import com.syswin.pipeline.psservice.UpdateMenuService;
 import com.syswin.pipeline.utils.StringUtils;
+import com.syswin.ps.sdk.admin.service.impl.PSConfigService;
 import com.syswin.sub.api.AdminService;
 import com.syswin.sub.api.db.model.Admin;
 import com.syswin.sub.api.enums.PublisherTypeEnums;
 import com.syswin.sub.api.utils.BeanConvertUtil;
 import com.syswin.sub.api.utils.EnumsUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -20,15 +23,24 @@ import java.util.List;
 @Service
 public class PiperAdminService {
 	@Autowired
-	AdminService adminService;
+	private AdminService adminService;
+	@Autowired
+	private PSConfigService psConfigService;
+
+	@Autowired
+	private UpdateMenuService updateMenuService;
+	@Value("${app.pipeline.userId}")
+	private String piper;
 
 	public Admin add(String adminUserId, String userId, PublisherTypeEnums ptype, boolean isFirst) {
 		//TODO 此处需要更新 A.Piper的菜单
+		updateMenuService.updateMenu(piper);
 		return adminService.add(adminUserId, userId, ptype, isFirst);
 	}
 
 	public void delete(String adminUserId, String userId) {
 		//TODO 此处需要更新 A.Piper的菜单
+		updateMenuService.updateMenu(piper);
 		adminService.delete(adminUserId, userId, PublisherTypeEnums.organize);
 	}
 

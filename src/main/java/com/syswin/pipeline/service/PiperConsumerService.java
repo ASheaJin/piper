@@ -35,7 +35,7 @@ public class PiperConsumerService {
 	public String getUserVersion(String sender, String receiver, String version, String myRole) {
 		ConsumerExample consumerExample = new ConsumerExample();
 		ConsumerExample.Criteria criteria = consumerExample.createCriteria();
-		criteria.andPtemailEqualTo(sender).andUserIdEqualTo((receiver));
+		criteria.andPtemailEqualTo(receiver).andUserIdEqualTo((sender));
 		List<Consumer> consumerList = consumerRepository.selectByExample(consumerExample);
 		Consumer consumer = null;
 		if (consumerList.size() > 0) {
@@ -48,8 +48,8 @@ public class PiperConsumerService {
 
 			consumer = new Consumer();
 			consumer.setCurversion(version);
-			consumer.setPtemail(sender);
-			consumer.setUserId(receiver);
+			consumer.setPtemail(receiver);
+			consumer.setUserId(sender);
 			consumer.setRole(myRole);
 			consumerRepository.insertSelective(consumer);
 
@@ -70,7 +70,7 @@ public class PiperConsumerService {
 	public boolean getUserVersion(String sender, String receiver) {
 		ConsumerExample consumerExample = new ConsumerExample();
 		ConsumerExample.Criteria criteria = consumerExample.createCriteria();
-		criteria.andPtemailEqualTo(sender).andUserIdEqualTo((receiver));
+		criteria.andPtemailEqualTo(receiver).andUserIdEqualTo((sender));
 		List<Consumer> consumerList = consumerRepository.selectByExample(consumerExample);
 
 		return consumerList.size() > 0;

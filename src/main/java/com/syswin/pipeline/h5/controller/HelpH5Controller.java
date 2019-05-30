@@ -32,20 +32,21 @@ public class HelpH5Controller {
 	@Value("${url.piper}")
 	private String URL_PIPER;
 
-	private static final String H5_UPLOAD = "/h5/publisher/upload";
+	private static final String H5_UPLOAD = "h5/publisher/upload";
 
 	@GetMapping("/upload")
 	public String upload(Model model, HttpServletRequest request) {
 		String publisherId = StringUtils.getParam(request, "publisherId", null);
-		String userId = StringUtils.getParam(request, "userId", null);
-		String token = tokenGenerator.generator(publisherId, userId);
-		token = token != null ? token : "error";
-		String url = URL_PIPER + H5_UPLOAD + "?t=" + token;
-
 		Publisher publisher = publisherService.getPubLisherById(publisherId);
 		if (publisher == null) {
 			throw new BusinessException("ex.publisher.null");
 		}
+
+		String token = tokenGenerator.generator(publisherId, publisher.getUserId());
+		token = token != null ? token : "error";
+		String url = URL_PIPER + H5_UPLOAD + "?t=" + token;
+
+
 		String ptemail = publisher.getPtemail();
 
 		model.addAttribute("ptemail", ptemail);

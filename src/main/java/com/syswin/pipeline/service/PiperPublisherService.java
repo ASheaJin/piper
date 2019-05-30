@@ -5,6 +5,7 @@ import com.syswin.pipeline.db.model.ReCommendPublisher;
 import com.syswin.pipeline.manage.dto.output.PublisherManageVO;
 import com.syswin.pipeline.psservice.APPPublisherService;
 import com.syswin.pipeline.psservice.SendMessegeService;
+import com.syswin.pipeline.psservice.UpdateMenuService;
 import com.syswin.pipeline.service.exception.BusinessException;
 import com.syswin.pipeline.psservice.olderps.PSClientService;
 import com.syswin.pipeline.utils.ValidationUtil;
@@ -12,6 +13,7 @@ import com.syswin.pipeline.utils.LanguageChange;
 import com.syswin.pipeline.utils.PatternUtils;
 import com.syswin.pipeline.utils.PermissionUtil;
 import com.syswin.pipeline.utils.StringUtils;
+import com.syswin.ps.sdk.admin.service.impl.PSConfigService;
 import com.syswin.sub.api.AdminService;
 import com.syswin.sub.api.db.model.Admin;
 import com.syswin.sub.api.db.model.Publisher;
@@ -53,6 +55,8 @@ public class PiperPublisherService {
 
 	@Autowired
 	private LanguageChange languageChange;
+	@Autowired
+	private UpdateMenuService updateMenuService;
 
 	@Autowired
 	private com.syswin.sub.api.PublisherService subPublisherService;
@@ -96,6 +100,8 @@ public class PiperPublisherService {
 		Publisher publisher = subPublisherService.addPublisher(userId, name, ptemail, EnumsUtil.getPubliserTypeEnums(ptype));
 		//调用新的登录
 		appPublisherService.addPiperAcount(ptemail);
+		//更新菜单Piper
+		updateMenuService.updateMenu(from);
 		//		psClientService.loginTemail(ptemail);
 		try {
 			psClientService.sendTextmessage(languageChange.getLangByUserId("msg.publisherhascreate", new String[]{name}, userId), userId, 0);
@@ -214,14 +220,16 @@ public class PiperPublisherService {
 		if (publisher == null) {
 			throw new BusinessException("ex.publisher.null");
 		}
-		curUserId = publisher.getUserId();
+//		curUserId = publisher.getUserId();
 		if (admin == null) {
 			adminService.add(curUserId, changeUserId, PublisherTypeEnums.organize);
 		}
-//		if (!curUserId.equals(publisher.getUserId())) {
-//			throw new BusinessException("msg.nopermission");
-//		}
-		//// TODO: 2019/5/28 此处需要清理该账号缓存
+		if (!curUserId.equals(publisher.getUserId())) {
+			throw new BusinessException("msg.nopermission");
+		}
+		//// TODO: 2019/5/28 此处需要清理该账号缓存,更新时间戳
+		updateMenuService.updateMenu(publisher.getPtemail());
+
 
 		publisher.setUserId(changeUserId);
 		int r = subPublisherService.update(publisher);
