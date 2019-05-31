@@ -17,6 +17,7 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -37,21 +38,21 @@ public class PSSDKController {
 	private static final Logger logger = LoggerFactory.getLogger(PSSDKController.class);
 
 	@Autowired
-	APPPublisherService appPublisherService;
+	private APPPublisherService appPublisherService;
 
 	@Autowired
-	PSAccountService psAccountService;
+	private PSAccountService psAccountService;
 	@Autowired
-	PublisherService publisherService;
+	private PublisherService publisherService;
 	@Autowired
-	MessegerSenderService messegerSenderService;
-
-	@Autowired
-	PSConfigService psConfigService;
+	private MessegerSenderService messegerSenderService;
 
 
 	@Autowired
-	UpdateMenuService updateMenuService;
+	private UpdateMenuService updateMenuService;
+
+	@Value("${app.pipeline.userId}")
+	private String piper;
 
 	@PostMapping({"/addPubliser"})
 	@ApiOperation(
@@ -121,6 +122,22 @@ public class PSSDKController {
 	public void cleanData(String account) throws IOException {
 
 		updateMenuService.updateMenu(account);
+	}
+
+	@PostMapping({"/cleanAllData"})
+	@ApiOperation(
+					value = "手动清理所有菜单数据"
+	)
+	public void cleanAllData() {
+		updateMenuService.updateMenu(piper);
+		for (Publisher p : publisherService.select()) {
+			try {
+				updateMenuService.updateMenu(p.getPtemail());
+			} catch (Exception e) {
+				logger.error("publisher" + p.getPtemail() + "菜单创建失败", e);
+			}
+		}
+
 	}
 
 	@PostMapping({"/mutCreateMenu"})
