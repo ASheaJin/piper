@@ -16,8 +16,8 @@ import org.springframework.stereotype.Component;
 import javax.servlet.http.HttpServletRequest;
 
 
-@Component
-@Log4j2
+//@Component
+//@Log4j2
 public class AppConnectorConfig implements BeanPostProcessor, BeanFactoryAware {
 
 	@Value("${server.servlet.context-path}")
