@@ -68,7 +68,7 @@ public class PiperAdminService {
 	}
 
 	public List<Admin> getAdmins(String keyword, String userId, PublisherTypeEnums organize, int pageno, int pagesize) {
-		return getAdmins(keyword, userId, organize, pageno, pagesize);
+		return adminService.getAdmins(keyword, userId, organize, pageno, pagesize);
 	}
 }
 
