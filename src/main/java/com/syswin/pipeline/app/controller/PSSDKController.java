@@ -2,6 +2,7 @@ package com.syswin.pipeline.app.controller;
 
 import com.syswin.pipeline.psservice.APPPublisherService;
 import com.syswin.pipeline.psservice.MessegerSenderService;
+import com.syswin.pipeline.psservice.UpdateMenuService;
 import com.syswin.ps.sdk.admin.controller.in.AccountIn;
 import com.syswin.ps.sdk.admin.service.impl.PSAccountService;
 import com.syswin.ps.sdk.admin.service.impl.PSConfigService;
@@ -47,6 +48,10 @@ public class PSSDKController {
 
 	@Autowired
 	PSConfigService psConfigService;
+
+
+	@Autowired
+	UpdateMenuService updateMenuService;
 
 	@PostMapping({"/addPubliser"})
 	@ApiOperation(
@@ -107,6 +112,15 @@ public class PSSDKController {
 	public void sendImage(String from, String to, String url, String fileName) throws IOException {
 
 		messegerSenderService.sendImage(from, to, url, fileName);
+	}
+
+	@PostMapping({"/cleanData"})
+	@ApiOperation(
+					value = "手动清理菜单数据"
+	)
+	public void cleanData(String account) throws IOException {
+
+		updateMenuService.updateMenu(account);
 	}
 
 	@PostMapping({"/mutCreateMenu"})
