@@ -21,6 +21,7 @@ public class ResponseEntity<T> {
 	public ResponseEntity() {
 		this.code = "200";
 		this.msg = "success";
+
 	}
 
 	/**

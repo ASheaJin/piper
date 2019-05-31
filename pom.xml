@@ -137,7 +137,7 @@
 		<dependency>
 			<groupId>com.syswin.ps.sdk.admin</groupId>
 			<artifactId>ps-sdk-admin-starter</artifactId>
-			<version>0.0.3</version>
+			<version>0.0.4</version>
 		</dependency>
 
 		<!--<dependency>-->

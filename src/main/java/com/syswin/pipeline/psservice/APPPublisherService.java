@@ -157,20 +157,20 @@ public class APPPublisherService {
 
 	private void addPiperRoleMenu(String accountNo, Publisher p) {
 		//TODO 待置空Write_url
-		addMenuIte(accountNo, "write", "--", 4, 1, "common", "公用", iconUrl,"helper_write");
-		addMenuIte(accountNo, "text", "--", 5, 7, "common", "个人出版社", iconUrl,"input_text");
-		addMenuIte(accountNo, "file", "--", 5, 8, "common", "个人出版社", iconUrl,"input_file");
-		addMenuIte(accountNo, "photo", "--", 5, 9, "common", "个人出版社", iconUrl,"input_photo");
+		addMenuIte(accountNo, "write", "", 4, 1, "common", "公用", iconUrl,"helper_write");
+		addMenuIte(accountNo, "text", "", 5, 7, "common", "个人出版社", iconUrl,"input_text");
+		addMenuIte(accountNo, "file", "", 5, 8, "common", "个人出版社", iconUrl,"input_file");
+		addMenuIte(accountNo, "photo", "", 5, 9, "common", "个人出版社", iconUrl,"input_photo");
 		addMenuIte(accountNo, "历史消息", getUrl(p_history, p.getPublisherId()),  2, "common");
 		addMenuIte(accountNo, "管理订阅人", getUrl(p_goup, p.getPublisherId()), 3, "org");
 		addMenuIte(accountNo, "Excel上传", getUrl(p_upload, p.getPublisherId()),  4, "org");
 		addMenuIte(accountNo, "更换管理员", getUrl(p_change, p.getPublisherId()),  5, "org");
 
 		//添加英文菜单
-		addMenuIte(accountNo, "write", "--", 4, 1, "common-en", "公用", iconUrl,"helper_write");
-		addMenuIte(accountNo, "text", "--", 5, 7, "common-en", "个人出版社", iconUrl,"input_text");
-		addMenuIte(accountNo, "file", "--", 5, 8, "common-en", "个人出版社", iconUrl,"input_file");
-		addMenuIte(accountNo, "photo", "--", 5, 9, "common-en", "个人出版社", iconUrl,"input_photo");
+		addMenuIte(accountNo, "write", "", 4, 1, "common-en", "公用", iconUrl,"helper_write");
+		addMenuIte(accountNo, "text", "", 5, 7, "common-en", "个人出版社", iconUrl,"input_text");
+		addMenuIte(accountNo, "file", "", 5, 8, "common-en", "个人出版社", iconUrl,"input_file");
+		addMenuIte(accountNo, "photo", "", 5, 9, "common-en", "个人出版社", iconUrl,"input_photo");
 		addMenuIte(accountNo, "History", getUrl(p_history, p.getPublisherId(),"en"),  2, "common-en");
 		addMenuIte(accountNo, "Managing Subscribers", getUrl(p_goup, p.getPublisherId(),"en"), 3, "org-en");
 		addMenuIte(accountNo, "Excel Upload", getUrl(p_upload, p.getPublisherId(),"en"),  4, "org-en");
