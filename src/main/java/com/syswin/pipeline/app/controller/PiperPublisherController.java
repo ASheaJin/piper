@@ -9,6 +9,7 @@ import com.syswin.pipeline.service.security.TokenGenerator;
 import com.syswin.pipeline.utils.*;
 import com.syswin.sub.api.AdminService;
 import com.syswin.sub.api.db.model.Publisher;
+import com.syswin.sub.api.db.model.Subscription;
 import com.syswin.sub.api.enums.PublisherTypeEnums;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -109,8 +110,8 @@ public class PiperPublisherController {
 	)
 	public ResponseEntity subscribe(@RequestBody SubParam sub) {
 
-		subscriptionService.subscribeNOOrg(sub.getUserId(), sub.getPublishTemail());
-		return new ResponseEntity();
+		Subscription s = subscriptionService.subscribeNOOrg(sub.getUserId(), sub.getPublishTemail());
+		return new ResponseEntity(s);
 	}
 
 
