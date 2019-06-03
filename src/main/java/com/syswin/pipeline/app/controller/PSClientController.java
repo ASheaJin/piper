@@ -1,7 +1,7 @@
 package com.syswin.pipeline.app.controller;
 
 import com.syswin.pipeline.app.dto.*;
-import com.syswin.pipeline.psservice.RegisterServerService;
+import com.syswin.pipeline.psservice.RegisterServer;
 import com.syswin.pipeline.psservice.SendMessegeService;
 import com.syswin.pipeline.service.org.IOrgService;
 import com.syswin.pipeline.service.org.OrgOut;
@@ -52,7 +52,7 @@ public class PSClientController {
 	private String piperUserId;
 
 	@Autowired
-	private RegisterServerService psServerService;
+	private RegisterServer psServerService;
 
 	@PostMapping("/sendMsg")
 	@ApiOperation(

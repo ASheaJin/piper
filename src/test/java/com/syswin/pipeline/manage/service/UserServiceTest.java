@@ -15,13 +15,10 @@ import org.springframework.test.context.junit4.SpringRunner;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@Deprecated
 public class UserServiceTest {
 	@Autowired
 	PiperDeviceInfoService deviceInfoService;
-	@Autowired
-	private MenuRepository menuRepository;
-	@Autowired
-	private PiperUserService userService;
 
 	@Test
 	public void list() {

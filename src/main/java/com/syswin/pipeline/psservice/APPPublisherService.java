@@ -67,7 +67,7 @@ public class APPPublisherService {
 	private NickNameService nickNameService;
 
 	@Autowired
-	private RegisterServerService psServerService;
+	private RegisterServer psServerService;
 
 	@Autowired
 	private PublisherService publisherService;
