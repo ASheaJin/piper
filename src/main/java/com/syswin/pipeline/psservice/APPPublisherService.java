@@ -10,10 +10,8 @@ import com.syswin.ps.sdk.admin.service.AccountService;
 import com.syswin.ps.sdk.admin.service.FunctionItemService;
 import com.syswin.ps.sdk.admin.service.VCardInfoService;
 import com.syswin.ps.sdk.admin.service.impl.PSAccountService;
-import com.syswin.ps.sdk.service.NickNameService;
 import com.syswin.sub.api.PublisherService;
 import com.syswin.sub.api.db.model.Publisher;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,8 +61,8 @@ public class APPPublisherService {
 
 	@Autowired
 	private VCardInfoService vCardInfoService;
-	@Autowired
-	private NickNameService nickNameService;
+//	@Autowired
+//	private NickNameService nickNameService;
 
 	@Autowired
 	private RegisterServer psServerService;
@@ -232,9 +230,9 @@ public class APPPublisherService {
 		vi.setNickname(name);
 		vi.setAccountImage(iconUrl);
 		VCardInfo result = this.vCardInfoService.addVCardInfo(vi);
-		if (StringUtils.isNotEmpty(vi.getNickname())) {
-			this.nickNameService.resetNickName(vi.getAccountNo(), vi.getNickname());
-		}
+//		if (StringUtils.isNotEmpty(vi.getNickname())) {
+//			this.nickNameService.resetNickName(vi.getAccountNo(), vi.getNickname());
+//		}
 		return result != null;
 	}
 
