@@ -4,6 +4,7 @@ import com.syswin.pipeline.db.repository.MenuRepository;
 import com.syswin.pipeline.service.PiperDeviceInfoService;
 import com.syswin.pipeline.psservice.olderps.Env;
 import com.syswin.pipeline.utils.JacksonJsonUtil;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +29,8 @@ public class UserServiceTest {
 		Env appEnv = JacksonJsonUtil.fromJson(envValue, Env.class);
 
 
-		System.out.println(deviceInfoService.insertOrupdate("luo", appEnv));
-		System.out.println(deviceInfoService.getLang("luo"));
+		Assert.assertFalse("1".equals(deviceInfoService.insertOrupdate("luo", appEnv)));
+		Assert.assertFalse("1".equals(deviceInfoService.getLang("luo")));
 
 		System.out.println(deviceInfoService.getLang("luo"));
 
