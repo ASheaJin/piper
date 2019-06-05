@@ -8,6 +8,7 @@ import com.syswin.ps.sdk.admin.config.IMenuConfigService;
 import com.syswin.ps.sdk.common.MsgHeader;
 import com.syswin.ps.sdk.handler.PsClientKeeper;
 import com.syswin.sub.api.AdminService;
+import com.syswin.sub.api.PublisherService;
 import com.syswin.sub.api.db.model.Admin;
 import com.syswin.sub.api.db.model.Publisher;
 import com.syswin.sub.api.enums.PublisherTypeEnums;
@@ -36,6 +37,9 @@ public class MenuConfigService implements IMenuConfigService {
 
 	@Autowired
 	private SendMessegeService sendMessegeService;
+
+	@Autowired
+	private PublisherService publisherService;
 
 	private static String common = "common";
 	private static String person = "person";
@@ -82,6 +86,7 @@ public class MenuConfigService implements IMenuConfigService {
 		myRole = consumerService.getAMenuRole(userId);
 		//初始时创建
 		if (!consumerService.getUserVersion(header.getSender(), header.getReceiver())) {
+			sendMessegeService.sendCard(header.getReceiver(), header.getSender(), "Piper");
 			String pdfInfo = "{\"format\":\"application/pdf\",\"url\":\"https://ucloud-file.t.email/%2Fceca224cce52468dabc22390f2289e97.zip\",\"pwd\":\"EB04F13C-E30B-492E-90FA-E5300139041E\",\"suffix\":\".pdf\",\"desc\":\"Piper操作手册1.1.pdf\",\"size\":255784,\"percent\":100}";
 			sendMessegeService.sendOthermessage(pdfInfo, 14, userId, apiper);
 
@@ -122,13 +127,24 @@ public class MenuConfigService implements IMenuConfigService {
 
 
 	private List<String> menuP(MsgHeader header, String accountNo) {
-		if (apiper.equals(header.getSender())) {
+		if (apiper.equals(header.getReceiver())) {
 			return null;
 		}
+		if (!consumerService.getUserVersion(header.getSender(), header.getReceiver())) {
+			Publisher p = publisherService.getPubLisherByPublishTmail(accountNo, null);
+			if (p != null) {
+				if (p.getUserId().equals(header.getSender())) {
+					sendMessegeService.sendCard(header.getReceiver(), header.getSender(), "*" + p.getName());
+				} else {
+					sendMessegeService.sendCard(header.getReceiver(), header.getSender(), p.getName());
+				}
+			}
+		}
+
 		String lang = header.getPlatformInfo().getLanguage();
 		String userId = header.getSender();
 		myRole = consumerService.getPiperMenuRole(userId, accountNo);
-
+		consumerService.getUserVersion(header.getSender(), header.getReceiver(), "1", myRole);
 		List menus = new ArrayList();
 
 		menus.add(getKey(accountNo, getLang(lang, common)));
