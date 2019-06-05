@@ -111,7 +111,7 @@ public class APPPublisherService {
 		psAccountService.login(from);
 
 		//更新菜单时间
-		updateMenuService.updateMenu(from);
+//		updateMenuService.updateMenu(from);
 		return true;
 	}
 
@@ -132,7 +132,7 @@ public class APPPublisherService {
 		//登录账号
 		psAccountService.login(accountNo);
 		//更新菜单时间
-		updateMenuService.updateMenu(accountNo);
+//		updateMenuService.updateMenu(accountNo);
 
 		return true;
 	}

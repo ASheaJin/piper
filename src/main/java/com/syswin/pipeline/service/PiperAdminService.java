@@ -34,13 +34,13 @@ public class PiperAdminService {
 
 	public Admin add(String adminUserId, String userId, PublisherTypeEnums ptype, boolean isFirst) {
 		//TODO 此处需要更新 A.Piper的菜单
-		updateMenuService.updateMenu(piper);
+		updateMenuService.updateMenu(piper, userId);
 		return adminService.add(adminUserId, userId, ptype, isFirst);
 	}
 
 	public void delete(String adminUserId, String userId) {
 		//TODO 此处需要更新 A.Piper的菜单
-		updateMenuService.updateMenu(piper);
+		updateMenuService.updateMenu(piper, userId);
 		adminService.delete(adminUserId, userId, PublisherTypeEnums.organize);
 	}
 

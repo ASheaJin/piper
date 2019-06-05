@@ -1,5 +1,6 @@
 package com.syswin.pipeline.psservice;
 
+import com.syswin.pipeline.service.PiperConsumerService;
 import com.syswin.pipeline.service.exception.BusinessException;
 import com.syswin.pipeline.utils.StringUtil;
 import com.syswin.ps.sdk.admin.platform.entity.FunctionItem;
@@ -19,7 +20,8 @@ public class UpdateMenuService {
 
 	@Autowired
 	private PSConfigService psConfigService;
-
+	@Autowired
+	private PiperConsumerService consumerService;
 	@Autowired
 	private FunctionItemService functionItemService;
 
@@ -37,6 +39,15 @@ public class UpdateMenuService {
 
 		//清理缓存
 		psConfigService.initFunctionList();
+
 		return true;
+	}
+
+	public boolean updateMenu(String account, String userId) {
+
+		if (!StringUtil.isEmpty(userId)) {
+			consumerService.getUserVersion(userId, account, "1", "1");
+		}
+		return updateMenu(account);
 	}
 }

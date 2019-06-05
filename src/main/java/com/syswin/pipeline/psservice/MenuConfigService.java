@@ -86,7 +86,7 @@ public class MenuConfigService implements IMenuConfigService {
 		myRole = consumerService.getAMenuRole(userId);
 		//初始时创建
 		if (!consumerService.getUserVersion(header.getSender(), header.getReceiver())) {
-			sendMessegeService.sendCard(header.getReceiver(), header.getSender(), "Piper");
+			sendMessegeService.sendCard(apiper, header.getSender(), "Piper");
 			String pdfInfo = "{\"format\":\"application/pdf\",\"url\":\"https://ucloud-file.t.email/%2Fceca224cce52468dabc22390f2289e97.zip\",\"pwd\":\"EB04F13C-E30B-492E-90FA-E5300139041E\",\"suffix\":\".pdf\",\"desc\":\"Piper操作手册1.1.pdf\",\"size\":255784,\"percent\":100}";
 			sendMessegeService.sendOthermessage(pdfInfo, 14, userId, apiper);
 

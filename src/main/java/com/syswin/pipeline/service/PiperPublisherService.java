@@ -101,7 +101,7 @@ public class PiperPublisherService {
 		//调用新的登录
 		appPublisherService.addPiperAcount(ptemail);
 		//更新菜单Piper
-		updateMenuService.updateMenu(from);
+		updateMenuService.updateMenu(from, userId);
 		//		psClientService.loginTemail(ptemail);
 		try {
 			psClientService.sendTextmessage(languageChange.getLangByUserId("msg.publisherhascreate", new String[]{name}, userId), userId, 0);
@@ -228,7 +228,7 @@ public class PiperPublisherService {
 			throw new BusinessException("msg.nopermission");
 		}
 		//// TODO: 2019/5/28 此处需要清理该账号缓存,更新时间戳
-		updateMenuService.updateMenu(publisher.getPtemail());
+		updateMenuService.updateMenu(publisher.getPtemail(), changeUserId);
 
 
 		publisher.setUserId(changeUserId);
