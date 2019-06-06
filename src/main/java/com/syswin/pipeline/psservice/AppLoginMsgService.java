@@ -32,14 +32,12 @@ public class AppLoginMsgService implements ICustomConfig {
 	public Boolean accept(Integer bodyType, Object content) {
 
 		MsgHeader msgHeader = PsClientKeeper.msgHeader();
-		logger.error("accept msgHeader :" + msgHeader);
-		logger.info("accept bodyType :" + bodyType);
-		logger.info("accept content :" + content);
 
 		//监听消息
 		publisherSecService.monitor(msgHeader.getSender(), msgHeader.getReceiver(), bodyType, content);
 		return true;
 	}
+
 
 	@Override
 	public String process(Object content) {

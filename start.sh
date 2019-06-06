@@ -11,3 +11,6 @@ ps -ef|grep "piper-1.6.3-SNAPSHOT.jar" | grep java | awk '{print $2}' | xargs ki
 nohup java -Xdebug -Xrunjdwp:transport=dt_socket,suspend=n,server=y,address=8889 -jar target/piper-1.6.3-SNAPSHOT.jar -Dspring.profiles.active=dev> pipeline-api.log 2>&1 &
 #打印日志
 tail -f pipeline-api.log
+
+
+nohup java -jar piper-1.6.11-SNAPSHOT.jar -Dfile.encoding=utf-8 -Dspring.profiles.active=prod > /opt/logs/piper.log &
