@@ -3,6 +3,7 @@ package com.syswin.pipeline.service;
 import com.github.pagehelper.PageInfo;
 import com.syswin.pipeline.manage.dto.output.AdminManageVO;
 import com.syswin.pipeline.psservice.UpdateMenuService;
+import com.syswin.pipeline.sop.CheckParamNull;
 import com.syswin.pipeline.utils.StringUtils;
 import com.syswin.ps.sdk.admin.service.impl.PSConfigService;
 import com.syswin.sub.api.AdminService;
@@ -67,6 +68,7 @@ public class PiperAdminService {
 		return adminService.getAdmin(userId, organize);
 	}
 
+//	@CheckParamNull(params="keyword,userId")
 	public List<Admin> getAdmins(String keyword, String userId, PublisherTypeEnums organize, int pageno, int pagesize) {
 		return adminService.getAdmins(keyword, userId, organize, pageno, pagesize);
 	}

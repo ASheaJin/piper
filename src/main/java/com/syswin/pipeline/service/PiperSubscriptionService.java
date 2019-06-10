@@ -201,7 +201,7 @@ public class PiperSubscriptionService {
 	 */
 	public List<Publisher> getMySubscribtion(String userId, int pageNo, int pageSize) {
 
-		return subSubscriptionService.getMySubscribtionsAll(userId, (pageNo - 1) * pageSize, pageSize);
+		return subSubscriptionService.getMySubscribtionsAll(userId, pageNo, pageSize);
 	}
 
 
@@ -217,6 +217,7 @@ public class PiperSubscriptionService {
 
 
 	//================================ manage方法 =========================================>
+
 
 
 	public PageInfo list(int pageIndex, int pageSize, String keyword, String publisherId) {
