@@ -1,0 +1,8 @@
+use temail_subengine;
+
+ALTER TABLE `contentout`
+ADD INDEX `publisher_id` (`publisher_id` ASC);
+
+ALTER TABLE `subscription`
+ADD INDEX `user_id` (`user_id` ASC),
+ADD INDEX `publisher_id` (`publisher_id` ASC);
