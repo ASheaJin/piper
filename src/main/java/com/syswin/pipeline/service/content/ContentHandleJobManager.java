@@ -45,6 +45,21 @@ public class ContentHandleJobManager {
 
     /**
      * 对外方法
+     * @param contentId
+     * @param createTime
+     */
+    public void addJobSaveText( String contentId,  ContentEntity contentEntity, int createTime) {
+        servicePool.execute(() -> {
+
+            ContentEntity listContent = parseListContent(contentEntity);
+
+            contentOutService.add(contentId, contentEntity.getPublisherId(),
+                    JacksonJsonUtil.toJson(listContent), JacksonJsonUtil.toJson(contentEntity), createTime);
+        });
+    }
+
+    /**
+     * 对外方法
      * @param publisherId
      * @param contentId
      * @param bodyType

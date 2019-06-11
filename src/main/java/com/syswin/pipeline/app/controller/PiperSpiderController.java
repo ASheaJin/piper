@@ -6,6 +6,8 @@ import com.syswin.pipeline.psservice.bean.SaveText;
 import com.syswin.pipeline.service.PiperSpiderTokenService;
 import com.syswin.pipeline.psservice.bussiness.PublisherSecService;
 import com.syswin.pipeline.app.dto.ResponseEntity;
+import com.syswin.pipeline.service.content.entity.ContentEntity;
+import com.syswin.pipeline.service.content.entity.MediaContentEntity;
 import com.syswin.pipeline.service.exception.BusinessException;
 import com.syswin.pipeline.utils.StringUtil;
 import com.syswin.ps.sdk.common.ActionItem;
@@ -18,6 +20,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -90,12 +93,43 @@ public class PiperSpiderController {
 		).collect(Collectors.toList());
 
 		TextShow show = new TextShow(1, map, infoList);
+		//构造历史消息的输出
+
+
 		SaveText saveText = new SaveText();
 		saveText.setActions(infoList);
 		saveText.setShowType(1);
 		saveText.setShowContent(map);
 //		PsClientKeeper.newInstance().sendMsg(msg.getPiperTemail(), "luohongzhou1@syswin.com", show);
-		Integer num = publisherSecService.dealpusharticle(publisher, 801, show,saveText, publisher.getPtype());
+		Integer num = publisherSecService.dealpusharticle(publisher, 801, show, getContentEntity(msg, publisher), publisher.getPtype());
 		return new ResponseEntity(num);
+	}
+
+	private ContentEntity getContentEntity(SendComplexInfoParam msg, Publisher publisher) {
+
+		ContentEntity contentEntity = new ContentEntity();
+		contentEntity.setBodyType(30);
+		contentEntity.setTitle(msg.getTitle());
+		contentEntity.setPublisherName(publisher.getName());
+		contentEntity.setPublisherId(publisher.getPublisherId());
+		List<MediaContentEntity> list = new ArrayList<>();
+
+		MediaContentEntity m = new MediaContentEntity();
+		m.setText(msg.getTxt());
+		m.setBodyType(1);
+		list.add(m);
+		MediaContentEntity mUrl = new MediaContentEntity();
+		mUrl.setText(msg.getUrl());
+		mUrl.setBodyType(1);
+		list.add(mUrl);
+		if (!StringUtil.isEmpty(msg.getImgUrl())) {
+			MediaContentEntity mPng = new MediaContentEntity();
+			mPng.setUrl(msg.getImgUrl());
+			mPng.setBodyType(3);
+			list.add(mPng);
+		}
+
+		contentEntity.setContentArray(list);
+		return contentEntity;
 	}
 }

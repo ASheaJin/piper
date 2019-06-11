@@ -9,6 +9,7 @@ import com.syswin.pipeline.service.PiperSubscriptionService;
 import com.syswin.pipeline.psservice.bussiness.PublisherSecService;
 import com.syswin.pipeline.service.content.ContentHandleJobManager;
 import com.syswin.pipeline.psservice.olderps.ChatMsg;
+import com.syswin.pipeline.service.content.entity.ContentEntity;
 import com.syswin.pipeline.service.exception.BusinessException;
 import com.syswin.pipeline.utils.LanguageChange;
 import com.syswin.pipeline.utils.StringUtil;
@@ -132,7 +133,7 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 	 * @param publisherTypeEnums
 	 */
 	@Override
-	public Integer dealpusharticle(Publisher publisher, int body_type, Object show, SaveText saveShow, PublisherTypeEnums publisherTypeEnums) {
+	public Integer dealpusharticle(Publisher publisher, int body_type, Object show, ContentEntity saveShow, PublisherTypeEnums publisherTypeEnums) {
 		if (StringUtil.isEmpty(show)) {
 			throw new BusinessException("消息不能为空");
 		}
@@ -146,8 +147,16 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 			content.setContentId(contentId);
 			if (saveShow != null) {
 				content.setContent(JSONObject.toJSONString(saveShow));
+				saveShow.setContentId(contentId);
+
+				//contentout内容处理
+				contentHandleJobManager.addJobSaveText(contentId, saveShow, content.getCreateTime());
+
 			} else {
 				content.setContent(show.toString());
+				//contentout内容处理
+				contentHandleJobManager.addJob(publisher.getPublisherId(), contentId, body_type, content.getContent(), content.getCreateTime());
+
 			}
 			content.setBodyType(body_type);
 			content.setPublisherId(publisher.getPublisherId());
@@ -159,8 +168,6 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 		//2、获取订阅该用户的读者列表
 		List<String> userIds = subscriptionService.getSubscribers(publisher.getPtemail(), publisherTypeEnums);
 
-		//内容处理
-		contentHandleJobManager.addJob(publisher.getPublisherId(), contentId, body_type, content.getContent(), content.getCreateTime());
 
 		int num = 0;
 		//3、逐个发文章

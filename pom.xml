@@ -6,7 +6,7 @@
 
     <groupId>com.syswin.pipeline</groupId>
     <artifactId>piper</artifactId>
-    <version>1.6.11-SNAPSHOT</version>
+    <version>1.6.13-SNAPSHOT</version>
 
     <name>${project.artifactId}</name>
     <description>pipeline</description>
@@ -135,9 +135,9 @@
         <dependency>
             <groupId>com.syswin.temail</groupId>
             <artifactId>vault-keeper</artifactId>
-            <version>1.1.1-SNAPSHOT-win</version>
+            <!--<version>1.1.1-SNAPSHOT-win</version>-->
             <!--<version>1.1.1-SNAPSHOT</version>-->
-            <!--<version>1.1.0</version>-->
+            <version>1.1.0</version>
         </dependency>
 
 
@@ -157,7 +157,7 @@
         <dependency>
             <groupId>com.syswin.sub</groupId>
             <artifactId>SubEngine</artifactId>
-            <version>1.0.3-SNAPSHOT</version>
+            <version>1.0.4-SNAPSHOT</version>
         </dependency>
 
         <dependency>

@@ -1,6 +1,7 @@
 package com.syswin.pipeline.psservice.bussiness;
 
 import com.syswin.pipeline.psservice.bean.SaveText;
+import com.syswin.pipeline.service.content.entity.ContentEntity;
 import com.syswin.sub.api.db.model.Publisher;
 import com.syswin.sub.api.enums.PublisherTypeEnums;
 
@@ -16,7 +17,7 @@ public interface PublisherSecService {
 	void monitor(String userId, String ptemail, int bodyType, Object show);
 
 	Integer dealpusharticle(Publisher publisher, int bodyType, Object show,  PublisherTypeEnums publisherTypeEnums);
-	Integer dealpusharticle(Publisher publisher, int bodyType, Object show, SaveText saveText, PublisherTypeEnums publisherTypeEnums);
+	Integer dealpusharticle(Publisher publisher, int bodyType, Object show, ContentEntity saveText, PublisherTypeEnums publisherTypeEnums);
 
 
 }
