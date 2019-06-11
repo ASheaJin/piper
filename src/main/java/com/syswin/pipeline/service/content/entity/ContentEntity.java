@@ -45,6 +45,9 @@ public class ContentEntity extends MediaContentEntity {
     private Integer publishTime;
 
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ApiModelProperty(value = "是否显示")
+    private Integer show =0;
 //    @JsonInclude(JsonInclude.Include.NON_NULL)
 //    @ApiModelProperty(value = "发件人")
 //    private String from;

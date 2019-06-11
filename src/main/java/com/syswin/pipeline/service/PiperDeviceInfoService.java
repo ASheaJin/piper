@@ -4,7 +4,7 @@ import com.syswin.pipeline.db.model.DeviceInfo;
 import com.syswin.pipeline.db.model.DeviceInfoExample;
 import com.syswin.pipeline.db.repository.DeviceInfoRepository;
 import com.syswin.pipeline.psservice.olderps.Env;
-import com.syswin.pipeline.sop.EnableCacheService;
+import com.syswin.pipeline.sop.EnableCache;
 import com.syswin.pipeline.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,8 +21,8 @@ public class PiperDeviceInfoService {
 	@Autowired
 	DeviceInfoRepository deviceInfoRepository;
 
-	@EnableCacheService(keyPrefix = "lang_",
-					fieldKey = "#userId", cacheOperation = EnableCacheService.CacheOperation.UPDATE)
+	@EnableCache(keyPrefix = "lang_",
+					fieldKey = "#userId", cacheOperation = EnableCache.CacheOperation.UPDATE)
 	public String insertOrupdate(String userId, Env appEnv) {
 
 		if (appEnv == null || StringUtils.isNullOrEmpty(appEnv.getLanguage())) {
@@ -50,8 +50,8 @@ public class PiperDeviceInfoService {
 		return appEnv.getLanguage();
 	}
 
-	@EnableCacheService(keyPrefix = "lang_",
-					fieldKey = "#userId", cacheOperation = EnableCacheService.CacheOperation.UPDATE)
+	@EnableCache(keyPrefix = "lang_",
+					fieldKey = "#userId", cacheOperation = EnableCache.CacheOperation.UPDATE)
 	public String insertOrupdate(String userId, String lang, String platform, String moduleVersion, String os_version, String appversion, String build) {
 		DeviceInfoExample deviceInfoExample = new DeviceInfoExample();
 		DeviceInfoExample.Criteria criteria = deviceInfoExample.createCriteria();
@@ -79,8 +79,8 @@ public class PiperDeviceInfoService {
 	}
 
 
-	@EnableCacheService(keyPrefix = "lang_",
-					fieldKey = "#userId", cacheOperation = EnableCacheService.CacheOperation.QUERY)
+	@EnableCache(keyPrefix = "lang_",
+					fieldKey = "#userId", cacheOperation = EnableCache.CacheOperation.QUERY)
 	public String getLang(String userId) {
 		DeviceInfoExample deviceInfoExample = new DeviceInfoExample();
 		DeviceInfoExample.Criteria criteria = deviceInfoExample.createCriteria();
