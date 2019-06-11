@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/log")
 public class LogSwithController {
 
-
 	@RequestMapping("/open")
 	public ResponseEntity open() {
 		SwithUtil.ISLOG = true;
