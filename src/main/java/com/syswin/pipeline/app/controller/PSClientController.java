@@ -58,10 +58,10 @@ public class PSClientController {
 	@ApiOperation(
 					value = "获取消息详情"
 	)
-	public boolean sendMsg(@RequestBody ChatMsg msg, @RequestParam String senderTemail,
+	public void sendMsg(@RequestBody ChatMsg msg, @RequestParam String senderTemail,
 	                       @RequestParam String senderPK, HttpServletRequest request) {
 
-		return psClientService.sendChatMessage(msg, senderTemail, senderPK);
+		 psClientService.sendChatMessage(msg, senderTemail, senderPK);
 	}
 
 
@@ -168,8 +168,8 @@ public class PSClientController {
 	public String sendOthermessage(@RequestBody PublishMessageParam message) {
 		String content = "{\"w\":540,\"h\":960,\"isOriginal\":0,\"suffix\":\".png\",\"url\":\"http:\\/\\/temail-test.cn-bj.ufileos.com\\/mediabank%2Fdd8da1b9f51444be842411fd79cbfd8a.zip\",\"size\":28419,\"pwd\":\"7B13B225-10BC-4141-87D9-FD1139FCCF52\"}";
 //		String content = "{\"text\":\"vhh\"}";
-		Boolean result = sendMessegeService.sendOthermessage(message.getContent(), Integer.parseInt(message.getBodyType()), message.getPtemail(), message.getFromTemail());
-		return String.valueOf(result);
+		 sendMessegeService.sendOthermessage(message.getContent(), Integer.parseInt(message.getBodyType()), message.getPtemail(), message.getFromTemail());
+	return "success";
 	}
 
 	@GetMapping("/setCard")

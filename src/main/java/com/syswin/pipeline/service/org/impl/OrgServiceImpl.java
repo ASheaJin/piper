@@ -33,165 +33,158 @@ import java.util.Map;
 @Service
 public class OrgServiceImpl implements IOrgService {
 
-    private final static Logger logger = LoggerFactory.getLogger(OrgServiceImpl.class);
+	private final static Logger logger = LoggerFactory.getLogger(OrgServiceImpl.class);
 
-    private static final short CMD_SPACE_ORG = 8;
-    private static final short CMD_GET = 3;
+	private static final short CMD_SPACE_ORG = 8;
+	private static final short CMD_GET = 3;
 
-    @Autowired
-    private PSClientService psClientService;
-
-
-    @Override
-    public OrgOut getOrgByVersion(String fromTemail, long version) {
-        OrgRequest req = new OrgRequest(fromTemail, "1", version);
-
-        OrgResponse resp = reqestByHttp(req);
-
-        List<OrgDataTemail> adds = resp.getData().getCipherContacts().get("add");
-
-        return buildOrgTree(adds);
-    }
-
-    private static OrgOut buildOrgTree( List<OrgDataTemail> odts) {
-        OrgOut rootOrg = createOrg("");
-        String rootOrgName = null;
-
-        for (OrgDataTemail odt : odts) {
-            List<String> orgs = odt.getOrgs();
-            OrgOut currOrg = rootOrg;
-            for (int i=0;i<orgs.size();i++) {
-                String orgName = orgs.get(i);
-                if (i == 0) {
-                    if (rootOrgName == null) {
-                        rootOrgName = orgName;
-                    } else if (!rootOrgName.equals(orgName)) {
-                        break;
-                    }
-                } else {
-                    //从第2个元素开始
-                    List<OrgOut> subOrgs = currOrg.getSubOrg();
-                    currOrg = findOrgFromList(orgName, subOrgs);
-                }
-
-                //如果是最后一级组织，则放入员工放入employee列表
-                if (i == orgs.size() - 1) {
-                    currOrg.getEmployees().add(new EmployeeOut(odt.getCard().getName(), odt.getTemail(), odt.getCard().getTitle()));
-                }
-            }
-        }
-        rootOrg.setName(rootOrgName);
-        return rootOrg;
-    }
-
-    private static OrgOut findOrgFromList(String orgName, List<OrgOut> subOrgs) {
-        for (OrgOut org : subOrgs) {
-            if (org.getName().equals(orgName)) {
-                return org;
-            }
-        }
-        OrgOut newOrg = createOrg(orgName);
-        subOrgs.add(newOrg);
-        return newOrg;
-    }
-
-    private static OrgOut createOrg(String name) {
-        OrgOut orgOut = new OrgOut();
-        orgOut.setName(name);
-        orgOut.setSubOrg(new ArrayList<>());
-        orgOut.setEmployees(new ArrayList<>());
-        return orgOut;
-    }
+	@Autowired
+	private PSClientService psClientService;
 
 
+	@Override
+	public OrgOut getOrgByVersion(String fromTemail, long version) {
+		OrgRequest req = new OrgRequest(fromTemail, "1", version);
 
-    private OrgResponse reqestByCdtp(OrgRequest req) {
-        Message respMsg = psClientService.sendCdtpRequestFromPiper(CMD_SPACE_ORG, CMD_GET, req);
-        byte[] payload = respMsg.getPayload();
-        String payloadJson = StringUtil.byte2Str(payload);
-        String dataJson = FastJsonUtil.parseObject(payloadJson).getString("data");
-        return FastJsonUtil.parseObject(dataJson, OrgResponse.class);
-    }
+		OrgResponse resp = reqestByHttp(req);
 
-    private String orgServer = "http://192.168.1.115:8081";
+		List<OrgDataTemail> adds = resp.getData().getCipherContacts().get("add");
 
-    private OrgResponse reqestByHttp(OrgRequest req) {
-        CloseableHttpClient httpclient = HttpClients.createDefault();
-        CloseableHttpResponse response = null;
-        try {
-            String url = orgServer + "/api/getOrgContact";
-            Type paramType = new TypeReference<Map<String, String>>() {}.getType();
-            Map<String, String> paramsMap = FastJsonUtil.fromJson(FastJsonUtil.toJson(req), paramType);
-            url = attachParam(url, paramsMap);
+		return buildOrgTree(adds);
+	}
 
-            HttpGet httpGet = new HttpGet(url);
+	private static OrgOut buildOrgTree(List<OrgDataTemail> odts) {
+		OrgOut rootOrg = createOrg("");
+		String rootOrgName = null;
 
-            response = httpclient.execute(httpGet);
-            int statusCode = response.getStatusLine().getStatusCode();
+		for (OrgDataTemail odt : odts) {
+			List<String> orgs = odt.getOrgs();
+			OrgOut currOrg = rootOrg;
+			for (int i = 0; i < orgs.size(); i++) {
+				String orgName = orgs.get(i);
+				if (i == 0) {
+					if (rootOrgName == null) {
+						rootOrgName = orgName;
+					} else if (!rootOrgName.equals(orgName)) {
+						break;
+					}
+				} else {
+					//从第2个元素开始
+					List<OrgOut> subOrgs = currOrg.getSubOrg();
+					currOrg = findOrgFromList(orgName, subOrgs);
+				}
 
-            if (HttpStatus.SC_OK == statusCode) {
-                String entityJson = EntityUtils.toString(response.getEntity());
-                Type type = new TypeReference<OrgResponse>() {}.getType();
-                OrgResponse out = FastJsonUtil.fromJson(entityJson, type);
-                return out;
-            }
-            return null;
-        } catch (Exception e) {
-            logger.error("请求组织发生异常", e);
-            return null;
-        } finally {
-            closeHttpClient(httpclient, response);
-        }
-    }
+				//如果是最后一级组织，则放入员工放入employee列表
+				if (i == orgs.size() - 1) {
+					currOrg.getEmployees().add(new EmployeeOut(odt.getCard().getName(), odt.getTemail(), odt.getCard().getTitle()));
+				}
+			}
+		}
+		rootOrg.setName(rootOrgName);
+		return rootOrg;
+	}
 
-    private static String attachParam(String url, Map<String, String> paramsMap) {
-        if (paramsMap != null && !paramsMap.isEmpty()) {
-            StringBuilder result = new StringBuilder();
-            Iterator var3 = paramsMap.keySet().iterator();
+	private static OrgOut findOrgFromList(String orgName, List<OrgOut> subOrgs) {
+		for (OrgOut org : subOrgs) {
+			if (org.getName().equals(orgName)) {
+				return org;
+			}
+		}
+		OrgOut newOrg = createOrg(orgName);
+		subOrgs.add(newOrg);
+		return newOrg;
+	}
 
-            while(var3.hasNext()) {
-                String key = (String)var3.next();
-                String encodedName = encodeFormFields(key, "UTF-8");
-                String encodedValue = encodeFormFields((String)paramsMap.get(key), "UTF-8");
-                if (result.length() > 0) {
-                    result.append("&");
-                }
+	private static OrgOut createOrg(String name) {
+		OrgOut orgOut = new OrgOut();
+		orgOut.setName(name);
+		orgOut.setSubOrg(new ArrayList<>());
+		orgOut.setEmployees(new ArrayList<>());
+		return orgOut;
+	}
 
-                result.append(encodedName);
-                if (encodedValue != null) {
-                    result.append("=");
-                    result.append(encodedValue);
-                }
-            }
 
-            return url + (url.contains("?") ? "&" : "?") + result.toString();
-        } else {
-            return url;
-        }
-    }
+	private String orgServer = "http://192.168.1.115:8081";
 
-    private static String encodeFormFields(String s, String charset) {
-        try {
-            return URLEncoder.encode(s, charset);
-        } catch (UnsupportedEncodingException e) {
-            logger.error(e.getMessage(), e);
-        }
-        return s;
-    }
+	private OrgResponse reqestByHttp(OrgRequest req) {
+		CloseableHttpClient httpclient = HttpClients.createDefault();
+		CloseableHttpResponse response = null;
+		try {
+			String url = orgServer + "/api/getOrgContact";
+			Type paramType = new TypeReference<Map<String, String>>() {
+			}.getType();
+			Map<String, String> paramsMap = FastJsonUtil.fromJson(FastJsonUtil.toJson(req), paramType);
+			url = attachParam(url, paramsMap);
 
-    private void closeHttpClient(CloseableHttpClient httpclient, CloseableHttpResponse response) {
-        try {
-            httpclient.close();
-            if (response != null) {
-                response.close();
-            }
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-        }
-    }
+			HttpGet httpGet = new HttpGet(url);
 
-    public static void main(String[] args) {
-        OrgOut out = new OrgServiceImpl().getOrgByVersion("11@msgseal.com", 0);
-        System.out.println(out);
-    }
+			response = httpclient.execute(httpGet);
+			int statusCode = response.getStatusLine().getStatusCode();
+
+			if (HttpStatus.SC_OK == statusCode) {
+				String entityJson = EntityUtils.toString(response.getEntity());
+				Type type = new TypeReference<OrgResponse>() {
+				}.getType();
+				OrgResponse out = FastJsonUtil.fromJson(entityJson, type);
+				return out;
+			}
+			return null;
+		} catch (Exception e) {
+			logger.error("请求组织发生异常", e);
+			return null;
+		} finally {
+			closeHttpClient(httpclient, response);
+		}
+	}
+
+	private static String attachParam(String url, Map<String, String> paramsMap) {
+		if (paramsMap != null && !paramsMap.isEmpty()) {
+			StringBuilder result = new StringBuilder();
+			Iterator var3 = paramsMap.keySet().iterator();
+
+			while (var3.hasNext()) {
+				String key = (String) var3.next();
+				String encodedName = encodeFormFields(key, "UTF-8");
+				String encodedValue = encodeFormFields((String) paramsMap.get(key), "UTF-8");
+				if (result.length() > 0) {
+					result.append("&");
+				}
+
+				result.append(encodedName);
+				if (encodedValue != null) {
+					result.append("=");
+					result.append(encodedValue);
+				}
+			}
+
+			return url + (url.contains("?") ? "&" : "?") + result.toString();
+		} else {
+			return url;
+		}
+	}
+
+	private static String encodeFormFields(String s, String charset) {
+		try {
+			return URLEncoder.encode(s, charset);
+		} catch (UnsupportedEncodingException e) {
+			logger.error(e.getMessage(), e);
+		}
+		return s;
+	}
+
+	private void closeHttpClient(CloseableHttpClient httpclient, CloseableHttpResponse response) {
+		try {
+			httpclient.close();
+			if (response != null) {
+				response.close();
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+	}
+
+	public static void main(String[] args) {
+		OrgOut out = new OrgServiceImpl().getOrgByVersion("11@msgseal.com", 0);
+		System.out.println(out);
+	}
 }

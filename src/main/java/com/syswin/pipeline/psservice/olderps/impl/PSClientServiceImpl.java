@@ -2,13 +2,13 @@ package com.syswin.pipeline.psservice.olderps.impl;
 
 import com.alibaba.fastjson.TypeReference;
 import com.google.gson.Gson;
-import com.syswin.pipeline.psservice.olderps.message.ChatMessageHandler;
 import com.syswin.pipeline.psservice.olderps.ChatMsg;
 import com.syswin.pipeline.psservice.olderps.PSClientService;
+import com.syswin.pipeline.psservice.olderps.message.ChatMessageHandler;
+import com.syswin.pipeline.utils.CacheUtil;
 import com.syswin.pipeline.utils.FastJsonUtil;
 import com.syswin.pipeline.utils.LogUtil;
 import com.syswin.pipeline.utils.StringUtil;
-import com.syswin.pipeline.utils.CacheUtil;
 import com.syswin.sub.api.db.model.Publisher;
 import com.syswin.temail.kms.vault.*;
 import com.syswin.temail.ps.client.Header;
@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -470,6 +471,7 @@ public class PSClientServiceImpl implements PSClientService {
 	 * @param to        发给谁
 	 * @param deloytime 延时时间
 	 */
+	@Async("msgThreadPool")
 	public void sendTextmessage(String content, String to, int deloytime) {
 		Map<String, String> contentMap = new HashMap<>();
 		contentMap.put("text", content);
@@ -481,17 +483,20 @@ public class PSClientServiceImpl implements PSClientService {
 
 
 	@Override
-	public boolean sendChatMessage(ChatMsg msg, String toTemail, String toTemailPK) {
-		return sendChatMessage(msg, toTemail, toTemailPK, appTemail, appPK);
+	@Async("msgThreadPool")
+	public void sendChatMessage(ChatMsg msg, String toTemail, String toTemailPK) {
+		sendChatMessage(msg, toTemail, toTemailPK, appTemail, appPK);
 	}
 
 	@Override
-	public boolean sendCardMessage(ChatMsg msg, String from, String fromPK, String to, String toTemailPK) {
-		return sendChatMessage(msg, to, toTemailPK, from, fromPK);
+	@Async("msgThreadPool")
+	public void sendCardMessage(ChatMsg msg, String from, String fromPK, String to, String toTemailPK) {
+		sendChatMessage(msg, to, toTemailPK, from, fromPK);
 	}
 
 	@Override
-	public Boolean sendChatMessage(ChatMsg msg, String toTemail, String toTemailPK, String sendTemail, String sendPK) {
+	@Async("msgThreadPool")
+	public void sendChatMessage(ChatMsg msg, String toTemail, String toTemailPK, String sendTemail, String sendPK) {
 		Header chatMsgHeader = initHeader(singleChatComId, sendTemail, sendPK, toTemail, toTemailPK);
 		ExtraData extraData = new ExtraData(sendTemail, toTemail,
 						UUID.randomUUID().toString(), 1);
@@ -499,25 +504,27 @@ public class PSClientServiceImpl implements PSClientService {
 
 		Message chatMsg = initChatMessage(chatMsgHeader, msg);
 
-		Message resultMsg = this.sendMessageProxy(chatMsg);
-		return resultMsg != null;
+		this.sendMessageProxy(chatMsg);
 	}
 
 
 	@Override
-	public Message sendCdtpRequestFromPiper(final short comSpaceId, final short comId, Object payload) {
+	@Async("msgThreadPool")
+	public void sendCdtpRequestFromPiper(final short comSpaceId, final short comId, Object payload) {
 		Header header = initHeader(comSpaceId, comId, appTemail, appPK, null, null);
 		Message msg = initChatMessage(header, payload);
-		Message resultMsg = this.sendMessageProxy(msg);
-		return resultMsg;
+		this.sendMessageProxy(msg);
 	}
 
 	@Override
-	public Message sendCdtpRequest(final short comSpaceId, final short comId, Object payload, String toTemail, String toTemailPK, String sendTemail, String sendPK) {
+	@Async("msgThreadPool")
+	public void sendCdtpRequest(final short comSpaceId, final short comId, Object payload, String toTemail, String toTemailPK, String sendTemail, String sendPK) {
 		Header header = initHeader(comSpaceId, comId, sendTemail, sendPK, toTemail, toTemailPK);
 		Message msg = initChatMessage(header, payload);
-		Message resultMsg = this.sendMessageProxy(msg);
-		return resultMsg;
+		this.sendMessageProxy(msg);
+
+//		Message resultMsg = this.sendMessageProxy(msg);
+//		return resultMsg;
 	}
 
 

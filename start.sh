@@ -13,4 +13,4 @@ nohup java -Xdebug -Xrunjdwp:transport=dt_socket,suspend=n,server=y,address=8889
 tail -f pipeline-api.log
 
 
-nohup java -jar piper-1.6.11-SNAPSHOT.jar -Dfile.encoding=utf-8 -Dspring.profiles.active=prod > /opt/logs/piper.log &
+nohup java -jar piper-1.6.11-SNAPSHOT.jar  -Dspring.profiles.active=prod -Dfile.encoding=utf-8 > /opt/logs/piper.log &

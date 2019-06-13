@@ -27,7 +27,7 @@ public class SendMessegeServiceTest {
 	public void sendTextmessage() {
 
 //		appPublisherService.addPiperAcount("p.10000001@t.email");
-		sendMessegeService.sendTextmessage("32323", "luohongzhou33@msgseal.com", "a.piper@t.email");
+		sendMessegeService.sendTextmessage("1212", "luohongzhou33@msgseal.com", "a.piper@t.email");
 	}
 
 

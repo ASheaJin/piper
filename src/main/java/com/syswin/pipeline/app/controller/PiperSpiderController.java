@@ -1,17 +1,16 @@
 package com.syswin.pipeline.app.controller;
 
+import com.syswin.pipeline.app.dto.ResponseEntity;
 import com.syswin.pipeline.app.dto.SendComplexInfoParam;
 import com.syswin.pipeline.app.dto.SendParam;
 import com.syswin.pipeline.psservice.bean.SaveText;
-import com.syswin.pipeline.service.PiperSpiderTokenService;
 import com.syswin.pipeline.psservice.bussiness.PublisherSecService;
-import com.syswin.pipeline.app.dto.ResponseEntity;
+import com.syswin.pipeline.service.PiperSpiderTokenService;
 import com.syswin.pipeline.service.content.entity.ContentEntity;
 import com.syswin.pipeline.service.content.entity.MediaContentEntity;
 import com.syswin.pipeline.service.exception.BusinessException;
 import com.syswin.pipeline.utils.StringUtil;
 import com.syswin.ps.sdk.common.ActionItem;
-import com.syswin.ps.sdk.handler.PsClientKeeper;
 import com.syswin.ps.sdk.showType.TextShow;
 import com.syswin.sub.api.PublisherService;
 import com.syswin.sub.api.db.model.Publisher;
@@ -87,7 +86,7 @@ public class PiperSpiderController {
 		if (!StringUtil.isEmpty(msg.getImgUrl())) {
 			map.put("imageUrl", msg.getImgUrl());
 		}
-//		map.put("text", "hello");
+		map.put("text", msg.getImgTxt());
 
 		List<ActionItem> infoList = Stream.of(new ActionItem(msg.getTxt(), msg.getUrl())
 		).collect(Collectors.toList());
@@ -114,6 +113,18 @@ public class PiperSpiderController {
 		contentEntity.setPublisherId(publisher.getPublisherId());
 		List<MediaContentEntity> list = new ArrayList<>();
 
+		if (!StringUtil.isEmpty(msg.getImgUrl())) {
+
+			MediaContentEntity mPngInfo = new MediaContentEntity();
+			mPngInfo.setUrl(msg.getImgTxt());
+			mPngInfo.setBodyType(1);
+			list.add(mPngInfo);
+
+			MediaContentEntity mPng = new MediaContentEntity();
+			mPng.setUrl(msg.getImgUrl());
+			mPng.setBodyType(3);
+			list.add(mPng);
+		}
 		MediaContentEntity m = new MediaContentEntity();
 		m.setText(msg.getTxt());
 		m.setBodyType(1);
@@ -122,12 +133,7 @@ public class PiperSpiderController {
 		mUrl.setText(msg.getUrl());
 		mUrl.setBodyType(1);
 		list.add(mUrl);
-		if (!StringUtil.isEmpty(msg.getImgUrl())) {
-			MediaContentEntity mPng = new MediaContentEntity();
-			mPng.setUrl(msg.getImgUrl());
-			mPng.setBodyType(3);
-			list.add(mPng);
-		}
+
 
 		contentEntity.setContentArray(list);
 		return contentEntity;

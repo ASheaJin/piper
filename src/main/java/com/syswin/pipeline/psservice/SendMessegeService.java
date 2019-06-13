@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.syswin.pipeline.psservice.olderps.Card;
 import com.syswin.pipeline.psservice.olderps.ChatMsg;
 import com.syswin.pipeline.psservice.olderps.PSClientService;
+import com.syswin.pipeline.sop.CheckParamNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,7 @@ public class SendMessegeService {
 	 * @param content 内容
 	 * @param to      发给谁
 	 */
+	@CheckParamNull(params = "all")
 	public void sendTextmessage(String content, String to) {
 		sendTextmessage(content, to, 0);
 	}
@@ -47,6 +49,8 @@ public class SendMessegeService {
 	 * @param to        发给谁
 	 * @param deloytime 延时时间
 	 */
+
+	@CheckParamNull(params = "content,to")
 	public void sendTextmessage(String content, String to, int deloytime) {
 		Map<String, String> contentMap = new HashMap<>();
 		contentMap.put("text", content);
@@ -64,7 +68,8 @@ public class SendMessegeService {
 	 * @param deloytime 延时时间
 	 * @param from      谁发
 	 */
-	@Async("msgThreadPool")
+
+	@CheckParamNull(params = "content,to,from")
 	public void sendTextmessage(String content, String to, int deloytime, String from) {
 		Map<String, String> contentMap = new HashMap<>();
 		contentMap.put("text", content);
@@ -75,7 +80,7 @@ public class SendMessegeService {
 		psClientService.sendChatMessage(chatMsg, to, publickey, from, senderPK);
 	}
 
-	@Async("msgThreadPool")
+	@CheckParamNull(params = "content,to,from")
 	public void sendTextmessage(String content, String to, String from) {
 		sendTextmessage(content, to, 0, from);
 	}
@@ -86,10 +91,12 @@ public class SendMessegeService {
 	 * @param to   发给谁
 	 * @param from 谁发
 	 */
+	@CheckParamNull(params = "name,to,from")
 	public void sendCard(String from, String to, String name) {
 		this.sendCard(from, to, name, null);
 	}
 
+	@CheckParamNull(params = "name,to,from")
 	public void sendCard(String from, String to, String name, String imgUrl) {
 
 		if (from.contains("p.")) {
@@ -139,8 +146,8 @@ public class SendMessegeService {
 //		String publickey = psClientService.getTemailPublicKey(to);
 //		psClientService.sendChatMessage(chatMsg, to, publickey);
 //	}
-	@Async("msgThreadPool")
-	public Boolean sendOthermessage(String content, int bodyType, String to, String from) {
+	@CheckParamNull(params = "content,to,from")
+	public void sendOthermessage(String content, int bodyType, String to, String from) {
 
 
 		//延时1秒钟发。
@@ -155,12 +162,11 @@ public class SendMessegeService {
 		if (StringUtils.isEmpty(senderPK)) {
 			throw new IllegalArgumentException("from 的 publicKey不能为空" + from);
 		}
-		return psClientService.sendChatMessage(chatMsg, to, publickey, from, senderPK);
+		psClientService.sendChatMessage(chatMsg, to, publickey, from, senderPK);
 	}
 
 	@Deprecated
-	@Async("msgThreadPool")
-	public Boolean sendOthermessageTest(String content, int bodyType, String to, String from) {
+	public void sendOthermessageTest(String content, int bodyType, String to, String from) {
 
 		//延时1秒钟发。
 		logger.info("Thread.currentThread().getName()1--------" + Thread.currentThread().getName());
@@ -174,7 +180,7 @@ public class SendMessegeService {
 		if (StringUtils.isEmpty(senderPK)) {
 			throw new IllegalArgumentException("from 的 publicKey不能为空" + from);
 		}
-		return psClientService.sendChatMessage(chatMsg, to, publickey, from, senderPK);
+		psClientService.sendChatMessage(chatMsg, to, publickey, from, senderPK);
 	}
 
 }

@@ -13,35 +13,35 @@ public interface PSClientService {
      * @param temail
      */
 //    void loginTemail(String temail);
-    public String getTemailTestPublicKey(String temail);
+     String getTemailTestPublicKey(String temail);
     /**
      * 发送消息
      * @param msg
      * @return 是否发送成功
      */
-    public boolean sendChatMessage(ChatMsg msg, String toTemail, String toTemailPK);
+     void sendChatMessage(ChatMsg msg, String toTemail, String toTemailPK);
 
-    public boolean sendCardMessage(ChatMsg msg, String from, String fromPK, String to, String toTemailPK);
+  void sendCardMessage(ChatMsg msg, String from, String fromPK, String to, String toTemailPK);
 
     /**
      * 获取公钥
      * @param temail
      * @return
      */
-    public String getTemailPublicKey(String temail);
+     String getTemailPublicKey(String temail);
     /**
      *
      * @param temail
      * @return
      */
-    public String registerTemail(String temail);
+     String registerTemail(String temail);
 
     /**
      *
      * @param temail
      * @return
      */
-    public String registerPub(String temail);
+     String registerPub(String temail);
 
     /**
      * 发送文本的消息
@@ -61,7 +61,7 @@ public interface PSClientService {
      * @param sendPK
      * @return
      */
-    Boolean sendChatMessage(ChatMsg msg, String toTemail, String toTemailPK, String sendTemail, String sendPK);
+    void sendChatMessage(ChatMsg msg, String toTemail, String toTemailPK, String sendTemail, String sendPK);
 
     /**
      * 发送cdtp消息
@@ -70,7 +70,7 @@ public interface PSClientService {
      * @param payload
      * @return
      */
-    Message sendCdtpRequestFromPiper(short comSpaceId, short comId, Object payload);
+    void sendCdtpRequestFromPiper(short comSpaceId, short comId, Object payload);
     /**
      * 发送cdtp消息
      * @param comSpaceId
@@ -82,5 +82,5 @@ public interface PSClientService {
      * @param sendPK
      * @return
      */
-    Message sendCdtpRequest(short comSpaceId, short comId, Object payload, String toTemail, String toTemailPK, String sendTemail, String sendPK);
+    void sendCdtpRequest(short comSpaceId, short comId, Object payload, String toTemail, String toTemailPK, String sendTemail, String sendPK);
 }

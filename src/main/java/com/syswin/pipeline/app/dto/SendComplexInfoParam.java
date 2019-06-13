@@ -13,6 +13,8 @@ public class SendComplexInfoParam {
 	private String token;
 	@ApiModelProperty(value = "消息的title")
 	private String title;
+	@ApiModelProperty(value = "图片文字")
+	private String imgTxt;
 	@ApiModelProperty(value = "图片Url")
 	private String imgUrl;
 	@ApiModelProperty(value = "文字超链接")
