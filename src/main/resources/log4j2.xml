@@ -24,6 +24,11 @@
 		<Logger name="com.alibaba.druid" level="warn" additivity="false">
 			<AppenderRef ref="Async"/>
 		</Logger>
+		<Logger name="com.syswin.ps.sdk" level="warn" additivity="false">
+			<AppenderRef ref="Async"/>
+		</Logger>
+
+
 		<root level="INFO">
 			<appender-ref ref="CONSOLE"/>
 			<appender-ref ref="Async"/>
