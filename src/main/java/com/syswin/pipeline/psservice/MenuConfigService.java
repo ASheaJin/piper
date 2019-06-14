@@ -3,6 +3,8 @@ package com.syswin.pipeline.psservice;
 import com.syswin.pipeline.PiperApplication;
 import com.syswin.pipeline.enums.PermissionEnums;
 import com.syswin.pipeline.service.PiperConsumerService;
+import com.syswin.pipeline.service.PiperSubscriptionService;
+import com.syswin.pipeline.utils.LanguageChange;
 import com.syswin.pipeline.utils.StringUtil;
 import com.syswin.ps.sdk.admin.config.IMenuConfigService;
 import com.syswin.ps.sdk.common.MsgHeader;
@@ -36,10 +38,15 @@ public class MenuConfigService implements IMenuConfigService {
 	private String myRole = PermissionEnums.Reader.name;
 
 	@Autowired
+	LanguageChange languageChange;
+	@Autowired
 	private SendMessegeService sendMessegeService;
 
 	@Autowired
 	private PublisherService publisherService;
+
+	@Autowired
+	private PiperSubscriptionService piperSubscriptionService;
 
 	private static String common = "common";
 	private static String person = "person";
@@ -54,7 +61,7 @@ public class MenuConfigService implements IMenuConfigService {
 		logger.debug("msgHeader" + msgHeader.toString());
 		//根据访问者的权限配置菜单 msgHeader 里面有用户的 信息
 		List<String> menus = menu(msgHeader, accountNo);
-		logger.info("获取菜单：sender:{},receive:{},platformInfo:{},menus:{}",msgHeader.getSender(),msgHeader.getReceiver(),msgHeader.getPlatformInfo(), menus.toString());
+		logger.info("获取菜单：sender:{},receive:{},platformInfo:{},menus:{}", msgHeader.getSender(), msgHeader.getReceiver(), msgHeader.getPlatformInfo(), menus.toString());
 		return menus;
 
 	}
@@ -129,8 +136,15 @@ public class MenuConfigService implements IMenuConfigService {
 		if (apiper.equals(header.getReceiver())) {
 			return null;
 		}
+		try {
+			//每次进入进行订阅（只订阅个人出版社）
+			piperSubscriptionService.subscribeInner(header.getSender(), header.getReceiver());
+		} catch (Exception e) {
+			logger.error(header.getSender() + "订阅" + header.getReceiver() + "失败了 :" + 			 languageChange.getLangByStr(e.getMessage(), ""));
+		}
 		if (!consumerService.getUserVersion(header.getSender(), header.getReceiver())) {
 			Publisher p = publisherService.getPubLisherByPublishTmail(accountNo, null);
+
 			if (p != null) {
 				if (p.getUserId().equals(header.getSender())) {
 					sendMessegeService.sendCard(header.getReceiver(), header.getSender(), "*" + p.getName());

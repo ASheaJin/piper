@@ -222,21 +222,20 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 
 		//如果用户输入的是文本
 
+//TODO 订阅转移自动订阅了
 
-		Subscription subscription = subscriptionService.getSub(userId, publisher.getPublisherId());
-		if (subscription == null && !publisher.getUserId().equals(userId)) {
-			if (bodyType == 1) {
-				String txt = StringUtils.filterStr(show.toString());
-				if ("subscribe".equals(txt) || "订阅".equals(txt) || "1".equals(txt)) {
-					piperSubscriptionService.subscribe(userId, ptemail, publisher.getPtype());
-					return;
-				} else {
-					sendMessegeService.sendTextmessage(languageChange.getValueByUserId("msg.ordertip", userId), userId, 0, publisher.getPtemail());
-				}
-			}
-			sendMessegeService.sendTextmessage(languageChange.getValueByUserId("msg.noreply", userId), userId, 1000, ptemail);
-//			sendMessegeService.sendTextmessage("您已订阅该出版社 发送 《取消订阅》 取消订阅该出版社", userId, 0, publisher.getPtemail());
-		}
+//		Subscription subscription = subscriptionService.getSub(userId, publisher.getPublisherId());
+//		if (subscription == null && !publisher.getUserId().equals(userId)) {
+//			if (bodyType == 1) {
+//				String txt = StringUtils.filterStr(show.toString());
+//				if ("subscribe".equals(txt) || "订阅".equals(txt) || "1".equals(txt)) {
+//					piperSubscriptionService.subscribe(userId, ptemail, publisher.getPtype());
+//					return;
+//				} else {
+//					sendMessegeService.sendTextmessage(languageChange.getValueByUserId("msg.ordertip", userId), userId, 0, publisher.getPtemail());
+//				}
+//			}
+//		}
 		//判断出版社是否存在
 		if (userId.equals(publisher.getUserId())) {
 //			if (!filterset.contains(body_type)) {
@@ -244,6 +243,9 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 //				return;
 //			}
 			dealpusharticle(publisher, bodyType, show, PublisherTypeEnums.person);
+		}else{
+			sendMessegeService.sendTextmessage(languageChange.getValueByUserId("msg.noreply", userId), userId, 1000, ptemail);
+
 		}
 
 

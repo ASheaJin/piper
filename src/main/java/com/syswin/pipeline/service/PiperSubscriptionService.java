@@ -2,6 +2,7 @@ package com.syswin.pipeline.service;
 
 import com.github.pagehelper.PageInfo;
 import com.syswin.pipeline.manage.dto.output.PulisherSubOutput;
+import com.syswin.pipeline.psservice.MessegerSenderService;
 import com.syswin.pipeline.psservice.SendMessegeService;
 import com.syswin.pipeline.psservice.olderps.PSClientService;
 import com.syswin.pipeline.service.exception.BusinessException;
@@ -15,6 +16,8 @@ import com.syswin.sub.api.db.model.Publisher;
 import com.syswin.sub.api.db.model.Subscription;
 import com.syswin.sub.api.enums.PublisherTypeEnums;
 import com.syswin.sub.api.exceptions.SubException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -28,6 +31,7 @@ import java.util.List;
  */
 @Service
 public class PiperSubscriptionService {
+	private static final Logger logger = LoggerFactory.getLogger(PiperSubscriptionService.class);
 
 	@Autowired
 	PSClientService psClientService;
@@ -219,7 +223,6 @@ public class PiperSubscriptionService {
 	//================================ manage方法 =========================================>
 
 
-
 	public PageInfo list(int pageIndex, int pageSize, String keyword, String publisherId) {
 		List<Subscription> list = subSubscriptionService.list(pageIndex, pageSize, keyword, publisherId);
 		return new PageInfo(list);
@@ -277,7 +280,7 @@ public class PiperSubscriptionService {
 		if (publisher.getPtype().equals(PublisherTypeEnums.organize)) {
 			throw new BusinessException("msg.nopermission");
 		}
-		Subscription subscription = subSubscriptionService.subscribe(userId, publisher.getPublisherId());
+		Subscription subscription = subscribeInner(userId, publishTemail);
 
 		//判断是否自己订阅自己
 		if (userId.equals(publisher.getUserId())) {
@@ -286,9 +289,33 @@ public class PiperSubscriptionService {
 			sendMessegeService.sendCard(publisher.getPtemail(), userId, publisher.getName());
 		}
 //		psClientService.sendTextmessage(publisher.getName() + "<" + publisher.getPtemail() + "> 订阅成功，作者即将推送文章", userId, 0);
-//		sendMessegeService.sendTextmessage("订阅成功，作者会在此为你发文章", userId, 0, publisher.getPtemail());
+		sendMessegeService.sendTextmessage(languageChange.getValueByUserId("msg.subsec", userId), userId, 0, publisher.getPtemail());
 		//给创建者发个消息
 		sendMessegeService.sendTextmessage(languageChange.getLangByUserId("msg.submotice", new String[]{userId}, publisher.getUserId()), publisher.getUserId(), publisher.getPtemail());
+
+		return subscription;
+
+	}
+
+
+	public Subscription subscribeInner(String userId, String publishTemail) {
+		if (StringUtils.isNullOrEmpty(publishTemail) || StringUtils.isNullOrEmpty(userId)) {
+			throw new BusinessException("ex.userid.null");
+		}
+
+		Publisher publisher = subPublisherService.getPubLisherByPublishTmail(publishTemail, null);
+		if (publisher == null) {
+			publisher = subPublisherService.getPubLisherById(publishTemail);
+			if (publisher == null) {
+				logger.error("publishTemail{},userId{userId} 订阅失败", publishTemail, userId);
+				throw new BusinessException("ex.publisher.null");
+			}
+		}
+		if (publisher.getPtype().equals(PublisherTypeEnums.organize)) {
+			logger.error("publishTemail{},userId{userId} 订阅失败", publishTemail, userId);
+			throw new BusinessException("msg.nopermission");
+		}
+		Subscription subscription = subSubscriptionService.subscribe(userId, publisher.getPublisherId());
 
 		return subscription;
 
