@@ -33,7 +33,7 @@ public class MenuConfigService implements IMenuConfigService {
 	private String apiper;
 	@Autowired
 	private PiperConsumerService consumerService;
-	private String myRole = PermissionEnums.Guest.name;
+	private String myRole = PermissionEnums.Reader.name;
 
 	@Autowired
 	private SendMessegeService sendMessegeService;
@@ -44,16 +44,17 @@ public class MenuConfigService implements IMenuConfigService {
 	private static String common = "common";
 	private static String person = "person";
 	private static String guest = "guest";
+	private static String reader = "reader";
 	private static String org = "org";
 
 	private static String nomenu = "nomenu";
 
 	public List<String> getKey(String accountNo) {
 		MsgHeader msgHeader = PsClientKeeper.msgHeader();
-		logger.info("msgHeader" + msgHeader.toString());
+		logger.debug("msgHeader" + msgHeader.toString());
 		//根据访问者的权限配置菜单 msgHeader 里面有用户的 信息
 		List<String> menus = menu(msgHeader, accountNo);
-		logger.info("menus" + menus.toString());
+		logger.info("获取菜单：sender:{},receive:{},platformInfo:{},menus:{}",msgHeader.getSender(),msgHeader.getReceiver(),msgHeader.getPlatformInfo(), menus.toString());
 		return menus;
 
 	}
@@ -82,7 +83,6 @@ public class MenuConfigService implements IMenuConfigService {
 			return null;
 		}
 		String userId = header.getSender();
-		logger.info("userId---" + userId);
 		myRole = consumerService.getAMenuRole(userId);
 		//初始时创建
 		if (!consumerService.getUserVersion(header.getSender(), header.getReceiver())) {
@@ -96,7 +96,6 @@ public class MenuConfigService implements IMenuConfigService {
 		String lang = header.getPlatformInfo().getLanguage();
 
 		List menus = new ArrayList();
-		logger.info(myRole);
 
 		if (PermissionEnums.OrgPerson.name.equals(myRole)) {
 			menus.add(getKey(accountNo, getLang(lang, person)));
@@ -117,7 +116,7 @@ public class MenuConfigService implements IMenuConfigService {
 			menus.add(getKey(accountNo, getLang(lang, common)));
 		}
 		//游客，订阅者
-		if (PermissionEnums.Guest.name.equals(myRole)) {
+		if (PermissionEnums.Reader.name.equals(myRole)) {
 			menus.add(getKey(accountNo, getLang(lang, guest)));
 			menus.add(getKey(accountNo, getLang(lang, common)));
 		}
@@ -149,7 +148,16 @@ public class MenuConfigService implements IMenuConfigService {
 
 		menus.add(getKey(accountNo, getLang(lang, common)));
 
+
 		//判断是否是组织出版社
+		if (PermissionEnums.Reader.name.equals(myRole)) {
+			menus.add(getKey(accountNo, getLang(lang, reader)));
+		}
+		//判断是否是组织出版社
+		if (PermissionEnums.Person.name.equals(myRole)) {
+			menus.add(getKey(accountNo, getLang(lang, person)));
+		}
+
 		if (PermissionEnums.OnlyOrg.name.equals(myRole)) {
 			menus.add(getKey(accountNo, getLang(lang, org)));
 		}

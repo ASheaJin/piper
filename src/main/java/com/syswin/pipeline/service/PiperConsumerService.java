@@ -5,8 +5,10 @@ import com.syswin.pipeline.db.model.ConsumerExample;
 import com.syswin.pipeline.db.repository.ConsumerRepository;
 import com.syswin.sub.api.AdminService;
 import com.syswin.sub.api.PublisherService;
+import com.syswin.sub.api.SubscriptionService;
 import com.syswin.sub.api.db.model.Admin;
 import com.syswin.sub.api.db.model.Publisher;
+import com.syswin.sub.api.db.model.Subscription;
 import com.syswin.sub.api.enums.PublisherTypeEnums;
 import com.syswin.temail.ps.client.Header;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,12 +23,15 @@ import java.util.List;
 @Service
 public class PiperConsumerService {
 	@Autowired
-	ConsumerRepository consumerRepository;
+	private ConsumerRepository consumerRepository;
 
 	@Autowired
 	private AdminService adminService;
 	@Autowired
 	private PublisherService publisherService;
+
+	@Autowired
+	private SubscriptionService subscriptionService;
 
 	public String getUserVersion(Header header, String version, String myRole) {
 		return getUserVersion(header.getSender(), header.getReceiver(), version, myRole);
@@ -130,16 +135,20 @@ public class PiperConsumerService {
 	 */
 	public String getPiperMenuRole(String userId, String pTemail) {
 		//什么都不是
-		int role = 0;
+		int role = -1;
 		Publisher publisher = publisherService.getPubLisherByPublishTmail(pTemail, null);
 		if (publisher == null) {
 			return String.valueOf(role);
 		}
+
+
 		if (PublisherTypeEnums.person.equals(publisher.getPtype())) {
-			role = publisher.getUserId().equals(userId) ? 1 : 0;
+			Subscription subscription = subscriptionService.getSub(userId, publisher.getPublisherId());
+			role = subscription == null ? 0 : role;
+			role = publisher.getUserId().equals(userId) ? 1 : role;
 		}
 		if (PublisherTypeEnums.organize.equals(publisher.getPtype())) {
-			role = publisher.getUserId().equals(userId) ? 2 : 0;
+			role = publisher.getUserId().equals(userId) ? 2 : role;
 		}
 		return String.valueOf(role);
 	}

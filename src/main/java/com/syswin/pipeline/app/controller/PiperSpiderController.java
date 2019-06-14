@@ -116,7 +116,7 @@ public class PiperSpiderController {
 		if (!StringUtil.isEmpty(msg.getImgUrl())) {
 
 			MediaContentEntity mPngInfo = new MediaContentEntity();
-			mPngInfo.setUrl(msg.getImgTxt());
+			mPngInfo.setText(msg.getImgTxt());
 			mPngInfo.setBodyType(1);
 			list.add(mPngInfo);
 
