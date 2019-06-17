@@ -33,7 +33,7 @@ public class ContentOutServiceTest {
 
     @Test
     public void getAllBodyType() {
-        List<Publisher> publishers = publisherService.list(1, 10000, null, null, null);
+        List<Publisher> publishers = publisherService.list(1, 10000, null, null, null).getList();
         for (Publisher publisher : publishers) {
             PageInfo contentOutPageInfo = contentOutService.listByPublisherId(publisher.getPublisherId(), 1, 10000);
             List<ContentOut> contents = contentOutPageInfo.getList();

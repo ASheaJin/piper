@@ -56,7 +56,25 @@ public class PiperSubcribeController {
 		Integer pageSize = StringUtils.isNullOrEmpty(upm.getPageSize()) ? 20 : Integer.parseInt(upm.getPageSize());
 
 
-		return new ResponseEntity(subscriptionService.getMySubscribtion(upm.getUserId(),pageNo,pageSize));
+		return new ResponseEntity(subscriptionService.getPersonSubscribtions(upm.getUserId(),pageNo,pageSize));
+	}
+
+	@PostMapping("/getPersonSubsions")
+	public ResponseEntity getPersonSubsions(@RequestBody RecomListParam upm) {
+		Integer pageNo = StringUtils.isNullOrEmpty(upm.getPageNo()) ? 1 : Integer.parseInt(upm.getPageNo());
+		Integer pageSize = StringUtils.isNullOrEmpty(upm.getPageSize()) ? 20 : Integer.parseInt(upm.getPageSize());
+
+
+		return new ResponseEntity(subscriptionService.getPersonSubscribtions(upm.getUserId(),pageNo,pageSize));
+	}
+
+	@PostMapping("/getOrgSubsions")
+	public ResponseEntity getOrgSubsions(@RequestBody RecomListParam upm) {
+		Integer pageNo = StringUtils.isNullOrEmpty(upm.getPageNo()) ? 1 : Integer.parseInt(upm.getPageNo());
+		Integer pageSize = StringUtils.isNullOrEmpty(upm.getPageSize()) ? 20 : Integer.parseInt(upm.getPageSize());
+
+
+		return new ResponseEntity(subscriptionService.getOrgSubscribtions(upm.getUserId(),pageNo,pageSize));
 	}
 
 	@RequestMapping(value = "/getPubSubsions", method = RequestMethod.POST)

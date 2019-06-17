@@ -18,7 +18,9 @@ import com.syswin.sub.api.AdminService;
 import com.syswin.sub.api.db.model.Admin;
 import com.syswin.sub.api.db.model.Publisher;
 import com.syswin.sub.api.enums.PublisherTypeEnums;
+import com.syswin.sub.api.utils.BeanConvertUtil;
 import com.syswin.sub.api.utils.EnumsUtil;
+import com.syswin.sub.api.vo.PublisherVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -138,8 +140,11 @@ public class PiperPublisherService {
 	 * @param userId
 	 * @return
 	 */
-	public Publisher getPubLisherByuserId(String userId) {
-		return subPublisherService.getPublisherByUserId(userId, PublisherTypeEnums.person);
+	public PublisherVO getPubLisherByuserId(String userId) {
+		PublisherVO publisherVO = BeanConvertUtil.map(subPublisherService.getPublisherByUserId(userId, PublisherTypeEnums.person), PublisherVO.class);
+		publisherVO.setContents(100);
+		publisherVO.setSubcribs(50);
+		return publisherVO;
 	}
 
 
@@ -150,7 +155,7 @@ public class PiperPublisherService {
 		if (!StringUtils.isNullOrEmpty(piperType) && !"0".equals(piperType)) {
 			pType = EnumsUtil.getPubliserTypeEnums(Integer.parseInt(piperType));
 		}
-		List<Publisher> publisherList = subPublisherService.list(pageNo, pageSize, keyword, pType, userId);
+		List<Publisher> publisherList = subPublisherService.list(pageNo, pageSize, keyword, pType, userId).getList();
 		List<PublisherManageVO> pmVOList = new ArrayList<>();
 		List<String> publisherIds = publisherList.stream().map((p) -> p.getPublisherId()).collect(Collectors.toList());
 		List<ReCommendPublisher> reCommendPublisherList = null;
@@ -200,10 +205,10 @@ public class PiperPublisherService {
 	}
 
 	//获取我创建的组织出版社
-	public List<Publisher> getMyOrgPublisherList(String keyword, String userId, int pageNo, int pageSize) {
+	public PageInfo getMyOrgPublisherList(String keyword, String userId, int pageNo, int pageSize) {
 		Admin admin = adminService.getAdmin(userId, PublisherTypeEnums.organize);
 		if (admin == null || admin.getStatus() == 0) {
-			return new ArrayList<>();
+			return new PageInfo();
 		}
 //		return subPublisherService.getOrgPublisherByuserId(keyword, userId);
 		return subPublisherService.getOrgPublisherByuserId(keyword, userId, pageNo, pageSize);

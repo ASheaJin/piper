@@ -140,7 +140,7 @@ public class PiperContentController {
 	@PostMapping("/pa")
 	@ApiOperation(hidden = true, value = "重新解析所有内容")
 	public ResponseEntity pa() {
-		List<Publisher> publishers = publisherService.list(1, 10000, null, null, null);
+		List<Publisher> publishers = publisherService.list(1, 10000, null, null, null).getList();
 		for (Publisher publisher : publishers) {
 			List<Content> contentList = contentService.getMyContentsbyPid(publisher.getPublisherId(), 1, 10000);
 			addContentsJob(contentList);

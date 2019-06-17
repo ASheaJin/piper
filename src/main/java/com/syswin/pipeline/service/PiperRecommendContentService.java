@@ -64,7 +64,7 @@ public class PiperRecommendContentService {
 		List<String> pids = contentOuts.stream().map(r -> r.getPublisherId()).collect(Collectors.toList());
 		List<Publisher> publisers = null;
 		if (pids.size() > 0) {
-			publisers = publisherService.selectListByIds(pids, 0, 0);
+			publisers = publisherService.selectListByIds(pids, 0, 0).getList();
 		}
 		for (ContentOut contentOut : contentOuts) {
 			String url = URL_PIPER + "/web/recommend-details?contentId=" + contentOut.getContentId() + "&publisherId=" + contentOut.getPublisherId() + "&userId=" + userId;

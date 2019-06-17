@@ -25,7 +25,7 @@ public class MessegeSendrServiceTest {
 		String infoTitle = "价格类谈判：怎样谈出好价格";
 		String infoUrl = "http://t.cn/E9BjssG";
 
-		messegerSenderService.sendSpiderMsg("p.10000001@t.email", "luohongzhou33@msgseal.com", title, url, infoTitle, infoUrl);	}
+		messegerSenderService.sendComplexMsg("p.10000001@t.email", "luohongzhou33@msgseal.com", title,"", url, infoTitle, infoUrl);	}
 
 	@Test
 	public void sendIMG() throws IOException {

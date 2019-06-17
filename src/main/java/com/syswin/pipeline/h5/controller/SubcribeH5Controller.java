@@ -32,7 +32,7 @@ public class SubcribeH5Controller {
 		int pageSize = StringUtils.getParam(request, "pageSize", 10);
 		String userId = StringUtils.getParam(request, "userId", null);
 
-		model.addAttribute("data", subscriptionService.getMySubscribtion(userId, pageIndex, pageSize));
+		model.addAttribute("data", subscriptionService.getPersonSubscribtions(userId, pageIndex, pageSize));
 		model.addAttribute("pageIndex", pageIndex);
 		model.addAttribute("pageSize", pageSize);
 		model.addAttribute("userId", userId);

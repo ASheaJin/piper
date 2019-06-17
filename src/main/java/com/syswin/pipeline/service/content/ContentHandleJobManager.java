@@ -111,6 +111,11 @@ public class ContentHandleJobManager {
                     listContent.setIntro(limitIntro(intro));
                     continue;
                 }
+                if (BodyTypeEnums.URL.getType().equals(media.getBodyType())) {
+                    intro = media.getText();
+                    listContent.setUrl(media.getUrl());
+                    continue;
+                }
                 if ((BodyTypeEnums.VOICE.getType().equals(media.getBodyType())
                     || BodyTypeEnums.PIC.getType().equals(media.getBodyType())
                     || BodyTypeEnums.VIDEO.getType().equals(media.getBodyType())

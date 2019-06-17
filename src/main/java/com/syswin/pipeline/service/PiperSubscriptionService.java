@@ -203,11 +203,21 @@ public class PiperSubscriptionService {
 	 * @param userId
 	 * @return
 	 */
-	public List<Publisher> getMySubscribtion(String userId, int pageNo, int pageSize) {
+	public PageInfo getPersonSubscribtions(String userId, int pageNo, int pageSize) {
 
-		return subSubscriptionService.getMySubscribtionsAll(userId, pageNo, pageSize);
+		return subSubscriptionService.getMySubscribtionsByType(userId, PublisherTypeEnums.person, pageNo, pageSize);
 	}
 
+	/**
+	 * 获得当前用户订阅的所有出版社
+	 *
+	 * @param userId
+	 * @return
+	 */
+	public PageInfo getOrgSubscribtions(String userId, int pageNo, int pageSize) {
+
+		return subSubscriptionService.getMySubscribtionsByType(userId, PublisherTypeEnums.organize, pageNo, pageSize);
+	}
 
 	/**
 	 * 获得出版社的订阅者
@@ -224,17 +234,13 @@ public class PiperSubscriptionService {
 
 
 	public PageInfo list(int pageIndex, int pageSize, String keyword, String publisherId) {
-		List<Subscription> list = subSubscriptionService.list(pageIndex, pageSize, keyword, publisherId);
-		return new PageInfo(list);
+		return subSubscriptionService.list(pageIndex, pageSize, keyword, publisherId);
 	}
 
-	public List<String> getSubscribersByUserId(String keyword, String userId, String publisherId, PublisherTypeEnums organize, int pageNo, int pageSize) {
+	public PageInfo<List<String>> getSubscribersByUserId(String keyword, String userId, String publisherId, PublisherTypeEnums organize, int pageNo, int pageSize) {
 		//// TODO: 2019/2/20
 //		pageSize = pageSize == 0 ? 20 : pageSize;
-		Admin admin = adminService.getAdmin(userId, PublisherTypeEnums.organize);
-		if (admin == null) {
-			return new ArrayList<>();
-		}
+//		Admin admin = adminService.getAdmin(userId, PublisherTypeEnums.organize);
 
 		return subSubscriptionService.getSubscribersByKeyWord(keyword, userId, publisherId, organize, pageNo, pageSize);
 	}

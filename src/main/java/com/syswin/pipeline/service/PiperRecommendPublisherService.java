@@ -56,7 +56,7 @@ public class PiperRecommendPublisherService {
 		}
 		List<ReComPublisherVO> pmVOList = new ArrayList<>();
 		if (pids.size() > 0) {
-			List<Publisher> publisherList = publisherService.selectListByIds(pids, pageNo, pageSize);
+			List<Publisher> publisherList = publisherService.selectListByIds(pids, pageNo, pageSize).getList();
 			for (Publisher publisher : publisherList) {
 				ReComPublisherVO pmVO = new ReComPublisherVO();
 				pmVO.setName(publisher.getName());
@@ -90,7 +90,7 @@ public class PiperRecommendPublisherService {
 		List<PublisherManageVO> pmVOList = new ArrayList<>();
 
 		if (pids.size() > 0) {
-			publisherList = publisherService.selectListByIds(pids, pageNo, pageSize);
+			publisherList = publisherService.selectListByIds(pids, pageNo, pageSize).getList();
 			for (Publisher publisher : publisherList) {
 				PublisherManageVO pmVO = new PublisherManageVO();
 				pmVO.setCreatTime(pmVO.getCreatTime());

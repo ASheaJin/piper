@@ -81,16 +81,19 @@ public class MessegerSenderService extends AbstractMsgSender {
 		return outStream.toByteArray();
 	}
 
-	public void sendSpiderMsg(String from, String to, String title, String imageUrl, String infoTile, String infoUrl) {
+	public void sendComplexMsg(String from, String to, String title, String text, String imageUrl, String infoTile, String infoUrl) {
 //		MsgHeader msgHeader= PsClientKeeper.msgHeader();
 		Map<String, Object> map = new HashMap<>();
-		if (!StringUtil.isEmpty(title)) {
-			map.put("title", title);
+		if (StringUtil.isEmpty(title)) {
+			throw new RuntimeException("title不能为空");
 		}
+		map.put("title", title);
 		if (!StringUtil.isEmpty(imageUrl)) {
 			map.put("imageUrl", imageUrl);
 		}
-//		map.put("text", "hello");
+		if (!StringUtil.isEmpty(text)) {
+			map.put("text", text);
+		}
 
 		List<ActionItem> infoList = Stream.of(new ActionItem(infoTile, infoUrl)
 		).collect(Collectors.toList());

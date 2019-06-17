@@ -1,17 +1,13 @@
 package com.syswin.pipeline.sop;
 
-import com.syswin.pipeline.psservice.SendMessegeService;
 import com.syswin.pipeline.service.exception.BusinessException;
 import com.syswin.pipeline.utils.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
 import org.springframework.stereotype.Component;
 
@@ -30,8 +26,6 @@ import java.util.Map;
 @SuppressWarnings("all")
 public class CheckParamNullAspect {
 
-	@Autowired
-	private SendMessegeService sendMessegeService;
 
 	@Pointcut("@annotation(com.syswin.pipeline.sop.CheckParamNull)")
 	public void dealCacheServiceCut() {

@@ -31,9 +31,9 @@ import java.util.stream.Stream;
  */
 @CrossOrigin
 @RestController
-@RequestMapping("/spider")
-@Api(value = "spider", tags = "spider")
-public class PiperSpiderController {
+@RequestMapping("/send")
+@Api(value = "send", tags = "send")
+public class PiperSendController {
 
 	@Autowired
 	PublisherSecService publisherSecService;
@@ -125,14 +125,13 @@ public class PiperSpiderController {
 			mPng.setBodyType(3);
 			list.add(mPng);
 		}
-//		MediaContentEntity m = new MediaContentEntity();
-//		m.setText(msg.getTxt());
-//		m.setBodyType(1);
-//		list.add(m);
+		MediaContentEntity m = new MediaContentEntity();
+		m.setText(msg.getTxt());
+		m.setBodyType(1);
+		list.add(m);
 		MediaContentEntity mUrl = new MediaContentEntity();
-		mUrl.setText(msg.getTxt());
-		mUrl.setUrl(msg.getUrl());
-		mUrl.setBodyType(9);
+		mUrl.setText(msg.getUrl());
+		mUrl.setBodyType(1);
 		list.add(mUrl);
 
 

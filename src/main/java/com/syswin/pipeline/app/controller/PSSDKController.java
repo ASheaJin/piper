@@ -84,7 +84,7 @@ public class PSSDKController {
 		String infoTitle = "价格类谈判：怎样谈出好价格";
 		String infoUrl = "http://t.cn/E9BjssG";
 
-		messegerSenderService.sendSpiderMsg(from, to, title, url, infoTitle, infoUrl);
+		messegerSenderService.sendComplexMsg(from, to, title, "",url, infoTitle, infoUrl);
 		return "success";
 	}
 

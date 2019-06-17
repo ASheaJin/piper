@@ -1,5 +1,6 @@
 package com.syswin.pipeline.app.controller;
 
+import com.github.pagehelper.PageInfo;
 import com.syswin.pipeline.app.dto.*;
 import com.syswin.pipeline.service.PiperPublisherService;
 import com.syswin.pipeline.service.PiperSubscriptionService;
@@ -11,6 +12,7 @@ import com.syswin.sub.api.AdminService;
 import com.syswin.sub.api.db.model.Publisher;
 import com.syswin.sub.api.db.model.Subscription;
 import com.syswin.sub.api.enums.PublisherTypeEnums;
+import com.syswin.sub.api.vo.PublisherVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -195,7 +197,7 @@ public class PiperPublisherController {
 					value = "获得我的个人出版社"
 	)
 	public ResponseEntity getMyPublisher(@RequestBody UserIdParam userIdParam) {
-		Publisher publisher = publisherService.getPubLisherByuserId(userIdParam.getUserId());
+		PublisherVO publisher = publisherService.getPubLisherByuserId(userIdParam.getUserId());
 		return new ResponseEntity(publisher);
 	}
 
@@ -216,7 +218,7 @@ public class PiperPublisherController {
 		int pageno = StringUtils.getInteger(searchParam.getPageNo()) == 0 ? 1 : StringUtils.getInteger(searchParam.getPageNo());
 		int pagesize = StringUtils.getInteger(searchParam.getPageSize()) == 0 ? 20 : StringUtils.getInteger(searchParam.getPageSize());
 
-		List<Publisher> publisherList = publisherService.getMyOrgPublisherList(searchParam.getKeyword(), searchParam.getUserId(), pageno, pagesize);
-		return new ResponseEntity(publisherList);
+		PageInfo p = publisherService.getMyOrgPublisherList(searchParam.getKeyword(), searchParam.getUserId(), pageno, pagesize);
+		return new ResponseEntity(p);
 	}
 }

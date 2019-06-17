@@ -10,6 +10,7 @@ public enum BodyTypeEnums {
     CARD(4),
     MAP(5),
     SYSTEM(7),
+    URL(9),
     VIDEO(10),
     GIF(12),
     FILE(14),
