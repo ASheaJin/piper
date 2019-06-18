@@ -79,6 +79,7 @@ public class PiperContentController {
 		Publisher publisher = publisherService.getPubLisherById(contentOut.getPublisherId());
 		if (publisher != null) {
 			contentEntity.setPublisherName(publisher.getName());
+			contentEntity.setPtemail(publisher.getPtemail());
 			if (!publisher.getPtype().equals(PublisherTypeEnums.organize)) {
 				contentEntity.setShow(1);
 			}

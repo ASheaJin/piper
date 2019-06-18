@@ -33,6 +33,10 @@ public class ContentEntity extends MediaContentEntity {
     private String publisherName;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ApiModelProperty(value = "出版社秘邮邮箱")
+    private String ptemail;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     @ApiModelProperty(value = "标题")
     private String title;
 
