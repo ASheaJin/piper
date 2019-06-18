@@ -15,6 +15,9 @@ import com.syswin.pipeline.utils.PermissionUtil;
 import com.syswin.pipeline.utils.StringUtils;
 import com.syswin.ps.sdk.admin.service.impl.PSConfigService;
 import com.syswin.sub.api.AdminService;
+import com.syswin.sub.api.ContentService;
+import com.syswin.sub.api.PublisherService;
+import com.syswin.sub.api.SubscriptionService;
 import com.syswin.sub.api.db.model.Admin;
 import com.syswin.sub.api.db.model.Publisher;
 import com.syswin.sub.api.enums.PublisherTypeEnums;
@@ -53,6 +56,10 @@ public class PiperPublisherService {
 	private PiperRecommendPublisherService piperRecommendPublisherService;
 
 	@Autowired
+	private SubscriptionService subscriptionService;
+	@Autowired
+	private ContentService subcontentService;
+	@Autowired
 	private AdminService adminService;
 
 	@Autowired
@@ -61,7 +68,7 @@ public class PiperPublisherService {
 	private UpdateMenuService updateMenuService;
 
 	@Autowired
-	private com.syswin.sub.api.PublisherService subPublisherService;
+	private PublisherService subPublisherService;
 
 	@Value("${domain.promission}")
 	private String domain;
@@ -142,8 +149,8 @@ public class PiperPublisherService {
 	 */
 	public PublisherVO getPubLisherByuserId(String userId) {
 		PublisherVO publisherVO = BeanConvertUtil.map(subPublisherService.getPublisherByUserId(userId, PublisherTypeEnums.person), PublisherVO.class);
-		publisherVO.setContents(100);
-		publisherVO.setSubcribs(50);
+		publisherVO.setContents(subcontentService.getContentCount(publisherVO.getPublisherId()));
+		publisherVO.setSubcribs(subscriptionService.getSubscribeCount(publisherVO.getPublisherId()));
 		return publisherVO;
 	}
 

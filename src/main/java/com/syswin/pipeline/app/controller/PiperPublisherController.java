@@ -212,7 +212,7 @@ public class PiperPublisherController {
 
 	@PostMapping("/getMyOrgPublisher")
 	@ApiOperation(
-					value = "获得我的出版社"
+					value = "获得我创建的组织出版社"
 	)
 	public ResponseEntity getMyOrgPublisher(@RequestBody SearchParam searchParam) {
 		int pageno = StringUtils.getInteger(searchParam.getPageNo()) == 0 ? 1 : StringUtils.getInteger(searchParam.getPageNo());
