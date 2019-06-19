@@ -44,7 +44,7 @@ public class PollTemailTask implements SchedulingConfigurer {
                      */
                     Long startTime = System.currentTimeMillis();
                     Long endTime = System.currentTimeMillis();
-//                    System.out.println("monitor process time：" + (endTime - startTime));
+                    System.out.println("monitor process time：" + (endTime - startTime));
 
                 }
             }
