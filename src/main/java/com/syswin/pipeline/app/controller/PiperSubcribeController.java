@@ -1,13 +1,19 @@
 package com.syswin.pipeline.app.controller;
 
 import com.syswin.pipeline.app.dto.*;
+import com.syswin.pipeline.app.dto.output.MarkVO;
 import com.syswin.pipeline.service.PiperPublisherService;
 import com.syswin.pipeline.service.PiperSubscriptionService;
+import com.syswin.pipeline.utils.LanguageChange;
 import com.syswin.pipeline.utils.StringUtils;
 import com.syswin.sub.api.enums.PublisherTypeEnums;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 出版社的创建 查看 订阅 搜索
@@ -19,29 +25,12 @@ import org.springframework.web.bind.annotation.*;
 @Api(value = "subcribe", tags = "subcribe")
 public class PiperSubcribeController {
 
-	//定义各个任务的指令周期
-
-	//help
-	// 1、help消息组装，轮询处理
-	// 2、指令进度控制（指令执行管理表）。超时判断
-	// 3、处理指令
-
-	//发布文章
-	//1、判断用户是否注册了出版社
-	//2、获取订阅该用户的读者列表
-	//3、逐个发文章
-
-	//创建出版社接口
-	// 1、解析指令,获取创建指令x.x
-	// 2、创建指令，存储创建前数据
-	// 3、接受创建结果，存储公私钥
-	// 4、返回自构建的创建结果
-	@Autowired
-	PiperPublisherService publisherService;
 
 	@Autowired
-	PiperSubscriptionService subscriptionService;
+	private PiperSubscriptionService subscriptionService;
 
+	@Autowired
+	private LanguageChange languageChange;
 
 	@PostMapping("/checkSub")
 	public ResponseEntity checkSub(@RequestBody CheckSubInput cis) {
@@ -56,7 +45,31 @@ public class PiperSubcribeController {
 		Integer pageSize = StringUtils.isNullOrEmpty(upm.getPageSize()) ? 20 : Integer.parseInt(upm.getPageSize());
 
 
-		return new ResponseEntity(subscriptionService.getPersonSubscribtions(upm.getUserId(),pageNo,pageSize));
+		return new ResponseEntity(subscriptionService.getPersonSubscribtions(upm.getUserId(), pageNo, pageSize));
+	}
+
+	@PostMapping("/getPageMarks")
+	public ResponseEntity getPageMarks(HttpServletRequest request, @RequestBody UserIdParam user) {
+		String lang = request.getHeader("lang");
+		List<MarkVO> marks = new ArrayList<>();
+		Integer numbperson = subscriptionService.getSubCount(user.getUserId(), PublisherTypeEnums.person);
+		if (numbperson > 0) {
+			String person = languageChange.getLangByStr("mark.a.PersonSubsions", lang);
+			MarkVO mark = new MarkVO();
+			mark.setMark(person);
+			mark.setInterfaceStr("getPersonSubsions");
+			marks.add(mark);
+		}
+		Integer numborg = subscriptionService.getSubCount(user.getUserId(), PublisherTypeEnums.organize);
+		if (numborg > 0) {
+			String org = languageChange.getLangByStr("mark.a.OrgSubsions", lang);
+			MarkVO mark = new MarkVO();
+			mark.setMark(org);
+			mark.setInterfaceStr("getOrgSubsions");
+			marks.add(mark);
+		}
+
+		return new ResponseEntity(marks);
 	}
 
 	@PostMapping("/getPersonSubsions")
@@ -65,7 +78,7 @@ public class PiperSubcribeController {
 		Integer pageSize = StringUtils.isNullOrEmpty(upm.getPageSize()) ? 20 : Integer.parseInt(upm.getPageSize());
 
 
-		return new ResponseEntity(subscriptionService.getPersonSubscribtions(upm.getUserId(),pageNo,pageSize));
+		return new ResponseEntity(subscriptionService.getPersonSubscribtions(upm.getUserId(), pageNo, pageSize));
 	}
 
 	@PostMapping("/getOrgSubsions")
@@ -74,7 +87,7 @@ public class PiperSubcribeController {
 		Integer pageSize = StringUtils.isNullOrEmpty(upm.getPageSize()) ? 20 : Integer.parseInt(upm.getPageSize());
 
 
-		return new ResponseEntity(subscriptionService.getOrgSubscribtions(upm.getUserId(),pageNo,pageSize));
+		return new ResponseEntity(subscriptionService.getOrgSubscribtions(upm.getUserId(), pageNo, pageSize));
 	}
 
 	@RequestMapping(value = "/getPubSubsions", method = RequestMethod.POST)

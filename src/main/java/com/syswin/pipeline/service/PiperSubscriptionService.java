@@ -326,4 +326,8 @@ public class PiperSubscriptionService {
 		return subscription;
 
 	}
+
+	public Integer getSubCount(String userId, PublisherTypeEnums ptype) {
+		return subSubscriptionService.getSubCount(userId, ptype);
+	}
 }
