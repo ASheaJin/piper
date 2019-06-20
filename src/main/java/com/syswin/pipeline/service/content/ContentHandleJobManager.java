@@ -49,13 +49,13 @@ public class ContentHandleJobManager {
      * @param createTime
      */
     public void addJobSaveText( String contentId,  ContentEntity contentEntity, int createTime) {
-        servicePool.execute(() -> {
+//        servicePool.execute(() -> {
 
             ContentEntity listContent = parseListContent(contentEntity);
 
             contentOutService.add(contentId, contentEntity.getPublisherId(),
                     JacksonJsonUtil.toJson(listContent), JacksonJsonUtil.toJson(contentEntity), createTime);
-        });
+//        });
     }
 
     /**
@@ -67,7 +67,7 @@ public class ContentHandleJobManager {
      * @param createTime
      */
     public void addJob(String publisherId, String contentId, Integer bodyType, String content, int createTime) {
-        servicePool.execute(() -> {
+//        servicePool.execute(() -> {
             ContentEntity contentEntity = parseContent(publisherId, contentId, bodyType, content);
             if (contentEntity == null) {
                 return;
@@ -77,7 +77,7 @@ public class ContentHandleJobManager {
 
             contentOutService.add(contentId, publisherId,
                     JacksonJsonUtil.toJson(listContent), JacksonJsonUtil.toJson(contentEntity), createTime);
-        });
+//        });
     }
 
     /**

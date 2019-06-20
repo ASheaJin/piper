@@ -3,6 +3,8 @@ package com.syswin.pipeline.app.controller;
 import com.syswin.pipeline.app.dto.ResponseEntity;
 import com.syswin.pipeline.app.dto.SendComplexInfoParam;
 import com.syswin.pipeline.app.dto.SendParam;
+import com.syswin.pipeline.enums.BodyTypeEnums;
+import com.syswin.pipeline.enums.ShowTypeEnums;
 import com.syswin.pipeline.psservice.bean.SaveText;
 import com.syswin.pipeline.psservice.bussiness.PublisherSecService;
 import com.syswin.pipeline.service.PiperSpiderTokenService;
@@ -58,7 +60,7 @@ public class PiperSpiderController {
 			throw new BusinessException("ex.publisher.null");
 		}
 		String txt = "{\"text\":\"" + msg.getContent() + "\"}";
-		Integer num = publisherSecService.dealpusharticle(publisher, 1, txt, publisher.getPtype());
+		Integer num = publisherSecService.dealpusharticle(publisher, BodyTypeEnums.TEXT.getType(), txt, publisher.getPtype());
 		return new ResponseEntity(num);
 	}
 
@@ -91,23 +93,18 @@ public class PiperSpiderController {
 		List<ActionItem> infoList = Stream.of(new ActionItem(msg.getTxt(), msg.getUrl())
 		).collect(Collectors.toList());
 
-		TextShow show = new TextShow(1, map, infoList);
+		TextShow show = new TextShow(ShowTypeEnums.COMPLEX.getType(), map, infoList);
 		//构造历史消息的输出
 
 
-		SaveText saveText = new SaveText();
-		saveText.setActions(infoList);
-		saveText.setShowType(1);
-		saveText.setShowContent(map);
-//		PsClientKeeper.newInstance().sendMsg(msg.getPiperTemail(), "luohongzhou1@syswin.com", show);
-		Integer num = publisherSecService.dealpusharticle(publisher, 801, show, getContentEntity(msg, publisher), publisher.getPtype());
+		Integer num = publisherSecService.dealpusharticle(publisher, BodyTypeEnums.COMPLEX.getType(), show, getContentEntity(msg, publisher), publisher.getPtype());
 		return new ResponseEntity(num);
 	}
 
 	private ContentEntity getContentEntity(SendComplexInfoParam msg, Publisher publisher) {
 
 		ContentEntity contentEntity = new ContentEntity();
-		contentEntity.setBodyType(30);
+		contentEntity.setBodyType(BodyTypeEnums.COMPOSE.getType());
 		contentEntity.setTitle(msg.getTitle());
 		contentEntity.setPublisherName(publisher.getName());
 		contentEntity.setPublisherId(publisher.getPublisherId());
@@ -117,12 +114,12 @@ public class PiperSpiderController {
 
 			MediaContentEntity mPngInfo = new MediaContentEntity();
 			mPngInfo.setText(msg.getImgTxt());
-			mPngInfo.setBodyType(1);
+			mPngInfo.setBodyType(BodyTypeEnums.TEXT.getType());
 			list.add(mPngInfo);
 
 			MediaContentEntity mPng = new MediaContentEntity();
 			mPng.setUrl(msg.getImgUrl());
-			mPng.setBodyType(3);
+			mPng.setBodyType(BodyTypeEnums.PIC.getType());
 			list.add(mPng);
 		}
 //		MediaContentEntity m = new MediaContentEntity();
@@ -132,7 +129,7 @@ public class PiperSpiderController {
 		MediaContentEntity mUrl = new MediaContentEntity();
 		mUrl.setText(msg.getTxt());
 		mUrl.setUrl(msg.getUrl());
-		mUrl.setBodyType(9);
+		mUrl.setBodyType(BodyTypeEnums.URL.getType());
 		list.add(mUrl);
 
 

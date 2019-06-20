@@ -1,6 +1,7 @@
 package com.syswin.pipeline.enums;
 
 /**
+ * http://wiki.syswin.com/pages/viewpage.action?pageId=35986025
  * Created by 115477 on 2019/4/3.
  */
 public enum BodyTypeEnums {
@@ -17,7 +18,9 @@ public enum BodyTypeEnums {
     SHARE(15),
     MAIL(22),
     OP(23),
-    COMPOSE(30);
+    COMPOSE(30),
+    //标题-内容-按钮的竖排样式
+    COMPLEX(801);
 
     private Integer type;
 
