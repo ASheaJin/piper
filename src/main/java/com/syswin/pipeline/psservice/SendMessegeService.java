@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -38,8 +37,8 @@ public class SendMessegeService {
 	 * @param to      发给谁
 	 */
 	@CheckParamNull(params = "all")
-	public void sendTextmessage(String content, String to) {
-		sendTextmessage(content, to, 0);
+	public void sendTextMessage(String content, String to) {
+		sendTextMessage(content, to, 0);
 	}
 
 	/**
@@ -51,7 +50,7 @@ public class SendMessegeService {
 	 */
 
 	@CheckParamNull(params = "content,to")
-	public void sendTextmessage(String content, String to, int deloytime) {
+	public void sendTextMessage(String content, String to, int deloytime) {
 		Map<String, String> contentMap = new HashMap<>();
 		contentMap.put("text", content);
 		String contentJson = new Gson().toJson(contentMap);
@@ -70,7 +69,7 @@ public class SendMessegeService {
 	 */
 
 	@CheckParamNull(params = "content,to,from")
-	public void sendTextmessage(String content, String to, int deloytime, String from) {
+	public void sendTextMessage(String content, String to, int deloytime, String from) {
 		Map<String, String> contentMap = new HashMap<>();
 		contentMap.put("text", content);
 		String contentJson = new Gson().toJson(contentMap);
@@ -81,8 +80,8 @@ public class SendMessegeService {
 	}
 
 	@CheckParamNull(params = "content,to,from")
-	public void sendTextmessage(String content, String to, String from) {
-		sendTextmessage(content, to, 0, from);
+	public void sendTextMessage(String content, String to, String from) {
+		sendTextMessage(content, to, 0, from);
 	}
 
 	/**
@@ -140,14 +139,14 @@ public class SendMessegeService {
 	 * @param content 内容
 	 * @param to      发给谁
 	 */
-//	private void sendOthermessage(String content, int bodyType, String to) {
+//	private void sendOtherMessage(String content, int bodyType, String to) {
 //		//延时1秒钟发。
 //		ChatMsg chatMsg = new ChatMsg(content, bodyType, from, to, 1000);
 //		String publickey = psClientService.getTemailPublicKey(to);
 //		psClientService.sendChatMessage(chatMsg, to, publickey);
 //	}
 	@CheckParamNull(params = "content,to,from")
-	public void sendOthermessage(String content, int bodyType, String to, String from) {
+	public void sendOtherMessage(String content, int bodyType, String to, String from) {
 
 
 		//延时1秒钟发。

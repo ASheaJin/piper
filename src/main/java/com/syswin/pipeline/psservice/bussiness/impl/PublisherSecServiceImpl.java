@@ -135,8 +135,8 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 	}
 
 	@Override
-	public Integer dealpusharticle(Publisher publisher, int bodyType, Object show, PublisherTypeEnums publisherTypeEnums) {
-		return dealpusharticle(publisher, bodyType, show, null, publisherTypeEnums);
+	public Integer dealPushArticle(Publisher publisher, int bodyType, Object show, PublisherTypeEnums publisherTypeEnums) {
+		return dealPushArticle(publisher, bodyType, show, null, publisherTypeEnums);
 	}
 
 	/**
@@ -148,7 +148,7 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 	 * @param publisherTypeEnums
 	 */
 	@Override
-	public Integer dealpusharticle(Publisher publisher, int bodyType, Object show, ContentEntity saveShow, PublisherTypeEnums publisherTypeEnums) {
+	public Integer dealPushArticle(Publisher publisher, int bodyType, Object show, ContentEntity saveShow, PublisherTypeEnums publisherTypeEnums) {
 		if (StringUtil.isEmpty(show)) {
 			throw new BusinessException("消息不能为空");
 		}
@@ -167,7 +167,6 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 		int sendBodyType = BodyTypeEnums.COMPLEX.getType();
 		BaseShow sendShow = null;
 		try {
-
 			/*
 			 *	当 bodyType = 801 时show对象类型是BaseShow， saveShow对象不为空
 			 *	否则为json字符，（格式是秘邮消息 参见http://wiki.syswin.com/pages/viewpage.action?pageId=33689922）
@@ -175,19 +174,25 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 			 */
 			if (BodyTypeEnums.COMPLEX.getType().equals(bodyType) && saveShow != null) {
 				sendShow = (BaseShow)show;
+				if (!checkShow(sendShow, bodyType, publisher.getPtemail(), publisher.getUserId())) {
+					return 0;
+				}
 
 				content.setContent(JSONObject.toJSONString(sendShow));//保存BaseShow的内容
 				saveShow.setContentId(contentId);
 				//contentout内容处理
 				contentHandleJobManager.addJobSaveText(contentId, saveShow, content.getCreateTime());
 			} else if (!BodyTypeEnums.COMPLEX.getType().equals(bodyType)) {
+				if (!checkContentJson(show.toString(), bodyType, publisher.getPtemail(), publisher.getUserId())) {
+					return 0;
+				}
 				//先生成contentout
 				//contentout内容处理 传的是原json内容
 				contentHandleJobManager.addJob(publisher.getPublisherId(), contentId, bodyType, show.toString(), content.getCreateTime());
 
 				//将contentout转为BaseShow格式
 				ContentOut contentOut = contentOutService.getContentOutById(contentId);
-				sendShow = convertFromContentOut(contentOut, contentId, publisher.getPublisherId());
+				sendShow = convertFromContentOut(contentOut, contentId, publisher.getPublisherId(), publisher.getUserId());
 				if (sendShow != null) {
 					content.setContent(JSONObject.toJSONString(sendShow));
 				}
@@ -206,7 +211,9 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 
 		//2、获取订阅该用户的读者列表
 		List<String> userIds = subscriptionService.getSubscribers(publisher.getPtemail(), publisherTypeEnums);
-
+		if (!userIds.contains(publisher.getUserId())) {
+			userIds.add(0, publisher.getUserId());
+		}
 
 		int num = 0;
 		//3、逐个发文章
@@ -217,7 +224,7 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 				//分别对不同类型的文章进行处理
 				if (BodyTypeEnums.TEXT.getType().equals(sendBodyType)) {
 					String cont = JSON.parseObject(show.toString()).getString("text");
-					sendMessegeService.sendTextmessage(cont, orderUserId, fromTemail);
+					sendMessegeService.sendTextMessage(cont, orderUserId, fromTemail);
 
 				} else if (BodyTypeEnums.COMPLEX.getType().equals(sendBodyType)) { //20190620 实际只走这一条分支
 					//需要动态拼接url中的userId
@@ -227,8 +234,7 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 					logger.info("fromTemail, orderUserId, show" + fromTemail + orderUserId + sendShow);
 					PsClientKeeper.newInstance().sendMsg(fromTemail, orderUserId, sendShow);
 				} else {
-					sendMessegeService.sendOthermessage(show.toString(), sendBodyType, orderUserId, fromTemail);
-					logger.info("Thread.currentThread().getName()--------" + Thread.currentThread().getName());
+					sendMessegeService.sendOtherMessage(show.toString(), sendBodyType, orderUserId, fromTemail);
 
 				}
 				if (SwithUtil.ISLOG) {
@@ -241,7 +247,7 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 			}
 
 		}
-		sendMessegeService.sendTextmessage(num + languageChange.getValueByUserId("msg.hassend", publisher.getUserId()), publisher.getUserId(), 1000, publisher.getPtemail());
+		sendMessegeService.sendTextMessage(num + languageChange.getValueByUserId("msg.hassend", publisher.getUserId()), publisher.getUserId(), 1000, publisher.getPtemail());
 		//推送记录
 		SendRecord sendRecord = new SendRecord();
 		sendRecord.setContentId(contentId);
@@ -251,7 +257,41 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 		return num;
 	}
 
-	private BaseShow convertFromContentOut(ContentOut s, String contentId, String publisherId) {
+	/**
+	 * 判断收到的show类型消息，
+	 * @return
+	 */
+	private boolean checkShow(BaseShow show, Integer bodyType, String ptmail, String userId) {
+
+		return true;
+	}
+	private boolean checkContentJson(String contentJson,Integer bodyType, String ptmail, String userId) {
+		boolean valid = true;
+		String error = null;
+		JSONObject jsonObject = JSON.parseObject(contentJson);
+		if (BodyTypeEnums.TEXT.getType().equals(bodyType)) {
+			if (StringUtils.isEmpty(jsonObject.getString("text"))) {
+				valid =  false;
+				error = languageChange.getValueByUserId("ex.content.null", userId);
+			}
+		}
+		if (!valid) {
+			this.sendUserIdInvalidContent(error, ptmail, userId);
+		}
+
+		return valid;
+	}
+
+	/**
+	 * 如果内容合适不合法，给作者发一条提示
+	 * @param ptmail
+	 * @param userId
+	 */
+	private void sendUserIdInvalidContent(String error, String ptmail, String userId) {
+		sendMessegeService.sendTextMessage(languageChange.getValueByUserId("ex.content.error", userId)  + error, userId, ptmail);
+	}
+
+	private BaseShow convertFromContentOut(ContentOut s, String contentId, String publisherId, String userId) {
 		if (s == null) {
 			return null;
 		}
@@ -265,21 +305,21 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 			title = limitIntro(e.getText(), 50);
 		}
 		if (BodyTypeEnums.VOICE.getType().equals(bodyType)) {
-			title = "[语音]";
+			title = languageChange.getValueByUserId("msg.content.voice", userId);
 		}
 		if (BodyTypeEnums.PIC.getType().equals(bodyType)) {
-			title = "[图片]";
+			title = languageChange.getValueByUserId("msg.content.pic", userId);
 			imageUrl = e.getUrl();
 		}
 		if (BodyTypeEnums.VIDEO.getType().equals(bodyType)) {
-			title = "[视频]";
+			title = languageChange.getValueByUserId("msg.content.video", userId);
 			imageUrl = e.getThumbnail();
 		}
 		if (BodyTypeEnums.FILE.getType().equals(bodyType)) {
-			title = "[文件]";
+			title = languageChange.getValueByUserId("msg.content.file", userId);
 		}
 		if (BodyTypeEnums.URL.getType().equals(bodyType)) {
-			title = "[链接]";
+			title = languageChange.getValueByUserId("msg.content.url", userId);
 		}
 
 		String intro = null;
@@ -315,7 +355,7 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 		}
 
 		String url = urlPiper + String.format(pathDetail, contentId, publisherId);
-		List<ActionItem> infoList = Stream.of(new ActionItem("详情", url)
+		List<ActionItem> infoList = Stream.of(new ActionItem( languageChange.getValueByUserId("msg.content.detail", userId), url)
 		).collect(Collectors.toList());
 
 		TextShow show = new TextShow(ShowTypeEnums.COMPLEX.getType(), map, infoList);
@@ -368,19 +408,19 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 //					piperSubscriptionService.subscribe(userId, ptemail, publisher.getPtype());
 //					return;
 //				} else {
-//					sendMessegeService.sendTextmessage(languageChange.getValueByUserId("msg.ordertip", userId), userId, 0, publisher.getPtemail());
+//					sendMessegeService.sendTextMessage(languageChange.getValueByUserId("msg.ordertip", userId), userId, 0, publisher.getPtemail());
 //				}
 //			}
 //		}
 		//判断出版社是否存在
 		if (userId.equals(publisher.getUserId())) {
 //			if (!filterset.contains(body_type)) {
-//				sendMessegeService.sendTextmessage(MessageUtil.sendCreateHelpTip("请发送文件、语音、图片、视频"), userId, 1000, ptemail);
+//				sendMessegeService.sendTextMessage(MessageUtil.sendCreateHelpTip("请发送文件、语音、图片、视频"), userId, 1000, ptemail);
 //				return;
 //			}
-			dealpusharticle(publisher, bodyType, show, PublisherTypeEnums.person);
+			dealPushArticle(publisher, bodyType, show, PublisherTypeEnums.person);
 		}else{
-			sendMessegeService.sendTextmessage(languageChange.getValueByUserId("msg.noreply", userId), userId, 1000, ptemail);
+			sendMessegeService.sendTextMessage(languageChange.getValueByUserId("msg.noreply", userId), userId, 1000, ptemail);
 
 		}
 
@@ -414,9 +454,9 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 		}
 		//组织出版社
 		if (userId.equals(publisher.getUserId())) {
-			dealpusharticle(publisher, bodyType, show, PublisherTypeEnums.organize);
+			dealPushArticle(publisher, bodyType, show, PublisherTypeEnums.organize);
 		} else {
-			sendMessegeService.sendTextmessage(languageChange.getValueByUserId("msg.nopermission", userId), userId, 1000, ptemail);
+			sendMessegeService.sendTextMessage(languageChange.getValueByUserId("msg.nopermission", userId), userId, 1000, ptemail);
 		}
 
 	}

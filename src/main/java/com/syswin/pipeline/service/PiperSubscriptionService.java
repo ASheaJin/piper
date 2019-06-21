@@ -2,7 +2,6 @@ package com.syswin.pipeline.service;
 
 import com.github.pagehelper.PageInfo;
 import com.syswin.pipeline.manage.dto.output.PulisherSubOutput;
-import com.syswin.pipeline.psservice.MessegerSenderService;
 import com.syswin.pipeline.psservice.SendMessegeService;
 import com.syswin.pipeline.psservice.olderps.PSClientService;
 import com.syswin.pipeline.service.exception.BusinessException;
@@ -22,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -85,7 +83,7 @@ public class PiperSubscriptionService {
 			sendMessegeService.sendCard(publisher.getPtemail(), userId, publisher.getName());
 		}
 		//给创建者发个消息
-		sendMessegeService.sendTextmessage(languageChange.getLangByUserId("msg.submotice", new String[]{userId}, publisher.getUserId()), publisher.getUserId(), publisher.getPtemail());
+		sendMessegeService.sendTextMessage(languageChange.getLangByUserId("msg.submotice", new String[]{userId}, publisher.getUserId()), publisher.getUserId(), publisher.getPtemail());
 		return subscription;
 	}
 
@@ -294,10 +292,10 @@ public class PiperSubscriptionService {
 		} else {
 			sendMessegeService.sendCard(publisher.getPtemail(), userId, publisher.getName());
 		}
-//		psClientService.sendTextmessage(publisher.getName() + "<" + publisher.getPtemail() + "> 订阅成功，作者即将推送文章", userId, 0);
-		sendMessegeService.sendTextmessage(languageChange.getValueByUserId("msg.subsec", userId), userId, 0, publisher.getPtemail());
+//		psClientService.sendTextMessage(publisher.getName() + "<" + publisher.getPtemail() + "> 订阅成功，作者即将推送文章", userId, 0);
+		sendMessegeService.sendTextMessage(languageChange.getValueByUserId("msg.subsec", userId), userId, 0, publisher.getPtemail());
 		//给创建者发个消息
-		sendMessegeService.sendTextmessage(languageChange.getLangByUserId("msg.submotice", new String[]{userId}, publisher.getUserId()), publisher.getUserId(), publisher.getPtemail());
+		sendMessegeService.sendTextMessage(languageChange.getLangByUserId("msg.submotice", new String[]{userId}, publisher.getUserId()), publisher.getUserId(), publisher.getPtemail());
 
 		return subscription;
 
@@ -317,6 +315,11 @@ public class PiperSubscriptionService {
 				throw new BusinessException("ex.publisher.null");
 			}
 		}
+		if (publisher.getUserId().equals(userId)) {
+			//用户不能订阅自己的出版社
+			throw new BusinessException("ex.publisher.own");
+		}
+
 		if (publisher.getPtype().equals(PublisherTypeEnums.organize)) {
 			logger.error("publishTemail{},userId{userId} 订阅失败", publishTemail, userId);
 			throw new BusinessException("msg.nopermission");

@@ -34,9 +34,9 @@ public class PiperSendSubscriptionService {
 //				sendMessegeService.sendCard(publisher.getPtemail(), userId, publisher.getName());
 //			}
 		//给创建者发个消息
-		sendMessegeService.sendTextmessage(languageChange.getLangByUserId("msg.submotice", new String[]{userId}, publisher.getUserId()), publisher.getUserId(), publisher.getPtemail());
+		sendMessegeService.sendTextMessage(languageChange.getLangByUserId("msg.submotice", new String[]{userId}, publisher.getUserId()), publisher.getUserId(), publisher.getPtemail());
 
-		sendMessegeService.sendTextmessage(languageChange.getValueByUserId("msg.adminsendtip", userId), userId, publisher.getPtemail());
+		sendMessegeService.sendTextMessage(languageChange.getValueByUserId("msg.adminsendtip", userId), userId, publisher.getPtemail());
 
 	}
 }

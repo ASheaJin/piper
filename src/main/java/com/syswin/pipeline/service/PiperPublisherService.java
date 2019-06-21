@@ -13,7 +13,6 @@ import com.syswin.pipeline.utils.LanguageChange;
 import com.syswin.pipeline.utils.PatternUtils;
 import com.syswin.pipeline.utils.PermissionUtil;
 import com.syswin.pipeline.utils.StringUtils;
-import com.syswin.ps.sdk.admin.service.impl.PSConfigService;
 import com.syswin.sub.api.AdminService;
 import com.syswin.sub.api.ContentService;
 import com.syswin.sub.api.PublisherService;
@@ -118,7 +117,7 @@ public class PiperPublisherService {
 
 			sendMessegeService.sendCard(ptemail, userId, "* " + name);
 			//注册了出版社后登陆下
-			sendMessegeService.sendTextmessage(languageChange.getLangByUserId("msg.pcreatetip", new String[]{name}, userId), userId, 0, ptemail);
+			sendMessegeService.sendTextMessage(languageChange.getLangByUserId("msg.pcreatetip", new String[]{name}, userId), userId, 0, ptemail);
 
 		} catch (Exception e) {
 			logger.error(e.getMessage() + "PS连接异常", ptemail, e);
@@ -247,10 +246,10 @@ public class PiperPublisherService {
 		int r = subPublisherService.update(publisher);
 		if (r == 1) {
 			sendMessegeService.sendCard(publisher.getPtemail(), curUserId, publisher.getName());
-			sendMessegeService.sendTextmessage(languageChange.getLangByUserId("msg.changetip", new String[]{changeUserId}, curUserId), curUserId, 0, publisher.getPtemail());
+			sendMessegeService.sendTextMessage(languageChange.getLangByUserId("msg.changetip", new String[]{changeUserId}, curUserId), curUserId, 0, publisher.getPtemail());
 
 			sendMessegeService.sendCard(publisher.getPtemail(), changeUserId, "* " + publisher.getName());
-			sendMessegeService.sendTextmessage(languageChange.getLangByUserId("msg.changetip", new String[]{changeUserId}, changeUserId), changeUserId, 0, publisher.getPtemail());
+			sendMessegeService.sendTextMessage(languageChange.getLangByUserId("msg.changetip", new String[]{changeUserId}, changeUserId), changeUserId, 0, publisher.getPtemail());
 		} else {
 			throw new BusinessException("ex.sql.err");
 		}

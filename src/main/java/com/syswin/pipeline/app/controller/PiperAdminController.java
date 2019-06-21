@@ -12,7 +12,6 @@ import com.syswin.pipeline.service.exception.BusinessException;
 import com.syswin.pipeline.utils.LanguageChange;
 import com.syswin.pipeline.utils.PatternUtils;
 import com.syswin.pipeline.utils.StringUtils;
-import com.syswin.sub.api.AdminService;
 import com.syswin.sub.api.PublisherService;
 import com.syswin.sub.api.db.model.Admin;
 import com.syswin.sub.api.enums.PublisherTypeEnums;
@@ -74,8 +73,8 @@ public class PiperAdminController {
 
 			try {
 
-				sendMessegeService.sendTextmessage(languageChange.getLangByUserId("msg.beoranger", new String[]{u}, u), u);
-				sendMessegeService.sendTextmessage(languageChange.getLangByUserId("msg.beoranger", new String[]{u}, u), mulCreateParam.getUserId());
+				sendMessegeService.sendTextMessage(languageChange.getLangByUserId("msg.beoranger", new String[]{u}, u), u);
+				sendMessegeService.sendTextMessage(languageChange.getLangByUserId("msg.beoranger", new String[]{u}, u), mulCreateParam.getUserId());
 				//回执创建完成消息
 			} catch (Exception e) {
 				logger.error("发送消息失败", e);
@@ -95,7 +94,7 @@ public class PiperAdminController {
 		}
 		Admin admin = piperAdminService.add(adminParam.getUserId(), adminParam.getTmail(), PublisherTypeEnums.organize, true);
 
-		sendMessegeService.sendTextmessage(languageChange.getLangByUserId("msg.beoranger", new String[]{adminParam.getTmail()}, adminParam.getTmail()), adminParam.getTmail());
+		sendMessegeService.sendTextMessage(languageChange.getLangByUserId("msg.beoranger", new String[]{adminParam.getTmail()}, adminParam.getTmail()), adminParam.getTmail());
 		//回执创建完成消息
 		return new ResponseEntity();
 
@@ -114,8 +113,8 @@ public class PiperAdminController {
 			throw new SubException("ex.needorganizer");
 		}
 		piperAdminService.delete(adminParam.getUserId(), adminParam.getTmail());
-		sendMessegeService.sendTextmessage(languageChange.getLangByUserId("msg.canceladmin", new String[]{adminParam.getUserId()}, adminParam.getTmail()), adminParam.getTmail());
-		sendMessegeService.sendTextmessage(languageChange.getLangByUserId("msg.becanceled", new String[]{adminParam.getTmail()}, adminParam.getUserId()), adminParam.getUserId());
+		sendMessegeService.sendTextMessage(languageChange.getLangByUserId("msg.canceladmin", new String[]{adminParam.getUserId()}, adminParam.getTmail()), adminParam.getTmail());
+		sendMessegeService.sendTextMessage(languageChange.getLangByUserId("msg.becanceled", new String[]{adminParam.getTmail()}, adminParam.getUserId()), adminParam.getUserId());
 
 		return new ResponseEntity();
 

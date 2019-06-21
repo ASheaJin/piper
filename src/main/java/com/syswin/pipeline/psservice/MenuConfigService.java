@@ -1,6 +1,5 @@
 package com.syswin.pipeline.psservice;
 
-import com.syswin.pipeline.PiperApplication;
 import com.syswin.pipeline.enums.PermissionEnums;
 import com.syswin.pipeline.service.PiperConsumerService;
 import com.syswin.pipeline.service.PiperSubscriptionService;
@@ -9,11 +8,8 @@ import com.syswin.pipeline.utils.StringUtil;
 import com.syswin.ps.sdk.admin.config.IMenuConfigService;
 import com.syswin.ps.sdk.common.MsgHeader;
 import com.syswin.ps.sdk.handler.PsClientKeeper;
-import com.syswin.sub.api.AdminService;
 import com.syswin.sub.api.PublisherService;
-import com.syswin.sub.api.db.model.Admin;
 import com.syswin.sub.api.db.model.Publisher;
-import com.syswin.sub.api.enums.PublisherTypeEnums;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +19,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class MenuConfigService implements IMenuConfigService {
@@ -95,7 +90,7 @@ public class MenuConfigService implements IMenuConfigService {
 		if (!consumerService.getUserVersion(header.getSender(), header.getReceiver())) {
 			sendMessegeService.sendCard(apiper, header.getSender(), "Piper");
 			String pdfInfo = "{\"format\":\"application/pdf\",\"url\":\"https://ucloud-file.t.email/%2Fceca224cce52468dabc22390f2289e97.zip\",\"pwd\":\"EB04F13C-E30B-492E-90FA-E5300139041E\",\"suffix\":\".pdf\",\"desc\":\"Piper操作手册1.1.pdf\",\"size\":255784,\"percent\":100}";
-			sendMessegeService.sendOthermessage(pdfInfo, 14, userId, apiper);
+			sendMessegeService.sendOtherMessage(pdfInfo, 14, userId, apiper);
 
 		}
 		//保持角色，用于判断是否发pdf引导

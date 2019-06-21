@@ -193,7 +193,7 @@ public class PMenusHandler_bak implements EventHandler<MessageEvent> {
 			} else {
 				Subscription subscription = subSubscriptionService.getSub(userId, publisher.getPublisherId());
 				if (subscription == null && !publisher.getUserId().equals(userId)) {
-					sendMessegeService.sendTextmessage(languageChange.getValueByUserId("msg.ordertip", userId), userId, 0, publisher.getPtemail());
+					sendMessegeService.sendTextMessage(languageChange.getValueByUserId("msg.ordertip", userId), userId, 0, publisher.getPtemail());
 				}
 			}
 		}

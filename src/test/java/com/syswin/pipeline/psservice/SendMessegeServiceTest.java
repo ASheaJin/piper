@@ -1,6 +1,5 @@
 package com.syswin.pipeline.psservice;
 
-import com.syswin.pipeline.db.repository.AccountRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +26,7 @@ public class SendMessegeServiceTest {
 	public void sendTextmessage() {
 
 //		appPublisherService.addPiperAcount("p.10000001@t.email");
-		sendMessegeService.sendTextmessage("1212", "luohongzhou33@msgseal.com", "a.piper@t.email");
+		sendMessegeService.sendTextMessage("1212", "luohongzhou33@msgseal.com", "a.piper@t.email");
 	}
 
 

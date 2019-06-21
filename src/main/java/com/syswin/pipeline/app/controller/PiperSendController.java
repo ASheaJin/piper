@@ -5,7 +5,6 @@ import com.syswin.pipeline.app.dto.SendComplexInfoParam;
 import com.syswin.pipeline.app.dto.SendParam;
 import com.syswin.pipeline.enums.BodyTypeEnums;
 import com.syswin.pipeline.enums.ShowTypeEnums;
-import com.syswin.pipeline.psservice.bean.SaveText;
 import com.syswin.pipeline.psservice.bussiness.PublisherSecService;
 import com.syswin.pipeline.service.PiperSpiderTokenService;
 import com.syswin.pipeline.service.content.entity.ContentEntity;
@@ -60,7 +59,7 @@ public class PiperSendController {
 			throw new BusinessException("ex.publisher.null");
 		}
 		String txt = "{\"text\":\"" + msg.getContent() + "\"}";
-		Integer num = publisherSecService.dealpusharticle(publisher, BodyTypeEnums.TEXT.getType(), txt, publisher.getPtype());
+		Integer num = publisherSecService.dealPushArticle(publisher, BodyTypeEnums.TEXT.getType(), txt, publisher.getPtype());
 		return new ResponseEntity(num);
 	}
 
@@ -96,7 +95,7 @@ public class PiperSendController {
 		TextShow show = new TextShow(ShowTypeEnums.COMPLEX.getType(), map, infoList);
 		//构造历史消息的输出
 
-		Integer num = publisherSecService.dealpusharticle(publisher, BodyTypeEnums.COMPLEX.getType(), show, getContentEntity(msg, publisher), publisher.getPtype());
+		Integer num = publisherSecService.dealPushArticle(publisher, BodyTypeEnums.COMPLEX.getType(), show, getContentEntity(msg, publisher), publisher.getPtype());
 		return new ResponseEntity(num);
 	}
 

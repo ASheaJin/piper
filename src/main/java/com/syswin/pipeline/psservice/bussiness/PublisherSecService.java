@@ -12,12 +12,12 @@ public interface PublisherSecService {
 
 	//处理组织的消息
 //	void monitor(String userId, String ptemail, ChatMsg chatMsg);
-//	Integer dealpusharticle(Publisher publisher, int body_type, String txt, PublisherTypeEnums publisherTypeEnums);
+//	Integer dealPushArticle(Publisher publisher, int body_type, String txt, PublisherTypeEnums publisherTypeEnums);
 //处理组织的消息
 	void monitor(String userId, String ptemail, int bodyType, Object show);
 
-	Integer dealpusharticle(Publisher publisher, int bodyType, Object show,  PublisherTypeEnums publisherTypeEnums);
-	Integer dealpusharticle(Publisher publisher, int bodyType, Object show, ContentEntity saveText, PublisherTypeEnums publisherTypeEnums);
+	Integer dealPushArticle(Publisher publisher, int bodyType, Object show, PublisherTypeEnums publisherTypeEnums);
+	Integer dealPushArticle(Publisher publisher, int bodyType, Object show, ContentEntity saveText, PublisherTypeEnums publisherTypeEnums);
 
 
 }
