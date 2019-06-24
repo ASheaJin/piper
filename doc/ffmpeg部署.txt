@@ -11,6 +11,9 @@ chown java:java /opt/file
 
 ffmpeg 文件，要从192.168.16.159的/opt/ffmpeg 获得
 
+注意：如果是docker部署，需要在宿主机创建相应目录，并在docker启动镜像时，增加路径映射的参数（冒号前面是宿主机的目录）：
+ -v /opt/ffmpeg:/opt/ffmpeg -v /opt/file:/opt/file
+
 ps:
 转换amr的命令行
 ffmpeg -i a.amr -vn -acodec libmp3lame -f mp3 -y a.mp3
