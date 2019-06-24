@@ -36,7 +36,7 @@ public class SendMessegeService {
 	 * @param content 内容
 	 * @param to      发给谁
 	 */
-	@CheckParamNull(params = "all")
+	@CheckParamNull(params = "to")
 	public void sendTextMessage(String content, String to) {
 		sendTextMessage(content, to, 0);
 	}
