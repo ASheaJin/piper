@@ -191,7 +191,7 @@ public class MenuConfigService implements IMenuConfigService {
             System.out.println("extraData is empty");
             return true;
         } else {
-			System.out.println(extraData);
+			logger.error(String.valueOf(extraData));
 			String r =(String)((JSONObject) extraData).get("role");
 			MsgHeader header = PsClientKeeper.msgHeader();
 			String roleValue = "0";
@@ -201,7 +201,7 @@ public class MenuConfigService implements IMenuConfigService {
 			}else{
 				roleValue = consumerService.getPiperMenuRole(header.getSender(),header.getReceiver());
 			}
-
+			logger.error("checkChange roleValue"+String.valueOf(extraData));
 			if(!StringUtil.isEmpty(r) && r.equals(roleValue)){
 				return false;
 			}
@@ -224,6 +224,7 @@ public class MenuConfigService implements IMenuConfigService {
 		}else{
 			roleValue = consumerService.getPiperMenuRole(header.getSender(),header.getReceiver());
 		}
+		logger.error("checkChange getChangeInfo"+String.valueOf(roleValue));
 		Map map =new HashMap();
 		map.put("role",roleValue);
 		return map;
