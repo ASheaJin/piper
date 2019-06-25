@@ -322,16 +322,14 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 			title = languageChange.getValueByUserId("msg.content.url", userId);
 		}
 
-		String intro = null;
 		if (BodyTypeEnums.COMPOSE.getType().equals(bodyType)) {
 			List<MediaContentEntity> contentArray = e.getContentArray();
 			if (!StringUtils.isEmpty(e.getTitle())) {
                 title = limitIntro(e.getTitle(), 50);
             }
 			for (MediaContentEntity media : contentArray) {
-				if (BodyTypeEnums.TEXT.getType().equals(media.getBodyType()) && StringUtils.isEmpty(intro)) {
-					intro = media.getText();
-					title = limitIntro(intro, 50);
+				if (BodyTypeEnums.TEXT.getType().equals(media.getBodyType()) && StringUtils.isEmpty(title)) {
+					title = limitIntro(media.getText(), 50);
 					continue;
 				}
 				if (BodyTypeEnums.PIC.getType().equals(media.getBodyType())  && StringUtils.isEmpty(imageUrl)) {
