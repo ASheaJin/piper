@@ -134,7 +134,7 @@ public class MenuConfigService implements IMenuConfigService {
 			//每次进入进行订阅（只订阅个人出版社）
 			piperSubscriptionService.subscribeInner(header.getSender(), header.getReceiver());
 		} catch (Exception e) {
-			logger.error(header.getSender() + "订阅" + header.getReceiver() + "失败了 :" + 			 languageChange.getLangByStr(e.getMessage(), ""));
+			logger.info(header.getSender() + "订阅" + header.getReceiver() + "失败了 :" + 			 languageChange.getLangByStr(e.getMessage(), ""));
 		}
 		if (!consumerService.getUserVersion(header.getSender(), header.getReceiver())) {
 			Publisher p = publisherService.getPubLisherByPublishTmail(accountNo, null);
@@ -191,7 +191,7 @@ public class MenuConfigService implements IMenuConfigService {
             System.out.println("extraData is empty");
             return true;
         } else {
-			logger.error(String.valueOf(extraData));
+			logger.info(String.valueOf(extraData));
 			String r =(String)((JSONObject) extraData).get("role");
 			MsgHeader header = PsClientKeeper.msgHeader();
 			String roleValue = "0";
@@ -201,7 +201,7 @@ public class MenuConfigService implements IMenuConfigService {
 			}else{
 				roleValue = consumerService.getPiperMenuRole(header.getSender(),header.getReceiver());
 			}
-			logger.error("checkChange"+String.valueOf(extraData));
+			logger.info("checkChange"+String.valueOf(extraData));
 			if(!StringUtil.isEmpty(r) && r.equals(roleValue)){
 				return false;
 			}
@@ -224,7 +224,7 @@ public class MenuConfigService implements IMenuConfigService {
 		}else{
 			roleValue = consumerService.getPiperMenuRole(header.getSender(),header.getReceiver());
 		}
-		logger.error(" getChangeInfo"+String.valueOf(roleValue));
+		logger.info(" getChangeInfo"+String.valueOf(roleValue));
 		Map map =new HashMap();
 		map.put("role",roleValue);
 		return map;
