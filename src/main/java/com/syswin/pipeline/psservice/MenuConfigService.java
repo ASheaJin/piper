@@ -199,10 +199,10 @@ public class MenuConfigService implements IMenuConfigService {
 				roleValue = consumerService.getAMenuRole(header.getSender());
 
 			}else{
-				roleValue = consumerService.getAMenuRole(header.getSender());
+				roleValue = consumerService.getPiperMenuRole(header.getSender(),header.getReceiver());
 			}
 
-			if(StringUtil.isEmpty(r) || r.equals(roleValue)){
+			if(!StringUtil.isEmpty(r) && r.equals(roleValue)){
 				return false;
 			}
             return true;
@@ -222,7 +222,7 @@ public class MenuConfigService implements IMenuConfigService {
 			roleValue = consumerService.getAMenuRole(header.getSender());
 
 		}else{
-			roleValue = consumerService.getAMenuRole(header.getSender());
+			roleValue = consumerService.getPiperMenuRole(header.getSender(),header.getReceiver());
 		}
 		Map map =new HashMap();
 		map.put("role",roleValue);
