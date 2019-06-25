@@ -1,5 +1,6 @@
 package com.syswin.pipeline.psservice;
 
+import com.alibaba.fastjson.JSONObject;
 import com.syswin.pipeline.enums.PermissionEnums;
 import com.syswin.pipeline.service.PiperConsumerService;
 import com.syswin.pipeline.service.PiperSubscriptionService;
@@ -16,10 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class MenuConfigService implements IMenuConfigService {
@@ -31,7 +29,7 @@ public class MenuConfigService implements IMenuConfigService {
 	private String apiper;
 	@Autowired
 	private PiperConsumerService consumerService;
-	private String myRole = PermissionEnums.Reader.name;
+//	private String myRole = PermissionEnums.Reader.name;
 
 	@Autowired
 	LanguageChange languageChange;
@@ -86,7 +84,7 @@ public class MenuConfigService implements IMenuConfigService {
 			return null;
 		}
 		String userId = header.getSender();
-		myRole = consumerService.getAMenuRole(userId);
+		String myRole = consumerService.getAMenuRole(userId);
 		//初始时创建
 		if (!consumerService.getUserVersion(header.getSender(), header.getReceiver())) {
 			sendMessegeService.sendCard(apiper, header.getSender(), "Piper");
@@ -152,7 +150,7 @@ public class MenuConfigService implements IMenuConfigService {
 
 		String lang = header.getPlatformInfo().getLanguage();
 		String userId = header.getSender();
-		myRole = consumerService.getPiperMenuRole(userId, accountNo);
+		String myRole = consumerService.getPiperMenuRole(userId, accountNo);
 		consumerService.getUserVersion(header.getSender(), header.getReceiver(), "1", myRole);
 		List menus = new ArrayList();
 
@@ -189,20 +187,46 @@ public class MenuConfigService implements IMenuConfigService {
 
 	@Override
 	public boolean checkChange(Object extraData){
-//        if (null == extraData || ((JSONObject)extraData).isEmpty()) {
-//            System.out.println("extraData is empty");
-//            return false;
-//        } else {
-//            System.out.println(extraData);
-//            return true;
-//        }
-		//return false;
-		return false;
+        if (null == extraData) {
+            System.out.println("extraData is empty");
+            return true;
+        } else {
+			System.out.println(extraData);
+			String r =(String)((JSONObject) extraData).get("role");
+			MsgHeader header = PsClientKeeper.msgHeader();
+			String roleValue = "0";
+			if(header.getReceiver().equals(apiper)){
+				roleValue = consumerService.getAMenuRole(header.getSender());
+
+			}else{
+				roleValue = consumerService.getAMenuRole(header.getSender());
+			}
+
+			if(StringUtil.isEmpty(r) || r.equals(roleValue)){
+				return false;
+			}
+            return true;
+        }
 	}
 
+	/**
+	 * 重新设置新角色
+	 * @param extraData
+	 * @return
+	 */
 	@Override
 	public Object getChangeInfo(Object extraData){
-		return new HashMap();
+		MsgHeader header = PsClientKeeper.msgHeader();
+		String roleValue = "0";
+		if(header.getReceiver().equals(apiper)){
+			roleValue = consumerService.getAMenuRole(header.getSender());
+
+		}else{
+			roleValue = consumerService.getAMenuRole(header.getSender());
+		}
+		Map map =new HashMap();
+		map.put("role",roleValue);
+		return map;
 	}
 
 }
