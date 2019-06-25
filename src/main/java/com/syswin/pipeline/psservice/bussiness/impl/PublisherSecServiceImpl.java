@@ -217,7 +217,8 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 
 		//2、获取订阅该用户的读者列表
 		List<String> userIds = subscriptionService.getSubscribers(publisher.getPtemail(), publisherTypeEnums);
-		if (!userIds.contains(publisher.getUserId())) {
+		//因为个人出版社的消息转为801了，把作者也加入收件人，能看到转化后的消息
+		if (publisher.getPtype().getCode().equals(PublisherTypeEnums.person.getCode()) && !userIds.contains(publisher.getUserId())) {
 			userIds.add(0, publisher.getUserId());
 		}
 
