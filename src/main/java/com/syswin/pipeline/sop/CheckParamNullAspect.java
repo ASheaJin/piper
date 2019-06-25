@@ -91,6 +91,7 @@ public class CheckParamNullAspect {
 					throw new BusinessException("方法："+method.getName()+"--"+paraNameArr[i] + "不能为null");
 				}
 			}
+			return;
 		}
 		//对注入的参数判断做解析出来
 		String[] ks = fieldKey.split(",");

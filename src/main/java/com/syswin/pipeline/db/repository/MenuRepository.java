@@ -5,10 +5,12 @@ import com.syswin.pipeline.db.model.Menu;
 import com.syswin.pipeline.db.model.MenuExample;
 import com.syswin.sub.api.db.repository.BaseRepository;
 import org.apache.ibatis.annotations.MapKey;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
 
+@Repository
 public interface MenuRepository extends BaseRepository<Menu> {
     long countByExample(MenuExample example);
 

@@ -185,4 +185,23 @@ public class MenuConfigService implements IMenuConfigService {
 		return accountNo + roleType;
 	}
 
+
+	@Override
+	public boolean checkChange(Object extraData){
+//        if (null == extraData || ((JSONObject)extraData).isEmpty()) {
+//            System.out.println("extraData is empty");
+//            return false;
+//        } else {
+//            System.out.println(extraData);
+//            return true;
+//        }
+		//return false;
+		return false;
+	}
+
+	@Override
+	public Object getChangeInfo(Object extraData){
+		return new HashMap();
+	}
+
 }
