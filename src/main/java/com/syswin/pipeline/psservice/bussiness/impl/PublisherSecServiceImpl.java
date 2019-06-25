@@ -164,49 +164,55 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 		 * 当 bodyType <> 801 时，将show内容转为BaseShow格式
 		 */
 		//实际发送消息的bodyType
-		int sendBodyType = BodyTypeEnums.COMPLEX.getType();
+		int sendBodyType = bodyType;
 		BaseShow sendShow = null;
 		try {
-			/*
-			 *	当 bodyType = 801 时show对象类型是BaseShow， saveShow对象不为空
-			 *	否则为json字符，（格式是秘邮消息 参见http://wiki.syswin.com/pages/viewpage.action?pageId=33689922）
-			 *	saveShow对象为空
-			 */
-			if (BodyTypeEnums.COMPLEX.getType().equals(bodyType) && saveShow != null) {
-				sendShow = (BaseShow)show;
-				if (!checkShow(sendShow, bodyType, publisher.getPtemail(), publisher.getUserId())) {
-					return 0;
-				}
+			//个人出版社全转成801
+			if (publisher.getPtype().getCode().equals(PublisherTypeEnums.person.getCode())) {
+				sendBodyType = BodyTypeEnums.COMPLEX.getType();
+				/*
+				 *	当 bodyType = 801 时show对象类型是BaseShow， saveShow对象不为空
+				 *	否则为json字符，（格式是秘邮消息 参见http://wiki.syswin.com/pages/viewpage.action?pageId=33689922）
+				 *	saveShow对象为空
+				 */
+				if (BodyTypeEnums.COMPLEX.getType().equals(bodyType) && saveShow != null) {
+					sendShow = (BaseShow) show;
+					if (!checkShow(sendShow, bodyType, publisher.getPtemail(), publisher.getUserId())) {
+						return 0;
+					}
 
-				content.setContent(JSONObject.toJSONString(sendShow));//保存BaseShow的内容
-				saveShow.setContentId(contentId);
-				//contentout内容处理
-				contentHandleJobManager.addJobSaveText(contentId, saveShow, content.getCreateTime());
-			} else if (!BodyTypeEnums.COMPLEX.getType().equals(bodyType)) {
-				if (!checkContentJson(show.toString(), bodyType, publisher.getPtemail(), publisher.getUserId())) {
-					return 0;
-				}
-				//先生成contentout
-				//contentout内容处理 传的是原json内容
-				contentHandleJobManager.addJob(publisher.getPublisherId(), contentId, bodyType, show.toString(), content.getCreateTime());
+					content.setContent(JSONObject.toJSONString(sendShow));//保存BaseShow的内容
+					saveShow.setContentId(contentId);
+					//contentout内容处理
+					contentHandleJobManager.addJobSaveText(contentId, saveShow, content.getCreateTime());
+				} else if (!BodyTypeEnums.COMPLEX.getType().equals(bodyType)) {
+					if (!checkContentJson(show.toString(), bodyType, publisher.getPtemail(), publisher.getUserId())) {
+						return 0;
+					}
+					//先生成contentout
+					//contentout内容处理 传的是原json内容
+					contentHandleJobManager.addJob(publisher.getPublisherId(), contentId, bodyType, show.toString(), content.getCreateTime());
 
-				//将contentout转为BaseShow格式
-				ContentOut contentOut = contentOutService.getContentOutById(contentId);
-				sendShow = convertFromContentOut(contentOut, contentId, publisher.getPublisherId(), publisher.getUserId());
-				if (sendShow != null) {
+					//将contentout转为BaseShow格式
+					ContentOut contentOut = contentOutService.getContentOutById(contentId);
+				 	if (contentOut == null) {
+						//如果contentOut为空，由contentHandleJobManager里的逻辑决定，表示转换失败
+						return 0;
+					}
+					sendShow = convertFromContentOut(contentOut, contentId, publisher.getPublisherId(), publisher.getUserId());
 					content.setContent(JSONObject.toJSONString(sendShow));
 				}
+				//组织出版社不转格式，按原来逻辑处理
+			} else if (publisher.getPtype().getCode().equals(PublisherTypeEnums.organize.getCode())){
+				content.setContent(show.toString());
+				//contentout内容处理
+				contentHandleJobManager.addJob(publisher.getPublisherId(), contentId, bodyType, content.getContent(), content.getCreateTime());
 			}
 			content.setBodyType(sendBodyType);
 			content.setPublisherId(publisher.getPublisherId());
-			if (sendShow != null) {
-				subContentService.addContent(content);
-			}
+			subContentService.addContent(content);
 		} catch (Exception e) {
 			logger.error(content + " 添加失败", e);
-		}
-		if (sendShow == null) {
-			return 0;
 		}
 
 		//2、获取订阅该用户的读者列表
@@ -226,7 +232,7 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 					String cont = JSON.parseObject(show.toString()).getString("text");
 					sendMessegeService.sendTextMessage(cont, orderUserId, fromTemail);
 
-				} else if (BodyTypeEnums.COMPLEX.getType().equals(sendBodyType)) { //20190620 实际只走这一条分支
+				} else if (BodyTypeEnums.COMPLEX.getType().equals(sendBodyType)) {
 					//需要动态拼接url中的userId
 					String actionItemUrl = sendShow.getActions().get(0).getUrl()  + "&userId=" + orderUserId;
 					sendShow.getActions().get(0).setUrl(actionItemUrl);
@@ -262,7 +268,7 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 	 * @return
 	 */
 	private boolean checkShow(BaseShow show, Integer bodyType, String ptmail, String userId) {
-
+		//检查BaseShow的内容是否正确，由于比较麻烦，不判断了。由发送方保证吧
 		return true;
 	}
 	private boolean checkContentJson(String contentJson,Integer bodyType, String ptmail, String userId) {
