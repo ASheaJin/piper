@@ -201,7 +201,7 @@ public class MenuConfigService implements IMenuConfigService {
 			}else{
 				roleValue = consumerService.getPiperMenuRole(header.getSender(),header.getReceiver());
 			}
-			logger.error("checkChange roleValue"+String.valueOf(extraData));
+			logger.error("checkChange"+String.valueOf(extraData));
 			if(!StringUtil.isEmpty(r) && r.equals(roleValue)){
 				return false;
 			}
@@ -224,7 +224,7 @@ public class MenuConfigService implements IMenuConfigService {
 		}else{
 			roleValue = consumerService.getPiperMenuRole(header.getSender(),header.getReceiver());
 		}
-		logger.error("checkChange getChangeInfo"+String.valueOf(roleValue));
+		logger.error(" getChangeInfo"+String.valueOf(roleValue));
 		Map map =new HashMap();
 		map.put("role",roleValue);
 		return map;
