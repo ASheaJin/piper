@@ -325,7 +325,9 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 		String intro = null;
 		if (BodyTypeEnums.COMPOSE.getType().equals(bodyType)) {
 			List<MediaContentEntity> contentArray = e.getContentArray();
-
+			if (!StringUtils.isEmpty(e.getTitle())) {
+                title = limitIntro(e.getTitle(), 50);
+            }
 			for (MediaContentEntity media : contentArray) {
 				if (BodyTypeEnums.TEXT.getType().equals(media.getBodyType()) && StringUtils.isEmpty(intro)) {
 					intro = media.getText();
