@@ -1,6 +1,7 @@
 package com.syswin.pipeline.psservice.psserver;
 
 import com.syswin.pipeline.psservice.psserver.bean.SendMsgEntity;
+import com.syswin.temail.ps.client.Message;
 
 /**
  * 发送消息统一接口
@@ -25,5 +26,5 @@ public interface SendMsgService<M, D> {
 	 * @return
 	 */
 	@Deprecated
-	boolean sendChatTestMessage(SendMsgEntity sendMsgEntity, short command);
+	Message sendChatTestMessage(SendMsgEntity sendMsgEntity, short command);
 }

@@ -3,6 +3,7 @@ package com.syswin.pipeline.app.controller;
 import com.syswin.pipeline.psservice.olderps.ChatMsg;
 import com.syswin.pipeline.psservice.psserver.SendMsgService;
 import com.syswin.pipeline.psservice.psserver.bean.SendMsgEntity;
+import com.syswin.temail.ps.client.Message;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -31,7 +32,7 @@ public class PSSeverController {
 	@ApiOperation(
 					value = "發送消息"
 	)
-	public String send() {
+	public Message send() {
 		ChatMsg chatMsg = new ChatMsg("1112112",1, "a.piper@t.email", "luohongzhou@t.email");
 		SendMsgEntity sendMsgEntity = new SendMsgEntity();
 		sendMsgEntity.setExtrData(null);
@@ -40,9 +41,9 @@ public class PSSeverController {
 		sendMsgEntity.setReceiverPK("MIGbMBAGByqGSM49AgEGBSuBBAAjA4GGAAQBtBIPnoFOpyVCj8LiW2xgdOKqbizLUhZo5AWppUW3SuIHjf32aHgEI_V47ytdWwY7DykZjnrCoL_OuqaQkHawFVkAaBVdu5w8K00rh7rFK80BBL8o0DROHE78NNhX1d3jSITHRjY0loNPG54P3z40VfU-j9nmLlU2zgfVXkCHk7KCRAc");
 		sendMsgEntity.setSender("a.piper@t.email");
 		sendMsgEntity.setSenderPK("MIGbMBAGByqGSM49AgEGBSuBBAAjA4GGAAQBtBIPnoFOpyVCj8LiW2xgdOKqbizLUhZo5AWppUW3SuIHjf32aHgEI_V47ytdWwY7DykZjnrCoL_OuqaQkHawFVkAaBVdu5w8K00rh7rFK80BBL8o0DROHE78NNhX1d3jSITHRjY0loNPG54P3z40VfU-j9nmLlU2zgfVXkCHk7KCRAc");
-		pendMsgServer.sendChatTestMessage(sendMsgEntity,(short)1);
-		logger.info("send Message");
-		return"success";
+		Message message =pendMsgServer.sendChatTestMessage(sendMsgEntity,(short)1);
+		logger.info("send Message"+message);
+		return message;
 	}
 
 }

@@ -71,7 +71,7 @@ public class SendMsgServiceImpl<M, D> implements SendMsgService<M, D> {
      * @return
      */
     @Deprecated
-    public boolean sendChatTestMessage(SendMsgEntity sendMsgEntity, short command) {
+    public Message sendChatTestMessage(SendMsgEntity sendMsgEntity, short command) {
 //		Header chatMsgHeader = initHeader( (short)1, "a.piper@t.email", "MIGbMBAGByqGSM49AgEGBSuBBAAjA4GGAAQBtBIPnoFOpyVCj8LiW2xgdOKqbizLUhZo5AWppUW3SuIHjf32aHgEI_V47ytdWwY7DykZjnrCoL_OuqaQkHawFVkAaBVdu5w8K00rh7rFK80BBL8o0DROHE78NNhX1d3jSITHRjY0loNPG54P3z40VfU-j9nmLlU2zgfVXkCHk7KCRAc");
         Header chatMsgHeader = initHeader(sendMsgEntity.getSender(), sendMsgEntity.getSenderPK(), sendMsgEntity.getReceiver(), sendMsgEntity.getReceiverPK());
         chatMsgHeader.setCommandSpace(cDTPProperties.getCmd());
@@ -81,7 +81,7 @@ public class SendMsgServiceImpl<M, D> implements SendMsgService<M, D> {
         }
         Message chatMsg = initChatMessage(chatMsgHeader, sendMsgEntity.getMsg());
         Message resultMsg = psClient.sendMessage(chatMsg);
-        return true;
+        return resultMsg;
     }
 
 
