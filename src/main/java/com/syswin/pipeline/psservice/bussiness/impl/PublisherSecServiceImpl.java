@@ -235,8 +235,12 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 
 				} else if (BodyTypeEnums.COMPLEX.getType().equals(sendBodyType)) {
 					//需要动态拼接url中的userId
-					String actionItemUrl = sendShow.getActions().get(0).getUrl()  + "&userId=" + orderUserId;
-					sendShow.getActions().get(0).setUrl(actionItemUrl);
+					if (sendShow.getActions() != null && !sendShow.getActions().isEmpty() && !StringUtils.isEmpty(sendShow.getActions().get(0).getUrl())) {
+						String originUrl = sendShow.getActions().get(0).getUrl();
+						String actionItemUrl = originUrl + (originUrl.indexOf("&") > 0 ? "&" : "?");
+						actionItemUrl += "userId=" + orderUserId;
+						sendShow.getActions().get(0).setUrl(actionItemUrl);
+					}
 
 					logger.info("fromTemail, orderUserId, show" + fromTemail + orderUserId + sendShow);
 					PsClientKeeper.newInstance().sendMsg(fromTemail, orderUserId, sendShow);
