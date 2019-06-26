@@ -189,7 +189,7 @@ public class MenuConfigService implements IMenuConfigService {
 	public boolean checkChange(Object extraData){
         if (null == extraData) {
             System.out.println("extraData is empty");
-            return true;
+            return false;
         } else {
 			logger.info(String.valueOf(extraData));
 			String r =(String)((JSONObject) extraData).get("role");
@@ -202,7 +202,7 @@ public class MenuConfigService implements IMenuConfigService {
 				roleValue = consumerService.getPiperMenuRole(header.getSender(),header.getReceiver());
 			}
 			logger.info("checkChange"+String.valueOf(extraData));
-			if(!StringUtil.isEmpty(r) && r.equals(roleValue)){
+			if(StringUtil.isEmpty(r) || r.equals(roleValue)){
 				return false;
 			}
             return true;

@@ -123,7 +123,7 @@ public class SendMessegeService {
 	public static final String VCARD_TEMPLATE = "BEGIN:VCARD\r\nPHOTO:%s\r\nVERSION:3.0\r\nN:%s\r\nEMAIL:%s\r\nEND:VCARD";
 
 	private Card cardContent(String temail, String name, String imgUrl) {
-		String vcard = String.format(VCARD_TEMPLATE, url, name, temail);
+		String vcard = String.format(VCARD_TEMPLATE, imgUrl, name, temail);
 		Card card = new Card();
 		card.setNick(name);
 		card.setFeedId(vcard);
