@@ -52,7 +52,7 @@ public class SwaggerConfig {
 		return new Docket(DocumentationType.SWAGGER_2)
 						.select()
 						.apis(RequestHandlerSelectors.withClassAnnotation(Api.class))
-						.paths(PathSelectors.regex("/(spider|test|admin|pssdk|ps|publish|subcribe|recommend|content)/.*"))
+						.paths(PathSelectors.regex("/(psserver|spider|test|admin|pssdk|ps|publish|subcribe|recommend|content)/.*"))
 						.build()
 						.groupName("api")
 						.pathMapping("/")

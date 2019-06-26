@@ -136,40 +136,40 @@ public class PSClientServiceImpl implements PSClientService {
 //		}
 	}
 
-	/**
-	 * 注册temail会话的处理逻辑
-	 *
-	 * @param temail
-	 */
-	public void loginTemail(String temail) {
-		String pk = initPubKey(temail);
-		clientLogin(temail, pk);
-	}
-
-
-	private void clientLogin(String thisAppTemail, String thisAppPK) {
-//		logger.error("登录", thisAppTemail+":"+thisAppPK);
-		psClient.login(thisAppTemail, thisAppPK, m -> {
-			String payloadStr = StringUtil.byte2Str(m.getPayload());
-			MessageResult messageResult = FastJsonUtil.parseObject(payloadStr, MessageResult.class);
-			Message msg = psClient.unpack(messageResult.getMessage());
-			logger.info("msg:" + FastJsonUtil.toJson(msg));
-			String msgStr = null;
-			if (msg.getHeader().getDataEncryptionMethod() != 0) {
-				msgStr = this.cipher.decrypt(thisAppTemail, StringUtil.byte2Str(msg.getPayload()));
-			} else {
-				msgStr = StringUtil.byte2Str(msg.getPayload());
-			}
-			ChatMsg chatMsg = FastJsonUtil.parseObject(msgStr, ChatMsg.class);
-			logger.info("chatMsg:" + FastJsonUtil.toJson(chatMsg));
-			//输入板应用处理
-			chatMessageHandler.handle(chatMsg, reverseHeader(msg.getHeader()));
-			CacheUtil.put(msg.getHeader().getReceiver(), msg.getHeader().getReceiverPK());
-			//会话式应用处理
-//			publisherSecService.monitorORG(msg.getHeader().getReceiver(), msg.getHeader().getSender(), chatMsg);
-
-		});
-	}
+//	/**
+//	 * 注册temail会话的处理逻辑
+//	 *
+//	 * @param temail
+//	 */
+//	public void loginTemail(String temail) {
+//		String pk = initPubKey(temail);
+//		clientLogin(temail, pk);
+//	}
+//
+//
+//	private void clientLogin(String thisAppTemail, String thisAppPK) {
+////		logger.error("登录", thisAppTemail+":"+thisAppPK);
+//		psClient.login(thisAppTemail, thisAppPK, m -> {
+//			String payloadStr = StringUtil.byte2Str(m.getPayload());
+//			MessageResult messageResult = FastJsonUtil.parseObject(payloadStr, MessageResult.class);
+//			Message msg = psClient.unpack(messageResult.getMessage());
+//			logger.info("msg:" + FastJsonUtil.toJson(msg));
+//			String msgStr = null;
+//			if (msg.getHeader().getDataEncryptionMethod() != 0) {
+//				msgStr = this.cipher.decrypt(thisAppTemail, StringUtil.byte2Str(msg.getPayload()));
+//			} else {
+//				msgStr = StringUtil.byte2Str(msg.getPayload());
+//			}
+//			ChatMsg chatMsg = FastJsonUtil.parseObject(msgStr, ChatMsg.class);
+//			logger.info("chatMsg:" + FastJsonUtil.toJson(chatMsg));
+//			//输入板应用处理
+//			chatMessageHandler.handle(chatMsg, reverseHeader(msg.getHeader()));
+//			CacheUtil.put(msg.getHeader().getReceiver(), msg.getHeader().getReceiverPK());
+//			//会话式应用处理
+////			publisherSecService.monitorORG(msg.getHeader().getReceiver(), msg.getHeader().getSender(), chatMsg);
+//
+//		});
+//	}
 
 	public void destory() {
 		try {
