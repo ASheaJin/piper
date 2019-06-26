@@ -36,7 +36,7 @@ public class SendMsgServiceImpl<M, D> implements SendMsgService<M, D> {
     /**
      * CDTP客户端
      */
-//	@PostConstruct
+	@PostConstruct
     private void init() {
         this.psClient = new PsClientBuilder(cDTPProperties.getDeviceId())
                 .defaultHost(cDTPProperties.getCdtp_host())
