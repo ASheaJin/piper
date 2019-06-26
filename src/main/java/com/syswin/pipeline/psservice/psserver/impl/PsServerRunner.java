@@ -19,7 +19,7 @@ import org.springframework.context.annotation.Configuration;
  * Created by GuoMengnan on 2018/9/27.
  */
 
-@Configuration
+//@Configuration
 public class PsServerRunner implements ApplicationRunner {
 
 	private static final Logger logger = LoggerFactory.getLogger(PsServerRunner.class);
@@ -57,7 +57,7 @@ public class PsServerRunner implements ApplicationRunner {
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
 		//暂时不用ps先关闭
-//		this.psServer.start();
+		this.psServer.start();
 		logger.info("psserver--- start");
 	}
 }
