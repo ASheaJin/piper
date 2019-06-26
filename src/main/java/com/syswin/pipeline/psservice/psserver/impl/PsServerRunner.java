@@ -57,7 +57,7 @@ public class PsServerRunner implements ApplicationRunner {
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
 		//暂时不用ps先关闭
-//		this.psServer.start();
+		this.psServer.start();
 		logger.info("psserver--- start");
 	}
 }
