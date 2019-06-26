@@ -17,7 +17,7 @@ public class CDTPProperties {
 	private int idleTimeSeconds =1000;
 
 	@Value("${app.pssever.cdtpport}")
-	private int port = 8686;
+	private int port = 58686;
 
 	@Value("${app.pipeline.tenantId}")
 	private String tenantId = "syswin";
