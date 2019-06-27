@@ -34,7 +34,7 @@ public class CDTPProperties {
 	@Value("${app.ps-app-sdk.kms-server}")
 	private String kmsBaseUrl ="http://172.28.43.105:8089/kms-server";
 
-	//0A01  A001超过了short最大值 2561
+	//00A1  A001超过了short最大值 2561
 	@Value("${app.pssever.cdtpcms}")
 	private short cmd =2561;
 
