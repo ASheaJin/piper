@@ -5,6 +5,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -16,12 +18,22 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @SpringBootApplication(scanBasePackages = {"com.syswin"})
 @Configuration
 @EnableTransactionManagement(proxyTargetClass = true)
-public class PiperApplication {
+public class PiperApplication  extends SpringBootServletInitializer {
 	private final static Logger logger = LoggerFactory.getLogger(PiperApplication.class);
 
 	public static void main(String[] args) throws Exception {
 		ApplicationContext appContext = SpringApplication.run(PiperApplication.class, args);
 
+	}
+
+	/**
+	 * 打war包时使用
+	 * @param application
+	 * @return
+	 */
+	@Override
+	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+		return application.sources(PiperApplication.class);
 	}
 
 }

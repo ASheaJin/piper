@@ -1,10 +1,8 @@
 package com.syswin.pipeline.app.controller;
 
-import com.syswin.pipeline.app.dto.UserIdParam;
 import com.syswin.pipeline.psservice.olderps.ChatMsg;
 import com.syswin.pipeline.psservice.psserver.SendMsgService;
 import com.syswin.pipeline.psservice.psserver.bean.SendMsgEntity;
-import com.syswin.pipeline.utils.CollectionUtil;
 import com.syswin.ps.sdk.common.CommonMsg;
 import com.syswin.ps.sdk.common.HandlerParam;
 import com.syswin.ps.sdk.common.MsgHeader;
@@ -21,15 +19,15 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * Created by 115477 on 2018/12/18.
@@ -87,8 +85,8 @@ public class PSSeverController {
 	CrossDomainService crossDomainService;
 
 	public String datagson = "{" +
-			"\"command\": 6," +
-			"\"commandSpace\": 1," +
+			"\"command\": 1," +
+			"\"commandSpace\": A002," +
 			"\"dataEncryptionMethod\": 4," +
 			"\"extraData\": \"{\\\"from\\\":\\\"luohongzhou@t.email\\\",\\\"msgId\\\":\\\"f-bc7a-2b08a315501c\\\",\\\"parentMsgId\\\":\\\"\\\",\\\"storeType\\\":1,\\\"to\\\":\\\"a.piper@t.email\\\",\\\"type\\\":0}\"," +
 			"\"packetId\": \"8a326c38-ce37-4904-91d2-eb5144ad5d59\"," +
