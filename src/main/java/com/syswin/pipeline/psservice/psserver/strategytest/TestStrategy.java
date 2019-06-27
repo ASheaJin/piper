@@ -26,6 +26,7 @@ public class TestStrategy implements BaseStrategy<ChatMsg> {
         return ChatMsg.class;
     }
 
+
     @Override
     public PsResponseEntity sevice(ChatMsg chatMsg) {
         logger.info("Test chatMsg {}",chatMsg.toString());
