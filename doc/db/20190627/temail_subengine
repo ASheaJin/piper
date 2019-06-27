@@ -1,0 +1,110 @@
+use temail_subengine;
+CREATE TABLE `admin` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` varchar(45) NOT NULL,
+  `create_time` int(11) DEFAULT NULL,
+  `status` tinyint(2) DEFAULT '1' COMMENT '1、有效 0 无效',
+  `creater` varchar(45) DEFAULT NULL,
+  `ptype` varchar(20) NOT NULL DEFAULT 'organize',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=54 DEFAULT CHARSET=utf8 COMMENT='管理员表';
+
+CREATE TABLE `blacksub` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Id',
+  `create_time` int(11) NOT NULL DEFAULT '1' COMMENT '创建时间',
+  `user_id` varchar(64) NOT NULL DEFAULT '' COMMENT '用户Id（秘邮邮箱）',
+  `publisher_id` varchar(20) NOT NULL DEFAULT '1' COMMENT '出版社Id',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `user_publisher` (`user_id`,`publisher_id`),
+  KEY `user_id` (`user_id`),
+  KEY `publisher_id` (`publisher_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='黑名单';
+
+CREATE TABLE `content` (
+  `content_id` varchar(20) NOT NULL DEFAULT '1' COMMENT '文章Id',
+  `create_time` int(11) NOT NULL DEFAULT '1' COMMENT '创建时间',
+  `publisher_id` varchar(20) NOT NULL DEFAULT '1' COMMENT '发布者Id',
+  `title` varchar(100) DEFAULT '' COMMENT '标题',
+  `subtitle` varchar(200) DEFAULT '' COMMENT '概要',
+  `content` varchar(15838) DEFAULT '' COMMENT '文章内容',
+  `url` varchar(200) DEFAULT '' COMMENT '文章url',
+  `status` tinyint(2) NOT NULL DEFAULT '0' COMMENT '状态（0,无效 1 有效）',
+  `body_type` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`content_id`),
+  KEY `publisher_id` (`publisher_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='文章详情';
+
+CREATE TABLE `contentout` (
+  `content_id` varchar(20) NOT NULL,
+  `listdesc` varchar(5000) DEFAULT NULL,
+  `allcontent` varchar(15838) DEFAULT NULL,
+  `publisher_id` varchar(20) DEFAULT NULL COMMENT '历史消息查询表',
+  `create_time` int(11) DEFAULT NULL,
+  PRIMARY KEY (`content_id`),
+  KEY `publisher_id` (`publisher_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='文章输出';
+
+CREATE TABLE `contribute_record` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '投稿Id',
+  `create_time` int(11) NOT NULL DEFAULT '1' COMMENT '创建时间',
+  `userId` varchar(100) NOT NULL DEFAULT '' COMMENT '投稿者',
+  `publisher_id` varchar(20) DEFAULT '0' COMMENT '出版社Id',
+  `content` varchar(5000) DEFAULT '' COMMENT '投稿内容',
+  `url` varchar(200) DEFAULT '' COMMENT '投稿url',
+  `hasread` varchar(6) DEFAULT 'NO',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='投稿记录';
+
+CREATE TABLE `logs` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` varchar(45) NOT NULL,
+  `toemail` varchar(45) DEFAULT NULL,
+  `body_type` int(11) DEFAULT '0' COMMENT '1、文本 2、语音3、图片4、视频5、文件',
+  `text` text,
+  `create_time` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=21104 DEFAULT CHARSET=utf8 COMMENT='接受单聊消息记录';
+
+CREATE TABLE `operating_log` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` varchar(45) DEFAULT NULL,
+  `opinfo` varchar(100) DEFAULT NULL,
+  `create_time` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=248 DEFAULT CHARSET=utf8 COMMENT='管理员操作记录表';
+
+CREATE TABLE `publisher` (
+  `publisher_id` varchar(20) NOT NULL DEFAULT '0' COMMENT '主键',
+  `user_id` varchar(64) NOT NULL DEFAULT '' COMMENT '用户id',
+  `ptemail` varchar(64) NOT NULL DEFAULT '' COMMENT '出版社以p打头的邮箱',
+  `name` varchar(64) NOT NULL DEFAULT '' COMMENT '名称',
+  `avatar` varchar(256) DEFAULT '' COMMENT '头像',
+  `introduce` varchar(256) DEFAULT '' COMMENT '介绍',
+  `create_time` int(11) NOT NULL DEFAULT '1' COMMENT '创建时间',
+  `ptype` varchar(20) NOT NULL DEFAULT 'person' COMMENT '生产源类型 枚举（个人、组织、其他）',
+  `status` tinyint(2) DEFAULT '1',
+  PRIMARY KEY (`publisher_id`),
+  KEY `user_id` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='出版社';
+
+CREATE TABLE `send_record` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '推送Id',
+  `create_time` int(11) NOT NULL DEFAULT '1' COMMENT '创建时间',
+  `user_id` varchar(64) NOT NULL DEFAULT '' COMMENT '用户Id （秘邮号）',
+  `content_id` varchar(20) NOT NULL DEFAULT '1' COMMENT '文章Id',
+  `sendnum` int(11) NOT NULL DEFAULT '0' COMMENT '推送次数',
+  PRIMARY KEY (`id`),
+  KEY `content_id` (`content_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1284 DEFAULT CHARSET=utf8mb4 COMMENT='推送文章记录';
+
+CREATE TABLE `subscription` (
+  `subscription_id` varchar(20) NOT NULL DEFAULT '1' COMMENT '订阅号Id',
+  `create_time` int(11) NOT NULL DEFAULT '1' COMMENT '创建时间',
+  `user_id` varchar(64) NOT NULL DEFAULT '' COMMENT '用户Id（秘邮邮箱）',
+  `publisher_id` varchar(20) NOT NULL DEFAULT '1' COMMENT '出版社Id',
+  `status` tinyint(2) NOT NULL DEFAULT '1' COMMENT '状态（0,无效 1 有效）',
+  PRIMARY KEY (`subscription_id`),
+  KEY `user_id` (`user_id`),
+  KEY `publisher_id` (`publisher_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='订阅';
+SELECT * FROM temail_subengine.admin;

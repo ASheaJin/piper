@@ -66,7 +66,7 @@ public class PMenusHandler_bak implements EventHandler<MessageEvent> {
 	 */
 	public String myRole = PermissionEnums.Guest.name;
 
-	@Value("${app.pipeline.userId}")
+	@Value("${app.ps-app-sdk.user-id}")
 	private String from;
 	private final static Logger logger = LoggerFactory.getLogger(PMenusHandler_bak.class);
 	/**

@@ -70,7 +70,7 @@ public class APPPublisherService {
 	@Autowired
 	private PublisherService publisherService;
 
-	@Value("${app.pipeline.userId}")
+	@Value("${app.ps-app-sdk.user-id}")
 	private String from;
 
 	@Value("${app.pipeline.imgUrl}")

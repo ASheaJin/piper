@@ -15,7 +15,7 @@ public final class AppConstant {
     public static final String REGISTER_SERVER = "url.temail-auth.register";
     public static final String PUBLISH_SERVER = "url.temail-auth.publish";
 
-    public static final String USER_ID = "app.pipeline.userId";
+    public static final String USER_ID = "app.ps-app-sdk.user-id";
 
     public static final String TENANT_ID = "app.pipeline.tenantId";
 

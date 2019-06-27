@@ -1,0 +1,282 @@
+CREATE TABLE `account` (
+  `account_id` varchar(20) NOT NULL DEFAULT '1' COMMENT '主键',
+  `create_time` int(11) NOT NULL DEFAULT '1' COMMENT '创建时间',
+  `user_id` varchar(64) NOT NULL DEFAULT '' COMMENT '用户id',
+  `balance` decimal(11,2) NOT NULL DEFAULT '0.00' COMMENT '余额（秘票）',
+  `update_time` int(11) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`account_id`),
+  KEY `user_id` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='账户';
+
+CREATE TABLE `admin_account_info` (
+  `account_id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '数据库主键',
+  `account_no` varchar(50) NOT NULL DEFAULT '' COMMENT '账号地址',
+  `active_code` varchar(20) NOT NULL DEFAULT '' COMMENT '激活码',
+  `active_status` tinyint(3) NOT NULL DEFAULT '1' COMMENT '0 未激活 1激活',
+  `use_status` tinyint(3) NOT NULL DEFAULT '0' COMMENT '0 停用 1启用',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+  `welcome_msg` varchar(50) NOT NULL DEFAULT '' COMMENT '欢迎信息',
+  PRIMARY KEY (`account_id`),
+  KEY `idx_account_no` (`account_no`)
+) ENGINE=InnoDB AUTO_INCREMENT=142 DEFAULT CHARSET=utf8 COMMENT='账号表';
+
+CREATE TABLE `admin_app_admin` (
+  `admin_id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '数据库主键',
+  `username` varchar(20) NOT NULL DEFAULT '' COMMENT '管理员账号',
+  `password` varchar(64) NOT NULL DEFAULT '' COMMENT '管理员密码',
+  `nickname` varchar(20) NOT NULL DEFAULT '' COMMENT '管理员姓名',
+  `mobile` varchar(11) NOT NULL DEFAULT '' COMMENT '管理员手机号',
+  `use_status` tinyint(3) NOT NULL DEFAULT '1' COMMENT '0 删除 1 激活',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`admin_id`),
+  UNIQUE KEY `idx_user` (`username`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='管理员表';
+
+CREATE TABLE `admin_auto_replay_config` (
+  `replay_id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '数据库主键',
+  `account_no` varchar(50) NOT NULL DEFAULT '' COMMENT '账号地址',
+  `in_type` varchar(10) NOT NULL DEFAULT '1,1' COMMENT 'in消息类型',
+  `in_keyword` varchar(20) NOT NULL DEFAULT '' COMMENT '账号头像',
+  `out_type` varchar(10) NOT NULL DEFAULT '1,1' COMMENT 'out消息类型',
+  `out_message` varchar(30) NOT NULL DEFAULT '' COMMENT '输出消息类型',
+  `use_status` tinyint(3) NOT NULL DEFAULT '1' COMMENT '0 停用 1启用',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`replay_id`),
+  KEY `idx_account_no` (`account_no`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='自动回复消息';
+
+CREATE TABLE `admin_function_item` (
+  `function_id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '数据库主键',
+  `account_no` varchar(50) NOT NULL DEFAULT '' COMMENT '账号地址',
+  `function_name` varchar(50) NOT NULL DEFAULT '' COMMENT '配置名称',
+  `function_image` varchar(1024) NOT NULL DEFAULT '' COMMENT '配置图标',
+  `function_url` varchar(1024) NOT NULL DEFAULT '' COMMENT '配置地址',
+  `taip_host` varchar(20) NOT NULL DEFAULT '---' COMMENT 'taip服务器地址',
+  `taip_port` varchar(20) NOT NULL DEFAULT '---' COMMENT 'taip服务器端口',
+  `taip_command` varchar(20) NOT NULL DEFAULT '---' COMMENT '指令id',
+  `taip_command_space` varchar(20) NOT NULL DEFAULT '---' COMMENT '指令space',
+  `item_type` tinyint(3) NOT NULL DEFAULT '0' COMMENT '0-其他 1-头部 2-快捷方式  3-功能区',
+  `display_order` tinyint(3) NOT NULL DEFAULT '0' COMMENT '排序',
+  `use_status` tinyint(3) NOT NULL DEFAULT '1' COMMENT '0 停用 1启用',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+  `role_type` varchar(50) NOT NULL DEFAULT '0' COMMENT '角色类型',
+  `role_desc` varchar(50) NOT NULL DEFAULT '' COMMENT '角色描述',
+  `function_key` varchar(100) NOT NULL DEFAULT '',
+  PRIMARY KEY (`function_id`),
+  KEY `idx_account_no` (`account_no`)
+) ENGINE=InnoDB AUTO_INCREMENT=2205 DEFAULT CHARSET=utf8 COMMENT='快捷入口配置表';
+
+CREATE TABLE `admin_method_invoke` (
+  `invoke_id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '数据库主键',
+  `account_no` varchar(50) NOT NULL DEFAULT '' COMMENT '账号地址',
+  `method` varchar(20) NOT NULL DEFAULT '' COMMENT '账号地址',
+  `invoke_date` date NOT NULL COMMENT '调用日期',
+  `use_status` tinyint(3) unsigned NOT NULL DEFAULT '1' COMMENT '是否有效 1 有效 0 无效',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`invoke_id`),
+  KEY `idx_account_no` (`account_no`)
+) ENGINE=InnoDB AUTO_INCREMENT=12263 DEFAULT CHARSET=utf8 COMMENT='方法调用';
+
+CREATE TABLE `admin_user_add_info` (
+  `invoke_id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '数据库主键',
+  `account_no` varchar(50) NOT NULL DEFAULT '' COMMENT '账号地址',
+  `user_account` varchar(50) NOT NULL DEFAULT '' COMMENT '访问者邮箱地址',
+  `add_time` date NOT NULL COMMENT '添加日期',
+  `use_status` tinyint(3) NOT NULL DEFAULT '1' COMMENT '0 停用 1启用',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`invoke_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2489 DEFAULT CHARSET=utf8 COMMENT='用户新增表';
+
+CREATE TABLE `admin_user_visit_info` (
+  `invoke_id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '数据库主键',
+  `account_no` varchar(50) NOT NULL DEFAULT '' COMMENT '账号地址',
+  `user_account` varchar(50) NOT NULL DEFAULT '' COMMENT '用户账号',
+  `visit_time` date NOT NULL COMMENT '访问时间',
+  `use_status` tinyint(3) NOT NULL DEFAULT '1' COMMENT '0 停用 1启用',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`invoke_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=24787 DEFAULT CHARSET=utf8 COMMENT='用户访问表';
+
+CREATE TABLE `admin_v_card_info` (
+  `v_card_id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '数据库主键',
+  `account_no` varchar(50) NOT NULL DEFAULT '' COMMENT '账号地址',
+  `nickname` varchar(20) NOT NULL DEFAULT '' COMMENT '账号昵称',
+  `account_image` varchar(1024) NOT NULL DEFAULT '' COMMENT '账号头像',
+  `account_desc` varchar(20) NOT NULL DEFAULT '' COMMENT '账号信息',
+  `use_status` tinyint(3) NOT NULL DEFAULT '1' COMMENT '0 停用 1启用',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`v_card_id`),
+  KEY `idx_account_no` (`account_no`)
+) ENGINE=InnoDB AUTO_INCREMENT=142 DEFAULT CHARSET=utf8 COMMENT='vCard信息表';
+
+CREATE TABLE `browse_record` (
+  `browse_id` varchar(20) NOT NULL DEFAULT '1' COMMENT '浏览Id',
+  `create_time` int(11) NOT NULL DEFAULT '1' COMMENT '创建时间',
+  `user_id` varchar(64) NOT NULL DEFAULT '' COMMENT '用户Id （秘邮号）',
+  `content_id` bigint(18) NOT NULL DEFAULT '1' COMMENT '文章Id',
+  `browse_time` int(11) NOT NULL DEFAULT '1' COMMENT '浏览时间',
+  `fromtemail` varchar(64) DEFAULT NULL,
+  PRIMARY KEY (`browse_id`),
+  KEY `content_id` (`content_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='推送文章记录';
+
+CREATE TABLE `card` (
+  `card_id` varchar(20) NOT NULL DEFAULT '1' COMMENT '银行卡Id',
+  `create_time` int(11) NOT NULL DEFAULT '1' COMMENT '创建时间',
+  `user_id` varchar(64) NOT NULL DEFAULT '1' COMMENT '用户Id （秘邮号）',
+  `card_no` varchar(20) NOT NULL DEFAULT '1' COMMENT '银行卡账号',
+  PRIMARY KEY (`card_id`),
+  KEY `user_id` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='银行卡';
+
+CREATE TABLE `consumer` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `user_id` varchar(64) NOT NULL DEFAULT '' COMMENT '用户id(秘邮账号)',
+  `create_time` int(11) NOT NULL DEFAULT '1' COMMENT '创建时间',
+  `ptemail` varchar(64) DEFAULT NULL,
+  `curversion` varchar(20) DEFAULT '1',
+  `role` varchar(5) DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `user_id_ptemail` (`user_id`,`ptemail`)
+) ENGINE=InnoDB AUTO_INCREMENT=1986 DEFAULT CHARSET=utf8mb4 COMMENT='用户版本控制';
+
+CREATE TABLE `device_info` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `userId` varchar(45) DEFAULT NULL,
+  `language` varchar(10) DEFAULT NULL,
+  `platform` varchar(45) DEFAULT NULL,
+  `moduleVersion` varchar(20) DEFAULT NULL,
+  `os_version` varchar(10) DEFAULT NULL,
+  `appversion` varchar(20) DEFAULT NULL,
+  `build` varchar(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `userId_UNIQUE` (`userId`)
+) ENGINE=InnoDB AUTO_INCREMENT=913 DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `evaluation` (
+  `evaluation_id` varchar(20) NOT NULL DEFAULT '0' COMMENT '评星Id',
+  `create_time` int(11) NOT NULL DEFAULT '1' COMMENT '创建时间',
+  `level` tinyint(3) NOT NULL DEFAULT '1' COMMENT '评星等级',
+  `user_id` varchar(64) NOT NULL DEFAULT '' COMMENT '用户id',
+  `content_id` varchar(20) NOT NULL DEFAULT '0' COMMENT '内容id',
+  PRIMARY KEY (`evaluation_id`),
+  KEY `content_id` (`content_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='评价 1~5星';
+
+CREATE TABLE `recommendcontent` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `content_id` varchar(20) NOT NULL COMMENT '推荐文章Id',
+  `user_id` varchar(45) DEFAULT NULL COMMENT '推荐人秘邮号',
+  `create_time` int(10) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `content_id_UNIQUE` (`content_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8 COMMENT='内容推荐';
+
+CREATE TABLE `recommendpublisher` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `publisher_id` varchar(20) NOT NULL COMMENT '出版社Id',
+  `user_id` varchar(45) DEFAULT NULL COMMENT '推荐人秘邮号',
+  `create_time` int(10) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `content_id_UNIQUE` (`publisher_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8 COMMENT='出版社推荐';
+
+CREATE TABLE `server_logs` (
+  `id` varchar(20) NOT NULL DEFAULT '0',
+  `user_id` varchar(45) NOT NULL,
+  `command` int(11) DEFAULT '0',
+  `request_data` varchar(5000) DEFAULT '',
+  `create_time` varchar(20) NOT NULL,
+  `response_data` varchar(5000) DEFAULT '',
+  `end_time` varchar(20) DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `spidertoken` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `ptemail` varchar(45) NOT NULL,
+  `token` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `ptemail_UNIQUE` (`ptemail`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `sys_menu` (
+  `menu_id` bigint(20) NOT NULL DEFAULT '1' COMMENT '菜单id',
+  `parent_id` bigint(20) NOT NULL DEFAULT '-1',
+  `name` varchar(45) NOT NULL DEFAULT '',
+  `url` varchar(200) NOT NULL DEFAULT '' COMMENT '菜单的url',
+  `is_leaf` tinyint(2) NOT NULL DEFAULT '1' COMMENT '是否叶子节点 1是 2否',
+  `sort` int(11) NOT NULL DEFAULT '0' COMMENT '排序',
+  `status` tinyint(2) NOT NULL DEFAULT '0' COMMENT '状态1有效0无效',
+  `create_time` int(11) NOT NULL DEFAULT '1' COMMENT '创建时间',
+  PRIMARY KEY (`menu_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='菜单表';
+
+CREATE TABLE `sys_role` (
+  `role_id` bigint(20) NOT NULL DEFAULT '1' COMMENT '角色id',
+  `role_name` varchar(45) NOT NULL DEFAULT '',
+  `remark` varchar(100) NOT NULL DEFAULT '',
+  `status` tinyint(2) NOT NULL DEFAULT '0',
+  `create_time` int(11) NOT NULL DEFAULT '1',
+  `creator_id` bigint(20) NOT NULL DEFAULT '1' COMMENT '创建者用户id',
+  `role_type` tinyint(2) NOT NULL DEFAULT '2' COMMENT '角色类型 1管理员 2普通',
+  PRIMARY KEY (`role_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='角色表';
+
+CREATE TABLE `sys_role_menu` (
+  `role_id` bigint(20) NOT NULL,
+  `menu_id` bigint(20) NOT NULL,
+  PRIMARY KEY (`role_id`,`menu_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='角色菜单表';
+
+CREATE TABLE `sys_user` (
+  `user_id` bigint(20) NOT NULL DEFAULT '1' COMMENT '用户id',
+  `login_name` varchar(45) NOT NULL DEFAULT '' COMMENT '登录名',
+  `user_name` varchar(45) NOT NULL DEFAULT '' COMMENT '用户名',
+  `password` varchar(100) NOT NULL DEFAULT '' COMMENT '密码',
+  `email` varchar(100) NOT NULL DEFAULT '' COMMENT '邮件',
+  `remark` varchar(100) NOT NULL DEFAULT '' COMMENT '备注',
+  `status` tinyint(2) NOT NULL DEFAULT '0' COMMENT '状态 1有效0无效',
+  `create_time` int(11) NOT NULL DEFAULT '1' COMMENT '创建时间',
+  `creator_id` bigint(20) NOT NULL DEFAULT '1' COMMENT '创建者用户id',
+  `is_sys` tinyint(2) NOT NULL DEFAULT '0' COMMENT '系统管理员 1是 0否',
+  `salt` varchar(45) NOT NULL DEFAULT '',
+  PRIMARY KEY (`user_id`),
+  KEY `login_name` (`login_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户表';
+
+CREATE TABLE `sys_user_role` (
+  `user_id` bigint(20) NOT NULL,
+  `role_id` bigint(20) NOT NULL,
+  PRIMARY KEY (`user_id`,`role_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户角色表';
+
+CREATE TABLE `token` (
+  `token_id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` varchar(50) NOT NULL DEFAULT '0' COMMENT 'userid',
+  `token` varchar(50) NOT NULL DEFAULT '' COMMENT 'token用户身份标识',
+  `create_time` int(11) NOT NULL DEFAULT '0' COMMENT '创建时间',
+  `update_time` int(11) NOT NULL DEFAULT '0' COMMENT '更新时间',
+  PRIMARY KEY (`token_id`),
+  KEY `user_id` (`user_id`),
+  KEY `token` (`token`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `transaction_record` (
+  `transaction_id` varchar(20) NOT NULL DEFAULT '1' COMMENT '交易记录Id',
+  `create_time` int(11) NOT NULL DEFAULT '1' COMMENT '创建时间',
+  `user_id` varchar(64) NOT NULL DEFAULT '1' COMMENT '账户Id',
+  `money` decimal(11,2) NOT NULL DEFAULT '0.00' COMMENT '金额',
+  `status` tinyint(2) NOT NULL DEFAULT '0' COMMENT '交易状态：0未完成，1已完成',
+  `type` tinyint(2) NOT NULL DEFAULT '1' COMMENT '交易类型 1充值 2扣款',
+  PRIMARY KEY (`transaction_id`),
+  KEY `user_id` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='交易记录';

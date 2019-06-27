@@ -57,7 +57,7 @@ public class AMenusHandler implements EventHandler<MessageEvent> {
 	 */
 	public String myRole = PermissionEnums.Guest.name;
 
-	@Value("${app.pipeline.userId}")
+	@Value("${app.ps-app-sdk.user-id}")
 	private String from;
 
 	@Value("${a.piper.menu.promission}")

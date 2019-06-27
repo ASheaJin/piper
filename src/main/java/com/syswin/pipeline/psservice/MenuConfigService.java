@@ -25,7 +25,7 @@ public class MenuConfigService implements IMenuConfigService {
 	private final static Logger logger = LoggerFactory.getLogger(MenuConfigService.class);
 
 
-	@Value("${app.pipeline.userId}")
+	@Value("${app.ps-app-sdk.user-id}")
 	private String apiper;
 	@Autowired
 	private PiperConsumerService consumerService;

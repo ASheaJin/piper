@@ -30,7 +30,7 @@ public class PiperAdminService {
 
 	@Autowired
 	private UpdateMenuService updateMenuService;
-	@Value("${app.pipeline.userId}")
+	@Value("${app.ps-app-sdk.user-id}")
 	private String piper;
 
 	public Admin add(String adminUserId, String userId, PublisherTypeEnums ptype, boolean isFirst) {

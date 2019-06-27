@@ -29,7 +29,7 @@ public class RegisterServer {
 	public static int sendType = 801;
 	@Value("${psserver.path}")
 	private String serverPath;
-	@Value("${app.pipeline.userId}")
+	@Value("${app.ps-app-sdk.user-id}")
 	private String client;
 	@Value("${psserver.server.tmail}")
 	private String server;

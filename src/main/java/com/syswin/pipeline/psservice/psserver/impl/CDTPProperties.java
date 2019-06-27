@@ -25,7 +25,7 @@ public class CDTPProperties {
 	@Value("${app.pipeline.deviceId}")
 	private String deviceId="aaaaaaaaa";
 
-	@Value("${app.pipeline.userId}")
+	@Value("${app.ps-app-sdk.user-id}")
 	private String userId="a.piper@t.email";
 
 	@Value("${app.pssever.cdtphost}")
@@ -105,6 +105,6 @@ public class CDTPProperties {
 	public CDTPProperties(Environment environment) {
 		this.cdtp_host = environment.getProperty("app.pssever.cdtphost");
 		this.kmsBaseUrl = environment.getProperty("app.ps-app-sdk.kms-server");
-		this.userId=environment.getProperty("app.pipeline.userId");
+		this.userId=environment.getProperty("app.ps-app-sdk.user-id");
 	}
 }

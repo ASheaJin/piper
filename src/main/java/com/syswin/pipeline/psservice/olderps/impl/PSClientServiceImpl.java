@@ -91,7 +91,7 @@ public class PSClientServiceImpl implements PSClientService {
 	@Autowired
 	private com.syswin.sub.api.PublisherService subPublisherService;
 
-	@Value("${app.pipeline.userId}")
+	@Value("${app.ps-app-sdk.user-id}")
 	private String from;
 
 	//初始化客户端服务

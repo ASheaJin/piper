@@ -51,7 +51,7 @@ public class PSSDKController {
 	@Autowired
 	private UpdateMenuService updateMenuService;
 
-	@Value("${app.pipeline.userId}")
+	@Value("${app.ps-app-sdk.user-id}")
 	private String piper;
 
 	@PostMapping({"/addPubliser"})

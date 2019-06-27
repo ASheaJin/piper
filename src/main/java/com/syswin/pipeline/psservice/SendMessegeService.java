@@ -25,7 +25,7 @@ public class SendMessegeService {
 	@Autowired
 	private PSClientService psClientService;
 
-	@Value("${app.pipeline.userId}")
+	@Value("${app.ps-app-sdk.user-id}")
 	private String from;
 
 	private final static Logger logger = LoggerFactory.getLogger(SendMessegeService.class);

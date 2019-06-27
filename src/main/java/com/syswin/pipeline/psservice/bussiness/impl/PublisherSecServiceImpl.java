@@ -50,7 +50,7 @@ import java.util.stream.Stream;
 public class PublisherSecServiceImpl implements PublisherSecService {
 
 
-	@Value("${app.pipeline.userId}")
+	@Value("${app.ps-app-sdk.user-id}")
 	private String from;
 
 	@Value("${url.piper}")

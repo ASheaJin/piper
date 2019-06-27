@@ -47,7 +47,7 @@ public class PMenusHandler_bak2 implements EventHandler<MessageEvent> {
 	@Autowired
 	private PSClientService psClientService;
 
-	@Value("${app.pipeline.userId}")
+	@Value("${app.ps-app-sdk.user-id}")
 	private String from;
 	private final static Logger logger = LoggerFactory.getLogger(PMenusHandler.class);
 	/**

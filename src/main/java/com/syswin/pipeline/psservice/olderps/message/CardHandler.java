@@ -32,7 +32,7 @@ public class CardHandler implements EventHandler<MessageEvent> {
 	private String url;
 	private final static Logger logger = LoggerFactory.getLogger(CardHandler.class);
 
-	@Value("${app.pipeline.userId}")
+	@Value("${app.ps-app-sdk.user-id}")
 	private String from;
 
 	@Lazy

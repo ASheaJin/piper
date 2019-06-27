@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class NickNameService implements INickNameService {
 
-    @Value("${app.pipeline.userId}")
+    @Value("${app.ps-app-sdk.user-id}")
     private String piper;
 
     @Autowired
@@ -25,18 +25,19 @@ public class NickNameService implements INickNameService {
     public String getNickName(String userId) {
         MsgHeader header = PsClientKeeper.msgHeader();
 
-        if (header.getReceiver().equals(piper)) {
+        if (userId.equals(piper)) {
             return "Piper";
         }
-        Publisher p = publisherService.getPubLisherByPublishTmail(header.getReceiver(), null);
+        Publisher p = publisherService.getPubLisherByPublishTmail(userId, null);
         if (p != null) {
-            if (header.getSender().equals(p.getUserId())) {
+
+            if (header != null && header.getSender().equals(p.getUserId())) {
                 return "*" + p.getName();
             }
             return p.getName();
         }
 
-        return header.getReceiver().split("@")[1].split("\\.")[0];
+        return userId.split("@")[1].split("\\.")[0];
 
     }
 

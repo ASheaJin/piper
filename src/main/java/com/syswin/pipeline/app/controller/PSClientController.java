@@ -48,7 +48,7 @@ public class PSClientController {
 	@Autowired
 	private com.syswin.sub.api.PublisherService subPublisherService;
 
-	@Value("${app.pipeline.userId}")
+	@Value("${app.ps-app-sdk.user-id}")
 	private String piperUserId;
 
 	@Autowired

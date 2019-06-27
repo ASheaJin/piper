@@ -15,7 +15,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class EvaluationServiceTest {
-    @Value("app.pipeline.userId")
+    @Value("app.ps-app-sdk.user-id")
     private String from;
     @Autowired
     private EvaluationRepository evaluationRepository;

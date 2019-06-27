@@ -42,7 +42,7 @@ import java.util.stream.Collectors;
 public class PiperPublisherService {
 
 	private static final Logger logger = LoggerFactory.getLogger(PiperPublisherService.class);
-	@Value("${app.pipeline.userId}")
+	@Value("${app.ps-app-sdk.user-id}")
 	private String from;
 	@Autowired
 	private PSClientService psClientService;
