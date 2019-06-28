@@ -52,10 +52,9 @@ public class MenuConfigService implements IMenuConfigService {
 
 	public List<String> getKey(String accountNo) {
 		MsgHeader msgHeader = PsClientKeeper.msgHeader();
-		logger.debug("msgHeader" + msgHeader.toString());
 		//根据访问者的权限配置菜单 msgHeader 里面有用户的 信息
 		List<String> menus = menu(msgHeader, accountNo);
-		logger.info("获取菜单：sender:{},receive:{},platformInfo:{},menus:{}", msgHeader.getSender(), msgHeader.getReceiver(), msgHeader.getPlatformInfo(), menus.toString());
+		logger.debug("获取菜单：sender:{},receive:{},platformInfo:{},menus:{}", msgHeader.getSender(), msgHeader.getReceiver(), msgHeader.getPlatformInfo(), menus.toString());
 		return menus;
 
 	}
@@ -134,7 +133,7 @@ public class MenuConfigService implements IMenuConfigService {
 			//每次进入进行订阅（只订阅个人出版社）
 			piperSubscriptionService.subscribeInner(header.getSender(), header.getReceiver());
 		} catch (Exception e) {
-			logger.info(header.getSender() + "订阅" + header.getReceiver() + "失败了 :" + 			 languageChange.getLangByStr(e.getMessage(), ""));
+			logger.debug(header.getSender() + "订阅" + header.getReceiver() + "失败了 :" + 			 languageChange.getLangByStr(e.getMessage(), ""));
 		}
 		if (!consumerService.getUserVersion(header.getSender(), header.getReceiver())) {
 			Publisher p = publisherService.getPubLisherByPublishTmail(accountNo, null);
@@ -191,7 +190,6 @@ public class MenuConfigService implements IMenuConfigService {
             System.out.println("extraData is empty");
             return false;
         } else {
-			logger.info(String.valueOf(extraData));
 			String r =(String)((JSONObject) extraData).get("role");
 			MsgHeader header = PsClientKeeper.msgHeader();
 			String roleValue = "0";
@@ -201,7 +199,7 @@ public class MenuConfigService implements IMenuConfigService {
 			}else{
 				roleValue = consumerService.getPiperMenuRole(header.getSender(),header.getReceiver());
 			}
-			logger.info("checkChange"+String.valueOf(extraData));
+			logger.debug("checkChange"+String.valueOf(extraData));
 			if(StringUtil.isEmpty(r) || r.equals(roleValue)){
 				return false;
 			}
@@ -224,7 +222,7 @@ public class MenuConfigService implements IMenuConfigService {
 		}else{
 			roleValue = consumerService.getPiperMenuRole(header.getSender(),header.getReceiver());
 		}
-		logger.info(" getChangeInfo"+String.valueOf(roleValue));
+		logger.debug(" getChangeInfo"+String.valueOf(roleValue));
 		Map map =new HashMap();
 		map.put("role",roleValue);
 		return map;

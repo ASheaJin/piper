@@ -19,7 +19,7 @@ import org.springframework.context.annotation.Configuration;
  * Created by GuoMengnan on 2018/9/27.
  */
 
-//@Configuration
+@Configuration
 public class PsServerRunner implements ApplicationRunner {
 
 	private static final Logger logger = LoggerFactory.getLogger(PsServerRunner.class);
@@ -27,7 +27,7 @@ public class PsServerRunner implements ApplicationRunner {
 
 	private PsServer psServer;
 	@Autowired
-	CDTPProperties cDTPProperties;
+	CDTPProperties cdtpProperties;
 
 	/**
 	 * 初始化CDTP监听
@@ -40,7 +40,7 @@ public class PsServerRunner implements ApplicationRunner {
 	PsServer psServer(SessionService sessionService, RequestService requestService) {
 		psServer = new PsServer(
 						sessionService, requestService,
-						cDTPProperties.getPort(), cDTPProperties.getIdleTimeSeconds(),
+						cdtpProperties.getPort(), cdtpProperties.getIdleTimeSeconds(),
 						SimpleBodyExtractor.INSTANCE,
 						PacketSigner.NoOp,
 						new PublicKeyPacketVerifier(),

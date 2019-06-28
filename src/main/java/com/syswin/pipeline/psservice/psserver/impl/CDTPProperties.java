@@ -17,7 +17,7 @@ public class CDTPProperties {
 	private int idleTimeSeconds =1000;
 
 	@Value("${app.pssever.cdtpport}")
-	private int port = 58686;
+	private int port = 8686;
 
 	@Value("${app.pipeline.tenantId}")
 	private String tenantId = "syswin";
@@ -29,14 +29,14 @@ public class CDTPProperties {
 	private String userId="a.piper@t.email";
 
 	@Value("${app.pssever.cdtphost}")
-	private String cdtp_host="172.31.241.15";
+	private String cdtp_host="192.168.16.150";
 
 	@Value("${app.ps-app-sdk.kms-server}")
 	private String kmsBaseUrl ="http://172.28.43.105:8089/kms-server";
 
 	//00A1  A001超过了short最大值 2561
 	@Value("${app.pssever.cdtpcms}")
-	private short cmd =2561;
+	private short cmd =161;
 
 	public int getIdleTimeSeconds() {
 		return idleTimeSeconds;

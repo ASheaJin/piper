@@ -86,7 +86,7 @@ public class PSSeverController {
 
 	public String datagson = "{" +
 			"\"command\": 1," +
-			"\"commandSpace\": A002," +
+			"\"commandSpace\": 161," +
 			"\"dataEncryptionMethod\": 4," +
 			"\"extraData\": \"{\\\"from\\\":\\\"luohongzhou@t.email\\\",\\\"msgId\\\":\\\"f-bc7a-2b08a315501c\\\",\\\"parentMsgId\\\":\\\"\\\",\\\"storeType\\\":1,\\\"to\\\":\\\"a.piper@t.email\\\",\\\"type\\\":0}\"," +
 			"\"packetId\": \"8a326c38-ce37-4904-91d2-eb5144ad5d59\"," +

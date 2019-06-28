@@ -99,7 +99,7 @@ public class MessegerSenderService extends AbstractMsgSender {
 		).collect(Collectors.toList());
 
 		TextShow show = new TextShow(1, map, infoList);
-		logger.info("fromTemail, orderUserId, show" + from + to + show);
+		logger.debug("fromTemail, orderUserId, show" + from + to + show);
 		PsClientKeeper.newInstance().sendMsg(from, to, show);
 	}
 }

@@ -17,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.nio.charset.Charset;
 import java.util.UUID;
 
@@ -31,18 +33,27 @@ public class SendMsgServiceImpl<M, D> implements SendMsgService<M, D> {
 
     private PsClient psClient;
     @Autowired
-    CDTPProperties cDTPProperties ;
+    CDTPProperties cdtpProperties;
 
     /**
      * CDTP客户端
      */
-//	@PostConstruct
+	@PostConstruct
     private void init() {
-        this.psClient = new PsClientBuilder(cDTPProperties.getDeviceId())
-                .defaultHost(cDTPProperties.getCdtp_host())
-                .defaultPort(cDTPProperties.getPort())
+        InetAddress address = null;
+        try {
+            address = InetAddress.getByName("application.t.email");
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+            System.out.println("获取失败");
+        }
+        System.out.println(address.getHostAddress().toString());
+
+        this.psClient = new PsClientBuilder(cdtpProperties.getDeviceId())
+                .defaultHost("application.t.email")
+                .defaultPort(8100)
                 .signer(new KeyAwarePacketSigner(
-                        VaultKeeper.keyAwareVault(cDTPProperties.getKmsBaseUrl(), cDTPProperties.getTenantId())
+                        VaultKeeper.keyAwareVault(cdtpProperties.getKmsBaseUrl(), cdtpProperties.getTenantId())
                 )).build();
 
     }
@@ -74,7 +85,7 @@ public class SendMsgServiceImpl<M, D> implements SendMsgService<M, D> {
     public Message sendChatTestMessage(SendMsgEntity sendMsgEntity, short command) {
 //		Header chatMsgHeader = initHeader( (short)1, "a.piper@t.email", "MIGbMBAGByqGSM49AgEGBSuBBAAjA4GGAAQBtBIPnoFOpyVCj8LiW2xgdOKqbizLUhZo5AWppUW3SuIHjf32aHgEI_V47ytdWwY7DykZjnrCoL_OuqaQkHawFVkAaBVdu5w8K00rh7rFK80BBL8o0DROHE78NNhX1d3jSITHRjY0loNPG54P3z40VfU-j9nmLlU2zgfVXkCHk7KCRAc");
         Header chatMsgHeader = initHeader(sendMsgEntity.getSender(), sendMsgEntity.getSenderPK(), sendMsgEntity.getReceiver(), sendMsgEntity.getReceiverPK());
-        chatMsgHeader.setCommandSpace(cDTPProperties.getCmd());
+        chatMsgHeader.setCommandSpace(cdtpProperties.getCmd());
         chatMsgHeader.setCommand(command);
         if (null != sendMsgEntity.getExtrData()) {
             chatMsgHeader.setExtraData(FastJsonUtil.toJson(sendMsgEntity.getExtrData()));

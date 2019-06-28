@@ -22,164 +22,164 @@ import java.util.UUID;
  */
 @Service
 public class SendMessegeService {
-	@Autowired
-	private PSClientService psClientService;
+    @Autowired
+    private PSClientService psClientService;
 
-	@Value("${app.ps-app-sdk.user-id}")
-	private String from;
+    @Value("${app.ps-app-sdk.user-id}")
+    private String from;
 
-	private final static Logger logger = LoggerFactory.getLogger(SendMessegeService.class);
+    private final static Logger logger = LoggerFactory.getLogger(SendMessegeService.class);
 
-	/**
-	 * 发送文本的消息
-	 *
-	 * @param content 内容
-	 * @param to      发给谁
-	 */
-	@CheckParamNull(params = "to")
-	public void sendTextMessage(String content, String to) {
-		sendTextMessage(content, to, 0);
-	}
+    /**
+     * 发送文本的消息
+     *
+     * @param content 内容
+     * @param to      发给谁
+     */
+    @CheckParamNull(params = "to")
+    public void sendTextMessage(String content, String to) {
+        sendTextMessage(content, to, 0);
+    }
 
-	/**
-	 * 发送文本的消息
-	 *
-	 * @param content   内容
-	 * @param to        发给谁
-	 * @param deloytime 延时时间
-	 */
+    /**
+     * 发送文本的消息
+     *
+     * @param content   内容
+     * @param to        发给谁
+     * @param deloytime 延时时间
+     */
 
-	@CheckParamNull(params = "content,to")
-	public void sendTextMessage(String content, String to, int deloytime) {
-		Map<String, String> contentMap = new HashMap<>();
-		contentMap.put("text", content);
-		String contentJson = new Gson().toJson(contentMap);
-		ChatMsg chatMsg = new ChatMsg(contentJson, 1, from, to, deloytime);
-		String publickey = psClientService.getTemailPublicKey(to);
-		psClientService.sendChatMessage(chatMsg, to, publickey);
-	}
+    @CheckParamNull(params = "content,to")
+    public void sendTextMessage(String content, String to, int deloytime) {
+        Map<String, String> contentMap = new HashMap<>();
+        contentMap.put("text", content);
+        String contentJson = new Gson().toJson(contentMap);
+        ChatMsg chatMsg = new ChatMsg(contentJson, 1, from, to, deloytime);
+        String publickey = psClientService.getTemailPublicKey(to);
+        psClientService.sendChatMessage(chatMsg, to, publickey);
+    }
 
-	/**
-	 * 发送文本的消息
-	 *
-	 * @param content   内容
-	 * @param to        发给谁
-	 * @param deloytime 延时时间
-	 * @param from      谁发
-	 */
+    /**
+     * 发送文本的消息
+     *
+     * @param content   内容
+     * @param to        发给谁
+     * @param deloytime 延时时间
+     * @param from      谁发
+     */
 
-	@CheckParamNull(params = "content,to,from")
-	public void sendTextMessage(String content, String to, int deloytime, String from) {
-		Map<String, String> contentMap = new HashMap<>();
-		contentMap.put("text", content);
-		String contentJson = new Gson().toJson(contentMap);
-		ChatMsg chatMsg = new ChatMsg(contentJson, 1, from, to, deloytime);
-		String publickey = psClientService.getTemailPublicKey(to);
-		String senderPK = psClientService.getTemailPublicKey(from);
-		psClientService.sendChatMessage(chatMsg, to, publickey, from, senderPK);
-	}
+    @CheckParamNull(params = "content,to,from")
+    public String sendTextMessage(String content, String to, int deloytime, String from) {
+        Map<String, String> contentMap = new HashMap<>();
+        contentMap.put("text", content);
+        String contentJson = new Gson().toJson(contentMap);
+        ChatMsg chatMsg = new ChatMsg(contentJson, 1, from, to, deloytime);
+        String publickey = psClientService.getTemailPublicKey(to);
+        String senderPK = psClientService.getTemailPublicKey(from);
+        psClientService.sendChatMessage(chatMsg, to, publickey, from, senderPK);
+        return chatMsg.getMsg_id();
+    }
 
-	@CheckParamNull(params = "content,to,from")
-	public void sendTextMessage(String content, String to, String from) {
-		sendTextMessage(content, to, 0, from);
-	}
+    @CheckParamNull(params = "content,to,from")
+    public String sendTextMessage(String content, String to, String from) {
+        return sendTextMessage(content, to, 0, from);
+    }
 
-	/**
-	 * 发送文本的消息
-	 *
-	 * @param to   发给谁
-	 * @param from 谁发
-	 */
-	@CheckParamNull(params = "name,to,from")
-	public void sendCard(String from, String to, String name) {
-		this.sendCard(from, to, name, null);
-	}
+    /**
+     * 发送文本的消息
+     *
+     * @param to   发给谁
+     * @param from 谁发
+     */
+    @CheckParamNull(params = "name,to,from")
+    public void sendCard(String from, String to, String name) {
+        this.sendCard(from, to, name, null);
+    }
 
-	@CheckParamNull(params = "name,to,from")
-	public void sendCard(String from, String to, String name, String imgUrl) {
+    @CheckParamNull(params = "name,to,from")
+    public void sendCard(String from, String to, String name, String imgUrl) {
 
-		if (from.contains("p.")) {
-			imgUrl = imgUrl == null ? purl : imgUrl;
-		}
-		if (from.contains("a.piper")) {
-			imgUrl = imgUrl == null ? url : imgUrl;
-		}
-		ChatMsg msg = new ChatMsg(from, to,
-						UUID.randomUUID().toString(), cardContent(from, name, imgUrl));
+        if (from.contains("p.")) {
+            imgUrl = imgUrl == null ? purl : imgUrl;
+        }
+        if (from.contains("a.piper")) {
+            imgUrl = imgUrl == null ? url : imgUrl;
+        }
+        ChatMsg msg = new ChatMsg(from, to,
+                UUID.randomUUID().toString(), cardContent(from, name, imgUrl));
 
-		msg.setBody_type(4);
-		String publickey = psClientService.getTemailPublicKey(from);
-		String senderPK = psClientService.getTemailPublicKey(to);
-		psClientService.sendCardMessage(msg, from, publickey, to, senderPK);
-	}
+        msg.setBody_type(4);
+        String publickey = psClientService.getTemailPublicKey(from);
+        String senderPK = psClientService.getTemailPublicKey(to);
+        psClientService.sendCardMessage(msg, from, publickey, to, senderPK);
+    }
 
-	//名片消息
-	@Value("${app.pipeline.imgUrl}")
-	private String url;
-	@Value("${p.pipeline.imgUrl}")
-	private String purl;
+    //名片消息
+    @Value("${app.pipeline.imgUrl}")
+    private String url;
+    @Value("${p.pipeline.imgUrl}")
+    private String purl;
 
 
-	public static final String VCARD_TEMPLATE = "BEGIN:VCARD\r\nPHOTO:%s\r\nVERSION:3.0\r\nN:%s\r\nEMAIL:%s\r\nEND:VCARD";
+    public static final String VCARD_TEMPLATE = "BEGIN:VCARD\r\nPHOTO:%s\r\nVERSION:3.0\r\nN:%s\r\nEMAIL:%s\r\nEND:VCARD";
 
-	private Card cardContent(String temail, String name, String imgUrl) {
-		String vcard = String.format(VCARD_TEMPLATE, imgUrl, name, temail);
-		Card card = new Card();
-		card.setNick(name);
-		card.setFeedId(vcard);
-		card.setUrl(imgUrl);
-		card.setDesc(temail);
-		return card;
-	}
+    private Card cardContent(String temail, String name, String imgUrl) {
+        String vcard = String.format(VCARD_TEMPLATE, imgUrl, name, temail);
+        Card card = new Card();
+        card.setNick(name);
+        card.setFeedId(vcard);
+        card.setUrl(imgUrl);
+        card.setDesc(temail);
+        return card;
+    }
 
-	/**
-	 * 发送其他类型的消息
-	 *
-	 * @param content 内容
-	 * @param content 内容
-	 * @param to      发给谁
-	 */
+    /**
+     * 发送其他类型的消息
+     *
+     * @param content 内容
+     * @param content 内容
+     * @param to      发给谁
+     */
 //	private void sendOtherMessage(String content, int bodyType, String to) {
 //		//延时1秒钟发。
 //		ChatMsg chatMsg = new ChatMsg(content, bodyType, from, to, 1000);
 //		String publickey = psClientService.getTemailPublicKey(to);
 //		psClientService.sendChatMessage(chatMsg, to, publickey);
 //	}
-	@CheckParamNull(params = "content,to,from")
-	public void sendOtherMessage(String content, int bodyType, String to, String from) {
+    @CheckParamNull(params = "content,to,from")
+    public String sendOtherMessage(String content, int bodyType, String to, String from) {
 
+        //延时1秒钟发。
+        ChatMsg chatMsg = new ChatMsg(content, bodyType, from, to, 1000);
+        String publickey = psClientService.getTemailPublicKey(to);
+        String senderPK = psClientService.getTemailPublicKey(from);
 
-		//延时1秒钟发。
-		logger.info("Thread.currentThread().getName()1--------" + Thread.currentThread().getName());
-		ChatMsg chatMsg = new ChatMsg(content, bodyType, from, to, 1000);
-		String publickey = psClientService.getTemailPublicKey(to);
-		String senderPK = psClientService.getTemailPublicKey(from);
+        if (StringUtils.isEmpty(publickey)) {
+            throw new IllegalArgumentException("to 的 publicKey不能为空 " + to);
+        }
+        if (StringUtils.isEmpty(senderPK)) {
+            throw new IllegalArgumentException("from 的 publicKey不能为空" + from);
+        }
+        psClientService.sendChatMessage(chatMsg, to, publickey, from, senderPK);
+        return chatMsg.getMsg_id();
+    }
 
-		if (StringUtils.isEmpty(publickey)) {
-			throw new IllegalArgumentException("to 的 publicKey不能为空 " + to);
-		}
-		if (StringUtils.isEmpty(senderPK)) {
-			throw new IllegalArgumentException("from 的 publicKey不能为空" + from);
-		}
-		psClientService.sendChatMessage(chatMsg, to, publickey, from, senderPK);
-	}
+    @Deprecated
+    public String sendOthermessageTest(String content, int bodyType, String to, String from) {
 
-	@Deprecated
-	public void sendOthermessageTest(String content, int bodyType, String to, String from) {
+        //延时1秒钟发。
+        ChatMsg chatMsg = new ChatMsg(content, bodyType, from, to, 1000);
+        String publickey = psClientService.getTemailPublicKey(to);
+        String senderPK = psClientService.getTemailPublicKey(from);
 
-		//延时1秒钟发。
-		logger.info("Thread.currentThread().getName()1--------" + Thread.currentThread().getName());
-		ChatMsg chatMsg = new ChatMsg(content, bodyType, from, to, 1000);
-		String publickey = psClientService.getTemailPublicKey(to);
-		String senderPK = psClientService.getTemailPublicKey(from);
-
-		if (StringUtils.isEmpty(publickey)) {
-			throw new IllegalArgumentException("to 的 publicKey不能为空" + to);
-		}
-		if (StringUtils.isEmpty(senderPK)) {
-			throw new IllegalArgumentException("from 的 publicKey不能为空" + from);
-		}
-		psClientService.sendChatMessage(chatMsg, to, publickey, from, senderPK);
-	}
+        if (StringUtils.isEmpty(publickey)) {
+            throw new IllegalArgumentException("to 的 publicKey不能为空" + to);
+        }
+        if (StringUtils.isEmpty(senderPK)) {
+            throw new IllegalArgumentException("from 的 publicKey不能为空" + from);
+        }
+        psClientService.sendChatMessage(chatMsg, to, publickey, from, senderPK);
+        return chatMsg.getMsg_id();
+    }
 
 }
