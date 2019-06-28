@@ -6,7 +6,7 @@
 
     <groupId>com.syswin.pipeline</groupId>
     <artifactId>piper</artifactId>
-    <version>1.7.11-SNAPSHOT</version>
+    <version>1.7.12-SNAPSHOT</version>
     <packaging>${packaging.type}</packaging>
 
     <name>${project.artifactId}</name>
