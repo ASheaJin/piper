@@ -235,7 +235,7 @@ public class PublisherSecServiceImpl implements PublisherSecService {
                 //分别对不同类型的文章进行处理
                 if (BodyTypeEnums.TEXT.getType().equals(sendBodyType)) {
                     String cont = JSON.parseObject(show.toString()).getString("text");
-                    sendMessegeService.sendTextMessage(cont, orderUserId, fromTemail);
+                    msgId = sendMessegeService.sendTextMessage(cont, orderUserId, fromTemail);
 
                 } else if (BodyTypeEnums.COMPLEX.getType().equals(sendBodyType)) {
                     //需要动态拼接url中的userId
@@ -246,7 +246,7 @@ public class PublisherSecServiceImpl implements PublisherSecService {
                         sendShow.getActions().get(0).setUrl(actionItemUrl);
                     }
                     msgId = UUID.randomUUID().toString();
-                    PsClientKeeper.newInstance().sendMsg(fromTemail, orderUserId, sendShow);
+                    PsClientKeeper.newInstance().sendMsg(fromTemail, orderUserId,msgId, sendShow);
                 } else {
                     msgId = sendMessegeService.sendOtherMessage(show.toString(), sendBodyType, orderUserId, fromTemail);
 
