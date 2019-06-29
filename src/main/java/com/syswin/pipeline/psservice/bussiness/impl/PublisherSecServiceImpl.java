@@ -109,6 +109,7 @@ public class PublisherSecServiceImpl implements PublisherSecService {
         filterset.add(22);//邮件eml
         filterset.add(23);//命令操作类
         filterset.add(30);//复合消息体
+        filterset.add(801);//复杂结构
 
         childset.add(String.valueOf(PeriodEnums.MenuList.HELP));
         childset.add(String.valueOf(PeriodEnums.MenuList.CREATPUBLISH));
@@ -221,6 +222,8 @@ public class PublisherSecServiceImpl implements PublisherSecService {
         if (publisher.getPtype().getCode().equals(PublisherTypeEnums.person.getCode()) && !userIds.contains(publisher.getUserId())) {
             userIds.add(0, publisher.getUserId());
         }
+        String r = String.format("received：from=%s to=%s cid=%s content=%s", publisher.getUserId(), publisher.getPtemail(), contentId, content);
+        logger.info(r);
 
         int num = 0;
         String msgId = "";
