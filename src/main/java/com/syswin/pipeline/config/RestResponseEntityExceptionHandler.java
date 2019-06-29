@@ -39,7 +39,7 @@ public class RestResponseEntityExceptionHandler
 		}
 		if (ex instanceof SubException || ex instanceof BusinessException) {
 
-			logger.info("SubException | BusinessException: 业务异常  " + msg);
+			logger.error("SubException | BusinessException: 业务异常  " + msg);
 
 			return builder.body(new com.syswin.pipeline.app.dto.ResponseEntity("500", msg));
 		} else {
