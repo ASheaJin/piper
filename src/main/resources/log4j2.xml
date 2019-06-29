@@ -24,7 +24,10 @@
 		<Logger name="com.alibaba.druid" level="warn" additivity="false">
 			<AppenderRef ref="Async"/>
 		</Logger>
-		<Logger name="com.syswin.ps.sdk" level="INFO" additivity="false">
+		<Logger name="com.syswin.ps.sdk" level="warn" additivity="false">
+			<AppenderRef ref="Async"/>
+		</Logger>
+		<Logger name="com.syswin.temail.kms" level="warn" additivity="false">
 			<AppenderRef ref="Async"/>
 		</Logger>
 
