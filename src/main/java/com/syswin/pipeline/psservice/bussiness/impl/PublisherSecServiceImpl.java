@@ -181,7 +181,6 @@ public class PublisherSecServiceImpl implements PublisherSecService {
                     if (!checkShow(sendShow, bodyType, publisher.getPtemail(), publisher.getUserId())) {
                         return 0;
                     }
-
                     content.setContent(JSONObject.toJSONString(sendShow));//保存BaseShow的内容
                     saveShow.setContentId(contentId);
                     //contentout内容处理
@@ -245,8 +244,9 @@ public class PublisherSecServiceImpl implements PublisherSecService {
                         actionItemUrl += "userId=" + orderUserId;
                         sendShow.getActions().get(0).setUrl(actionItemUrl);
                     }
-                    msgId = UUID.randomUUID().toString();
-                    PsClientKeeper.newInstance().sendMsg(fromTemail, orderUserId,msgId, sendShow);
+//                    msgId = UUID.randomUUID().toString();
+//                    PsClientKeeper.newInstance().sendMsg(fromTemail, orderUserId,,msgId ,sendShow);
+                    PsClientKeeper.newInstance().sendMsg(fromTemail, orderUserId, sendShow);
                 } else {
                     msgId = sendMessegeService.sendOtherMessage(show.toString(), sendBodyType, orderUserId, fromTemail);
 
