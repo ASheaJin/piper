@@ -38,7 +38,7 @@ public class SendMsgServiceImpl<M, D> implements SendMsgService<M, D> {
     /**
      * CDTP客户端
      */
-	@PostConstruct
+//	@PostConstruct
     private void init() {
         InetAddress address = null;
         try {
@@ -51,7 +51,7 @@ public class SendMsgServiceImpl<M, D> implements SendMsgService<M, D> {
 
         this.psClient = new PsClientBuilder(cdtpProperties.getDeviceId())
                 .defaultHost("application.t.email")
-                .defaultPort(8100)
+                .defaultPort(8686)
                 .signer(new KeyAwarePacketSigner(
                         VaultKeeper.keyAwareVault(cdtpProperties.getKmsBaseUrl(), cdtpProperties.getTenantId())
                 )).build();
