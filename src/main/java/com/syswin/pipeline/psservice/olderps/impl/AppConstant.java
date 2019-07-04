@@ -17,7 +17,7 @@ public final class AppConstant {
 
     public static final String USER_ID = "app.ps-app-sdk.user-id";
 
-    public static final String TENANT_ID = "app.pipeline.tenantId";
+    public static final String TENANT_ID = "app.ps-app-sdk.tenant-id";
 
     public static final String DEVICE_ID = "app.pipeline.deviceId";
 
