@@ -1,6 +1,7 @@
 package com.syswin.pipeline.app.controller;
 
 import com.syswin.pipeline.app.dto.*;
+import com.syswin.pipeline.psservice.MessegerSenderService;
 import com.syswin.pipeline.psservice.RegisterServer;
 import com.syswin.pipeline.psservice.SendMessegeService;
 import com.syswin.pipeline.service.org.IOrgService;
@@ -31,218 +32,220 @@ import java.util.List;
 @RequestMapping("/ps")
 @Api(value = "ps", tags = "ps")
 public class PSClientController {
-	private static final Logger logger = LoggerFactory.getLogger(PSClientController.class);
+    private static final Logger logger = LoggerFactory.getLogger(PSClientController.class);
 
-	@Autowired
-	private PSClientService psClientService;
+    @Autowired
+    private PSClientService psClientService;
 
-	@Autowired
-	SendMessegeService sendMessegeService;
+    @Autowired
+    private SendMessegeService sendMessegeService;
+    @Autowired
+    private MessegerSenderService messegerSenderService;
+    @Autowired
+    private IOrgService orgService;
 
-	@Autowired
-	private IOrgService orgService;
+    @Autowired
+    com.syswin.sub.api.SubscriptionService scriptionService;
 
-	@Autowired
-	com.syswin.sub.api.SubscriptionService scriptionService;
+    @Autowired
+    private com.syswin.sub.api.PublisherService subPublisherService;
 
-	@Autowired
-	private com.syswin.sub.api.PublisherService subPublisherService;
+    @Value("${app.ps-app-sdk.user-id}")
+    private String piperUserId;
 
-	@Value("${app.ps-app-sdk.user-id}")
-	private String piperUserId;
+    @Autowired
+    private RegisterServer psServerService;
 
-	@Autowired
-	private RegisterServer psServerService;
+    @PostMapping("/sendMsg")
+    @ApiOperation(
+            value = "获取消息详情"
+    )
+    public void sendMsg(@RequestBody ChatMsg msg, @RequestParam String senderTemail,
+                        @RequestParam String senderPK, HttpServletRequest request) {
 
-	@PostMapping("/sendMsg")
-	@ApiOperation(
-					value = "获取消息详情"
-	)
-	public void sendMsg(@RequestBody ChatMsg msg, @RequestParam String senderTemail,
-	                       @RequestParam String senderPK, HttpServletRequest request) {
-
-		 psClientService.sendChatMessage(msg, senderTemail, senderPK);
-	}
-
-
-	@PostMapping("/getPubKey")
-	@ApiOperation(
-					value = "获取pubKey"
-	)
-	public PubKey getPubKey(@RequestBody String senderTemail, HttpServletRequest request) {
-		return new PubKey(psClientService.getTemailPublicKey(senderTemail));
-	}
+        psClientService.sendChatMessage(msg, senderTemail, senderPK);
+    }
 
 
-	@PostMapping("/registerTemail")
-	@ApiOperation(
-					value = "注册Temail, 返回公钥"
-	)
-	public PubKey registerTemail(@RequestBody String senderTemail, HttpServletRequest request) {
-		return new PubKey(psClientService.registerTemail(senderTemail));
-	}
+    @PostMapping("/getPubKey")
+    @ApiOperation(
+            value = "获取pubKey"
+    )
+    public PubKey getPubKey(@RequestBody String senderTemail, HttpServletRequest request) {
+        return new PubKey(psClientService.getTemailPublicKey(senderTemail));
+    }
 
 
-	@GetMapping("/getTemailPublicKey")
-	@ApiOperation(
-					value = "获取公钥"
-	)
-	public PubKey getTemailPublicKey(String senderTemail) {
-		String pub = psClientService.getTemailPublicKey(senderTemail);
-		if (StringUtils.isEmpty(pub)) {
-			pub = psClientService.registerPub(senderTemail);
-		}
-		return new PubKey(pub);
-	}
+    @PostMapping("/registerTemail")
+    @ApiOperation(
+            value = "注册Temail, 返回公钥"
+    )
+    public PubKey registerTemail(@RequestBody String senderTemail, HttpServletRequest request) {
+        return new PubKey(psClientService.registerTemail(senderTemail));
+    }
 
-	@GetMapping("/createPublicKey")
-	@ApiOperation(
-					value = "批量生成密机"
-	)
-	public List createPublicKey() {
 
-		List<String> createUserList = new ArrayList<>();
-		String senderTemail = null;
-		senderTemail = ("a.piper@support2technical.me").trim();
+    @GetMapping("/getTemailPublicKey")
+    @ApiOperation(
+            value = "获取公钥"
+    )
+    public PubKey getTemailPublicKey(String senderTemail) {
+        String pub = psClientService.getTemailPublicKey(senderTemail);
+        if (StringUtils.isEmpty(pub)) {
+            pub = psClientService.registerPub(senderTemail);
+        }
+        return new PubKey(pub);
+    }
+
+    @GetMapping("/createPublicKey")
+    @ApiOperation(
+            value = "批量生成密机"
+    )
+    public List createPublicKey() {
+
+        List<String> createUserList = new ArrayList<>();
+        String senderTemail = null;
+        senderTemail = ("a.piper@support2technical.me").trim();
 //			String pub = psClientService.getTemailPublicKey(senderTemail);
-		String pk = psClientService.registerPub(senderTemail);
-		String sendertt = "INSERT INTO `user_temail` (temail, user_id, ALGORITHM, TYPE, domain, create_time, update_time) VALUES ('%s', '%s', 1, 4, 'support2technical.me', UNIX_TIMESTAMP(NOW())*1000, UNIX_TIMESTAMP(NOW())*1000);";
+        String pk = psClientService.registerPub(senderTemail);
+        String sendertt = "INSERT INTO `user_temail` (temail, user_id, ALGORITHM, TYPE, domain, create_time, update_time) VALUES ('%s', '%s', 1, 4, 'support2technical.me', UNIX_TIMESTAMP(NOW())*1000, UNIX_TIMESTAMP(NOW())*1000);";
 //			String pub = psClientService.getTemailPublicKey(senderTemail);
-		String tt = String.format(sendertt, "a.piper@" + piperUserId.split("@")[1], pk);
+        String tt = String.format(sendertt, "a.piper@" + piperUserId.split("@")[1], pk);
 
-		createUserList.add(tt);
-		for (int i = 1; i < 301; i++) {
+        createUserList.add(tt);
+        for (int i = 1; i < 301; i++) {
 //			senderTemail="p."+(10000000+i)+"@systoontest.com";
-			senderTemail = ("p." + (10000000 + i) + "@" + piperUserId.split("@")[1]).trim();
+            senderTemail = ("p." + (10000000 + i) + "@" + piperUserId.split("@")[1]).trim();
 //			String pub = psClientService.getTemailPublicKey(senderTemail);
-			pk = psClientService.registerPub(senderTemail);
-			sendertt = "INSERT INTO `user_temail` (temail, user_id, ALGORITHM, TYPE, domain, create_time, update_time) VALUES ('%s', '%s', 1, 4, 'support2technical.me', UNIX_TIMESTAMP(NOW())*1000, UNIX_TIMESTAMP(NOW())*1000);";
+            pk = psClientService.registerPub(senderTemail);
+            sendertt = "INSERT INTO `user_temail` (temail, user_id, ALGORITHM, TYPE, domain, create_time, update_time) VALUES ('%s', '%s', 1, 4, 'support2technical.me', UNIX_TIMESTAMP(NOW())*1000, UNIX_TIMESTAMP(NOW())*1000);";
 //			String pub = psClientService.getTemailPublicKey(senderTemail);
-			tt = String.format(sendertt, senderTemail, pk);
-			createUserList.add(tt);
-		}
+            tt = String.format(sendertt, senderTemail, pk);
+            createUserList.add(tt);
+        }
 
-		return createUserList;
-	}
-	@GetMapping("/config")
-	@ApiOperation(
-					value = "config"
-	)
-	public String config(String config) {
+        return createUserList;
+    }
 
-		SwithUtil.tt = Integer.parseInt(config);
+    @GetMapping("/config")
+    @ApiOperation(
+            value = "config"
+    )
+    public String config(String config) {
 
-		return "suc";
-	}
+        SwithUtil.tt = Integer.parseInt(config);
 
-	@GetMapping("/createTest")
-	@ApiOperation(
-					value = "批量生成密机测试"
-	)
-	public List createTest() {
+        return "suc";
+    }
 
-		List<String> createUserList = new ArrayList<>();
-		String sendertt = "INSERT INTO `user_temail` (temail, user_id, ALGORITHM, TYPE, domain, create_time, update_time) VALUES ('%s', '%s', 1, 4, 'support2technical.me', UNIX_TIMESTAMP(NOW())*1000, UNIX_TIMESTAMP(NOW())*1000);";
+    @GetMapping("/createTest")
+    @ApiOperation(
+            value = "批量生成密机测试"
+    )
+    public List createTest() {
+
+        List<String> createUserList = new ArrayList<>();
+        String sendertt = "INSERT INTO `user_temail` (temail, user_id, ALGORITHM, TYPE, domain, create_time, update_time) VALUES ('%s', '%s', 1, 4, 'support2technical.me', UNIX_TIMESTAMP(NOW())*1000, UNIX_TIMESTAMP(NOW())*1000);";
 //			String pub = psClientService.getTemailPublicKey(senderTemail);
-		String tt = String.format(sendertt, "a.piper@" + piperUserId.split("@")[1], "111");
-		createUserList.add(tt);
-		for (int i = 1; i < 301; i++) {
+        String tt = String.format(sendertt, "a.piper@" + piperUserId.split("@")[1], "111");
+        createUserList.add(tt);
+        for (int i = 1; i < 301; i++) {
 //			senderTemail="p."+(10000000+i)+"@systoontest.com";
 //			String pub = psClientService.getTemailPublicKey(senderTemail);
-			tt = String.format(sendertt, ("p." + (10000000 + i) + "@" + piperUserId.split("@")[1].trim()), "111");
-			createUserList.add(tt);
-		}
+            tt = String.format(sendertt, ("p." + (10000000 + i) + "@" + piperUserId.split("@")[1].trim()), "111");
+            createUserList.add(tt);
+        }
 
-		return createUserList;
-	}
+        return createUserList;
+    }
 
-	class CreateUser {
-		public String mail;
-		public String pk;
-	}
+    class CreateUser {
+        public String mail;
+        public String pk;
+    }
 
-	@PostMapping("/sendOthermessage")
-	@ApiOperation(
-					value = "测试接口。发送消息"
-	)
-	public String sendOthermessage(@RequestBody PublishMessageParam message) {
-		String content = "{\"w\":540,\"h\":960,\"isOriginal\":0,\"suffix\":\".png\",\"url\":\"http:\\/\\/temail-test.cn-bj.ufileos.com\\/mediabank%2Fdd8da1b9f51444be842411fd79cbfd8a.zip\",\"size\":28419,\"pwd\":\"7B13B225-10BC-4141-87D9-FD1139FCCF52\"}";
+    @PostMapping("/sendOthermessage")
+    @ApiOperation(
+            value = "测试接口。发送消息"
+    )
+    public String sendOthermessage(@RequestBody PublishMessageParam message) {
+        String content = "{\"w\":540,\"h\":960,\"isOriginal\":0,\"suffix\":\".png\",\"url\":\"http:\\/\\/temail-test.cn-bj.ufileos.com\\/mediabank%2Fdd8da1b9f51444be842411fd79cbfd8a.zip\",\"size\":28419,\"pwd\":\"7B13B225-10BC-4141-87D9-FD1139FCCF52\"}";
 //		String content = "{\"text\":\"vhh\"}";
-		 sendMessegeService.sendOtherMessage(message.getContent(), Integer.parseInt(message.getBodyType()), message.getPtemail(), message.getFromTemail());
-	return "success";
-	}
+        sendMessegeService.sendOtherMessage(message.getContent(), Integer.parseInt(message.getBodyType()), message.getPtemail(), message.getFromTemail());
+        return "success";
+    }
 
-	@GetMapping("/setCard")
-	@ApiOperation(
-					value = "发送名片"
-	)
-	public void setCard(String temail, String to, String nick) {
+    @GetMapping("/setCard")
+    @ApiOperation(
+            value = "发送名片"
+    )
+    public void setCard(String temail, String to, String nick) throws Exception {
 
-		sendMessegeService.sendCard(temail, to, nick);
-	}
+        messegerSenderService.sendCard(temail, to, nick);
+    }
 
-	@PostMapping("/sendCards")
-	@ApiOperation(
-					value = "批量发名片"
-	)
-	public ResponseEntity sendCards(@RequestBody PsSubOrgListParam modify) {
-		Publisher publisher = subPublisherService.getPubLisherById(modify.getPublisherId());
-		if (publisher == null) {
-			return new ResponseEntity("500", "该出版社不存在");
-		}
-		List<String> userList = scriptionService.getSubscribers(publisher.getPtemail(), null);
-		for (String userId : userList) {
-			if (com.syswin.pipeline.utils.StringUtils.isNullOrEmpty(psClientService.getTemailPublicKey(userId))) {
-				continue;
-			}
-			//判断是否自己订阅自己
-			if (userId.equals(publisher.getUserId())) {
-				sendMessegeService.sendCard(publisher.getPtemail(), userId, "* " + modify.getName(), modify.getIconUrl());
-			} else {
-				sendMessegeService.sendCard(publisher.getPtemail(), userId, modify.getName(), modify.getIconUrl());
-			}
+    @PostMapping("/sendCards")
+    @ApiOperation(
+            value = "批量发名片"
+    )
+    public ResponseEntity sendCards(@RequestBody PsSubOrgListParam modify) {
+        Publisher publisher = subPublisherService.getPubLisherById(modify.getPublisherId());
+        if (publisher == null) {
+            return new ResponseEntity("500", "该出版社不存在");
+        }
+        List<String> userList = scriptionService.getSubscribers(publisher.getPtemail(), null);
+        for (String userId : userList) {
+            if (com.syswin.pipeline.utils.StringUtils.isNullOrEmpty(psClientService.getTemailPublicKey(userId))) {
+                continue;
+            }
+            //判断是否自己订阅自己
+            if (userId.equals(publisher.getUserId())) {
+                sendMessegeService.sendCard(publisher.getPtemail(), userId, "* " + modify.getName(), modify.getIconUrl());
+            } else {
+                sendMessegeService.sendCard(publisher.getPtemail(), userId, modify.getName(), modify.getIconUrl());
+            }
 
-		}
-		return new ResponseEntity();
+        }
+        return new ResponseEntity();
 
-	}
-
-
-	@GetMapping("/getOrg")
-	@ApiOperation(
-					value = "登陆出版社监控"
-	)
-	public OrgOut getOrg(HttpServletRequest request, String temail) {
-		OrgOut orgOut = orgService.getOrgByVersion(temail, 0);
-		return orgOut;
-	}
+    }
 
 
-	@PostMapping("/registerAccount")
-	@ApiOperation(
-					value = "注册账号"
-	)
-	public ResponseEntity registerAccount(@RequestBody RegisterParam rp) {
-		psServerService.registerAccount(rp.getTemail());
-		return new ResponseEntity();
-	}
+    @GetMapping("/getOrg")
+    @ApiOperation(
+            value = "登陆出版社监控"
+    )
+    public OrgOut getOrg(HttpServletRequest request, String temail) {
+        OrgOut orgOut = orgService.getOrgByVersion(temail, 0);
+        return orgOut;
+    }
 
 
-	@PostMapping("/registerAccount3")
-	@ApiOperation(
-					value = "注册账号3"
-	)
-	public ResponseEntity registerAccount3(@RequestBody RegisterParam rp) {
-		psServerService.registerAccount(rp.getTemail(), rp.getServer());
-		return new ResponseEntity();
-	}
+    @PostMapping("/registerAccount")
+    @ApiOperation(
+            value = "注册账号"
+    )
+    public ResponseEntity registerAccount(@RequestBody RegisterParam rp) {
+        psServerService.registerAccount(rp.getTemail());
+        return new ResponseEntity();
+    }
 
-	@PostMapping("/activeAccount")
-	@ApiOperation(
-					value = "激活账户"
-	)
-	public ResponseEntity activeAccount(@RequestBody ActiveParam ap) {
-		psServerService.activeAccout(ap.getTemail(), ap.getCode());
-		return new ResponseEntity();
-	}
+
+    @PostMapping("/registerAccount3")
+    @ApiOperation(
+            value = "注册账号3"
+    )
+    public ResponseEntity registerAccount3(@RequestBody RegisterParam rp) {
+        psServerService.registerAccount(rp.getTemail(), rp.getServer());
+        return new ResponseEntity();
+    }
+
+    @PostMapping("/activeAccount")
+    @ApiOperation(
+            value = "激活账户"
+    )
+    public ResponseEntity activeAccount(@RequestBody ActiveParam ap) {
+        psServerService.activeAccout(ap.getTemail(), ap.getCode());
+        return new ResponseEntity();
+    }
 }

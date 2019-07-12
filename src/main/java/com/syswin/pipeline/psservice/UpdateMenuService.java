@@ -26,19 +26,19 @@ public class UpdateMenuService {
 	private FunctionItemService functionItemService;
 
 	public boolean updateMenu(String account) {
-		if (StringUtil.isEmpty(account)) {
-			throw new BusinessException("ex.userid.null");
-		}
-		//更新账号时间搓
-		List<FunctionItem> functionItemList = functionItemService.findFunctionItem();
-		functionItemList.stream().forEach(f -> {
-			if (account.equals(f.getAccountNo())) {
-				functionItemService.updateFunctionItem(f);
-			}
-		});
-
-		//清理缓存
-		psConfigService.initFunctionList();
+//		if (StringUtil.isEmpty(account)) {
+//			throw new BusinessException("ex.userid.null");
+//		}
+//		//更新账号时间搓
+//		List<FunctionItem> functionItemList = functionItemService.findFunctionItem();
+//		functionItemList.stream().forEach(f -> {
+//			if (account.equals(f.getAccountNo())) {
+//				functionItemService.updateFunctionItem(f);
+//			}
+//		});
+//
+//		//清理缓存
+//		psConfigService.initFunctionList();
 
 		return true;
 	}
