@@ -1,10 +1,8 @@
 package com.syswin.pipeline.psservice;
 
+import com.syswin.pipeline.enums.EnumEncryptionMethod;
 import com.syswin.pipeline.psservice.bean.PSExtraData;
 import com.syswin.pipeline.psservice.bean.SessionExtData;
-import com.syswin.pipeline.psservice.olderps.Card;
-import com.syswin.pipeline.psservice.olderps.ChatMsg;
-import com.syswin.pipeline.psservice.olderps.impl.EnumEncryptionMethod;
 import com.syswin.pipeline.utils.PSUtil;
 import com.syswin.pipeline.utils.StringUtil;
 import com.syswin.ps.sdk.common.ActionItem;
@@ -139,13 +137,19 @@ public class MessegerSenderService extends AbstractMsgSender {
         return this.sendContent(from, to, newMsgId, bodyType, content);
     }
 
-    public Message sendSynchronizationTxt(String from, String to, Object content) throws Exception {
-
-        return this.sendContent(from, to, UUID.randomUUID().toString()
-                , 1, "{\"text\":\"" + content + "\"}");
+    public Message sendSynchronizationTxt(String from, String to, Object content) {
+        String msgId = UUID.randomUUID().toString();
+        try {
+            return this.sendContent(from, to, msgId
+                    , 1, "{\"text\":\"" + content + "\"}");
+        } catch (Exception ex) {
+            logger.error(from + " send to " + to + "error----   msgId：" + msgId, ex);
+        }
+        return null;
     }
 
     public Message sendSynchronizationContent(String from, String to, String newMsgId, int bodyType, Object content) throws Exception {
+
         return this.sendContent(from, to, newMsgId, bodyType, content);
     }
 
@@ -156,9 +160,14 @@ public class MessegerSenderService extends AbstractMsgSender {
     @Value("${p.pipeline.imgUrl}")
     private String purl;
 
-    public Message sendCard(String from, String to, String name) throws Exception {
+    public Message sendCard(String from, String to, String name) {
 
-        return this.sendCard(from, to, name, null);
+        try {
+            return this.sendCard(from, to, name, null);
+        } catch (Exception ex) {
+            logger.error(from + " send to " + to + "error----   card：", ex);
+        }
+        return null;
     }
 
     public Message sendCard(String from, String to, String name, String imgUrl) throws Exception {

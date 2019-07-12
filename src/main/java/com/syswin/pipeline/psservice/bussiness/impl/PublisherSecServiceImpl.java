@@ -5,7 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.syswin.pipeline.enums.BodyTypeEnums;
 import com.syswin.pipeline.enums.PeriodEnums;
 import com.syswin.pipeline.enums.ShowTypeEnums;
-import com.syswin.pipeline.psservice.SendMessegeService;
+import com.syswin.pipeline.psservice.MessegerSenderService;
 import com.syswin.pipeline.service.PiperSubscriptionService;
 import com.syswin.pipeline.psservice.bussiness.PublisherSecService;
 import com.syswin.pipeline.service.content.ContentHandleJobManager;
@@ -15,7 +15,6 @@ import com.syswin.pipeline.service.exception.BusinessException;
 import com.syswin.pipeline.utils.JacksonJsonUtil;
 import com.syswin.pipeline.utils.LanguageChange;
 import com.syswin.pipeline.utils.StringUtil;
-import com.syswin.pipeline.utils.SwithUtil;
 import com.syswin.ps.sdk.common.ActionItem;
 import com.syswin.ps.sdk.handler.PsClientKeeper;
 import com.syswin.ps.sdk.showType.BaseShow;
@@ -27,6 +26,7 @@ import com.syswin.sub.api.SubscriptionService;
 import com.syswin.sub.api.db.model.*;
 import com.syswin.sub.api.enums.PublisherTypeEnums;
 import com.syswin.sub.api.utils.SnowflakeIdWorker;
+import com.syswin.temail.ps.client.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,9 +59,8 @@ public class PublisherSecServiceImpl implements PublisherSecService {
     @Value("${path.content.detail}")
     private String pathDetail;
 
-    @Lazy
     @Autowired
-    SendMessegeService sendMessegeService;
+    private MessegerSenderService messegerSenderService;
 
     @Autowired
     AdminService adminService;
@@ -74,9 +73,6 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 
     @Autowired
     private com.syswin.sub.api.PublisherService subPublisherService;
-
-    @Autowired
-    private PiperSubscriptionService piperSubscriptionService;
 
     @Autowired
     private SubscriptionService subscriptionService;
@@ -234,7 +230,8 @@ public class PublisherSecServiceImpl implements PublisherSecService {
                 //分别对不同类型的文章进行处理
                 if (BodyTypeEnums.TEXT.getType().equals(sendBodyType)) {
                     String cont = JSON.parseObject(show.toString()).getString("text");
-                    msgId = sendMessegeService.sendTextMessage(cont, orderUserId, fromTemail);
+                    msgId = UUID.randomUUID().toString();
+                    messegerSenderService.sendAsyncContent(fromTemail, orderUserId, msgId, 1, show);
 
                 } else if (BodyTypeEnums.COMPLEX.getType().equals(sendBodyType)) {
                     //需要动态拼接url中的userId
@@ -248,19 +245,20 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 //                    PsClientKeeper.newInstance().sendMsg(fromTemail, orderUserId,,msgId ,sendShow);
                     PsClientKeeper.newInstance().sendMsg(fromTemail, orderUserId, sendShow);
                 } else {
-                    msgId = sendMessegeService.sendOtherMessage(show.toString(), sendBodyType, orderUserId, fromTemail);
+                    msgId = UUID.randomUUID().toString();
+                    messegerSenderService.sendAsyncContent(fromTemail, orderUserId, msgId, sendBodyType, show);
 
                 }
                 String s = String.format("from=%s to=%s cid=%s msgid=%s", fromTemail, orderUserId, contentId, msgId);
                 logger.info(s);
                 num++;
+                messegerSenderService.sendSynchronizationTxt(publisher.getPtemail(), publisher.getUserId(), num + languageChange.getValueByUserId("msg.hassend", publisher.getUserId()));
 
             } catch (Exception ex) {
                 logger.error(publisher.getPtemail() + " send to " + orderUserId + "error----   contentId：" + contentId, ex);
             }
 
         }
-        sendMessegeService.sendTextMessage(num + languageChange.getValueByUserId("msg.hassend", publisher.getUserId()), publisher.getUserId(), 1000, publisher.getPtemail());
         //推送记录
         SendRecord sendRecord = new SendRecord();
         sendRecord.setContentId(contentId);
@@ -304,7 +302,8 @@ public class PublisherSecServiceImpl implements PublisherSecService {
      * @param userId
      */
     private void sendUserIdInvalidContent(String error, String ptmail, String userId) {
-        sendMessegeService.sendTextMessage(languageChange.getValueByUserId("ex.content.error", userId) + error, userId, ptmail);
+        messegerSenderService.sendSynchronizationTxt(ptmail, userId, languageChange.getValueByUserId("ex.content.error", userId));
+
     }
 
     private BaseShow convertFromContentOut(ContentOut s, String contentId, String publisherId, String userId) {
@@ -436,7 +435,7 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 //			}
             dealPushArticle(publisher, bodyType, show, PublisherTypeEnums.person);
         } else {
-            sendMessegeService.sendTextMessage(languageChange.getValueByUserId("msg.noreply", userId), userId, 1000, ptemail);
+            messegerSenderService.sendSynchronizationTxt(ptemail, userId, languageChange.getValueByUserId("msg.noreply", userId));
 
         }
 
@@ -472,7 +471,7 @@ public class PublisherSecServiceImpl implements PublisherSecService {
         if (userId.equals(publisher.getUserId())) {
             dealPushArticle(publisher, bodyType, show, PublisherTypeEnums.organize);
         } else {
-            sendMessegeService.sendTextMessage(languageChange.getValueByUserId("msg.nopermission", userId), userId, 1000, ptemail);
+            messegerSenderService.sendSynchronizationTxt(ptemail, userId, languageChange.getValueByUserId("msg.nopermission", userId));
         }
 
     }

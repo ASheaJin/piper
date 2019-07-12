@@ -4,10 +4,7 @@ import com.alibaba.fastjson.TypeReference;
 import com.syswin.pipeline.service.org.EmployeeOut;
 import com.syswin.pipeline.service.org.IOrgService;
 import com.syswin.pipeline.service.org.OrgOut;
-import com.syswin.pipeline.psservice.olderps.PSClientService;
 import com.syswin.pipeline.utils.FastJsonUtil;
-import com.syswin.pipeline.utils.StringUtil;
-import com.syswin.temail.ps.client.Message;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -16,7 +13,6 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
@@ -38,8 +34,6 @@ public class OrgServiceImpl implements IOrgService {
 	private static final short CMD_SPACE_ORG = 8;
 	private static final short CMD_GET = 3;
 
-	@Autowired
-	private PSClientService psClientService;
 
 
 	@Override

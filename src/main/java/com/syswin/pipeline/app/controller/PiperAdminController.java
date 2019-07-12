@@ -2,14 +2,14 @@ package com.syswin.pipeline.app.controller;
 
 import com.syswin.pipeline.app.dto.AdminInputParam;
 import com.syswin.pipeline.app.dto.MulCreateParam;
+import com.syswin.pipeline.app.dto.ResponseEntity;
 import com.syswin.pipeline.app.dto.SearchParam;
+import com.syswin.pipeline.psservice.MessegerSenderService;
 import com.syswin.pipeline.service.PiperAdminService;
 import com.syswin.pipeline.service.PiperSubscriptionService;
-import com.syswin.pipeline.psservice.SendMessegeService;
-import com.syswin.pipeline.psservice.olderps.PSClientService;
-import com.syswin.pipeline.app.dto.ResponseEntity;
 import com.syswin.pipeline.service.exception.BusinessException;
 import com.syswin.pipeline.utils.LanguageChange;
+import com.syswin.pipeline.utils.PSUtil;
 import com.syswin.pipeline.utils.PatternUtils;
 import com.syswin.pipeline.utils.StringUtils;
 import com.syswin.sub.api.PublisherService;
@@ -21,6 +21,7 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -35,107 +36,109 @@ import java.util.List;
 @RequestMapping("/admin")
 @Api(value = "admin", tags = "admin")
 public class PiperAdminController {
-	private static final Logger logger = LoggerFactory.getLogger(PiperAdminController.class);
-	@Autowired
-	PiperAdminService piperAdminService;
-	@Autowired
-	PiperSubscriptionService subscriptionService;
+    private static final Logger logger = LoggerFactory.getLogger(PiperAdminController.class);
+    @Autowired
+    PiperAdminService piperAdminService;
+    @Autowired
+    PiperSubscriptionService subscriptionService;
 
-	@Autowired
-	PSClientService psClientService;
+    @Autowired
+    private MessegerSenderService messegerSenderService;
+    @Autowired
+    private PSUtil psUtil;
 
-	@Autowired
-	PublisherService publisherService;
-	@Autowired
-	SendMessegeService sendMessegeService;
-	@Autowired
-	LanguageChange languageChange;
+    @Value("${app.ps-app-sdk.user-id}")
+    private String from;
+    @Autowired
+    PublisherService publisherService;
+    @Autowired
+    LanguageChange languageChange;
 
-	@PostMapping("createAdminList")
-	@ApiOperation(
-					value = "批量创建管理者"
-	)
-	public ResponseEntity<Admin> createAdminList(@RequestBody MulCreateParam mulCreateParam) {
-		if (checkNotAdmin(mulCreateParam.getUserId())) {
-			throw new BusinessException("msg.nopermission");
-		}
-		Admin admin = piperAdminService.getAdmin(mulCreateParam.getUserId(), PublisherTypeEnums.organize);
-		if (admin == null || admin.getStatus() == 0) {
-			throw new BusinessException("ex.needorganizer");
-		}
-		List<String> userList = PatternUtils.tranStrstoList(mulCreateParam.getTmails());
+    @PostMapping("createAdminList")
+    @ApiOperation(
+            value = "批量创建管理者"
+    )
+    public ResponseEntity<Admin> createAdminList(@RequestBody MulCreateParam mulCreateParam) {
+        if (checkNotAdmin(mulCreateParam.getUserId())) {
+            throw new BusinessException("msg.nopermission");
+        }
+        Admin admin = piperAdminService.getAdmin(mulCreateParam.getUserId(), PublisherTypeEnums.organize);
+        if (admin == null || admin.getStatus() == 0) {
+            throw new BusinessException("ex.needorganizer");
+        }
+        List<String> userList = PatternUtils.tranStrstoList(mulCreateParam.getTmails());
 
-		for (String u : userList) {
-			if (StringUtils.isNullOrEmpty(psClientService.getTemailPublicKey(u))) {
-				throw new BusinessException("msg.noemail");
-			}
-			piperAdminService.add(mulCreateParam.getUserId(), u, PublisherTypeEnums.organize, false);
+        for (String u : userList) {
+            if (StringUtils.isNullOrEmpty(psUtil.publickey(u))) {
+                throw new BusinessException("msg.noemail");
+            }
+            piperAdminService.add(mulCreateParam.getUserId(), u, PublisherTypeEnums.organize, false);
 
-			try {
+            try {
 
-				sendMessegeService.sendTextMessage(languageChange.getLangByUserId("msg.beoranger", new String[]{u}, u), u);
-				sendMessegeService.sendTextMessage(languageChange.getLangByUserId("msg.beoranger", new String[]{u}, u), mulCreateParam.getUserId());
-				//回执创建完成消息
-			} catch (Exception e) {
-				logger.error("发送消息失败", e);
-			}
-		}
-		return new ResponseEntity(userList);
+                messegerSenderService.sendSynchronizationTxt(from, u, languageChange.getLangByUserId("msg.beoranger", new String[]{u}, u));
+                messegerSenderService.sendSynchronizationTxt(from, mulCreateParam.getUserId(), languageChange.getLangByUserId("msg.beoranger", new String[]{u}, u));
+                //回执创建完成消息
+            } catch (Exception e) {
+                logger.error("发送消息失败", e);
+            }
+        }
+        return new ResponseEntity(userList);
 
-	}
+    }
 
-	@PostMapping("createFirstAdmin")
-	@ApiOperation(
-					value = "首次创建管理员,提供给dm使用"
-	)
-	public ResponseEntity createFirstAdmin(@RequestBody AdminInputParam adminParam) {
-		if (checkNotAdmin(adminParam.getUserId())) {
-			throw new BusinessException("msg.nopermission");
-		}
-		Admin admin = piperAdminService.add(adminParam.getUserId(), adminParam.getTmail(), PublisherTypeEnums.organize, true);
+    @PostMapping("createFirstAdmin")
+    @ApiOperation(
+            value = "首次创建管理员,提供给dm使用"
+    )
+    public ResponseEntity createFirstAdmin(@RequestBody AdminInputParam adminParam) {
+        if (checkNotAdmin(adminParam.getUserId())) {
+            throw new BusinessException("msg.nopermission");
+        }
+        Admin admin = piperAdminService.add(adminParam.getUserId(), adminParam.getTmail(), PublisherTypeEnums.organize, true);
 
-		sendMessegeService.sendTextMessage(languageChange.getLangByUserId("msg.beoranger", new String[]{adminParam.getTmail()}, adminParam.getTmail()), adminParam.getTmail());
-		//回执创建完成消息
-		return new ResponseEntity();
+        messegerSenderService.sendSynchronizationTxt(from, adminParam.getTmail(), languageChange.getLangByUserId("msg.beoranger", new String[]{adminParam.getTmail()}, adminParam.getTmail()));
+        //回执创建完成消息
+        return new ResponseEntity();
 
-	}
+    }
 
-	@PostMapping("deleteAdmin")
-	@ApiOperation(
-					value = "删除管理员"
-	)
-	public ResponseEntity deleteAdmin(@RequestBody AdminInputParam adminParam) {
-		if (checkNotAdmin(adminParam.getUserId())) {
-			throw new BusinessException("msg.nopermission");
-		}
-		Admin admin = piperAdminService.getAdmin(adminParam.getUserId(), PublisherTypeEnums.organize);
-		if (admin == null || admin.getStatus() == 0) {
-			throw new SubException("ex.needorganizer");
-		}
-		piperAdminService.delete(adminParam.getUserId(), adminParam.getTmail());
-		sendMessegeService.sendTextMessage(languageChange.getLangByUserId("msg.canceladmin", new String[]{adminParam.getUserId()}, adminParam.getTmail()), adminParam.getTmail());
-		sendMessegeService.sendTextMessage(languageChange.getLangByUserId("msg.becanceled", new String[]{adminParam.getTmail()}, adminParam.getUserId()), adminParam.getUserId());
+    @PostMapping("deleteAdmin")
+    @ApiOperation(
+            value = "删除管理员"
+    )
+    public ResponseEntity deleteAdmin(@RequestBody AdminInputParam adminParam) {
+        if (checkNotAdmin(adminParam.getUserId())) {
+            throw new BusinessException("msg.nopermission");
+        }
+        Admin admin = piperAdminService.getAdmin(adminParam.getUserId(), PublisherTypeEnums.organize);
+        if (admin == null || admin.getStatus() == 0) {
+            throw new SubException("ex.needorganizer");
+        }
+        piperAdminService.delete(adminParam.getUserId(), adminParam.getTmail());
+        messegerSenderService.sendSynchronizationTxt(from, adminParam.getTmail(), languageChange.getLangByUserId("msg.canceladmin", new String[]{adminParam.getUserId()}, adminParam.getTmail()));
+        messegerSenderService.sendSynchronizationTxt(from, adminParam.getUserId(), languageChange.getLangByUserId("msg.becanceled", new String[]{adminParam.getTmail()}, adminParam.getUserId()));
 
-		return new ResponseEntity();
+        return new ResponseEntity();
 
-	}
+    }
 
-	@PostMapping("getAdminList")
-	@ApiOperation(
-					value = "获取所有管理员名单"
-	)
-	public ResponseEntity getAdminList(@RequestBody SearchParam adminParam) {
-		if (checkNotAdmin(adminParam.getUserId())) {
-			return new ResponseEntity(new ArrayList<>());
-		}
-		int pageno = StringUtils.getInteger(adminParam.getPageNo()) == 0 ? 1 : StringUtils.getInteger(adminParam.getPageNo());
-		int pagesize = StringUtils.getInteger(adminParam.getPageSize()) == 0 ? 20 : StringUtils.getInteger(adminParam.getPageSize());
-		List<Admin> sub = piperAdminService.getAdmins(adminParam.getKeyword(), adminParam.getUserId(), PublisherTypeEnums.organize, pageno, pagesize);
+    @PostMapping("getAdminList")
+    @ApiOperation(
+            value = "获取所有管理员名单"
+    )
+    public ResponseEntity getAdminList(@RequestBody SearchParam adminParam) {
+        if (checkNotAdmin(adminParam.getUserId())) {
+            return new ResponseEntity(new ArrayList<>());
+        }
+        int pageno = StringUtils.getInteger(adminParam.getPageNo()) == 0 ? 1 : StringUtils.getInteger(adminParam.getPageNo());
+        int pagesize = StringUtils.getInteger(adminParam.getPageSize()) == 0 ? 20 : StringUtils.getInteger(adminParam.getPageSize());
+        List<Admin> sub = piperAdminService.getAdmins(adminParam.getKeyword(), adminParam.getUserId(), PublisherTypeEnums.organize, pageno, pagesize);
 
-		return new ResponseEntity(sub);
-	}
+        return new ResponseEntity(sub);
+    }
 
-	public boolean checkNotAdmin(String userId) {
-		return !("luohongzhou1@syswin.com".equals(userId) || "weihongyi@syswin.com".equals(userId));
-	}
+    public boolean checkNotAdmin(String userId) {
+        return !("luohongzhou1@syswin.com".equals(userId) || "weihongyi@syswin.com".equals(userId));
+    }
 }

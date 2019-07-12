@@ -34,123 +34,123 @@ import java.util.stream.Stream;
 @RestController
 @RequestMapping("/pssdk")
 @Api(value = "pssdk", tags = "pssdk")
-public class PSSDKController {
-	private static final Logger logger = LoggerFactory.getLogger(PSSDKController.class);
+public class PSSDKController extends BaseController {
+    private static final Logger logger = LoggerFactory.getLogger(PSSDKController.class);
 
-	@Autowired
-	private APPPublisherService appPublisherService;
+    @Autowired
+    private APPPublisherService appPublisherService;
 
-	@Autowired
-	private PSAccountService psAccountService;
-	@Autowired
-	private PublisherService publisherService;
-	@Autowired
-	private MessegerSenderService messegerSenderService;
-
-
-	@Autowired
-	private UpdateMenuService updateMenuService;
-
-	@Value("${app.ps-app-sdk.user-id}")
-	private String piper;
-
-	@PostMapping({"/addPubliser"})
-	@ApiOperation(
-					value = "添加出版社账户"
-	)
-	public boolean addPubliser(@RequestBody AccountIn accountIn) {
-		logger.info("accountIn" + accountIn);
-		return appPublisherService.addPiperAcount(accountIn.getAccountNo());
-	}
-
-	@PostMapping({"/addPiper"})
-	@ApiOperation(
-					value = "添加Piper"
-	)
-	public boolean addPiper() {
-		return appPublisherService.addAcount();
-	}
+    @Autowired
+    private PSAccountService psAccountService;
+    @Autowired
+    private PublisherService publisherService;
+    @Autowired
+    private MessegerSenderService messegerSenderService;
 
 
-	@PostMapping("/sendMsg")
-	@ApiOperation(
-					value = "发送复杂消息体"
-	)
-	public String sendMsg(@RequestParam String from,
-	                      @RequestParam String to) {
+    @Autowired
+    private UpdateMenuService updateMenuService;
+
+    @Value("${app.ps-app-sdk.user-id}")
+    private String piper;
+
+    @PostMapping({"/addPubliser"})
+    @ApiOperation(
+            value = "添加出版社账户"
+    )
+    public boolean addPubliser(@RequestBody AccountIn accountIn) {
+        logger.info("accountIn" + accountIn);
+        return appPublisherService.addPiperAcount(accountIn.getAccountNo());
+    }
+
+    @PostMapping({"/addPiper"})
+    @ApiOperation(
+            value = "添加Piper"
+    )
+    public boolean addPiper() {
+        return appPublisherService.addAcount();
+    }
+
+
+    @PostMapping("/sendMsg")
+    @ApiOperation(
+            value = "发送复杂消息体"
+    )
+    public String sendMsg(@RequestParam String from,
+                          @RequestParam String to) {
 //		MsgHeader msgHeader= PsClientKeeper.msgHeader();
-		String title = "《有效提升你的谈判能力》";
-		String url = null;
-		String infoTitle = "价格类谈判：怎样谈出好价格";
-		String infoUrl = "http://t.cn/E9BjssG";
+        String title = "《有效提升你的谈判能力》";
+        String url = null;
+        String infoTitle = "价格类谈判：怎样谈出好价格";
+        String infoUrl = "http://t.cn/E9BjssG";
 
-		messegerSenderService.sendComplexMsg(from, to, title, "",url, infoTitle, infoUrl);
-		return "success";
-	}
+        messegerSenderService.sendComplexMsg(from, to, title, "", url, infoTitle, infoUrl);
+        return "success";
+    }
 
-	@PostMapping({"/login"})
-	@ApiOperation(
-					value = "登录"
-	)
-	public void login(String userId) {
-		psAccountService.login(userId);
-	}
+    @PostMapping({"/login"})
+    @ApiOperation(
+            value = "登录"
+    )
+    public void login(String userId) {
+        psAccountService.login(userId);
+    }
 
 
-	@PostMapping({"/sendText"})
-	@ApiOperation(
-					value = "发送文本"
-	)
-	public void sendText(String from, String to, String txt) throws IOException {
+    @PostMapping({"/sendText"})
+    @ApiOperation(
+            value = "发送文本"
+    )
+    public void sendText(String from, String to, String txt) throws IOException {
 
-		messegerSenderService.sendText(from, to, txt);
-	}
+        messegerSenderService.sendText(from, to, txt);
+    }
 
-	@PostMapping({"/sendImage"})
-	@ApiOperation(
-					value = "发送图片"
-	)
-	public void sendImage(String from, String to, String url, String fileName) throws IOException {
+    @PostMapping({"/sendImage"})
+    @ApiOperation(
+            value = "发送图片"
+    )
+    public void sendImage(String from, String to, String url, String fileName) throws IOException {
 
-		messegerSenderService.sendImage(from, to, url, fileName);
-	}
+        messegerSenderService.sendImage(from, to, url, fileName);
+    }
 
-	@PostMapping({"/cleanData"})
-	@ApiOperation(
-					value = "手动清理菜单数据"
-	)
-	public void cleanData(String account) throws IOException {
+    @PostMapping({"/cleanData"})
+    @ApiOperation(
+            value = "手动清理菜单数据"
+    )
+    public void cleanData(String account) throws IOException {
 
-		updateMenuService.updateMenu(account);
-	}
+        updateMenuService.updateMenu(account);
+    }
 
-	@PostMapping({"/cleanAllData"})
-	@ApiOperation(
-					value = "手动清理所有菜单数据"
-	)
-	public void cleanAllData() {
-		updateMenuService.updateMenu(piper);
-		for (Publisher p : publisherService.select()) {
-			try {
-				updateMenuService.updateMenu(p.getPtemail());
-			} catch (Exception e) {
-				logger.error("publisher" + p.getPtemail() + "菜单创建失败", e);
-			}
-		}
+    @PostMapping({"/cleanAllData"})
+    @ApiOperation(
+            value = "手动清理所有菜单数据"
+    )
+    public void cleanAllData() {
+        updateMenuService.updateMenu(piper);
+        for (Publisher p : publisherService.select()) {
+            try {
+                updateMenuService.updateMenu(p.getPtemail());
+            } catch (Exception e) {
+                logger.error("publisher" + p.getPtemail() + "菜单创建失败", e);
+            }
+        }
 
-	}
+    }
 
-	@PostMapping({"/mutCreateMenu"})
-	@ApiOperation(
-					value = "批量创建菜单"
-	)
-	public void mutCreateMenu() {
-		for (Publisher p : publisherService.select()) {
-			try {
-				appPublisherService.addPiperAcount(p.getPtemail());
-			} catch (Exception e) {
-				logger.error("publisher" + p.getPtemail() + "菜单创建失败", e);
-			}
-		}
-	}
+    @PostMapping({"/mutCreateMenu"})
+    @ApiOperation(
+            value = "批量创建菜单"
+    )
+    public void mutCreateMenu() {
+        for (Publisher p : publisherService.select()) {
+            try {
+                appPublisherService.addPiperAcount(p.getPtemail());
+            } catch (Exception e) {
+                logger.error("publisher" + p.getPtemail() + "菜单创建失败", e);
+            }
+        }
+    }
 }

@@ -1,14 +1,13 @@
 package com.syswin.pipeline.app.controller;
 
+import com.github.pagehelper.util.StringUtil;
 import com.syswin.pipeline.app.dto.*;
+import com.syswin.pipeline.app.dto.output.ResEntity;
 import com.syswin.pipeline.psservice.MessegerSenderService;
 import com.syswin.pipeline.psservice.RegisterServer;
-import com.syswin.pipeline.psservice.SendMessegeService;
 import com.syswin.pipeline.service.org.IOrgService;
 import com.syswin.pipeline.service.org.OrgOut;
-import com.syswin.pipeline.psservice.olderps.ChatMsg;
-import com.syswin.pipeline.psservice.olderps.PSClientService;
-import com.syswin.pipeline.psservice.olderps.PubKey;
+import com.syswin.pipeline.utils.PSUtil;
 import com.syswin.pipeline.utils.SwithUtil;
 import com.syswin.sub.api.db.model.Publisher;
 import io.swagger.annotations.Api;
@@ -17,12 +16,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by 115477 on 2018/12/18.
@@ -31,14 +30,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/ps")
 @Api(value = "ps", tags = "ps")
-public class PSClientController {
+public class PSClientController extends BaseController {
     private static final Logger logger = LoggerFactory.getLogger(PSClientController.class);
 
-    @Autowired
-    private PSClientService psClientService;
-
-    @Autowired
-    private SendMessegeService sendMessegeService;
     @Autowired
     private MessegerSenderService messegerSenderService;
     @Autowired
@@ -55,77 +49,25 @@ public class PSClientController {
 
     @Autowired
     private RegisterServer psServerService;
-
-    @PostMapping("/sendMsg")
-    @ApiOperation(
-            value = "获取消息详情"
-    )
-    public void sendMsg(@RequestBody ChatMsg msg, @RequestParam String senderTemail,
-                        @RequestParam String senderPK, HttpServletRequest request) {
-
-        psClientService.sendChatMessage(msg, senderTemail, senderPK);
-    }
+    @Autowired
+    private PSUtil psUtil;
 
 
     @PostMapping("/getPubKey")
     @ApiOperation(
             value = "获取pubKey"
     )
-    public PubKey getPubKey(@RequestBody String senderTemail, HttpServletRequest request) {
-        return new PubKey(psClientService.getTemailPublicKey(senderTemail));
-    }
-
-
-    @PostMapping("/registerTemail")
-    @ApiOperation(
-            value = "注册Temail, 返回公钥"
-    )
-    public PubKey registerTemail(@RequestBody String senderTemail, HttpServletRequest request) {
-        return new PubKey(psClientService.registerTemail(senderTemail));
-    }
-
-
-    @GetMapping("/getTemailPublicKey")
-    @ApiOperation(
-            value = "获取公钥"
-    )
-    public PubKey getTemailPublicKey(String senderTemail) {
-        String pub = psClientService.getTemailPublicKey(senderTemail);
-        if (StringUtils.isEmpty(pub)) {
-            pub = psClientService.registerPub(senderTemail);
-        }
-        return new PubKey(pub);
-    }
-
-    @GetMapping("/createPublicKey")
-    @ApiOperation(
-            value = "批量生成密机"
-    )
-    public List createPublicKey() {
-
-        List<String> createUserList = new ArrayList<>();
-        String senderTemail = null;
-        senderTemail = ("a.piper@support2technical.me").trim();
-//			String pub = psClientService.getTemailPublicKey(senderTemail);
-        String pk = psClientService.registerPub(senderTemail);
-        String sendertt = "INSERT INTO `user_temail` (temail, user_id, ALGORITHM, TYPE, domain, create_time, update_time) VALUES ('%s', '%s', 1, 4, 'support2technical.me', UNIX_TIMESTAMP(NOW())*1000, UNIX_TIMESTAMP(NOW())*1000);";
-//			String pub = psClientService.getTemailPublicKey(senderTemail);
-        String tt = String.format(sendertt, "a.piper@" + piperUserId.split("@")[1], pk);
-
-        createUserList.add(tt);
-        for (int i = 1; i < 301; i++) {
-//			senderTemail="p."+(10000000+i)+"@systoontest.com";
-            senderTemail = ("p." + (10000000 + i) + "@" + piperUserId.split("@")[1]).trim();
-//			String pub = psClientService.getTemailPublicKey(senderTemail);
-            pk = psClientService.registerPub(senderTemail);
-            sendertt = "INSERT INTO `user_temail` (temail, user_id, ALGORITHM, TYPE, domain, create_time, update_time) VALUES ('%s', '%s', 1, 4, 'support2technical.me', UNIX_TIMESTAMP(NOW())*1000, UNIX_TIMESTAMP(NOW())*1000);";
-//			String pub = psClientService.getTemailPublicKey(senderTemail);
-            tt = String.format(sendertt, senderTemail, pk);
-            createUserList.add(tt);
+    public ResEntity getPubKey(@RequestBody String senderTemail, HttpServletRequest request) {
+        String publicKey = psUtil.publickey(senderTemail);
+        if (StringUtil.isEmpty(publicKey)) {
+            publicKey = psUtil.sign(senderTemail);
+            return suc("get suc", publicKey);
+        } else {
+            return suc("register suc", publicKey);
         }
 
-        return createUserList;
     }
+
 
     @GetMapping("/config")
     @ApiOperation(
@@ -168,10 +110,10 @@ public class PSClientController {
     @ApiOperation(
             value = "测试接口。发送消息"
     )
-    public String sendOthermessage(@RequestBody PublishMessageParam message) {
+    public String sendOthermessage(@RequestBody PublishMessageParam message) throws Exception {
         String content = "{\"w\":540,\"h\":960,\"isOriginal\":0,\"suffix\":\".png\",\"url\":\"http:\\/\\/temail-test.cn-bj.ufileos.com\\/mediabank%2Fdd8da1b9f51444be842411fd79cbfd8a.zip\",\"size\":28419,\"pwd\":\"7B13B225-10BC-4141-87D9-FD1139FCCF52\"}";
 //		String content = "{\"text\":\"vhh\"}";
-        sendMessegeService.sendOtherMessage(message.getContent(), Integer.parseInt(message.getBodyType()), message.getPtemail(), message.getFromTemail());
+        messegerSenderService.sendSynchronizationContent(message.getFromTemail(), message.getPtemail(), UUID.randomUUID().toString(), Integer.parseInt(message.getBodyType()), message.getContent());
         return "success";
     }
 
@@ -195,14 +137,17 @@ public class PSClientController {
         }
         List<String> userList = scriptionService.getSubscribers(publisher.getPtemail(), null);
         for (String userId : userList) {
-            if (com.syswin.pipeline.utils.StringUtils.isNullOrEmpty(psClientService.getTemailPublicKey(userId))) {
+            if (com.syswin.pipeline.utils.StringUtils.isNullOrEmpty(psUtil.publickey(userId))) {
                 continue;
             }
-            //判断是否自己订阅自己
-            if (userId.equals(publisher.getUserId())) {
-                sendMessegeService.sendCard(publisher.getPtemail(), userId, "* " + modify.getName(), modify.getIconUrl());
-            } else {
-                sendMessegeService.sendCard(publisher.getPtemail(), userId, modify.getName(), modify.getIconUrl());
+            try {
+                //判断是否自己订阅自己
+                if (userId.equals(publisher.getUserId())) {
+                    messegerSenderService.sendCard(publisher.getPtemail(), userId, "* " + modify.getName(), modify.getIconUrl());
+                } else {
+                    messegerSenderService.sendCard(publisher.getPtemail(), userId, modify.getName(), modify.getIconUrl());
+                }
+            } catch (Exception ex) {
             }
 
         }

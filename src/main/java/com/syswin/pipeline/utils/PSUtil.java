@@ -36,32 +36,19 @@ public class PSUtil {
 
 
     public String publickey(String userId) {
-        if (StringUtil.isEmpty(userId)) {
-            throw new RuntimeException(" userId is null");
-        }
-        //1 、查询缓存
-        String pk = myMap.getIfPresent(userId);
-        if (StringUtil.isEmpty(pk)) {
-            //网关auth查询
-            pk = domainService.publishKey(userId);
 
-            if (pk == null) {
-                //TODO kms查询,第二个参数不知干嘛,tentId?
-                pk = kmsService.sign(userId, tentId);
-            }
-            //缓存注入
-            myMap.put(userId, pk);
-        }
-        return pk;
+        //内部已加了缓存
+        return domainService.publishKey(userId);
     }
 
 
     public String sign(String userId) {
-        return  kmsService.sign(userId, "aaaa");
+        return kmsService.sign(userId, "aaaa");
     }
 
     /**
      * 判断该号是否在 网关存在
+     *
      * @param userId
      * @return
      */
