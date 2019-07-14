@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -54,6 +55,7 @@ public class PiperSubscriptionService {
     /**
      * 订阅
      */
+    @Transactional
     public Subscription subscribe(String userId, String publishTemail, PublisherTypeEnums piperType) {
 
         if (StringUtils.isNullOrEmpty(publishTemail) || StringUtils.isNullOrEmpty(userId)) {
@@ -103,6 +105,7 @@ public class PiperSubscriptionService {
      * 批量订阅组织号
      * 根据组织名称获取组织下所有有的邮箱
      */
+    @Transactional
     public List<String> subscribeOrgList(String comBairuserIds, String publiserId, String oweruserId) {
         //以 英文分号隔开
 //		List<String> stringB = Arrays.asList(stringArray);

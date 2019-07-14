@@ -72,6 +72,7 @@ public class PiperPublisherService {
      * @param userId
      * @param name
      */
+    @Transactional
     public Publisher addPublisher(String userId, String name, String pmail, Integer ptype) {
 
         if (StringUtils.isNullOrEmpty(name)) {
