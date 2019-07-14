@@ -60,9 +60,9 @@ public class PiperPublisherController {
 	)
 	public ResponseEntity create(@RequestBody CreatePublisherParam createPublisher) {
 
-		String hasCreate = CacheUtil.get("create_" + createPublisher.getUserId());
+		String hasCreate = CreateCacheUtil.get("create_" + createPublisher.getUserId());
 		if (StringUtils.isNullOrEmpty(hasCreate)) {
-			CacheUtil.put("create_" + createPublisher.getUserId(), "1");
+			CreateCacheUtil.put("create_" + createPublisher.getUserId(), "1");
 		} else {
 			throw new BusinessException("ex.publisher.creating");
 		}

@@ -48,7 +48,7 @@ public class PSClientController extends BaseController {
     private String piperUserId;
 
     @Autowired
-    private RegisterServer psServerService;
+    private RegisterServer registerServer;
     @Autowired
     private PSUtil psUtil;
 
@@ -171,26 +171,17 @@ public class PSClientController extends BaseController {
             value = "注册账号"
     )
     public ResponseEntity registerAccount(@RequestBody RegisterParam rp) {
-        psServerService.registerAccount(rp.getTemail());
+        registerServer.registerAccout(rp.getTemail());
         return new ResponseEntity();
     }
 
-
-    @PostMapping("/registerAccount3")
-    @ApiOperation(
-            value = "注册账号3"
-    )
-    public ResponseEntity registerAccount3(@RequestBody RegisterParam rp) {
-        psServerService.registerAccount(rp.getTemail(), rp.getServer());
-        return new ResponseEntity();
-    }
 
     @PostMapping("/activeAccount")
     @ApiOperation(
             value = "激活账户"
     )
     public ResponseEntity activeAccount(@RequestBody ActiveParam ap) {
-        psServerService.activeAccout(ap.getTemail(), ap.getCode());
+        registerServer.active(ap.getTemail(), ap.getCode());
         return new ResponseEntity();
     }
 }

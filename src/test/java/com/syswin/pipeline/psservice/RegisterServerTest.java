@@ -14,13 +14,13 @@ import org.springframework.test.context.junit4.SpringRunner;
 @SpringBootTest
 public class RegisterServerTest {
 
-	@Autowired
-	RegisterServer registerServer;
+    @Autowired
+    RegisterServer registerServer;
 
-	@Test
-	public void registerAccount() {
-	//TODO 待验证
-		registerServer.registerAccount("p.xxxxxddd@msgseal.com");
-	}
+    @Test
+    public void registerAccount() {
+        //TODO 待验证
+        registerServer.registerAccout("p.xxxxxddd@msgseal.com");
+    }
 
 }

@@ -37,7 +37,7 @@ public class NickNameService implements INickNameService {
             return p.getName();
         }
 
-        return userId.split("@")[1].split("\\.")[0];
+        return userId.split("@")[0].split("\\.")[1];
 
     }
 

@@ -27,236 +27,220 @@ import org.springframework.transaction.annotation.Transactional;
 public class APPPublisherService {
 
 
-	private static final Logger logger = LoggerFactory.getLogger(APPPublisherService.class);
-	//创建出版社
-	private static final String a_createp = "/web/create-publish";
-	//我的出版社
-	private static final String a_publish = "/web/my-publish";
-	//推荐广场
-	private static final String a_recommend = "/web/recommend-list";
-	//我的订阅列表
-	private static final String a_subcrib_list = "/web/subscribe-list";
-	//邮件组管理
-	private static final String a_group = "/web";
+    private static final Logger logger = LoggerFactory.getLogger(APPPublisherService.class);
+    //创建出版社
+    private static final String a_createp = "/web/create-publish";
+    //我的出版社
+    private static final String a_publish = "/web/my-publish";
+    //推荐广场
+    private static final String a_recommend = "/web/recommend-list";
+    //我的订阅列表
+    private static final String a_subcrib_list = "/web/subscribe-list";
+    //邮件组管理
+    private static final String a_group = "/web";
 
-	//历史消息
-	private static final String p_history = "/web/history-list";
-	//订阅管理
-	private static final String p_goup = "/web/home";
-	//Excel上传
-	private static final String p_upload = "/h5/help/upload";
-	//更换管理员
-	private static final String p_change = "/web/edit-email-admin";
+    //历史消息
+    private static final String p_history = "/web/history-list";
+    //订阅管理
+    private static final String p_goup = "/web/home";
+    //Excel上传
+    private static final String p_upload = "/h5/help/upload";
+    //更换管理员
+    private static final String p_change = "/web/edit-email-admin";
 
-	@Value("${url.piper}")
-	private String defaultUrl;
-	@Autowired
-	private AccountService accountService;
+    @Value("${url.piper}")
+    private String defaultUrl;
+    @Autowired
+    private AccountService accountService;
 
-	@Autowired
-	private PSAccountService psAccountService;
+    @Autowired
+    private PSAccountService psAccountService;
 
-	@Autowired
-	private FunctionItemService functionItemService;
+    @Autowired
+    private FunctionItemService functionItemService;
 
-	@Autowired
-	private VCardInfoService vCardInfoService;
+    @Autowired
+    private VCardInfoService vCardInfoService;
 //	@Autowired
 //	private NickNameService nickNameService;
 
-	@Autowired
-	private RegisterServer psServerService;
+    @Autowired
+    private RegisterServer registerServer;
 
-	@Autowired
-	private PublisherService publisherService;
+    @Autowired
+    private PublisherService publisherService;
 
-	@Value("${app.ps-app-sdk.user-id}")
-	private String from;
+    @Value("${app.ps-app-sdk.user-id}")
+    private String from;
 
-	@Value("${app.pipeline.imgUrl}")
-	private String iconUrl;
+    @Value("${app.pipeline.imgUrl}")
+    private String iconUrl;
 
-	@Autowired
-	private UpdateMenuService updateMenuService;
+    @Autowired
+    private UpdateMenuService updateMenuService;
 
-	@Transactional(rollbackFor = Exception.class)
-	public boolean registerAndLoginPiperAcount(String accountNo) {
 
-//		accountService.findAccount(accountNo)
-		psServerService.registerAccount(accountNo);
-		//添加并激活账号
-		addAccount(accountNo, "1234", "欢迎使用Piper");
-		//添加名片
-		addCard(accountNo);
+    @Transactional
+    public boolean addAcount() {
 
-		//添加角色菜单
-		addRoleMenu(accountNo);
-		//登录账号
-		psAccountService.login(accountNo);
-//更新菜单时间
-		updateMenuService.updateMenu(accountNo);
-		return true;
-	}
+        //添加并激活账号
+        addAccount(from, "1234", "请使用小助手");
+        //添加名片
+        addCard(from);
+        //添加角色菜单
+        addRoleMenu(from);
+        //登录账号
+        psAccountService.login(from);
 
-	@Transactional
-	public boolean addAcount() {
-
-		//添加并激活账号
-		addAccount(from, "1234", "请使用小助手");
-		//添加名片
-		addCard(from);
-		//添加角色菜单
-		addRoleMenu(from);
-		//登录账号
-		psAccountService.login(from);
-
-		//更新菜单时间
+        //更新菜单时间
 //		updateMenuService.updateMenu(from);
-		return true;
-	}
+        return true;
+    }
 
 
-	@Transactional
-	public boolean addPiperAcount(String accountNo) {
+    @Transactional
+    public boolean addPiperAcount(String accountNo) {
 
-		Publisher p = publisherService.getPubLisherByPublishTmail(accountNo, null);
-		if (p == null) {
-			return false;
-		}
-		//添加并激活账号
-		addAccount(accountNo, "1234", "请使用小助手");
-		//添加名片
-		addCard(accountNo, p.getName());
-		//添加角色菜单
-		addPiperRoleMenu(accountNo, p);
-		//登录账号
-		psAccountService.login(accountNo);
-		//更新菜单时间
+
+        Publisher p = publisherService.getPubLisherByPublishTmail(accountNo, null);
+        if (p == null) {
+            return false;
+        }
+
+        //添加并激活账号
+        addAccount(accountNo, "1234", "请使用小助手");
+        //添加名片
+        addCard(accountNo, p.getName());
+        //添加角色菜单
+        addPiperRoleMenu(accountNo, p);
+        //注册并登录账号
+        registerServer.registerAccout(accountNo);
+        //更新菜单时间
 //		updateMenuService.updateMenu(accountNo);
 
-		return true;
-	}
+        return true;
+    }
 
-	private void addRoleMenu(String accountNo) {
-		//添加中文菜单
-		addMenuIte(accountNo, "创建个人出版社", getUrl(a_createp), 1, "guest");
-		addMenuIte(accountNo, "我的个人出版社", getUrl(a_publish), 1, "person");
-		addMenuIte(accountNo, "我的订阅列表", getUrl(a_subcrib_list), 2, "common");
-		addMenuIte(accountNo, "订阅推荐广场", getUrl(a_recommend), 3, "common");
-		addMenuIte(accountNo, "管理邮件群发", getUrl(a_group), 4, "org");
+    private void addRoleMenu(String accountNo) {
+        //添加中文菜单
+        addMenuIte(accountNo, "创建个人出版社", getUrl(a_createp), 1, "guest");
+        addMenuIte(accountNo, "我的个人出版社", getUrl(a_publish), 1, "person");
+        addMenuIte(accountNo, "我的订阅列表", getUrl(a_subcrib_list), 2, "common");
+        addMenuIte(accountNo, "订阅推荐广场", getUrl(a_recommend), 3, "common");
+        addMenuIte(accountNo, "管理邮件群发", getUrl(a_group), 4, "org");
 
-		//添加英文菜单
-		addMenuIte(accountNo, "Create Publisher", getUrl(a_createp, null, "en"), 1, "guest-en");
-		addMenuIte(accountNo, "My Publisher", getUrl(a_publish, null, "en"), 1, "person-en");
-		addMenuIte(accountNo, "My Subscritions", getUrl(a_subcrib_list, null, "en"), 2, "common-en");
-		addMenuIte(accountNo, "Recommend Areas", getUrl(a_recommend, null, "en"), 3, "common-en");
-		addMenuIte(accountNo, "Manage Group", getUrl(a_group, null, "en"), 4, "org-en");
-	}
+        //添加英文菜单
+        addMenuIte(accountNo, "Create Publisher", getUrl(a_createp, null, "en"), 1, "guest-en");
+        addMenuIte(accountNo, "My Publisher", getUrl(a_publish, null, "en"), 1, "person-en");
+        addMenuIte(accountNo, "My Subscritions", getUrl(a_subcrib_list, null, "en"), 2, "common-en");
+        addMenuIte(accountNo, "Recommend Areas", getUrl(a_recommend, null, "en"), 3, "common-en");
+        addMenuIte(accountNo, "Manage Group", getUrl(a_group, null, "en"), 4, "org-en");
+    }
 
-	private void addPiperRoleMenu(String accountNo, Publisher p) {
-		//TODO 待置空Write_url
-		addMenuIte(accountNo, "write", "", 4, 1, "common", "公用", iconUrl,"helper_write");
-		//input的窗体暂时先去掉
+    private void addPiperRoleMenu(String accountNo, Publisher p) {
+        //TODO 待置空Write_url
+        addMenuIte(accountNo, "write", "", 4, 1, "common", "公用", iconUrl, "helper_write");
+        //input的窗体暂时先去掉
 //		addMenuIte(accountNo, "text", "", 5, 7, "common", "个人出版社", iconUrl,"input_text");
 //		addMenuIte(accountNo, "file", "", 5, 8, "common", "个人出版社", iconUrl,"input_file");
 //		addMenuIte(accountNo, "photo", "", 5, 9, "common", "个人出版社", iconUrl,"input_photo");
-		addMenuIte(accountNo, "历史消息", getUrl(p_history, p.getPublisherId()),  2, "common");
-		addMenuIte(accountNo, "管理订阅人", getUrl(p_goup, p.getPublisherId()), 3, "org");
-		addMenuIte(accountNo, "Excel上传", getUrl(p_upload, p.getPublisherId()),  4, "org");
-		addMenuIte(accountNo, "更换管理员", getUrl(p_change, p.getPublisherId()),  5, "org");
+        addMenuIte(accountNo, "历史消息", getUrl(p_history, p.getPublisherId()), 2, "common");
+        addMenuIte(accountNo, "管理订阅人", getUrl(p_goup, p.getPublisherId()), 3, "org");
+        addMenuIte(accountNo, "Excel上传", getUrl(p_upload, p.getPublisherId()), 4, "org");
+        addMenuIte(accountNo, "更换管理员", getUrl(p_change, p.getPublisherId()), 5, "org");
 
-		//添加英文菜单
-		addMenuIte(accountNo, "write", "", 4, 1, "common-en", "公用", iconUrl,"helper_write");
+        //添加英文菜单
+        addMenuIte(accountNo, "write", "", 4, 1, "common-en", "公用", iconUrl, "helper_write");
 //		addMenuIte(accountNo, "text", "", 5, 7, "common-en", "个人出版社", iconUrl,"input_text");
 //		addMenuIte(accountNo, "file", "", 5, 8, "common-en", "个人出版社", iconUrl,"input_file");
 //		addMenuIte(accountNo, "photo", "", 5, 9, "common-en", "个人出版社", iconUrl,"input_photo");
-		addMenuIte(accountNo, "History", getUrl(p_history, p.getPublisherId(),"en"),  2, "common-en");
-		addMenuIte(accountNo, "Managing Subscribers", getUrl(p_goup, p.getPublisherId(),"en"), 3, "org-en");
-		addMenuIte(accountNo, "Excel Upload", getUrl(p_upload, p.getPublisherId(),"en"),  4, "org-en");
-		addMenuIte(accountNo, "Change Manager", getUrl(p_change, p.getPublisherId(),"en"),  5, "org-en");
+        addMenuIte(accountNo, "History", getUrl(p_history, p.getPublisherId(), "en"), 2, "common-en");
+        addMenuIte(accountNo, "Managing Subscribers", getUrl(p_goup, p.getPublisherId(), "en"), 3, "org-en");
+        addMenuIte(accountNo, "Excel Upload", getUrl(p_upload, p.getPublisherId(), "en"), 4, "org-en");
+        addMenuIte(accountNo, "Change Manager", getUrl(p_change, p.getPublisherId(), "en"), 5, "org-en");
 
-	}
-
-
-	//添加激活账号
-	public boolean addAccount(String accountNo, String code, String msg) {
-
-		AccountInfo result = null;
-		AccountInfo accountInfo = new AccountInfo();
-		accountInfo.setAccountNo(accountNo);
-		accountInfo.setActiveCode(code);
-		accountInfo.setWelcomeMsg(msg);
-		try {
-			result = this.accountService.addAccount(accountInfo);
-			accountService.startAccount(result.getAccountId(), result.getAccountNo());
-
-		} catch (AdminException e) {
-			logger.error(" APPPublisherService addAccount", e);
-			throw new BusinessException("账号已经注册过了");
-
-		}
-		return result != null;
-	}
+    }
 
 
-	public boolean addMenuIte(String accountNo, String itemName, String url, int displayOrder, String roleType) {
-		return addMenuIte(accountNo, itemName, url, 4, displayOrder, roleType, "--", iconUrl, "");
-	}
+    //添加激活账号
+    public boolean addAccount(String accountNo, String code, String msg) {
 
-	public boolean addMenuIte(String accountNo, String itemName, String url, int itemType, int displayOrder, String roleType, String roleDesc, String imgUrl, String keyInput) {
-		FunctionItem functionItem = new FunctionItem();
-		functionItem.setAccountNo(accountNo);
-		functionItem.setFunctionName(itemName);
-		functionItem.setFunctionUrl(url);
-		functionItem.setItemType(itemType);
-		functionItem.setDisplayOrder(displayOrder);
-		functionItem.setUseStatus(1);
-		functionItem.setFunctionImage(imgUrl);
-		functionItem.setRoleType(roleType);
-		functionItem.setRoleDesc(roleDesc);
-		functionItem.setFunctionKey(keyInput);
-		functionItem.setTaipHost("1");
-		functionItem.setTaipPort("1");
-		functionItem.setTaipCommand(1);
-		functionItem.setTaipCommandSpace(1);
+        AccountInfo result = null;
+        AccountInfo accountInfo = new AccountInfo();
+        accountInfo.setAccountNo(accountNo);
+        accountInfo.setActiveCode(code);
+        accountInfo.setWelcomeMsg(msg);
+        try {
+            result = this.accountService.addAccount(accountInfo);
+            accountService.startAccount(result.getAccountId(), result.getAccountNo());
+
+        } catch (AdminException e) {
+            logger.error(" APPPublisherService addAccount", e);
+            throw new BusinessException("账号已经注册过了");
+
+        }
+        return result != null;
+    }
+
+
+    public boolean addMenuIte(String accountNo, String itemName, String url, int displayOrder, String roleType) {
+        return addMenuIte(accountNo, itemName, url, 4, displayOrder, roleType, "--", iconUrl, "");
+    }
+
+    public boolean addMenuIte(String accountNo, String itemName, String url, int itemType, int displayOrder, String roleType, String roleDesc, String imgUrl, String keyInput) {
+        FunctionItem functionItem = new FunctionItem();
+        functionItem.setAccountNo(accountNo);
+        functionItem.setFunctionName(itemName);
+        functionItem.setFunctionUrl(url);
+        functionItem.setItemType(itemType);
+        functionItem.setDisplayOrder(displayOrder);
+        functionItem.setUseStatus(1);
+        functionItem.setFunctionImage(imgUrl);
+        functionItem.setRoleType(roleType);
+        functionItem.setRoleDesc(roleDesc);
+        functionItem.setFunctionKey(keyInput);
+        functionItem.setTaipHost("1");
+        functionItem.setTaipPort("1");
+        functionItem.setTaipCommand(1);
+        functionItem.setTaipCommandSpace(1);
 //		functionItem.set
-		FunctionItem r = functionItemService.addItem(functionItem);
-		return r != null;
-	}
+        FunctionItem r = functionItemService.addItem(functionItem);
+        return r != null;
+    }
 
-	public boolean addCard(String accountNo, String name) {
-		VCardInfo vi = new VCardInfo();
-		vi.setAccountNo(accountNo);
-		vi.setAccountDesc("--");
-		vi.setNickname(name);
-		vi.setAccountImage(iconUrl);
-		VCardInfo result = this.vCardInfoService.addVCardInfo(vi);
+    public boolean addCard(String accountNo, String name) {
+        VCardInfo vi = new VCardInfo();
+        vi.setAccountNo(accountNo);
+        vi.setAccountDesc("--");
+        vi.setNickname(name);
+        vi.setAccountImage(iconUrl);
+        VCardInfo result = this.vCardInfoService.addVCardInfo(vi);
 //		if (StringUtils.isNotEmpty(vi.getNickname())) {
 //			this.nickNameService.resetNickName(vi.getAccountNo(), vi.getNickname());
 //		}
-		return result != null;
-	}
+        return result != null;
+    }
 
-	public boolean addCard(String accountNo) {
-		return addCard(accountNo, "Piper");
-	}
+    public boolean addCard(String accountNo) {
+        return addCard(accountNo, "Piper");
+    }
 
 
-	private String getUrl(String path) {
-		return getUrl(path, null, null);
-	}
+    private String getUrl(String path) {
+        return getUrl(path, null, null);
+    }
 
-	private String getUrl(String path, String publisherId) {
-		return getUrl(path, publisherId, null);
-	}
+    private String getUrl(String path, String publisherId) {
+        return getUrl(path, publisherId, null);
+    }
 
-	private String getUrl(String path, String publisherId, String lang) {
-		String l = (!StringUtil.isEmpty(lang) && lang.contains("en")) ? "?lang=en" : "?lang=zh";
+    private String getUrl(String path, String publisherId, String lang) {
+        String l = (!StringUtil.isEmpty(lang) && lang.contains("en")) ? "?lang=en" : "?lang=zh";
 
-		String r = defaultUrl + path + l;
-		if (!StringUtil.isEmpty(publisherId)) {
-			r = r + "&publisherId=" + publisherId;
-		}
-		return r;
-	}
+        String r = defaultUrl + path + l;
+        if (!StringUtil.isEmpty(publisherId)) {
+            r = r + "&publisherId=" + publisherId;
+        }
+        return r;
+    }
 }
