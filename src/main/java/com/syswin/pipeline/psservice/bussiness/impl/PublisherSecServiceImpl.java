@@ -217,7 +217,7 @@ public class PublisherSecServiceImpl implements PublisherSecService {
         if (publisher.getPtype().getCode().equals(PublisherTypeEnums.person.getCode()) && !userIds.contains(publisher.getUserId())) {
             userIds.add(0, publisher.getUserId());
         }
-        String r = String.format("received：from=%s to=%s cid=%s content=%s", publisher.getUserId(), publisher.getPtemail(), contentId, content);
+        String r = String.format("receive: from=%s to=%s cid=%s content=%s", publisher.getUserId(), publisher.getPtemail(), contentId, content);
         logger.info(r);
 
         int num = 0;
@@ -249,16 +249,17 @@ public class PublisherSecServiceImpl implements PublisherSecService {
                     messegerSenderService.sendAsyncContent(fromTemail, orderUserId, msgId, sendBodyType, show);
 
                 }
-                String s = String.format("from=%s to=%s cid=%s msgid=%s", fromTemail, orderUserId, contentId, msgId);
+                String s = String.format("send: from=%s to=%s cid=%s msgid=%s", fromTemail, orderUserId, contentId, msgId);
                 logger.info(s);
                 num++;
-                messegerSenderService.sendSynchronizationTxt(publisher.getPtemail(), publisher.getUserId(), num + languageChange.getValueByUserId("msg.hassend", publisher.getUserId()));
 
             } catch (Exception ex) {
                 logger.error(publisher.getPtemail() + " send to " + orderUserId + "error----   contentId：" + contentId, ex);
             }
 
         }
+
+        messegerSenderService.sendSynchronizationTxt(publisher.getPtemail(), publisher.getUserId(), num + languageChange.getValueByUserId("msg.hassend", publisher.getUserId()));
         //推送记录
         SendRecord sendRecord = new SendRecord();
         sendRecord.setContentId(contentId);
