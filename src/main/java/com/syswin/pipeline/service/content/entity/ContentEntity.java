@@ -50,7 +50,11 @@ public class ContentEntity extends MediaContentEntity {
 
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @ApiModelProperty(value = "是否显示")
+    @ApiModelProperty(value = "直接跳转URL")
+    private String directUrl;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ApiModelProperty(value = "组织出版社，是否显示取消订阅")
     private Integer show =0;
 //    @JsonInclude(JsonInclude.Include.NON_NULL)
 //    @ApiModelProperty(value = "发件人")

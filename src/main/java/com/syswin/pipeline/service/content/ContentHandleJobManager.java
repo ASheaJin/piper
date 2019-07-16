@@ -7,6 +7,7 @@ import com.syswin.pipeline.enums.BodyTypeEnums;
 import com.syswin.pipeline.service.content.entity.ContentEntity;
 import com.syswin.pipeline.service.content.entity.MediaContentEntity;
 import com.syswin.pipeline.utils.JacksonJsonUtil;
+import com.syswin.pipeline.utils.StringUtil;
 import com.syswin.sub.api.ContentOutService;
 import com.syswin.sub.api.utils.BeanConvertUtil;
 import org.slf4j.Logger;
@@ -45,21 +46,23 @@ public class ContentHandleJobManager {
 
     /**
      * 对外方法
+     *
      * @param contentId
      * @param createTime
      */
-    public void addJobSaveText( String contentId,  ContentEntity contentEntity, int createTime) {
+    public void addJobSaveText(String contentId, ContentEntity contentEntity, int createTime) {
 //        servicePool.execute(() -> {
 
-            ContentEntity listContent = parseListContent(contentEntity);
+        ContentEntity listContent = parseListContent(contentEntity);
 
-            contentOutService.add(contentId, contentEntity.getPublisherId(),
-                    JacksonJsonUtil.toJson(listContent), JacksonJsonUtil.toJson(contentEntity), createTime);
+        contentOutService.add(contentId, contentEntity.getPublisherId(),
+                JacksonJsonUtil.toJson(listContent), JacksonJsonUtil.toJson(contentEntity), createTime);
 //        });
     }
 
     /**
      * 对外方法
+     *
      * @param publisherId
      * @param contentId
      * @param bodyType
@@ -68,20 +71,21 @@ public class ContentHandleJobManager {
      */
     public void addJob(String publisherId, String contentId, Integer bodyType, String content, int createTime) {
 //        servicePool.execute(() -> {
-            ContentEntity contentEntity = parseContent(publisherId, contentId, bodyType, content);
-            if (contentEntity == null) {
-                return;
-            }
+        ContentEntity contentEntity = parseContent(publisherId, contentId, bodyType, content);
+        if (contentEntity == null) {
+            return;
+        }
 //            contentEntity.setPublishTime(createTime);
-            ContentEntity listContent = parseListContent(contentEntity);
+        ContentEntity listContent = parseListContent(contentEntity);
 
-            contentOutService.add(contentId, publisherId,
-                    JacksonJsonUtil.toJson(listContent), JacksonJsonUtil.toJson(contentEntity), createTime);
+        contentOutService.add(contentId, publisherId,
+                JacksonJsonUtil.toJson(listContent), JacksonJsonUtil.toJson(contentEntity), createTime);
 //        });
     }
 
     /**
      * 解析成列表内容
+     *
      * @return
      */
     public ContentEntity parseListContent(ContentEntity contentEntity) {
@@ -90,15 +94,15 @@ public class ContentHandleJobManager {
         }
         ContentEntity listContent = BeanConvertUtil.map(contentEntity, ContentEntity.class);
         listContent.setTitle(limitIntro(listContent.getTitle(), 20));
-        if (BodyTypeEnums.TEXT.getType().equals(listContent.getBodyType()) ) {
+        if (BodyTypeEnums.TEXT.getType().equals(listContent.getBodyType())) {
             listContent.setText(limitIntro(listContent.getText()));
         }
 
-        if (BodyTypeEnums.MAIL.getType().equals(listContent.getBodyType()) ) {
+        if (BodyTypeEnums.MAIL.getType().equals(listContent.getBodyType())) {
             //暂不处理
         }
 
-        if (BodyTypeEnums.COMPOSE.getType().equals(listContent.getBodyType()) ) {
+        if (BodyTypeEnums.COMPOSE.getType().equals(listContent.getBodyType())) {
             listContent.setContentArray(null);
             List<MediaContentEntity> contentArray = contentEntity.getContentArray();
 
@@ -112,14 +116,14 @@ public class ContentHandleJobManager {
                     continue;
                 }
                 if (BodyTypeEnums.URL.getType().equals(media.getBodyType())) {
-                    intro = media.getText();
-                    listContent.setUrl(media.getUrl());
+
+                    listContent.setDirectUrl(media.getUrl());
                     continue;
                 }
                 if ((BodyTypeEnums.VOICE.getType().equals(media.getBodyType())
-                    || BodyTypeEnums.PIC.getType().equals(media.getBodyType())
-                    || BodyTypeEnums.VIDEO.getType().equals(media.getBodyType())
-                    )  && StringUtils.isEmpty(url)) {
+                        || BodyTypeEnums.PIC.getType().equals(media.getBodyType())
+                        || BodyTypeEnums.VIDEO.getType().equals(media.getBodyType())
+                ) && StringUtils.isEmpty(url)) {
                     url = media.getUrl();
                     mediaBodyType = media.getBodyType();
                     listContent.setUrl(url);
@@ -151,7 +155,7 @@ public class ContentHandleJobManager {
             if (byteLen < (limitLength + limitLength / 4)) {
                 introText = intro.substring(0, limitLength + limitLength / 2);
             } else if (byteLen < (limitLength + limitLength / 2)) {
-                introText = intro.substring(0, limitLength +limitLength / 4);
+                introText = intro.substring(0, limitLength + limitLength / 4);
             }
             return introText;
         }
@@ -159,16 +163,17 @@ public class ContentHandleJobManager {
 
     /**
      * 解析成详情内容
+     *
      * @return
      */
     protected ContentEntity parseContent(String publisherId, String contentId, Integer bodyType, String content) {
         JSONObject jsonObject = JSON.parseObject(content);
         bodyType = guessBodyType(bodyType, jsonObject);
         if (BodyTypeEnums.CARD.getType().equals(bodyType) ||
-                BodyTypeEnums.MAP.getType().equals(bodyType)||
-                BodyTypeEnums.SHARE.getType().equals(bodyType)||
-                BodyTypeEnums.SYSTEM.getType().equals(bodyType)||
-                BodyTypeEnums.MAIL.getType().equals(bodyType)||
+                BodyTypeEnums.MAP.getType().equals(bodyType) ||
+                BodyTypeEnums.SHARE.getType().equals(bodyType) ||
+                BodyTypeEnums.SYSTEM.getType().equals(bodyType) ||
+                BodyTypeEnums.MAIL.getType().equals(bodyType) ||
                 BodyTypeEnums.OP.getType().equals(bodyType)) {
             //不支持以上类型
             return null;
@@ -195,14 +200,14 @@ public class ContentHandleJobManager {
             //解析eml文件 暂不处理
 
 
-        } else  if (BodyTypeEnums.COMPOSE.getType().equals(bodyType)) {
+        } else if (BodyTypeEnums.COMPOSE.getType().equals(bodyType)) {
             allContent.setContentArray(new ArrayList<>());
 
             JSONArray contentArray = jsonObject.getJSONArray("dynamicContentArray");
 
             int contentCount = 0;
-            for (Iterator<Object> ite = contentArray.iterator(); ite.hasNext();) {
-                JSONObject dynamicContentJson = (JSONObject)ite.next();
+            for (Iterator<Object> ite = contentArray.iterator(); ite.hasNext(); ) {
+                JSONObject dynamicContentJson = (JSONObject) ite.next();
                 int aBodyType = dynamicContentJson.getInteger("bodyType");
                 MediaContentEntity subContent = dynamicContentJson.getJSONObject("bodyContent").toJavaObject(MediaContentEntity.class);
                 subContent.setBodyType(aBodyType);
@@ -230,7 +235,7 @@ public class ContentHandleJobManager {
 
     }
 
-    private FileManager.DownloadResult download(String url, String pwd , String relativePath, String fileName) {
+    private FileManager.DownloadResult download(String url, String pwd, String relativePath, String fileName) {
         if (false) {
             return new FileManager.DownloadResult(null, null);
         }
@@ -242,6 +247,7 @@ public class ContentHandleJobManager {
 
     /**
      * 根据content猜测bodyType，从字段是否存在和字段内容
+     *
      * @param bodyType
      * @param jsonObject
      * @return
@@ -253,25 +259,25 @@ public class ContentHandleJobManager {
 
         if (jsonObject.get("text") != null) {
             return BodyTypeEnums.TEXT.getType();
-        } else if ("application/eml".equals(jsonObject.get("format"))){
+        } else if ("application/eml".equals(jsonObject.get("format"))) {
             return BodyTypeEnums.MAIL.getType();
-        } else if (jsonObject.get("dynamicContentArray") != null){
+        } else if (jsonObject.get("dynamicContentArray") != null) {
             return BodyTypeEnums.COMPOSE.getType();
         } else if ("singleVideoAudio".equals(jsonObject.get("type"))) {
             return BodyTypeEnums.OP.getType();
-        } else if (jsonObject.get("lat") != null){
+        } else if (jsonObject.get("lat") != null) {
             return BodyTypeEnums.MAP.getType();
-        } else if (jsonObject.get("feedId") != null){
+        } else if (jsonObject.get("feedId") != null) {
             return BodyTypeEnums.CARD.getType();
-        } else if (jsonObject.get("desc") != null){
+        } else if (jsonObject.get("desc") != null) {
             return BodyTypeEnums.FILE.getType();
-        } else if (jsonObject.get("time") != null && jsonObject.get("url") != null && jsonObject.get("w") == null){
+        } else if (jsonObject.get("time") != null && jsonObject.get("url") != null && jsonObject.get("w") == null) {
             return BodyTypeEnums.VOICE.getType();
         } else if (".mp4".equals(jsonObject.get("suffix")) ||
-                (jsonObject.get("time") != null && jsonObject.get("url") != null && jsonObject.get("w") != null)){
+                (jsonObject.get("time") != null && jsonObject.get("url") != null && jsonObject.get("w") != null)) {
             return BodyTypeEnums.VIDEO.getType();
-        } else if (".png".equals(jsonObject.get("suffix")) || ".jpeg".equals(jsonObject.get("suffix"))  || ".jpg".equals(jsonObject.get("suffix")) ||
-                (jsonObject.get("time") == null && jsonObject.get("url") != null && jsonObject.get("w") != null)){
+        } else if (".png".equals(jsonObject.get("suffix")) || ".jpeg".equals(jsonObject.get("suffix")) || ".jpg".equals(jsonObject.get("suffix")) ||
+                (jsonObject.get("time") == null && jsonObject.get("url") != null && jsonObject.get("w") != null)) {
             return BodyTypeEnums.PIC.getType();
         }
 

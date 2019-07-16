@@ -1,15 +1,26 @@
 package com.syswin.pipeline.service;
 
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.syswin.pipeline.app.dto.SendComplexInfoParam;
 import com.syswin.pipeline.db.model.ReCommendContent;
 import com.syswin.pipeline.db.repository.ReCommendContentRepository;
+import com.syswin.pipeline.enums.BodyTypeEnums;
 import com.syswin.pipeline.manage.dto.output.ContentOutput;
+import com.syswin.pipeline.service.content.ContentHandleJobManager;
+import com.syswin.pipeline.service.content.entity.ContentEntity;
+import com.syswin.pipeline.service.content.entity.MediaContentEntity;
+import com.syswin.pipeline.utils.JacksonJsonUtil;
+import com.syswin.pipeline.utils.StringUtil;
 import com.syswin.pipeline.utils.StringUtils;
 import com.syswin.sub.api.ContentOutService;
 import com.syswin.sub.api.db.model.Content;
 import com.syswin.sub.api.db.model.ContentOut;
+import com.syswin.sub.api.db.model.ContentOutExample;
 import com.syswin.sub.api.db.model.Publisher;
+import com.syswin.sub.api.db.repository.ContentOutRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -24,64 +35,94 @@ import java.util.stream.Collectors;
 @Service
 public class PiperContentService {
 
-	@Value("${url.piper}")
-	private String URL_PIPER;
-	@Autowired
-	private ContentOutService contentOutService;
-	@Autowired
-	private com.syswin.sub.api.ContentService subContentService;
+    @Value("${url.piper}")
+    private String URL_PIPER;
+    @Autowired
+    private ContentOutService contentOutService;
+    @Autowired
+    private com.syswin.sub.api.ContentService subContentService;
 
-	@Autowired
-	private ReCommendContentRepository reCommendContentRepository;
+    @Autowired
+    private ReCommendContentRepository reCommendContentRepository;
 
-	public PageInfo listManage(String publisherId, String hasRecommend, Integer pageNo, Integer pageSize) {
+    public PageInfo listManage(String publisherId, String hasRecommend, Integer pageNo, Integer pageSize) {
 
-		PageInfo pageInfo = contentOutService.listByPublisherId(publisherId, pageNo, pageSize);
-		List<ContentOut> contentOuts = pageInfo.getList();
-		List<ContentOutput> outputs = new ArrayList<>();
-		List<String> cids = contentOuts.stream().map(r -> r.getContentId()).collect(Collectors.toList());
-		List<ReCommendContent> reCommendContents = null;
-		if (cids.size() > 0) {
-			reCommendContents = reCommendContentRepository.selectByContentIds(cids);
-		}
-		for (ContentOut contentOut : contentOuts) {
-			String url = URL_PIPER + "/web/recommend-details?contentId=" + contentOut.getContentId() + "&publisherId=" + contentOut.getPublisherId() + "&userId=luohongzhou1@syswim.com";
+        PageInfo pageInfo = contentOutService.listByPublisherId(publisherId, pageNo, pageSize);
+        List<ContentOut> contentOuts = pageInfo.getList();
+        List<ContentOutput> outputs = new ArrayList<>();
+        List<String> cids = contentOuts.stream().map(r -> r.getContentId()).collect(Collectors.toList());
+        List<ReCommendContent> reCommendContents = null;
+        if (cids.size() > 0) {
+            reCommendContents = reCommendContentRepository.selectByContentIds(cids);
+        }
+        for (ContentOut contentOut : contentOuts) {
+            String url = URL_PIPER + "/web/recommend-details?contentId=" + contentOut.getContentId() + "&publisherId=" + contentOut.getPublisherId() + "&userId=luohongzhou1@syswim.com";
 
-			ContentOutput output = new ContentOutput();
-			output.setContentId(contentOut.getContentId());
-			output.setCreateTime(String.valueOf(contentOut.getCreateTime()));
-			output.setListdesc(contentOut.getListdesc());
-			//Todo 此处要修改为H5 链接
-			output.setDecUrl(url);
-			output.setPublisherId(contentOut.getPublisherId());
-			if (reCommendContents != null) {
-				for (ReCommendContent rcd : reCommendContents) {
+            ContentOutput output = new ContentOutput();
+            output.setContentId(contentOut.getContentId());
+            output.setCreateTime(String.valueOf(contentOut.getCreateTime()));
+            output.setListdesc(contentOut.getListdesc());
+            //Todo 此处要修改为H5 链接
+            output.setDecUrl(url);
+            output.setPublisherId(contentOut.getPublisherId());
+            if (reCommendContents != null) {
+                for (ReCommendContent rcd : reCommendContents) {
 
-					if (rcd.getContentId().equals(contentOut.getContentId())) {
-						output.setHasRecommend("1");
-					}
-				}
-			}
-			//如果查询的不是推荐的，全部加入
-			if (StringUtils.isNullOrEmpty(hasRecommend)) {
-				outputs.add(output);
-			} else {
-				//查询条件过滤
-				if (output.getHasRecommend().equals(hasRecommend)) {
-					outputs.add(output);
-				}
-			}
-		}
-		pageInfo.setList(outputs);
-		return pageInfo;
-	}
+                    if (rcd.getContentId().equals(contentOut.getContentId())) {
+                        output.setHasRecommend("1");
+                    }
+                }
+            }
+            //如果查询的不是推荐的，全部加入
+            if (StringUtils.isNullOrEmpty(hasRecommend)) {
+                outputs.add(output);
+            } else {
+                //查询条件过滤
+                if (output.getHasRecommend().equals(hasRecommend)) {
+                    outputs.add(output);
+                }
+            }
+        }
+        pageInfo.setList(outputs);
+        return pageInfo;
+    }
 
-	public void delete(String contentId) {
+    @Autowired
+    private ContentOutRepository contentOutRepository;
+    @Autowired
+    private ContentHandleJobManager contentHandleJobManager;
 
-		subContentService.removeContent(contentId);
-	}
 
-	public void active(String contentId) {
-		subContentService.activeContent(contentId);
-	}
+    public void updateContentEntity(String publiserId) {
+
+        ContentOutExample contentExample = new ContentOutExample();
+        ContentOutExample.Criteria criteria = contentExample.createCriteria();
+        criteria.andPublisherIdEqualTo(publiserId);
+        List<ContentOut> contentOuts = this.contentOutRepository.selectByExample(contentExample);
+
+        contentOuts.stream().forEach((out) -> {
+            ContentEntity entity = JSONObject.parseObject(out.getAllcontent(), new TypeReference<ContentEntity>() {
+            });
+            ContentEntity listEntity = contentHandleJobManager.parseListContent(entity);
+
+            if (!StringUtil.isEmpty(listEntity.getDirectUrl())) {
+                entity.setDirectUrl(listEntity.getDirectUrl());
+            }
+            out.setListdesc(JacksonJsonUtil.toJson(listEntity));
+            out.setAllcontent(JacksonJsonUtil.toJson(entity));
+            this.contentOutRepository.updateByPrimaryKeySelective(out);
+        });
+
+
+    }
+
+
+    public void delete(String contentId) {
+
+        subContentService.removeContent(contentId);
+    }
+
+    public void active(String contentId) {
+        subContentService.activeContent(contentId);
+    }
 }
