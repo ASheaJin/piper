@@ -289,7 +289,7 @@ public class MessegerSenderService extends AbstractMsgSender {
             imgUrl = url;
         }
         sessionExtData.setAvatarHost(imgUrl);
-        sessionExtData.setContactType(5);
+        sessionExtData.setContactType(4);
         extraData.setSessionExtData(FastJsonUtil.toJson(sessionExtData));
 
         header.setExtraData(FastJsonUtil.toJson(extraData));
