@@ -75,11 +75,13 @@ public class PiperSubscriptionService {
 
         try {
             //判断是否自己订阅自己
-            if (userId.equals(publisher.getUserId())) {
-                messegerSenderService.sendCard(publisher.getPtemail(), userId, "* " + publisher.getName());
-            } else {
-                messegerSenderService.sendCard(publisher.getPtemail(), userId, publisher.getName());
-            }
+//            if (userId.equals(publisher.getUserId())) {
+//                messegerSenderService.sendCard(publisher.getPtemail(), userId, "* " + publisher.getName());
+//            } else {
+//                messegerSenderService.sendCard(publisher.getPtemail(), userId, publisher.getName());
+//            }
+            messegerSenderService.sendCard(publisher.getPtemail(), userId, publisher.getName());
+
             //给创建者发个消息
             messegerSenderService.sendSynchronizationTxt(publisher.getPtemail(), publisher.getUserId(), languageChange.getLangByUserId("msg.submotice", new String[]{userId}, publisher.getUserId()));
         } catch (Exception ex) {
@@ -288,11 +290,12 @@ public class PiperSubscriptionService {
         Subscription subscription = subscribeInner(userId, publishTemail);
 
         //判断是否自己订阅自己
-        if (userId.equals(publisher.getUserId())) {
-            messegerSenderService.sendCard(publisher.getPtemail(), userId, "* " + publisher.getName());
-        } else {
-            messegerSenderService.sendCard(publisher.getPtemail(), userId, publisher.getName());
-        }
+//        if (userId.equals(publisher.getUserId())) {
+//            messegerSenderService.sendCard(publisher.getPtemail(), userId, "* " + publisher.getName());
+//        } else {
+//            messegerSenderService.sendCard(publisher.getPtemail(), userId, publisher.getName());
+//        }
+        messegerSenderService.sendCard(publisher.getPtemail(), userId, publisher.getName());
 //		psClientService.sendTextMessage(publisher.getName() + "<" + publisher.getPtemail() + "> 订阅成功，作者即将推送文章", userId, 0);
         messegerSenderService.sendSynchronizationTxt(publisher.getPtemail(), userId, languageChange.getValueByUserId("msg.subsec", userId));
         //给创建者发个消息

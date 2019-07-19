@@ -23,11 +23,12 @@ public class PiperSendSubscriptionService {
     public void sendSub(String userId, Publisher publisher) {
 
         //判断是否自己订阅自己
-        if (userId.equals(publisher.getUserId())) {
-            messegerSenderService.sendCard(publisher.getPtemail(), userId, "* " + publisher.getName());
-        } else {
-            messegerSenderService.sendCard(publisher.getPtemail(), userId, publisher.getName());
-        }
+//        if (userId.equals(publisher.getUserId())) {
+//            messegerSenderService.sendCard(publisher.getPtemail(), userId, "* " + publisher.getName());
+//        } else {
+//            messegerSenderService.sendCard(publisher.getPtemail(), userId, publisher.getName());
+//        }
+        messegerSenderService.sendCard(publisher.getPtemail(), userId, publisher.getName());
 //			if (admin != null) {
 //				sendMessegeService.sendCard(publisher.getPtemail(), userId, "* " + publisher.getName());
 //			} else {

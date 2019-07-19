@@ -109,7 +109,7 @@ public class PiperPublisherService {
         messegerSenderService.sendSynchronizationTxt(from, userId, languageChange.getLangByUserId("msg.publisherhascreate", new String[]{name}, userId));
         messegerSenderService.sendSynchronizationTxt(from, userId, ptemail);
 
-        messegerSenderService.sendCard(ptemail, userId, "* " + name);
+        messegerSenderService.sendCard(ptemail, userId,  name);
         //注册了出版社后登陆下
         messegerSenderService.sendSynchronizationTxt(ptemail, userId, languageChange.getLangByUserId("msg.pcreatetip", new String[]{name}, userId));
 
@@ -240,7 +240,7 @@ public class PiperPublisherService {
                 messegerSenderService.sendCard(publisher.getPtemail(), curUserId, publisher.getName());
                 messegerSenderService.sendSynchronizationTxt(publisher.getPtemail(), curUserId, languageChange.getLangByUserId("msg.changetip", new String[]{changeUserId}, curUserId));
 
-                messegerSenderService.sendCard(publisher.getPtemail(), changeUserId, "* " + publisher.getName());
+                messegerSenderService.sendCard(publisher.getPtemail(), changeUserId,  publisher.getName());
                 messegerSenderService.sendSynchronizationTxt(publisher.getPtemail(), changeUserId, languageChange.getLangByUserId("msg.changetip", new String[]{changeUserId}, changeUserId));
             } catch (Exception ex) {
 

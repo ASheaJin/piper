@@ -142,11 +142,12 @@ public class PSClientController extends BaseController {
             }
             try {
                 //判断是否自己订阅自己
-                if (userId.equals(publisher.getUserId())) {
-                    messegerSenderService.sendCard(publisher.getPtemail(), userId, "* " + modify.getName(), modify.getIconUrl());
-                } else {
-                    messegerSenderService.sendCard(publisher.getPtemail(), userId, modify.getName(), modify.getIconUrl());
-                }
+//                if (userId.equals(publisher.getUserId())) {
+//                    messegerSenderService.sendCard(publisher.getPtemail(), userId, "* " + modify.getName(), modify.getIconUrl());
+//                } else {
+//                    messegerSenderService.sendCard(publisher.getPtemail(), userId, modify.getName(), modify.getIconUrl());
+//                }
+                messegerSenderService.sendCard(publisher.getPtemail(), userId, modify.getName(), modify.getIconUrl());
             } catch (Exception ex) {
             }
 

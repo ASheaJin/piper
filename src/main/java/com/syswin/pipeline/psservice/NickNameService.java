@@ -23,7 +23,6 @@ public class NickNameService implements INickNameService {
 
     @Override
     public String getNickName(String userId) {
-        MsgHeader header = PsClientKeeper.msgHeader();
 
         if (userId.equals(piper)) {
             return "Piper";
@@ -31,9 +30,6 @@ public class NickNameService implements INickNameService {
         Publisher p = publisherService.getPubLisherByPublishTmail(userId, null);
         if (p != null) {
 
-            if (header != null && header.getSender().equals(p.getUserId())) {
-                return "*" + p.getName();
-            }
             return p.getName();
         }
 
