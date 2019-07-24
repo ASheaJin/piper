@@ -6,8 +6,8 @@ import com.syswin.pipeline.enums.BodyTypeEnums;
 import com.syswin.pipeline.enums.PeriodEnums;
 import com.syswin.pipeline.enums.ShowTypeEnums;
 import com.syswin.pipeline.psservice.MessegerSenderService;
-import com.syswin.pipeline.service.PiperSubscriptionService;
 import com.syswin.pipeline.psservice.bussiness.PublisherSecService;
+import com.syswin.pipeline.service.censor.CensorService;
 import com.syswin.pipeline.service.content.ContentHandleJobManager;
 import com.syswin.pipeline.service.content.entity.ContentEntity;
 import com.syswin.pipeline.service.content.entity.MediaContentEntity;
@@ -26,12 +26,10 @@ import com.syswin.sub.api.SubscriptionService;
 import com.syswin.sub.api.db.model.*;
 import com.syswin.sub.api.enums.PublisherTypeEnums;
 import com.syswin.sub.api.utils.SnowflakeIdWorker;
-import com.syswin.temail.ps.client.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -88,6 +86,9 @@ public class PublisherSecServiceImpl implements PublisherSecService {
 
     @Autowired
     private ContentOutService contentOutService;
+
+    @Autowired
+    private CensorService censorService;
 
     private final static Logger logger = LoggerFactory.getLogger(PublisherSecServiceImpl.class);
     //过滤能用作发的
@@ -266,6 +267,10 @@ public class PublisherSecServiceImpl implements PublisherSecService {
         sendRecord.setSendnum(num);
         sendRecord.setUserId(publisher.getPtemail());
         subSendRecordService.addSendRecord(sendRecord);
+
+        //内容审核
+        censorService.sendContentCensor(content);
+
         return num;
     }
 
