@@ -113,7 +113,7 @@ public class CensorService {
         //判断重复
         CensorResultExample example = new CensorResultExample();
         CensorResultExample.Criteria criteria = example.createCriteria();
-        criteria.andObjIdEqualTo(objId);
+        criteria.andObjIdEqualTo(objId).andTypeEqualTo(type.getCode());
         long count = censorResultRepository.countByExample(example);
         if (count > 0) {
             return;
@@ -131,7 +131,7 @@ public class CensorService {
 
             CensorResult po = new CensorResult();
             po.setObjId(objId);
-            po.setType(CensorType.Content.getCode());
+            po.setType(type.getCode());
             po.setLabel(responseResult.getL());
             po.setScore(new BigDecimal(responseResult.getS()));
             po.setCreateTime(start);
