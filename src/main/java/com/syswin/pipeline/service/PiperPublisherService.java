@@ -6,6 +6,8 @@ import com.syswin.pipeline.manage.dto.output.PublisherManageVO;
 import com.syswin.pipeline.psservice.APPPublisherService;
 import com.syswin.pipeline.psservice.MessegerSenderService;
 import com.syswin.pipeline.psservice.UpdateMenuService;
+import com.syswin.pipeline.service.censor.CensorService;
+import com.syswin.pipeline.service.censor.CensorType;
 import com.syswin.pipeline.service.exception.BusinessException;
 import com.syswin.pipeline.utils.*;
 import com.syswin.sub.api.AdminService;
@@ -63,6 +65,9 @@ public class PiperPublisherService {
     @Autowired
     private PublisherService subPublisherService;
 
+    @Autowired
+    private CensorService censorService;
+
     @Value("${domain.promission}")
     private String domain;
 
@@ -112,6 +117,10 @@ public class PiperPublisherService {
         messegerSenderService.sendCard(ptemail, userId,  name);
         //注册了出版社后登陆下
         messegerSenderService.sendSynchronizationTxt(ptemail, userId, languageChange.getLangByUserId("msg.pcreatetip", new String[]{name}, userId));
+
+
+        //内容审核
+        censorService.sendCensor(publisher.getPublisherId(), CensorType.Publisher, publisher.getName());
 
         return publisher;
     }
