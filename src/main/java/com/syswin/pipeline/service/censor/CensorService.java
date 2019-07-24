@@ -46,6 +46,10 @@ public class CensorService {
     private CensorResultRepository censorResultRepository;
 
     public void sendContentCensor(String contentId) {
+        if (!enable()) {
+            return;
+        }
+
         List<Content> contents = subContentService.getContentsByCids(Lists.newArrayList(contentId));
         if (!contents.isEmpty()) {
             this.sendContentCensor(contents.get(0));
@@ -54,6 +58,9 @@ public class CensorService {
 
     @Async("censorThreadPool")
     public void sendContentCensor(Content content) {
+        if (!enable()) {
+            return;
+        }
         StringBuffer censorTxt = new StringBuffer();
         Integer bodyType = content.getBodyType();
 
@@ -110,6 +117,9 @@ public class CensorService {
 
     @Async("censorThreadPool")
     public void sendCensor(String objId, CensorType type, String content) {
+        if (!enable()) {
+            return;
+        }
         //判断重复
         CensorResultExample example = new CensorResultExample();
         CensorResultExample.Criteria criteria = example.createCriteria();
@@ -141,5 +151,13 @@ public class CensorService {
             logger.error("内容送审核时发生异常：{}", req);
             logger.error(e.getMessage(), e);
         }
+    }
+
+    /**
+     * 判断配置文件中的url.censor是否为空，如果空则不调内容审核
+     * @return
+     */
+    private boolean enable() {
+        return !StringUtils.isEmpty(censorUrl);
     }
 }
