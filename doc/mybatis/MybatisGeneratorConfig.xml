@@ -14,31 +14,15 @@
         <javaModelGenerator  targetPackage="com.syswin.pipeline.db.model" targetProject="src">
             <property name="enableSubPackages" value="true" />
         </javaModelGenerator>
-        <sqlMapGenerator  targetPackage="com.syswin.pipeline.db.respository" targetProject="src">
+        <sqlMapGenerator  targetPackage="com.syswin.pipeline.db.repository" targetProject="src">
             <property name="enableSubPackages" value="true" />
         </sqlMapGenerator>
-        <javaClientGenerator type="XMLMAPPER" targetPackage="com.syswin.pipeline.db.mapper"  targetProject="src">
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.syswin.pipeline.db.repository"  targetProject="src">
             <property name="enableSubPackages" value="true" />
         </javaClientGenerator>
-        <table schema="pipeline" tableName="device_info" domainObjectName="DeviceInfo"
+        <table schema="pipeline" tableName="censor_result" domainObjectName="CensorResult"
                enableCountByExample="true"
                enableDeleteByExample="false" enableSelectByExample="true"
-               selectByExampleQueryId="true"></table>
-        <table schema="pipeline" tableName="sys_role_menu" domainObjectName="RoleMenu"
-               enableCountByExample="false"
-               enableDeleteByExample="false" enableSelectByExample="true"
-               selectByExampleQueryId="true"></table>
-        <table schema="pipeline" tableName="sys_user" domainObjectName="User"
-               enableCountByExample="true"
-               enableDeleteByExample="false" enableSelectByExample="true"
-               selectByExampleQueryId="true"></table>
-        <table schema="pipeline" tableName="sys_user_role" domainObjectName="UserRole"
-               enableCountByExample="false"
-               enableDeleteByExample="false" enableSelectByExample="true"
-               selectByExampleQueryId="true"></table>
-        <table schema="pipeline" tableName="sys_menu" domainObjectName="Menu"
-               enableCountByExample="true"
-               enableDeleteByExample="false" enableSelectByExample="true"
-               selectByExampleQueryId="true"></table>
+               selectByExampleQueryId="false"></table>
     </context>
 </generatorConfiguration>
