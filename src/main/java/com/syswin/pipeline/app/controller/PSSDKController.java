@@ -1,16 +1,15 @@
 package com.syswin.pipeline.app.controller;
 
+import com.syswin.pipeline.app.dto.PubliserIdListParam;
 import com.syswin.pipeline.psservice.APPPublisherService;
 import com.syswin.pipeline.psservice.MessegerSenderService;
 import com.syswin.pipeline.psservice.UpdateMenuService;
+import com.syswin.pipeline.service.censor.CensorService;
 import com.syswin.ps.sdk.admin.controller.in.AccountIn;
 import com.syswin.ps.sdk.admin.service.impl.PSAccountService;
-import com.syswin.ps.sdk.admin.service.impl.PSConfigService;
-import com.syswin.ps.sdk.common.ActionItem;
-import com.syswin.ps.sdk.handler.PsClientKeeper;
-import com.syswin.ps.sdk.sender.AbstractMsgSender;
-import com.syswin.ps.sdk.showType.TextShow;
+import com.syswin.sub.api.ContentService;
 import com.syswin.sub.api.PublisherService;
+import com.syswin.sub.api.db.model.Content;
 import com.syswin.sub.api.db.model.Publisher;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -21,11 +20,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Created by 115477 on 2018/12/18.
@@ -50,6 +46,11 @@ public class PSSDKController extends BaseController {
 
     @Autowired
     private UpdateMenuService updateMenuService;
+
+    @Autowired
+    private ContentService contentService;
+    @Autowired
+    private CensorService censorService;
 
     @Value("${app.ps-app-sdk.user-id}")
     private String piper;
@@ -152,5 +153,28 @@ public class PSSDKController extends BaseController {
                 logger.error("publisher" + p.getPtemail() + "菜单创建失败", e);
             }
         }
+    }
+
+
+    @PostMapping({"/censor"})
+    @ApiOperation(
+            value = "内容审核"
+    )
+    public void censor(@RequestParam String contentId) {
+        censorService.sendContentCensor(contentId);
+    }
+
+
+    @PostMapping({"/censorPublisher"})
+    @ApiOperation(
+            value = "内容审核，对出版社"
+    )
+    public void censorPublisher(@RequestBody PubliserIdListParam param) {
+        param.getPubliserIds().stream().forEach(pid -> {
+            List<Content> contentList = contentService.getMyContentsbyPid(pid, 1, 10000);
+            contentList.stream().forEach(c -> {
+                censorService.sendContentCensor(c);
+            });
+        });
     }
 }
