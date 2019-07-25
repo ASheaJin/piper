@@ -315,7 +315,7 @@ public class PiperSubscriptionService {
         if (publisher == null) {
             publisher = subPublisherService.getPubLisherById(publishTemail);
             if (publisher == null) {
-                logger.error("publishTemail{},userId{userId} 订阅失败", publishTemail, userId);
+                logger.error("publishTemail={},userId={} 订阅失败", publishTemail, userId);
                 throw new BusinessException("ex.publisher.null");
             }
         }
@@ -325,7 +325,7 @@ public class PiperSubscriptionService {
         }
 
         if (publisher.getPtype().equals(PublisherTypeEnums.organize)) {
-            logger.error("publishTemail{},userId{userId} 订阅失败", publishTemail, userId);
+            logger.error("publishTemail={},userId={} 订阅失败", publishTemail, userId);
             throw new BusinessException("msg.nopermission");
         }
         Subscription subscription = subSubscriptionService.subscribe(userId, publisher.getPublisherId());
