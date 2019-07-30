@@ -54,7 +54,7 @@ public class MenuConfigService implements IMenuConfigService {
         MsgHeader msgHeader = PsClientKeeper.msgHeader();
         //根据访问者的权限配置菜单 msgHeader 里面有用户的 信息
         List<String> menus = menu(msgHeader, accountNo);
-        logger.debug("获取菜单：sender:{},receive:{},platformInfo:{},menus:{}", msgHeader.getSender(), msgHeader.getReceiver(), msgHeader.getPlatformInfo(), menus.toString());
+        logger.info("获取菜单：sender:{},receive:{},platformInfo:{},menus:{}", msgHeader.getSender(), msgHeader.getReceiver(), msgHeader.getPlatformInfo(), menus.toString());
         return menus;
 
     }
