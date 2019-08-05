@@ -169,13 +169,12 @@ public class PiperPublisherController {
         for (String tmail : listString) {
             if (!PatternUtils.orEmail(tmail)) {
                 error = tmail + " , " + error;
-                listString.remove(tmail);
             }
 
         }
-//        if (!StringUtils.isNullOrEmpty(error)) {
-//            return new ResponseEntity("500", languageChange.getLangByStr("ex.email.invalid", request.getHeader("lang")));
-//        }
+        if (!StringUtils.isNullOrEmpty(error)) {
+            return new ResponseEntity("500", languageChange.getLangByStr("ex.email.invalid", request.getHeader("lang")));
+        }
         if (listString.size() == 0) {
             throw new BusinessException("ex.userid.null");
         }
