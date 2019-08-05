@@ -35,190 +35,217 @@ import java.util.List;
 @Api(value = "publish", tags = "publish")
 public class PiperPublisherController {
 
-	private static final Logger logger = LoggerFactory.getLogger(PiperPublisherController.class);
+    private static final Logger logger = LoggerFactory.getLogger(PiperPublisherController.class);
 
-	@Autowired
-	private TokenGenerator tokenGenerator;
+    @Autowired
+    private TokenGenerator tokenGenerator;
 
-	@Autowired
-	AdminService adminService;
+    @Autowired
+    AdminService adminService;
 
-	@Autowired
-	PiperPublisherService publisherService;
-	@Autowired
-	PiperSubscriptionService subscriptionService;
+    @Autowired
+    PiperPublisherService publisherService;
+    @Autowired
+    PiperSubscriptionService subscriptionService;
 
-	@Autowired
-	LanguageChange languageChange;
+    @Autowired
+    LanguageChange languageChange;
 
-	@Value("${server.tomcat.basedir}")
-	public String basedir;
+    @Value("${server.tomcat.basedir}")
+    public String basedir;
 
-	@PostMapping("/create")
-	@ApiOperation(
-					value = "创建个人/京交会出版社"
-	)
-	public ResponseEntity create(@RequestBody CreatePublisherParam createPublisher) {
+    @PostMapping("/create")
+    @ApiOperation(
+            value = "创建个人/京交会出版社"
+    )
+    public ResponseEntity create(@RequestBody CreatePublisherParam createPublisher) {
 
-		String hasCreate = CreateCacheUtil.get("create_" + createPublisher.getUserId());
-		if (StringUtils.isNullOrEmpty(hasCreate)) {
-			CreateCacheUtil.put("create_" + createPublisher.getUserId(), "1");
-		} else {
-			throw new BusinessException("ex.publisher.creating");
-		}
-		if (PublisherTypeEnums.ciftis.equals(createPublisher.getPtype())) {
-			adminService.add(null, createPublisher.getUserId(), PublisherTypeEnums.ciftis);
-		}
+        String hasCreate = CreateCacheUtil.get("create_" + createPublisher.getUserId());
+        if (StringUtils.isNullOrEmpty(hasCreate)) {
+            CreateCacheUtil.put("create_" + createPublisher.getUserId(), "1");
+        } else {
+            throw new BusinessException("ex.publisher.creating");
+        }
+        if (PublisherTypeEnums.ciftis.equals(createPublisher.getPtype())) {
+            adminService.add(null, createPublisher.getUserId(), PublisherTypeEnums.ciftis);
+        }
 
-		Publisher publisher = publisherService.addPublisher(createPublisher.getUserId(), createPublisher.getName(), null, createPublisher.getPtype() == null ? 0 : createPublisher.getPtype());
-		//回执创建完成消息
-		return new ResponseEntity(publisher);
+        Publisher publisher = publisherService.addPublisher(createPublisher.getUserId(), createPublisher.getName(), null, createPublisher.getPtype() == null ? 0 : createPublisher.getPtype());
+        //回执创建完成消息
+        return new ResponseEntity(publisher);
 
-	}
+    }
 
-	@PostMapping("/createOrg")
-	@ApiOperation(
-					value = "创建组织出版社"
-	)
-	public ResponseEntity createOrg(@RequestBody CreateOrgPublisher createPublisher) {
-		adminService.add(null, createPublisher.getUserId(), PublisherTypeEnums.organize);
-		Publisher publisher = publisherService.addPublisher(createPublisher.getUserId(), createPublisher.getName(), null, 2);
-		//回执创建完成消息
-		return new ResponseEntity(publisher);
+    @PostMapping("/createOrg")
+    @ApiOperation(
+            value = "创建组织出版社"
+    )
+    public ResponseEntity createOrg(@RequestBody CreateOrgPublisher createPublisher) {
+        adminService.add(null, createPublisher.getUserId(), PublisherTypeEnums.organize);
+        Publisher publisher = publisherService.addPublisher(createPublisher.getUserId(), createPublisher.getName(), null, 2);
+        //回执创建完成消息
+        return new ResponseEntity(publisher);
 
-	}
+    }
 
-	@PostMapping("/deleteOrg")
-	@ApiOperation(
-					value = "删除组织出版社"
-	)
-	public ResponseEntity deleteOrg(@RequestBody DeleteParam unSubParam) {
+    @PostMapping("/deleteOrg")
+    @ApiOperation(
+            value = "删除组织出版社"
+    )
+    public ResponseEntity deleteOrg(@RequestBody DeleteParam unSubParam) {
 
-		publisherService.delete(unSubParam.getPublisherId());
+        publisherService.delete(unSubParam.getPublisherId());
 
-		//回执删除消息
-		return new ResponseEntity();
-
-
-	}
-
-	//订阅出版社
-	//1、获取该用户与该出版社的关系（已订阅、未订阅）
-	//2、处理订阅出版社的指令
-	//3、返回处理结果
-	@PostMapping("/subscribe")
-	@ApiOperation(
-					value = "订阅提交"
-	)
-	public ResponseEntity subscribe(@RequestBody SubParam sub) {
-
-		Subscription s = subscriptionService.subscribeNOOrg(sub.getUserId(), sub.getPublishTemail());
-		return new ResponseEntity(s);
-	}
+        //回执删除消息
+        return new ResponseEntity();
 
 
-	@PostMapping("/subscribebyOrgList")
-	@ApiOperation(
-					value = "批量组织名称订阅组织号"
-	)
-	public ResponseEntity subscribebyOrgList(@RequestBody SubOrgListParam subList) {
-		List<String> sendList = subscriptionService.subscribeOrgList(subList.getUserIdList(), subList.getPublisherId(), subList.getPublishTemail());
-		return new ResponseEntity(sendList);
+    }
 
-	}
+    //订阅出版社
+    //1、获取该用户与该出版社的关系（已订阅、未订阅）
+    //2、处理订阅出版社的指令
+    //3、返回处理结果
+    @PostMapping("/subscribe")
+    @ApiOperation(
+            value = "订阅提交"
+    )
+    public ResponseEntity subscribe(@RequestBody SubParam sub) {
 
-	@PostMapping("/uploadExcel")
-	@ApiOperation(
-					value = "Excel批量上传订阅组织出版社"
-	)
-	public ResponseEntity uploadExcel(HttpServletRequest request, @RequestParam MultipartFile file) {
-
-		String[] param = tokenGenerator.getIdsByToken(request.getParameter("t"));
-		if (param == null) {
-			throw new BusinessException("ex.tokenInvalid");
-		}
-		List<String> listString = ExcelUtil.getExcelData(file, param[0], basedir);
-		String error = "";
-		for (String tmail : listString) {
-			if (!PatternUtils.orEmail(tmail)) {
-				error = tmail + " , " + error;
-			}
-		}
-		if (!StringUtils.isNullOrEmpty(error)) {
-			return new ResponseEntity("500", languageChange.getLangByStr("ex.email.invalid", request.getHeader("lang")));
-		}
-		if (listString.size() == 0) {
-			throw new BusinessException("ex.userid.null");
-		}
-		List<String> sendList = subscriptionService.subscribeList(listString, param[0], param[1]);
+        Subscription s = subscriptionService.subscribeNOOrg(sub.getUserId(), sub.getPublishTemail());
+        return new ResponseEntity(s);
+    }
 
 
-		return new ResponseEntity(sendList);
-	}
+    @PostMapping("/subscribebyOrgList")
+    @ApiOperation(
+            value = "批量组织名称订阅组织号"
+    )
+    public ResponseEntity subscribebyOrgList(@RequestBody SubOrgListParam subList) {
+        List<String> sendList = subscriptionService.subscribeOrgList(subList.getUserIdList(), subList.getPublisherId(), subList.getPublishTemail());
+        return new ResponseEntity(sendList);
+
+    }
+
+    @PostMapping("/uploadExcel")
+    @ApiOperation(
+            value = "Excel批量上传订阅组织出版社"
+    )
+    public ResponseEntity uploadExcel(HttpServletRequest request, @RequestParam MultipartFile file) {
+
+        String[] param = tokenGenerator.getIdsByToken(request.getParameter("t"));
+        if (param == null) {
+            throw new BusinessException("ex.tokenInvalid");
+        }
+        List<String> listString = ExcelUtil.getExcelData(file, param[0], basedir);
+        String error = "";
+        for (String tmail : listString) {
+            if (!PatternUtils.orEmail(tmail)) {
+                error = tmail + " , " + error;
+            }
+        }
+        if (!StringUtils.isNullOrEmpty(error)) {
+            return new ResponseEntity("500", languageChange.getLangByStr("ex.email.invalid", request.getHeader("lang")));
+        }
+        if (listString.size() == 0) {
+            throw new BusinessException("ex.userid.null");
+        }
+        List<String> sendList = subscriptionService.subscribeList(listString, param[0], param[1]);
 
 
-	@PostMapping("/subscribeByList")
-	@ApiOperation(
-					value = "通过UserId订阅组织号"
-	)
-	public ResponseEntity subscribeByList(@RequestBody SubUserListParam subUserList) {
+        return new ResponseEntity(sendList);
+    }
 
-		List<String> sendList = subscriptionService.subscribeOrgList(subUserList.getTmails(), subUserList.getPublisherId(), subUserList.getUserId());
-		return new ResponseEntity(sendList);
 
-	}
+    @PostMapping("/uploadExcelByPublisherId")
+    @ApiOperation(
+            value = "Excel批量上传订阅号"
+    )
+    public ResponseEntity uploadExcelByPublisherId(HttpServletRequest request, @RequestParam MultipartFile file, String publisherId, String userId) {
 
-	//取消订阅出版社
-	//1、获取该用户与该出版社的关系（已订阅、未订阅）
-	//2、处理取消订阅出版社的指令
-	//3、返回处理结果
-	@PostMapping("/unsubscribe")
-	@ApiOperation(
-					value = "取消订阅"
-	)
-	public ResponseEntity unsubscribe(@RequestBody DeleteParam unSub) {
-		subscriptionService.unsubscribe(unSub.getUserId(), unSub.getPublisherId());
 
-		return new ResponseEntity();
-	}
+        List<String> listString = ExcelUtil.getExcelData(file, publisherId, basedir);
+        String error = "";
+        for (String tmail : listString) {
+            if (!PatternUtils.orEmail(tmail)) {
+                error = tmail + " , " + error;
+            }
+        }
+        if (!StringUtils.isNullOrEmpty(error)) {
+            return new ResponseEntity("500", languageChange.getLangByStr("ex.email.invalid", request.getHeader("lang")));
+        }
+        if (listString.size() == 0) {
+            throw new BusinessException("ex.userid.null");
+        }
+        List<String> sendList = subscriptionService.subscribeList(listString, publisherId, userId);
 
-	@PostMapping("/unOrgsubscribe")
-	@ApiOperation(
-					value = "取消组织订阅"
-	)
-	public ResponseEntity unOrgsubscribe(@RequestBody UnSubOrgParam unSubOrg) {
-		subscriptionService.unsubscribeByOwnerId(unSubOrg.getSubTmail(), unSubOrg.getUserId(), unSubOrg.getPublisherId(), PublisherTypeEnums.organize);
-		return new ResponseEntity();
 
-	}
+        return new ResponseEntity(sendList);
+    }
 
-	@PostMapping("/getMyPublisher")
-	@ApiOperation(
-					value = "获得我的个人出版社"
-	)
-	public ResponseEntity getMyPublisher(@RequestBody UserIdParam userIdParam) {
-		PublisherVO publisher = publisherService.getPubLisherByuserId(userIdParam.getUserId());
-		return new ResponseEntity(publisher);
-	}
 
-	@PostMapping("/changeOrgPublishUser")
-	@ApiOperation(
-					value = "修改出版社管理员"
-	)
-	public ResponseEntity changeOrgPublishUser(@RequestBody ChangeParam cp) {
-		publisherService.changeOrgPublishUser(cp.getPublishId(), cp.getCurUserId(), cp.getChangeUserId());
-		return new ResponseEntity();
-	}
+    @PostMapping("/subscribeByList")
+    @ApiOperation(
+            value = "通过UserId订阅组织号"
+    )
+    public ResponseEntity subscribeByList(@RequestBody SubUserListParam subUserList) {
 
-	@PostMapping("/getMyOrgPublisher")
-	@ApiOperation(
-					value = "获得我创建的组织出版社"
-	)
-	public ResponseEntity getMyOrgPublisher(@RequestBody SearchParam searchParam) {
-		int pageno = StringUtils.getInteger(searchParam.getPageNo()) == 0 ? 1 : StringUtils.getInteger(searchParam.getPageNo());
-		int pagesize = StringUtils.getInteger(searchParam.getPageSize()) == 0 ? 20 : StringUtils.getInteger(searchParam.getPageSize());
+        List<String> sendList = subscriptionService.subscribeOrgList(subUserList.getTmails(), subUserList.getPublisherId(), subUserList.getUserId());
+        return new ResponseEntity(sendList);
 
-		PageInfo p = publisherService.getMyOrgPublisherList(searchParam.getKeyword(), searchParam.getUserId(), pageno, pagesize);
-		return new ResponseEntity(p);
-	}
+    }
+
+    //取消订阅出版社
+    //1、获取该用户与该出版社的关系（已订阅、未订阅）
+    //2、处理取消订阅出版社的指令
+    //3、返回处理结果
+    @PostMapping("/unsubscribe")
+    @ApiOperation(
+            value = "取消订阅"
+    )
+    public ResponseEntity unsubscribe(@RequestBody DeleteParam unSub) {
+        subscriptionService.unsubscribe(unSub.getUserId(), unSub.getPublisherId());
+
+        return new ResponseEntity();
+    }
+
+    @PostMapping("/unOrgsubscribe")
+    @ApiOperation(
+            value = "取消组织订阅"
+    )
+    public ResponseEntity unOrgsubscribe(@RequestBody UnSubOrgParam unSubOrg) {
+        subscriptionService.unsubscribeByOwnerId(unSubOrg.getSubTmail(), unSubOrg.getUserId(), unSubOrg.getPublisherId(), PublisherTypeEnums.organize);
+        return new ResponseEntity();
+
+    }
+
+    @PostMapping("/getMyPublisher")
+    @ApiOperation(
+            value = "获得我的个人出版社"
+    )
+    public ResponseEntity getMyPublisher(@RequestBody UserIdParam userIdParam) {
+        PublisherVO publisher = publisherService.getPubLisherByuserId(userIdParam.getUserId());
+        return new ResponseEntity(publisher);
+    }
+
+    @PostMapping("/changeOrgPublishUser")
+    @ApiOperation(
+            value = "修改出版社管理员"
+    )
+    public ResponseEntity changeOrgPublishUser(@RequestBody ChangeParam cp) {
+        publisherService.changeOrgPublishUser(cp.getPublishId(), cp.getCurUserId(), cp.getChangeUserId());
+        return new ResponseEntity();
+    }
+
+    @PostMapping("/getMyOrgPublisher")
+    @ApiOperation(
+            value = "获得我创建的组织出版社"
+    )
+    public ResponseEntity getMyOrgPublisher(@RequestBody SearchParam searchParam) {
+        int pageno = StringUtils.getInteger(searchParam.getPageNo()) == 0 ? 1 : StringUtils.getInteger(searchParam.getPageNo());
+        int pagesize = StringUtils.getInteger(searchParam.getPageSize()) == 0 ? 20 : StringUtils.getInteger(searchParam.getPageSize());
+
+        PageInfo p = publisherService.getMyOrgPublisherList(searchParam.getKeyword(), searchParam.getUserId(), pageno, pagesize);
+        return new ResponseEntity(p);
+    }
 }
