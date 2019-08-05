@@ -52,7 +52,9 @@ public class ExcelUtil {
                 Cell cell = row.getCell(0);
                 String userId = getCellValue(cell);
                 if (!StringUtil.isEmpty(userId)) {
-                    list.add(getCellValue(cell));
+                    if (PatternUtils.orEmail(userId)) {
+                        list.add(getCellValue(cell));
+                    }
                 }
             }
         }
